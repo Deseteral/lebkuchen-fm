@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import CommandParser from '../services/CommandParser';
 
 /*
- * POST /commands
+ * POST /commands/hipchat
  */
 function postCommand(req: Request, res: Response) {
   const { body } = req;
@@ -11,7 +11,14 @@ function postCommand(req: Request, res: Response) {
 
   console.log(command);
 
-  res.status(200).end();
+  const responseMessage = {
+    color: 'green',
+    message: JSON.stringify(command),
+    notify: false,
+    message_format: 'text',
+  };
+
+  res.send(responseMessage);
 }
 
 export default {
