@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "npm run serve",
-    "build": "npm run build-ts npm run install-frontend",
+    "build": "npm run build-ts && npm run install-frontend",
     "serve": "node dist/server.js",
     "watch": "nodemon dist/server.js",
     "test": "npm run tslint",
