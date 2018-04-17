@@ -35,9 +35,11 @@ function handleAdd(tokens: string[]) : (Command | null) {
 function handleQueue(tokens: string[]) : (Command | null) {
   if (requireMinLength(3, tokens)) return null;
 
+  const id = tokens.slice(2).join(' ');
+
   return {
     type: CommandType.Queue,
-    arguments: { id: tokens[2] },
+    arguments: { id },
   };
 }
 
