@@ -6,19 +6,21 @@ import CommandParser from '../services/CommandParser';
  */
 function postCommand(req: Request, res: Response) {
   const { body } = req;
-  const message = body.item.message.message;
-  const command = CommandParser.parse(message);
+  const text = body.item.message.message;
+  const command = CommandParser.parse(text);
 
-  console.log(command);
+  const message = command === null
+    ? '/giphy fail'
+    : JSON.stringify(command);
 
-  const responseMessage = {
+  const hipchatMessage = {
+    message,
     color: 'green',
-    message: JSON.stringify(command),
     notify: false,
     message_format: 'text',
   };
 
-  res.send(responseMessage);
+  res.send(hipchatMessage);
 }
 
 export default {
