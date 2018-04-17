@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "npm run serve",
-    "build": "npm run build-ts",
+    "build": "npm run build-ts npm run install-frontend",
     "serve": "node dist/server.js",
     "watch": "nodemon dist/server.js",
     "test": "npm run tslint",
@@ -13,13 +13,15 @@
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "debug": "npm run build && npm run watch-debug",
     "serve-debug": "nodemon --inspect dist/server.js",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\""
+    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
+    "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh"
   },
   "dependencies": {
     "body-parser": "1.18.2",
     "compression": "1.7.1",
     "errorhandler": "1.5.0",
-    "express": "4.16.2"
+    "express": "4.16.2",
+    "lebkuchen-fm-frontend": "git+https://github.com/Deseteral/lebkuchen-fm-frontend.git"
   },
   "devDependencies": {
     "@types/body-parser": "1.16.8",
