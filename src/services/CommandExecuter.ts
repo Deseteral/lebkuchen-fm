@@ -34,18 +34,17 @@ function handleAdd(argument: AddArgument) : Promise<string> {
 }
 
 function handleQueue(argument: QueueArgument) : Promise<string> {
-  SongRepository.getByName(argument.id)
+  return SongRepository.getByName(argument.id)
     .then((song) => {
       if (!song) {
         const videoWithId: VideoWithId = { youtubeId: argument.id };
         IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
-      } else {
-        IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
+        return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
       }
-    })
-    .catch(err => console.error(err));
 
-  return Promise.resolve('');
+      IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
+      return Promise.resolve(`Dodano ${song.name} do kolejki`);
+    });
 }
 
 function handleSkip() : Promise<string> {
@@ -74,7 +73,6 @@ function handleList() : Promise<string> {
 }
 
 function handleX(argument: XArgument) : Promise<string> {
-
   XRepository
     .getByName(argument.sound)
     .then((xsound: XSound) => {
