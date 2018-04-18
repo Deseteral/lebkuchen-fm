@@ -1,20 +1,21 @@
 import { Request, Response } from 'express';
 import CommandParser from '../services/CommandParser';
+import CommandExecuter from '../services/CommandExecuter';
 
 /*
  * POST /commands/hipchat
  */
 function postCommand(req: Request, res: Response) {
-  const { body } = req;
-  const text = body.item.message.message;
-  const command = CommandParser.parse(text);
+  console.log(req.body);
+  const text = req.body.item.message.message;
 
-  const message = command === null
-    ? '/giphy fail'
-    : JSON.stringify(command);
+  const command = CommandParser.parse(text);
+  if (!!command) {
+    CommandExecuter.execute(command);
+  }
 
   const hipchatMessage = {
-    message,
+    message: JSON.stringify(command),
     color: 'green',
     notify: false,
     message_format: 'text',
