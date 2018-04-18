@@ -9,7 +9,7 @@ function getCollection() {
 }
 
 function insert(song: Song) {
-  getCollection().insertOne(song);
+  return getCollection().insertOne(song);
 }
 
 function getByName(name: string) {

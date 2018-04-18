@@ -13,9 +13,16 @@ function handleAdd(argument: AddArgument) : Promise<string> {
     timesPlayed: 0,
   };
 
-  SongRepository.insert(song);
+  return SongRepository
+    .getByName(song.name)
+    .then((foundSong) => {
+      if (foundSong !== null) {
+        return Promise.resolve(`Utwór o tytule "${song.name}" już jest w bazie`);
+      }
 
-  return Promise.resolve(`Dodałem utwór "${song.name}" do biblioteki`);
+      SongRepository.insert(song);
+      return Promise.resolve(`Dodałem utwór "${song.name}" do biblioteki`);
+    });
 }
 
 function handleQueue(argument: QueueArgument) : Promise<string> {
