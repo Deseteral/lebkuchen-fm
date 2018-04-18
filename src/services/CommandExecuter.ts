@@ -21,19 +21,19 @@ function handleAdd(argument: AddArgument) : string {
 function handleQueue(argument: QueueArgument) : string {
   SongRepository.getByName(argument.id)
     .then(song =>
-      IoConnection.broadcast('queue', { action: QueueActionType.Add, song })
+      IoConnection.broadcast('queue', { action: QueueActionType.Add, song }),
     )
     .catch(err => console.error(err));
 
   return '';
 }
 
-function handleSkip() {
+function handleSkip() : string {
   IoConnection.broadcast('queue', { action: QueueActionType.Skip, song: null });
   return '';
 }
 
-function handleSay(argument: SayArgument) {
+function handleSay(argument: SayArgument) : string {
   IoConnection.broadcast('say', { text: argument.text });
   return '';
 }
