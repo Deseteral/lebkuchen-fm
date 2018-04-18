@@ -6,6 +6,7 @@ import HipChatController from './controllers/HipChatController';
 import MongoConnection from './clients/MongoConnection';
 import IoConnection from './clients/IoConnection';
 import http from 'http';
+import XController from './controllers/XController';
 
 MongoConnection
   .connect()
@@ -20,6 +21,7 @@ MongoConnection
 
     // Controllers
     app.post('/commands/hipchat', HipChatController.postCommand);
+    app.post('/xsounds', XController.getSounds);
 
     const server = new http.Server(app);
 
