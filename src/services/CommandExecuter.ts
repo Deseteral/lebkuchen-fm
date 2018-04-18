@@ -2,7 +2,7 @@ import Command, { CommandType, AddArgument, QueueArgument, SayArgument } from '.
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
 import IoConnection from '../clients/IoConnection';
-import { QueueActionType } from '../domain/io-messages/QueueMessage';
+import { QueueActionType, VideoWithId } from '../domain/io-messages/QueueMessage';
 
 function handleAdd(argument: AddArgument) : Promise<string> {
   const song: Song = {
@@ -20,9 +20,14 @@ function handleAdd(argument: AddArgument) : Promise<string> {
 
 function handleQueue(argument: QueueArgument) : Promise<string> {
   SongRepository.getByName(argument.id)
-    .then(song =>
-      IoConnection.broadcast('queue', { action: QueueActionType.Add, song }),
-    )
+    .then((song) => {
+      if (!song) {
+        const videoWithId: VideoWithId = { youtubeId: argument.id };
+        IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
+      } else {
+        IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
+      }
+    })
     .catch(err => console.error(err));
 
   return Promise.resolve('');
