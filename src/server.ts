@@ -3,7 +3,9 @@ import compression from 'compression';  // compresses requests
 import bodyParser from 'body-parser';
 import path from 'path';
 import HipChatController from './controllers/HipChatController';
-import MongoConnection from './database/MongoConnection';
+import MongoConnection from './clients/MongoConnection';
+import IoConnection from './clients/IoConnection';
+import http from 'http';
 
 MongoConnection
   .connect()
@@ -19,8 +21,12 @@ MongoConnection
     // Controllers
     app.post('/commands/hipchat', HipChatController.postCommand);
 
+    const server = new http.Server(app);
+
     // Start server
-    app.listen(app.get('port'), () => {
+    IoConnection.connect(server);
+
+    server.listen(app.get('port'), () => {
       console.log(
         '  App is running at http://localhost:%d in %s mode',
         app.get('port'),

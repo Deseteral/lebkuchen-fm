@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import CommandParser from '../services/CommandParser';
 import CommandExecuter from '../services/CommandExecuter';
+// https://media.giphy.com/media/11StaZ9Lj74oCY/giphy.gif
 
 /*
  * POST /commands/hipchat
