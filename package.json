@@ -5,14 +5,14 @@
   "scripts": {
     "start": "npm run serve",
     "build": "npm run build-ts && npm run install-frontend",
-    "serve": "node dist/Server.js",
-    "watch": "nodemon dist/Server.js",
+    "serve": "node dist/server.js",
+    "watch": "nodemon dist/server.js",
     "test": "npm run tslint",
     "build-ts": "tsc",
     "watch-ts": "tsc -w",
     "tslint": "tslint -c tslint.json -p tsconfig.json",
     "debug": "npm run build && npm run watch-debug",
-    "serve-debug": "nodemon --inspect dist/Server.js",
+    "serve-debug": "nodemon --inspect dist/server.js",
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run serve-debug\"",
     "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
     "postinstall": "npm run build"
