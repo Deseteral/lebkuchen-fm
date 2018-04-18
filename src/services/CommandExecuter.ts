@@ -54,12 +54,16 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
   const key = process.env['YOUTUBE_KEY'];
   const url = `https://www.googleapis.com/youtube/v3/search?q=${encodedQuery}&maxResults=1&part=snippet&key=${key}`;
 
-  return nodeFetch(url).then((data: any) => {
-    const id = data.items[0].id.videoId;
-    const videoWithId: VideoWithId = { youtubeId: id };
-    IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
-    return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
-  });
+  return nodeFetch(url, { headers: { 'Content-Type': 'application/json' } })
+    .then(data => data.json())
+    .then((data: any) => {
+      console.log(data);
+      const id = data.items[0].id.videoId;
+      // console.log(id);
+      const videoWithId: VideoWithId = { youtubeId: id };
+      IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
+      return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
+    });
 }
 
 function handleSkip() : Promise<string> {

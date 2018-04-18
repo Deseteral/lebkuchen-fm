@@ -31,7 +31,8 @@ function postCommand(req: Request, res: Response) {
       const hipchatMessage = getHipchatMessage(responseMessage);
       res.send(hipchatMessage);
     })
-    .catch(() => {
+    .catch((err) => {
+      console.error(err);
       const hipchatMessage = getHipchatMessage(FAIL_GIF_URL);
       res.send(hipchatMessage);
     });
