@@ -70,6 +70,15 @@ function handleList(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleX(tokens: string[]) : (Command | null) {
+  if (requireMinLength(3, tokens)) return null;
+
+  return {
+    type: CommandType.X,
+    arguments: { sound: tokens[2] },
+  };
+}
+
 function requireMinLength(minLength: number, tokens: string[]) : boolean {
   return (tokens.length < minLength);
 }
@@ -91,6 +100,7 @@ function parse(text: String) : (Command | null) {
     case 'skip': return handleSkip(tokens);
     case 'say': return handleSay(tokens);
     case 'list': return handleList(tokens);
+    case 'x': return handleX(tokens);
     default:
       return null;
   }

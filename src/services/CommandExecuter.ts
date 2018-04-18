@@ -1,8 +1,10 @@
-import Command, { CommandType, AddArgument, QueueArgument, SayArgument } from '../domain/Command';
+import Command, { CommandType, AddArgument, QueueArgument, SayArgument, XArgument } from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
 import IoConnection from '../clients/IoConnection';
 import { QueueActionType, VideoWithId } from '../domain/io-messages/QueueMessage';
+import XRepository from '../repositories/XRepository';
+import XSound from '../domain/XSound';
 
 function handleAdd(argument: AddArgument) : Promise<string> {
   const song: Song = {
@@ -59,11 +61,21 @@ function handleList() : Promise<string> {
           .map(song => `YT: ${song.youtubeId}, ${song.name}, ${song.timesPlayed} odtworzeń`)
           .join('\n');
 
-        console.log(message);
         resolve(message);
       })
       .catch(reject);
   });
+}
+
+function handleX(argument: XArgument) : Promise<string> {
+
+  XRepository
+    .getByName(argument.sound)
+    .then((xsound: XSound) => {
+      IoConnection.broadcast('x', { soundUrl: xsound.url });
+    });
+
+  return Promise.resolve('');
 }
 
 function execute(command: (Command | null)) : Promise<string> {
@@ -80,6 +92,8 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleSay(command.arguments as SayArgument);
     case CommandType.List:
       return handleList();
+    case CommandType.X:
+      return handleX(command.arguments as XArgument);
     default:
       return Promise.resolve('');
   }

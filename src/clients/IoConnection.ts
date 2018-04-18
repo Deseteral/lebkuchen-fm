@@ -2,6 +2,7 @@ import http from 'http';
 import socketIo from 'socket.io';
 import QueueMessage from '../domain/io-messages/QueueMessage';
 import SayMessage from '../domain/io-messages/SayMessage';
+import XMessage from '../domain/io-messages/XMessage';
 import Song from '../domain/Song';
 import IoController from '../controllers/IoController';
 
@@ -18,7 +19,7 @@ function connect(server: http.Server) {
   });
 }
 
-function broadcast(channel: string, message: (QueueMessage | SayMessage)) {
+function broadcast(channel: string, message: (QueueMessage | SayMessage | XMessage)) {
   if (!io) return;
   io.sockets.emit(channel, message);
 }
