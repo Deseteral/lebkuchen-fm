@@ -77,7 +77,7 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
 }
 
 function handleSkip() : Promise<string> {
-  IoConnection.broadcast('queue', { action: QueueActionType.Skip, song: null });
+  IoConnection.broadcast('skip', { action: QueueActionType.Skip, song: null });
   return Promise.resolve('');
 }
 
