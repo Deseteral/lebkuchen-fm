@@ -60,9 +60,14 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
       console.log(data);
       const id = data.items[0].id.videoId;
       const title = data.items[0].snippet.title;
-      // console.log(id);
-      const videoWithId: VideoWithId = { youtubeId: id };
-      IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
+      const song: Song = {
+        name,
+        youtubeId: id,
+        trimStartSeconds: null,
+        trimEndSeconds: null,
+        timesPlayed: 0,
+      };
+      IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
       return Promise.resolve(`Dodano film "${title}" do kolejki`);
     });
 }
