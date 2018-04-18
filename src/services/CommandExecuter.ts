@@ -59,10 +59,11 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
     .then((data: any) => {
       console.log(data);
       const id = data.items[0].id.videoId;
+      const title = data.items[0].snippet.title;
       // console.log(id);
       const videoWithId: VideoWithId = { youtubeId: id };
       IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
-      return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
+      return Promise.resolve(`Dodano film "${title}" do kolejki`);
     });
 }
 
