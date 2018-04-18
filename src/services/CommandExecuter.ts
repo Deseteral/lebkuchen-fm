@@ -25,6 +25,10 @@ async function handleQueue(argument: QueueArgument) {
   }
 }
 
+function handleSkip() {
+  IoConnection.broadcast('queue', { action: QueueActionType.Skip, song: null });
+}
+
 function execute(command: Command) {
   switch (command.type) {
     case CommandType.Add:
@@ -34,6 +38,7 @@ function execute(command: Command) {
       handleQueue(command.arguments as QueueArgument);
       break;
     case CommandType.Skip:
+      handleSkip();
       break;
   }
 }
