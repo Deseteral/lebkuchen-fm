@@ -3,6 +3,7 @@ enum CommandType {
   Queue = 'QUEUE',
   Skip = 'SKIP',
   Say = 'SAY',
+  List = 'LIST',
 }
 
 interface AddArgument {

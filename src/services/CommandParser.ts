@@ -61,6 +61,15 @@ function handleSay(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleList(tokens: string[]) : (Command | null) {
+  if (requireMinLength(2, tokens)) return null;
+
+  return {
+    type: CommandType.List,
+    arguments: null,
+  };
+}
+
 function requireMinLength(minLength: number, tokens: string[]) : boolean {
   return (tokens.length < minLength);
 }
@@ -81,6 +90,7 @@ function parse(text: String) : (Command | null) {
     case 'queue': return handleQueue(tokens);
     case 'skip': return handleSkip(tokens);
     case 'say': return handleSay(tokens);
+    case 'list': return handleList(tokens);
     default:
       return null;
   }

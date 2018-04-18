@@ -4,6 +4,15 @@ import CommandExecuter from '../services/CommandExecuter';
 
 const FAIL_GIF_URL = 'https://media.giphy.com/media/11StaZ9Lj74oCY/giphy.gif';
 
+function getHipchatMessage(message: string) {
+  return {
+    message,
+    color: 'green',
+    notify: false,
+    message_format: 'text',
+  };
+}
+
 /*
  * POST /commands/hipchat
  */
@@ -11,22 +20,18 @@ function postCommand(req: Request, res: Response) {
   const text = req.body.item.message.message;
   const command = CommandParser.parse(text);
 
-  const responseMessage = !!command
-    ? CommandExecuter.execute(command)
-    : FAIL_GIF_URL;
+  CommandExecuter
+    .execute(command)
+    .then((responseMessage) => {
+      if (responseMessage !== '') throw new Error('');
 
-  if (responseMessage !== '') {
-    const hipchatMessage = {
-      message: responseMessage,
-      color: 'green',
-      notify: false,
-      message_format: 'text',
-    };
-
-    res.send(hipchatMessage);
-  } else {
-    res.status(200).end();
-  }
+      const hipchatMessage = getHipchatMessage(responseMessage);
+      res.send(hipchatMessage);
+    })
+    .catch(() => {
+      const hipchatMessage = getHipchatMessage(FAIL_GIF_URL);
+      res.send(hipchatMessage);
+    });
 }
 
 export default {
