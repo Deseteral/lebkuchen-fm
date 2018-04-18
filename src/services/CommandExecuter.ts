@@ -1,4 +1,10 @@
-import Command, { CommandType, AddArgument, QueueArgument, SayArgument, XArgument } from '../domain/Command';
+import Command, {
+  CommandType,
+  AddArgument,
+  QueueArgument,
+  SayArgument,
+  XArgument,
+} from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
 import IoConnection from '../clients/IoConnection';
