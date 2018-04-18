@@ -12,6 +12,7 @@ import IoConnection from '../clients/IoConnection';
 import { QueueActionType, VideoWithId } from '../domain/io-messages/QueueMessage';
 import XRepository from '../repositories/XRepository';
 import XSound from '../domain/XSound';
+import nodeFetch from 'node-fetch';
 
 function handleAdd(argument: AddArgument) : Promise<string> {
   const song: Song = {
@@ -53,7 +54,7 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
   const key = process.env['YOUTUBE_KEY'];
   const url = `https://www.googleapis.com/youtube/v3/search?q=${encodedQuery}&maxResults=1&part=snippet&key=${key}`;
 
-  return fetch(url).then((data: any) => {
+  return nodeFetch(url).then((data: any) => {
     const id = data.items[0].id.videoId;
     const videoWithId: VideoWithId = { youtubeId: id };
     IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
