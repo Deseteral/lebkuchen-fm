@@ -1,7 +1,8 @@
 import { MongoClient, Db } from 'mongodb';
+import process from 'process';
 
-const url = 'mongodb://localhost:27017';
-const dbName = 'LebkuchenFM';
+const url = process.env['MONGO_URI'] || 'mongodb://localhost:27017';
+const dbName = 'lebkuchen-fm';
 
 let db: (Db | null) = null;
 
