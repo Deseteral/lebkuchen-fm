@@ -47,6 +47,7 @@ function handleList() : Promise<string> {
           .map(song => `YT: ${song.youtubeId}, ${song.name}, ${song.timesPlayed} odtworzeń`)
           .join('\n');
 
+        console.log(message);
         resolve(message);
       })
       .catch(reject);

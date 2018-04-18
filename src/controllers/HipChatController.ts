@@ -20,10 +20,15 @@ function postCommand(req: Request, res: Response) {
   const text = req.body.item.message.message;
   const command = CommandParser.parse(text);
 
+  console.log(command);
+
   CommandExecuter
     .execute(command)
     .then((responseMessage) => {
-      if (responseMessage !== '') throw new Error('');
+      if (responseMessage === '') {
+        res.sendStatus(200);
+        return;
+      }
 
       const hipchatMessage = getHipchatMessage(responseMessage);
       res.send(hipchatMessage);
