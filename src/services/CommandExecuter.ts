@@ -52,7 +52,11 @@ function handleQueue(argument: QueueArgument) : Promise<string> {
 function handleSearch(argument: SearchArgument) : Promise<string> {
   const encodedQuery = encodeURI(argument.query);
   const key = process.env['YOUTUBE_KEY'];
-  const url = `https://www.googleapis.com/youtube/v3/search?q=${encodedQuery}&maxResults=1&part=snippet&key=${key}`;
+  const url =
+    'https://www.googleapis.com/youtube/v3/search?q=' +
+    encodedQuery +
+    '&maxResults=1&part=snippet&key=' +
+    key;
 
   return nodeFetch(url, { headers: { 'Content-Type': 'application/json' } })
     .then(data => data.json())
@@ -61,7 +65,7 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
       const id = data.items[0].id.videoId;
       const title = data.items[0].snippet.title;
       const song: Song = {
-        name,
+        name: title,
         youtubeId: id,
         trimStartSeconds: null,
         trimEndSeconds: null,
