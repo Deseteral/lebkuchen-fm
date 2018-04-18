@@ -21,7 +21,7 @@ MongoConnection
 
     // Controllers
     app.post('/commands/hipchat', HipChatController.postCommand);
-    app.post('/xsounds', XController.getSounds);
+    app.get('/xsounds', XController.getSounds);
 
     const server = new http.Server(app);
 
