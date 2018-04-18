@@ -20,8 +20,18 @@ function getAll() {
   return getCollection().find({}).toArray();
 }
 
+function getByYoutubeId(youtubeId: string) {
+  return getCollection().findOne({ youtubeId });
+}
+
+function update(song: Song) {
+  return getCollection().updateOne({ _id: song._id }, song);
+}
+
 export default {
   insert,
   getByName,
   getAll,
+  getByYoutubeId,
+  update,
 };
