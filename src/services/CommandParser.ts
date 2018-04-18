@@ -50,6 +50,17 @@ function handleSkip(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleSay(tokens: string[]) : (Command | null) {
+  if (requireMinLength(3, tokens)) return null;
+
+  const text = tokens.slice(2).join(' ');
+
+  return {
+    type: CommandType.Say,
+    arguments: { text },
+  };
+}
+
 function requireMinLength(minLength: number, tokens: string[]) : boolean {
   return (tokens.length < minLength);
 }
@@ -69,6 +80,7 @@ function parse(text: String) : (Command | null) {
     case 'add': return handleAdd(tokens);
     case 'queue': return handleQueue(tokens);
     case 'skip': return handleSkip(tokens);
+    case 'say': return handleSay(tokens);
     default:
       return null;
   }

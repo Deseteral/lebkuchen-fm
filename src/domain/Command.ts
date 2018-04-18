@@ -2,6 +2,7 @@ enum CommandType {
   Add = 'ADD',
   Queue = 'QUEUE',
   Skip = 'SKIP',
+  Say = 'SAY',
 }
 
 interface AddArgument {
@@ -15,10 +16,14 @@ interface QueueArgument {
   id: string;
 }
 
+interface SayArgument {
+  text: string;
+}
+
 interface Command {
   type: CommandType;
-  arguments: null | AddArgument | QueueArgument;
+  arguments: null | AddArgument | QueueArgument | SayArgument;
 }
 
 export default Command;
-export { CommandType, AddArgument, QueueArgument };
+export { CommandType, AddArgument, QueueArgument, SayArgument };

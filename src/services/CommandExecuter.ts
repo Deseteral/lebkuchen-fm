@@ -1,4 +1,4 @@
-import Command, { CommandType, AddArgument, QueueArgument } from '../domain/Command';
+import Command, { CommandType, AddArgument, QueueArgument, SayArgument } from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
 import IoConnection from '../clients/IoConnection';
@@ -29,6 +29,10 @@ function handleSkip() {
   IoConnection.broadcast('queue', { action: QueueActionType.Skip, song: null });
 }
 
+function handleSay(argument: SayArgument) {
+  IoConnection.broadcast('say', { text: argument.text });
+}
+
 function execute(command: Command) {
   switch (command.type) {
     case CommandType.Add:
@@ -39,6 +43,9 @@ function execute(command: Command) {
       break;
     case CommandType.Skip:
       handleSkip();
+      break;
+    case CommandType.Say:
+      handleSay(command.arguments as SayArgument);
       break;
   }
 }
