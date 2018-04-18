@@ -5,6 +5,7 @@ enum CommandType {
   Say = 'SAY',
   List = 'LIST',
   X = 'X',
+  Search = 'SEARCH',
 }
 
 interface AddArgument {
@@ -26,10 +27,14 @@ interface XArgument {
   sound: string;
 }
 
+interface SearchArgument {
+  query: string;
+}
+
 interface Command {
   type: CommandType;
-  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument;
+  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument;
 }
 
 export default Command;
-export { CommandType, AddArgument, QueueArgument, SayArgument, XArgument };
+export { CommandType, AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument };

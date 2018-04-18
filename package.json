@@ -23,6 +23,7 @@
     "express": "4.16.2",
     "lebkuchen-fm-frontend": "git+https://github.com/Deseteral/lebkuchen-fm-frontend.git",
     "mongodb": "3.0.6",
+    "node-fetch": "2.1.2",
     "socket.io": "2.1.0"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@types/express": "4.11.1",
     "@types/mongodb": "3.0.5",
     "@types/node": "9.4.6",
+    "@types/node-fetch": "1.6.8",
     "@types/socket.io": "1.4.33",
     "concurrently": "3.5.1",
     "nodemon": "1.13.0",

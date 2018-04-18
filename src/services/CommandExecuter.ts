@@ -4,6 +4,7 @@ import Command, {
   QueueArgument,
   SayArgument,
   XArgument,
+  SearchArgument,
 } from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
@@ -45,6 +46,19 @@ function handleQueue(argument: QueueArgument) : Promise<string> {
       IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
       return Promise.resolve(`Dodano ${song.name} do kolejki`);
     });
+}
+
+function handleSearch(argument: SearchArgument) : Promise<string> {
+  const encodedQuery = encodeURI(argument.query);
+  const key = process.env['YOUTUBE_KEY'];
+  const url = `https://www.googleapis.com/youtube/v3/search?q=${encodedQuery}&maxResults=1&part=snippet&key=${key}`;
+
+  return fetch(url).then((data: any) => {
+    const id = data.items[0].id.videoId;
+    const videoWithId: VideoWithId = { youtubeId: id };
+    IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
+    return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
+  });
 }
 
 function handleSkip() : Promise<string> {
@@ -98,6 +112,8 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleList();
     case CommandType.X:
       return handleX(command.arguments as XArgument);
+    case CommandType.Search:
+      return handleSearch(command.arguments as SearchArgument);
     default:
       return Promise.resolve('');
   }

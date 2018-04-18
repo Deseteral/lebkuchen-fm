@@ -43,6 +43,17 @@ function handleQueue(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleSearch(tokens: string[]) : (Command | null) {
+  if (requireMinLength(3, tokens)) return null;
+
+  const query = tokens.slice(2).join(' ');
+
+  return {
+    type: CommandType.Search,
+    arguments: { query },
+  };
+}
+
 function handleSkip(tokens: string[]) : (Command | null) {
   return {
     type: CommandType.Skip,
@@ -101,6 +112,7 @@ function parse(text: String) : (Command | null) {
     case 'say': return handleSay(tokens);
     case 'list': return handleList(tokens);
     case 'x': return handleX(tokens);
+    case 'search': return handleSearch(tokens);
     default:
       return null;
   }
