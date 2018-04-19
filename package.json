@@ -2,7 +2,6 @@
   "name": "lebkuchen-fm",
   "version": "1.0.0",
   "description": "",
-  "proxy": "http://localhost:9000/",
   "scripts": {
     "start": "node dist/server.js",
     "build": "npm run build-ts && npm run frontend:build",
@@ -42,5 +41,6 @@
     "tslint": "5.9.1",
     "tslint-config-airbnb": "5.8.0",
     "typescript": "2.7.2"
-  }
+  },
+  "proxy": "http://localhost:9000/"
 }
