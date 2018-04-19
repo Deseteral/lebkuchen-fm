@@ -25,10 +25,4 @@
   "include": [
     "server/**/*"
   ]
-  // "exclude": [
-  //   "node_modules",
-  //   "build",
-  //   "dist",
-  //   "src/setupTests.ts"
-  // ]
 }
