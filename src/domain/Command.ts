@@ -6,6 +6,7 @@ enum CommandType {
   List = 'LIST',
   X = 'X',
   Search = 'SEARCH',
+  Random = 'RANDOM',
 }
 
 interface AddArgument {
@@ -31,10 +32,14 @@ interface SearchArgument {
   query: string;
 }
 
+interface RandomArgument {
+  count: number;
+}
+
 interface Command {
   type: CommandType;
-  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument;
+  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument | RandomArgument;
 }
 
 export default Command;
-export { CommandType, AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument };
+export { CommandType, AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument, RandomArgument };
