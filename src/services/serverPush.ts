@@ -23,7 +23,7 @@ interface IXMessage {
   soundUrl: string;
 }
 
-let socket;
+// let socket;
 
 function handleIncomingMsg(msg: IIcomingMsg) {
   console.log('incoming message'); // tslint:disable-line
