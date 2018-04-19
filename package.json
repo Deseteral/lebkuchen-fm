@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node dist/server.js",
-    "build": "npm run build-ts && npm run frontend:build",
+    "build": "npm run server:build && npm run frontend:build",
     "postinstall": "npm run build",
     "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
     "frontend:dev": "react-scripts start",
