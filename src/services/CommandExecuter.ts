@@ -5,6 +5,7 @@ import Command, {
   SayArgument,
   XArgument,
   SearchArgument,
+  RandomArgument,
 } from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
@@ -111,6 +112,17 @@ function handleX(argument: XArgument) : Promise<string> {
   return Promise.resolve('');
 }
 
+function handleRandom(argument: RandomArgument) : Promise<string> {
+  return Promise.all(Array(argument.count).map(() =>
+    SongRepository.getRandomSong()
+      .then((song: Song) => {
+        IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
+        return song.name;
+      })
+  ))
+  .then((songNames) => Promise.resolve(`Dodano ${songNames.join(', ')} do kolejki`));
+}
+
 function execute(command: (Command | null)) : Promise<string> {
   if (!command) return Promise.resolve('');
 
@@ -129,6 +141,8 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleX(command.arguments as XArgument);
     case CommandType.Search:
       return handleSearch(command.arguments as SearchArgument);
+    case CommandType.Random:
+      return handleRandom(command.arguments as RandomArgument);
     default:
       return Promise.resolve('');
   }
