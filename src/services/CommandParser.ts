@@ -90,6 +90,17 @@ function handleX(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleRandom(tokens: string[]) : (Command | null) {
+  if (requireMinLength(2, tokens)) return null;
+
+  const count = parseInt(tokens[2], 10) || 1;
+
+  return {
+    type: CommandType.Random,
+    arguments: { count },
+  };
+}
+
 function requireMinLength(minLength: number, tokens: string[]) : boolean {
   return (tokens.length < minLength);
 }
@@ -113,6 +124,7 @@ function parse(text: String) : (Command | null) {
     case 'list': return handleList(tokens);
     case 'x': return handleX(tokens);
     case 'search': return handleSearch(tokens);
+    case 'random': return handleRandom(tokens);
     default:
       return null;
   }
