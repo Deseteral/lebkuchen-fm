@@ -23,7 +23,7 @@ interface IXMessage {
   soundUrl: string;
 }
 
-// let socket;
+let socket;
 
 function handleIncomingMsg(msg: IIcomingMsg) {
   console.log('incoming message'); // tslint:disable-line
@@ -43,12 +43,12 @@ function handleX(xsound: IXMessage) {
 }
 
 function initSocket() {
-  // socket = io();
-  // socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
-  // socket.on('queue', handleIncomingMsg);
-  // socket.on('say', handleSay);
-  // socket.on('x', handleX);
-  // return socket;
+  socket = io();
+  socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
+  socket.on('queue', handleIncomingMsg);
+  socket.on('say', handleSay);
+  socket.on('x', handleX);
+  return socket;
 }
 
 export default {
