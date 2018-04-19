@@ -13,7 +13,7 @@
     "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/server.js\""
   },
   "dependencies": {
-    "@deseteral/react-scripts-ts": "1.1.4-5",
+    "@deseteral/react-scripts-ts": "1.1.4-6",
     "body-parser": "1.18.2",
     "compression": "1.7.1",
     "express": "4.16.2",
