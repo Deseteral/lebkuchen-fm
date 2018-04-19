@@ -2,15 +2,16 @@
   "name": "lebkuchen-fm",
   "version": "1.0.0",
   "description": "",
+  "proxy": "http://localhost:9000/",
   "scripts": {
     "start": "node dist/server.js",
     "build": "npm run build-ts && npm run frontend:build",
     "postinstall": "npm run build",
+    "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
     "frontend:dev": "react-scripts start",
     "frontend:build": "react-scripts build && npm run install-frontend",
-    "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
-    "build-ts": "tsc",
-    "watch-debug": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/server.js\""
+    "server:build": "tsc",
+    "server:dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/server.js\""
   },
   "dependencies": {
     "@deseteral/react-scripts-ts": "1.1.4-6",
