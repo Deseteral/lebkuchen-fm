@@ -118,9 +118,9 @@ function handleRandom(argument: RandomArgument) : Promise<string> {
       .then((song: Song) => {
         IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
         return song.name;
-      })
+      }),
   ))
-  .then((songNames) => Promise.resolve(`Dodano ${songNames.join(', ')} do kolejki`));
+  .then(songNames => Promise.resolve(`Dodano ${songNames.join(', ')} do kolejki`));
 }
 
 function execute(command: (Command | null)) : Promise<string> {
