@@ -11,9 +11,9 @@ function clear() {
 }
 
 function pop() {
-  const popped = queue.pop();
+  const popped = queue.splice(0,1);
   triggerOnChange();
-  return popped;
+  return popped.length ? popped[0] : undefined;
 }
 
 function getQueue() {
