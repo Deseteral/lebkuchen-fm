@@ -7,8 +7,7 @@ class Queue extends React.Component {
     super(props);
     this.state = {
       queue: youtubeQueue.getQueue(),
-    };
-
+    }
     youtubeQueue.setOnChangeListener((queue) => {
       this.setState({ queue });
     });
@@ -18,6 +17,10 @@ class Queue extends React.Component {
     return (<QueueList queue={this.state.queue} />);
   }
 
+}
+
+function printTitle(title){
+  return (<div>Title</div>);
 }
 
 export default Queue;
