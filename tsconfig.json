@@ -2,7 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es5",
+    "lib": ["es6", "dom"],
+    "jsx": "react",
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -15,11 +17,12 @@
     "paths": {
       "*": [
         "node_modules/*",
-        "src/types/*"
+        "src/types/*",
+        "server/types/*"
       ]
     }
   },
   "include": [
-    "src/**/*"
+    "server/**/*"
   ]
 }
