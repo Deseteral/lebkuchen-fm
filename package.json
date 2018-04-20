@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "build": "npm run server:build && npm run frontend:build",
+    "test": "exit 0",
     "postinstall": "npm run build",
     "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
     "frontend:dev": "react-scripts start",

@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
+    "sourceMap": true,
     "module": "commonjs",
     "esModuleInterop": true,
     "target": "es5",
     "lib": ["es6", "dom"],
     "jsx": "react",
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "outDir": "dist",
     "noImplicitAny": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "strict": true,
     "noUnusedLocals": true,
-    "moduleResolution": "node",
-    "sourceMap": true,
-    "outDir": "dist",
-    "baseUrl": ".",
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
     "paths": {
       "*": [
         "node_modules/*",
