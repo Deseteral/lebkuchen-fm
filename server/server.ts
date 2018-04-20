@@ -13,7 +13,7 @@ MongoConnection
   .then(() => {
     // Express configuration
     const app = express();
-    app.set('port', process.env.PORT || 3000);
+    app.set('port', process.env.PORT || 9000);
     app.use(compression());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));

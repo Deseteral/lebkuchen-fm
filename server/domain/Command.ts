@@ -38,8 +38,10 @@ interface RandomArgument {
 
 interface Command {
   type: CommandType;
-  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument | RandomArgument;
+  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument
+  | RandomArgument;
 }
 
 export default Command;
-export { CommandType, AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument, RandomArgument };
+export { CommandType,
+  AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument, RandomArgument };
