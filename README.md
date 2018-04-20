@@ -1,4 +1,5 @@
 # LebkuchenFM
+[![Build Status](https://travis-ci.org/Deseteral/lebkuchen-fm.svg?branch=master)](https://travis-ci.org/Deseteral/lebkuchen-fm)
 
 ## Application configuration
 You can configure the application using environment variables:
@@ -10,7 +11,7 @@ You can configure the application using environment variables:
 To run application in development mode you have to run both backend and frontend simultaneously.
 
 ```sh
-npm run backend:dev
+npm run server:dev
 
 # In another session
 npm run frontend:dev
