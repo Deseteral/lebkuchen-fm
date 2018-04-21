@@ -10,12 +10,13 @@ function connect() : Promise<void> {
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, (err, client) => {
       if (err) {
+        console.log('Could not connect to MongoDB');
         reject(err);
         return;
       }
 
-      console.log('Connected successfully to MongoDB');
       db = client.db(dbName);
+      console.log('Successfully connected to MongoDB');
       resolve();
     });
   });
