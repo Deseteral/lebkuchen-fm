@@ -6,7 +6,7 @@ const dbName = 'lebkuchen-fm';
 
 let db: (Db | null) = null;
 
-function connect() {
+function connect() : Promise<void> {
   return new Promise((resolve, reject) => {
     MongoClient.connect(url, (err, client) => {
       if (err) {
