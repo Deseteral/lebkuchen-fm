@@ -21,18 +21,21 @@ function configureExpress() {
 }
 
 function registerControllers() {
-  (app as express.Express).post('/commands/hipchat', HipChatController.postCommand);
-  (app as express.Express).get('/xsounds', XController.getSounds);
+  if (!app) return;
+  app.post('/commands/hipchat', HipChatController.postCommand);
+  app.get('/xsounds', XController.getSounds);
 }
 
 function configureServer() {
-  server = new http.Server(app as express.Express);
+  if (!app) return;
+  server = new http.Server(app);
 }
 
 function runApplication() {
-  const port = (app as express.Express).get('port');
-  const env = (app as express.Express).get('env');
-  (server as http.Server).listen(
+  if (!app || !server) return;
+  const port = app.get('port');
+  const env = app.get('env');
+  server.listen(
     port,
     () => console.log(`LebkuchenFM running on port ${port} in ${env} mode`),
   );

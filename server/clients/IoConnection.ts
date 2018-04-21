@@ -8,19 +8,22 @@ import IoController from '../controllers/IoController';
 
 let io: (socketIo.Server | null) = null;
 
-function connect(server: http.Server) {
-  io = socketIo(server);
-  io.on('connection', (socket: socketIo.Socket) => {
-    console.log('New socket connected!');
-
-    socket.on('song-played', (song: Song) => {
-      IoController.songPlayed(song.youtubeId);
-    });
+function setupSocket(socket: socketIo.Socket) {
+  socket.on('song-played', (song: Song) => {
+    IoController.songPlayed(song.youtubeId);
   });
 }
 
+function connect(server: http.Server) {
+  io = socketIo(server);
+  io.on('connection', setupSocket);
+}
+
 function broadcast(channel: string, message: (QueueMessage | SayMessage | XMessage)) {
-  if (!io) return;
+  if (!io) {
+    throw new Error('Could not send event: socket.io is not initialized');
+  }
+
   io.sockets.emit(channel, message);
 }
 
