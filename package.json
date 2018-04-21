@@ -3,15 +3,15 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node dist/Main.js",
     "build": "npm run server:build && npm run frontend:build",
     "test": "exit 0",
     "postinstall": "npm run build",
-    "install-frontend": "chmod u+x ./install-frontend.sh && ./install-frontend.sh",
+    "install-frontend": "mkdir -p ./dist/public && cp -R ./build/* ./dist/public/",
     "frontend:dev": "react-scripts start",
     "frontend:build": "react-scripts build && npm run install-frontend",
     "server:build": "tsc",
-    "server:dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/server.js\""
+    "server:dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/Main.js\""
   },
   "dependencies": {
     "@deseteral/react-scripts-ts": "1.1.4-6",
