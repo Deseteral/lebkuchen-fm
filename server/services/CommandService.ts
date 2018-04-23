@@ -26,14 +26,15 @@ function executeCommand(textCommand: string) : Promise<string> {
     }
 
     const command = tokens[1];
-    const commandProcessor = CommandRegistry.get(command).process;
+    const commandDefinition = CommandRegistry.get(command);
 
-    if (!commandProcessor) {
+    if (!commandDefinition) {
       resolve(`Komenda ${command} nie istnieje.`);
       return;
     }
 
-    resolve(commandProcessor(textCommand));
+    const parameterComponent = tokens.slice(2).join(' ');
+    resolve(commandDefinition.process(parameterComponent));
   });
 }
 
