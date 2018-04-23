@@ -92,16 +92,6 @@ function handleList() : Promise<string> {
   });
 }
 
-function handleX(argument: XArgument) : Promise<string> {
-  XRepository
-    .getByName(argument.sound)
-    .then((xsound: XSound) => {
-      IoConnection.broadcast('x', { soundUrl: xsound.url });
-    });
-
-  return Promise.resolve('');
-}
-
 function execute(command: (Command | null)) : Promise<string> {
   if (!command) return Promise.resolve('');
 
@@ -112,8 +102,6 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleQueue(command.arguments as QueueArgument);
     case CommandType.List:
       return handleList();
-    case CommandType.X:
-      return handleX(command.arguments as XArgument);
     case CommandType.Search:
       return handleSearch(command.arguments as SearchArgument);
     default:
