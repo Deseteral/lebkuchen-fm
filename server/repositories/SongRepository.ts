@@ -1,9 +1,8 @@
-import { Db } from 'mongodb';
 import Song from '../domain/Song';
 import MongoConnection from '../clients/MongoConnection';
 
 function getCollection() {
-  const db = MongoConnection.get() as Db;
+  const db = MongoConnection.get();
   const collection = db.collection('songs');
   return collection;
 }

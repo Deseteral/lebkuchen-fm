@@ -1,7 +1,8 @@
-import SongService from "../services/SongService";
+import SongService from '../services/SongService';
+import Song from '../domain/Song';
 
-function songPlayed(youtubeId: string) {
-  SongService.bumpPlayCount(youtubeId);
+function songPlayed(song: Song) {
+  SongService.bumpPlayCount(song.youtubeId);
 }
 
 export default {
