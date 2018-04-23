@@ -26,29 +26,12 @@ function handleAdd(argument: AddArgument) : Promise<string> {
     });
 }
 
-function handleList() : Promise<string> {
-  return new Promise((resolve, reject) => {
-    return SongRepository
-      .getAll()
-      .then((songs: Song[]) => {
-        const message = songs
-          .map(song => `YT: ${song.youtubeId}, ${song.name}, ${song.timesPlayed} odtworzeń`)
-          .join('\n');
-
-        resolve(message);
-      })
-      .catch(reject);
-  });
-}
-
 function execute(command: (Command | null)) : Promise<string> {
   if (!command) return Promise.resolve('');
 
   switch (command.type) {
     case CommandType.Add:
       return handleAdd(command.arguments as AddArgument);
-    case CommandType.List:
-      return handleList();
     default:
       return Promise.resolve('');
   }
