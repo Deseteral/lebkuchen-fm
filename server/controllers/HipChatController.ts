@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import CommandParser from '../services/CommandParser';
-import CommandExecuter from '../services/CommandExecuter';
+import CommandService from '../services/CommandService';
 
 const FAIL_GIF_URL = 'https://media.giphy.com/media/11StaZ9Lj74oCY/giphy.gif';
 
@@ -13,28 +12,15 @@ function getHipchatMessage(message: string) {
   };
 }
 
-/*
- * POST /commands/hipchat
- */
 function postCommand(req: Request, res: Response) {
   const text = req.body.item.message.message;
-  const command = CommandParser.parse(text);
 
-  CommandExecuter
-    .execute(command)
-    .then((responseMessage) => {
-      if (responseMessage === '') {
-        res.sendStatus(200);
-        return;
-      }
-
-      const hipchatMessage = getHipchatMessage(responseMessage);
-      res.send(hipchatMessage);
-    })
+  CommandService.executeCommand(text)
+    .then(responseMessage => getHipchatMessage(responseMessage))
+    .then(hipchatMessage => res.send(hipchatMessage))
     .catch((err) => {
+      res.send(getHipchatMessage(`Ups, coś poszło nie tak\n${FAIL_GIF_URL}`));
       console.error(err);
-      const hipchatMessage = getHipchatMessage(FAIL_GIF_URL);
-      res.send(hipchatMessage);
     });
 }
 
