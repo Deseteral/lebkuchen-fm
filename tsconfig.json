@@ -16,6 +16,7 @@
     "noUnusedLocals": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
+    "experimentalDecorators": true,
     "paths": {
       "*": [
         "node_modules/*",
