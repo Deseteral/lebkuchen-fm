@@ -1,15 +1,12 @@
 import http from 'http';
 import socketIo from 'socket.io';
-import Song from '../domain/Song';
 import IoController from '../controllers/IoController';
 import EventMessage from '../domain/event-messages/EventMessage';
 
 let io: (socketIo.Server | null) = null;
 
 function setupSocket(socket: socketIo.Socket) {
-  socket.on('song-played', (song: Song) => {
-    IoController.songPlayed(song.youtubeId);
-  });
+  socket.on('song-played', IoController.songPlayed);
 }
 
 function connect(server: http.Server) {
