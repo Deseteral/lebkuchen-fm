@@ -1,7 +1,7 @@
-import BumpPlayCount from '../services/BumpPlayCount';
+import SongService from "../services/SongService";
 
 function songPlayed(youtubeId: string) {
-  BumpPlayCount.bump(youtubeId);
+  SongService.bumpPlayCount(youtubeId);
 }
 
 export default {
