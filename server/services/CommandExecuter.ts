@@ -77,16 +77,6 @@ function handleSearch(argument: SearchArgument) : Promise<string> {
     });
 }
 
-function handleSkip() : Promise<string> {
-  IoConnection.broadcast('skip', { action: QueueActionType.Skip, song: null });
-  return Promise.resolve('');
-}
-
-function handleSay(argument: SayArgument) : Promise<string> {
-  IoConnection.broadcast('say', { text: argument.text });
-  return Promise.resolve('');
-}
-
 function handleList() : Promise<string> {
   return new Promise((resolve, reject) => {
     return SongRepository
@@ -112,17 +102,6 @@ function handleX(argument: XArgument) : Promise<string> {
   return Promise.resolve('');
 }
 
-function handleRandom(argument: RandomArgument) : Promise<string> {
-  return Promise.all(Array(argument.count).map(() =>
-    SongRepository.getRandomSong()
-      .then((song: Song) => {
-        IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
-        return song.name;
-      }),
-  ))
-  .then(songNames => Promise.resolve(`Dodano ${songNames.join(', ')} do kolejki`));
-}
-
 function execute(command: (Command | null)) : Promise<string> {
   if (!command) return Promise.resolve('');
 
@@ -131,18 +110,12 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleAdd(command.arguments as AddArgument);
     case CommandType.Queue:
       return handleQueue(command.arguments as QueueArgument);
-    case CommandType.Skip:
-      return handleSkip();
-    case CommandType.Say:
-      return handleSay(command.arguments as SayArgument);
     case CommandType.List:
       return handleList();
     case CommandType.X:
       return handleX(command.arguments as XArgument);
     case CommandType.Search:
       return handleSearch(command.arguments as SearchArgument);
-    case CommandType.Random:
-      return handleRandom(command.arguments as RandomArgument);
     default:
       return Promise.resolve('');
   }
