@@ -14,6 +14,8 @@ function playNextVideo() {
   const youtubeVideo = youtubeQueue.pop();
   if (youtubeVideo) {
     playYoutubeVideo(youtubeVideo)
+  } else {
+    player.stopVideo();
   }
 }
 
@@ -26,11 +28,18 @@ function playYoutubeVideo(youtubeVideo) {
 
 function initPlayer(domId) {
   player = YouTubePlayer('yt-player');
+
   player.on('stateChange', (event) => {
     if (event.data === YT_ENDED) {
       playNextVideo();
     }
   });
+
+  player.on('error', (event) => {
+    console.error('ERROR', event);
+    playNextVideo();
+  });
+
   youtubeQueue.setOnAddListener(() => {
     player.getPlayerState().then((playerState) => {
       if ([YT_ENDED, YT_CUED].indexOf(playerState) >= 0) {
