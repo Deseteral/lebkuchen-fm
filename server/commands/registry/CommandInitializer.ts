@@ -6,6 +6,7 @@ import XCommand from '../XCommand';
 import SearchCommand from '../SearchCommand';
 import QueueCommand from '../QueueCommand';
 import ListCommand from '../ListCommand';
+import AddCommand from '../AddCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -15,6 +16,7 @@ function initialize() {
   CommandRegistry.register(SearchCommand);
   CommandRegistry.register(QueueCommand);
   CommandRegistry.register(ListCommand);
+  CommandRegistry.register(AddCommand);
 }
 
 export default {
