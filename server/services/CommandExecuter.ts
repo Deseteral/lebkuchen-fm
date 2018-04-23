@@ -26,20 +26,6 @@ function handleAdd(argument: AddArgument) : Promise<string> {
     });
 }
 
-// function handleQueue(argument: QueueArgument) : Promise<string> {
-//   return SongRepository.getByName(argument.id)
-//     .then((song) => {
-//       if (!song) {
-//         const videoWithId: VideoWithId = { youtubeId: argument.id };
-//         IoConnection.broadcast('queue', { action: QueueActionType.Add, song: videoWithId });
-//         return Promise.resolve(`Dodano film o id ${videoWithId.youtubeId} do kolejki`);
-//       }
-
-//       IoConnection.broadcast('queue', { action: QueueActionType.Add, song });
-//       return Promise.resolve(`Dodano ${song.name} do kolejki`);
-//     });
-// }
-
 function handleList() : Promise<string> {
   return new Promise((resolve, reject) => {
     return SongRepository
