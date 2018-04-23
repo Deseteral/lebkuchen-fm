@@ -81,6 +81,15 @@ function handleList(tokens: string[]) : (Command | null) {
   };
 }
 
+function handleHelp(tokens: string[]) : (Command | null) {
+  if (requireMinLength(2, tokens)) return null;
+  const topic = tokens.length > 2 ? tokens[2] : 'general';
+  return {
+    type: CommandType.Help,
+    arguments: { topic },
+  };
+}
+
 function handleX(tokens: string[]) : (Command | null) {
   if (requireMinLength(3, tokens)) return null;
 
@@ -125,6 +134,7 @@ function parse(text: String) : (Command | null) {
     case 'x': return handleX(tokens);
     case 'search': return handleSearch(tokens);
     case 'random': return handleRandom(tokens);
+    case 'help': return handleHelp(tokens);
     default:
       return null;
   }

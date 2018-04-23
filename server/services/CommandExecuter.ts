@@ -6,6 +6,7 @@ import Command, {
   XArgument,
   SearchArgument,
   RandomArgument,
+  HelpArgument,
 } from '../domain/Command';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
@@ -102,6 +103,24 @@ function handleList() : Promise<string> {
   });
 }
 
+function handleHelp(argument: HelpArgument) : Promise<string> {
+  if (argument.topic === 'x') {
+    return new Promise((resolve, reject) => {
+      return XRepository
+        .getAll()
+        .then((xsounds: XSound[]) => {
+          if (xsounds.length > 0) {
+            resolve(`Sound effects: ${xsounds.map(x => x.name).join(', ')}`);
+          } else {
+            resolve('No sound effects defined :( https://media.giphy.com/media/efkweUNejVmYU/giphy.gif');
+          }
+        })
+        .catch(reject);
+    })
+  }
+  return Promise.resolve('TODO');
+}
+
 function handleX(argument: XArgument) : Promise<string> {
   XRepository
     .getByName(argument.sound)
@@ -143,6 +162,8 @@ function execute(command: (Command | null)) : Promise<string> {
       return handleSearch(command.arguments as SearchArgument);
     case CommandType.Random:
       return handleRandom(command.arguments as RandomArgument);
+    case CommandType.Help:
+      return handleHelp(command.arguments as HelpArgument)
     default:
       return Promise.resolve('');
   }

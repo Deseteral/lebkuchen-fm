@@ -7,6 +7,7 @@ enum CommandType {
   X = 'X',
   Search = 'SEARCH',
   Random = 'RANDOM',
+  Help = 'HELP'
 }
 
 interface AddArgument {
@@ -14,6 +15,10 @@ interface AddArgument {
   name: string;
   trimStartSeconds: number | null;
   trimEndSeconds: number | null;
+}
+
+interface HelpArgument {
+  topic: string;
 }
 
 interface QueueArgument {
@@ -38,10 +43,10 @@ interface RandomArgument {
 
 interface Command {
   type: CommandType;
-  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument
+  arguments: null | AddArgument | QueueArgument | SayArgument | XArgument | SearchArgument | HelpArgument
   | RandomArgument;
 }
 
 export default Command;
 export { CommandType,
-  AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument, RandomArgument };
+  AddArgument, QueueArgument, SayArgument, XArgument, SearchArgument, RandomArgument, HelpArgument };
