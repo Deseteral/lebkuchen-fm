@@ -1,6 +1,6 @@
 import CommandDefinition from '../domain/CommandDefinition';
 import Song from '../domain/Song';
-import TrimTimeParser from '../utils/TrimTimeParser';
+import TrimTimeParser from '../helpers/TrimTimeParser';
 import SongRepository from '../repositories/SongRepository';
 
 function parseParameter(parameterComponent: string) : Song {
