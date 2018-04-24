@@ -9,16 +9,13 @@ function request(url: string) {
     'Content-Type': 'application/json',
   };
 
-  const options = { headers };
-
-  return nodeFetch(url, options).then(data => data.json());
+  return nodeFetch(url, { headers }).then(data => data.json());
 }
 
 function getSearchUrl(phrase: string) {
   const query = encodeURI(phrase);
 
-  const url =
-    YOUTUBE_DATA_BASE_URL +
+  const url = YOUTUBE_DATA_BASE_URL +
     '/search' +
     `?q=${query}` +
     '&maxResults=1&part=snippet' +
@@ -28,8 +25,7 @@ function getSearchUrl(phrase: string) {
 }
 
 function getVideoUrl(youtubeId: string) {
-  const url =
-    YOUTUBE_DATA_BASE_URL +
+  const url = YOUTUBE_DATA_BASE_URL +
     '/videos' +
     '?part=id%2Csnippet' +
     `&id=${youtubeId}` +
