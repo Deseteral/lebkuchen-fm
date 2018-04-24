@@ -6,7 +6,7 @@ import QueueEventMessage from '../domain/event-messages/QueueEventMessage';
 import FetchVideoTitle from '../helpers/FetchVideoTitle';
 import SongService from '../services/SongService';
 
-async function songWithId(youtubeId: string) : Promise<Song> {
+async function createSongFromId(youtubeId: string) : Promise<Song> {
   const name = await FetchVideoTitle.fetch(youtubeId);
 
   const song: Song = {
@@ -25,11 +25,13 @@ async function queue(songName: string) : Promise<string> {
   const potentialYoutubeId = songName.split(' ')[0];
   const actualSong = song
     ? song
-    : await songWithId(potentialYoutubeId);
+    : await createSongFromId(potentialYoutubeId);
 
   const eventMessage: QueueEventMessage = { song: actualSong };
   IoConnection.broadcast('queue', eventMessage);
+
   SongService.bumpPlayCount(actualSong.youtubeId, actualSong.name);
+
   return `Dodano "${actualSong.name}" do kolejki`;
 }
 
