@@ -1,40 +1,17 @@
-import nodeFetch from 'node-fetch';
 import CommandDefinition from '../domain/CommandDefinition';
-import Configuration from '../application/Configuration';
 import Song from '../domain/Song';
 import IoConnection from '../clients/IoConnection';
 import QueueEventMessage from '../domain/event-messages/QueueEventMessage';
-
-const YOUTUBE_API_KEY = Configuration.YOUTUBE_API_KEY;
-
-function getUrlForPhrase(phrase: string) {
-  const query = encodeURI(phrase);
-
-  const url =
-    'https://www.googleapis.com/youtube/v3/search?q=' +
-    query +
-    '&maxResults=1&part=snippet&key=' +
-    YOUTUBE_API_KEY;
-
-  return url;
-}
-
-async function fetchYouTubeData(phrase: string) {
-  const url = getUrlForPhrase(phrase);
-  const youtubeRequest = await nodeFetch(
-    url,
-    { headers: { 'Content-Type': 'application/json' } },
-  );
-  const data = await youtubeRequest.json();
-  return data;
-}
+import YouTubeDataClient from '../clients/YouTubeDataClient';
+import Features from '../application/Features';
+import SongService from '../services/SongService';
 
 async function search(phrase: string) : Promise<string> {
-  if (!YOUTUBE_API_KEY) {
+  if (!Features.isYouTubeDataAvailable()) {
     return 'Komenda search jest niedostępna bez klucza YouTube Data API :sadparrot:';
   }
 
-  const data = await fetchYouTubeData(phrase);
+  const data = await YouTubeDataClient.getSearchResults(phrase);
   const videoId = data.items[0].id.videoId;
   const title = data.items[0].snippet.title;
 
@@ -51,6 +28,7 @@ async function search(phrase: string) : Promise<string> {
   };
 
   IoConnection.broadcast('queue', eventMessage);
+  SongService.bumpPlayCount(song.youtubeId);
   return `Dodano film "${title}" do kolejki`;
 }
 
