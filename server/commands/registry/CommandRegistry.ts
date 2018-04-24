@@ -14,7 +14,12 @@ function get(commandKey: string) : CommandDefinition {
   return commands[commandKey];
 }
 
+function getRegistry() : CommandsRegistry {
+  return commands;
+}
+
 export default {
   register,
   get,
+  getRegistry,
 };
