@@ -1,6 +1,8 @@
 import SongRepository from '../repositories/SongRepository';
 import Song from '../domain/Song';
 import YouTubeDataClient from '../clients/YouTubeDataClient';
+import Features from '../application/Features';
+import FetchVideoTitle from '../helpers/FetchVideoTitle';
 
 function getUpdatedSong(song: Song) : Song {
   return Object.assign(
@@ -10,16 +12,10 @@ function getUpdatedSong(song: Song) : Song {
   );
 }
 
-async function fetchSongTitle(youtubeId: string) : Promise<string> {
-  const videoDetails = await YouTubeDataClient.getVideoDetails(youtubeId);
-  const title = videoDetails.items[0].snippet.title;
-  return title;
-}
-
 async function createNewSong(youtubeId: string, songTitle?: string) {
   const name = songTitle
     ? songTitle
-    : await fetchSongTitle(youtubeId);
+    : await FetchVideoTitle.fetch(youtubeId);
 
   const song: Song = {
     name,
@@ -37,9 +33,6 @@ async function bumpPlayCount(youtubeId: string, songTitle?: string) {
 
   if (foundSong) {
     const updatedSong: Song = getUpdatedSong(foundSong);
-    console.log(updatedSong);
-    console.log('');
-    console.log('');
     SongRepository.replace(updatedSong);
   } else {
     const song = await createNewSong(youtubeId, songTitle);
