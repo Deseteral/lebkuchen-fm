@@ -1,17 +1,12 @@
 import http from 'http';
 import socketIo from 'socket.io';
-import QueueMessage from '../domain/io-messages/QueueMessage';
-import SayMessage from '../domain/io-messages/SayMessage';
-import XMessage from '../domain/io-messages/XMessage';
-import Song from '../domain/Song';
 import IoController from '../controllers/IoController';
+import EventMessage from '../domain/event-messages/EventMessage';
 
 let io: (socketIo.Server | null) = null;
 
 function setupSocket(socket: socketIo.Socket) {
-  socket.on('song-played', (song: Song) => {
-    IoController.songPlayed(song.youtubeId);
-  });
+  socket.on('song-played', IoController.songPlayed);
 }
 
 function connect(server: http.Server) {
@@ -19,7 +14,7 @@ function connect(server: http.Server) {
   io.on('connection', setupSocket);
 }
 
-function broadcast(channel: string, message: (QueueMessage | SayMessage | XMessage)) {
+function broadcast(channel: string, message: EventMessage) {
   if (!io) {
     throw new Error('Could not send event: socket.io is not initialized');
   }
