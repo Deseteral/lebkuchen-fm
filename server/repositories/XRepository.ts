@@ -1,4 +1,5 @@
 import MongoConnection from '../clients/MongoConnection';
+import XSound from '../domain/XSound';
 
 function getCollection() {
   const db = MongoConnection.get();
@@ -10,7 +11,7 @@ function getByName(name: string) {
   return getCollection().findOne({ name });
 }
 
-function getAll() {
+function getAll() : Promise<XSound[]> {
   return getCollection().find({}).toArray();
 }
 

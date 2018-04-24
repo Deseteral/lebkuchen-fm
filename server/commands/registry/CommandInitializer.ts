@@ -8,6 +8,7 @@ import QueueCommand from '../QueueCommand';
 import ListCommand from '../ListCommand';
 import AddCommand from '../AddCommand';
 import HelpCommand from '../HelpCommand';
+import XListCommand from '../XListCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -19,6 +20,7 @@ function initialize() {
   CommandRegistry.register(ListCommand);
   CommandRegistry.register(AddCommand);
   CommandRegistry.register(HelpCommand);
+  CommandRegistry.register(XListCommand);
 }
 
 export default {
