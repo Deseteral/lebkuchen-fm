@@ -6,6 +6,11 @@ import XSound from '../domain/XSound';
 
 async function xProcess(soundName: string) : Promise<string> {
   const xsound: XSound = await XRepository.getByName(soundName);
+
+  if (!xsound) {
+    return `Nie ma takiego dźwięku: ${soundName}`;
+  }
+
   const xEventMessage: XEventMessage = {
     soundUrl: xsound.url,
   };

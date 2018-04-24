@@ -17,7 +17,12 @@ function postCommand(req: Request, res: Response) {
 
   CommandService.executeCommand(text)
     .then(responseMessage => getHipchatMessage(responseMessage))
-    .then(hipchatMessage => res.send(hipchatMessage))
+    .then((hipchatMessage) => {
+      if (hipchatMessage.message === '') {
+        res.sendStatus(200);
+      }
+      res.send(hipchatMessage);
+    })
     .catch((err) => {
       res.send(getHipchatMessage(`Ups, coś poszło nie tak\n${FAIL_GIF_URL}`));
       console.error(err);
