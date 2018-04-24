@@ -36,7 +36,7 @@ function initPlayer(domId) {
   });
 
   player.on('error', (event) => {
-    console.error('ERROR:', event);
+    console.error('ERROR', event);
     playNextVideo();
   });
 
