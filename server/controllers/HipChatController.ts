@@ -19,7 +19,8 @@ function postCommand(req: Request, res: Response) {
     .then(responseMessage => getHipchatMessage(responseMessage))
     .then((hipchatMessage) => {
       if (hipchatMessage.message === '') {
-        res.sendStatus(200);
+        res.status(200).end();
+        return;
       }
       res.send(hipchatMessage);
     })
