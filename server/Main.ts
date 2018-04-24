@@ -7,6 +7,7 @@ import HipChatController from './controllers/HipChatController';
 import MongoConnection from './clients/MongoConnection';
 import IoConnection from './clients/IoConnection';
 import XController from './controllers/XController';
+import CommandInitializer from './commands/registry/CommandInitializer';
 
 let app: (express.Express | null) = null;
 let server: (http.Server | null) = null;
@@ -43,6 +44,7 @@ function runApplication() {
 
 Promise.resolve()
   .then(() => MongoConnection.connect())
+  .then(() => CommandInitializer.initialize())
   .then(() => configureExpress())
   .then(() => registerControllers())
   .then(() => configureServer())

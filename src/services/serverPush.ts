@@ -29,7 +29,7 @@ let socket;
 function handleIncomingMsg(msg: IIcomingMsg) {
   console.log('incoming message'); // tslint:disable-line
   console.log(msg); // tslint:disable-line
-  if (msg.action === 'ADD' && msg.song) {
+  if (msg.song) {
     youtubeQueue.add(msg.song);
   }
 }

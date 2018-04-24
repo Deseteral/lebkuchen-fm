@@ -1,8 +1,7 @@
-import { Db } from 'mongodb';
 import MongoConnection from '../clients/MongoConnection';
 
 function getCollection() {
-  const db = MongoConnection.get() as Db;
+  const db = MongoConnection.get();
   const collection = db.collection('x');
   return collection;
 }
