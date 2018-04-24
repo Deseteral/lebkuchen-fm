@@ -1,7 +1,5 @@
 import SongRepository from '../repositories/SongRepository';
 import Song from '../domain/Song';
-import YouTubeDataClient from '../clients/YouTubeDataClient';
-import Features from '../application/Features';
 import FetchVideoTitle from '../helpers/FetchVideoTitle';
 
 function getUpdatedSong(song: Song) : Song {
