@@ -14,7 +14,7 @@ async function help(parameterComponent: string) : Promise<string> {
 const commandDefinition: CommandDefinition = {
   key: 'help',
   process: help,
-  helpMessage: 'Pokazuje tą wiadomość ;)',
+  helpMessage: 'Pokazuje tę wiadomość ;)',
 };
 
 export default commandDefinition;
