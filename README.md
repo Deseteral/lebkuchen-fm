@@ -18,7 +18,7 @@ npm run frontend:dev
 ```
 
 Backend server runs on port 9000 while frontend server runs on port 3000.
-They're both able to communicate using proxy server.
+They're both able to communicate using proxy server that `frontend:dev` provides.
 
 You also need to have MongoDB running on localhost.
 
