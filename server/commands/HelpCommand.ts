@@ -5,6 +5,7 @@ async function help(parameterComponent: string) : Promise<string> {
   const commandRegistry = CommandRegistry.getRegistry();
   const message = Object.keys(commandRegistry)
     .map(key => commandRegistry[key])
+    .sort((a, b) => a.key.localeCompare(b.key))
     .map(definition => `- ${definition.key}: ${definition.helpMessage}`)
     .join('\n');
 

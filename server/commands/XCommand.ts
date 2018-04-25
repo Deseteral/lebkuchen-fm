@@ -3,6 +3,7 @@ import IoConnection from '../clients/IoConnection';
 import XRepository from '../repositories/XRepository';
 import XEventMessage from '../domain/event-messages/XEventMessage';
 import XSound from '../domain/XSound';
+import XSoundService from '../services/XSoundService';
 
 async function xProcess(soundName: string) : Promise<string> {
   const xsound: XSound = await XRepository.getByName(soundName);
@@ -16,6 +17,7 @@ async function xProcess(soundName: string) : Promise<string> {
   };
 
   IoConnection.broadcast('x', xEventMessage);
+  XSoundService.bumpPlayCount(xsound.name);
   return '';
 }
 
