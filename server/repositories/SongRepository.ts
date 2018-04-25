@@ -23,8 +23,8 @@ function getByYoutubeId(youtubeId: string) {
   return getCollection().findOne({ youtubeId });
 }
 
-function update(song: Song) {
-  return getCollection().updateOne({ _id: song._id }, song);
+function replace(song: Song) {
+  return getCollection().replaceOne({ _id: song._id }, song);
 }
 
 export default {
@@ -32,5 +32,5 @@ export default {
   getByName,
   getAll,
   getByYoutubeId,
-  update,
+  replace,
 };
