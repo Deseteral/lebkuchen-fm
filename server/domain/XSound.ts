@@ -1,7 +1,8 @@
 interface XSound {
+  _id?: string;
   name: string;
   url: string;
-  timesPlayed?: number;
+  timesPlayed: number;
 }
 
 export default XSound;

@@ -3,28 +3,36 @@ import IoConnection from '../clients/IoConnection';
 import Song from '../domain/Song';
 import SongRepository from '../repositories/SongRepository';
 import QueueEventMessage from '../domain/event-messages/QueueEventMessage';
+import FetchVideoTitle from '../helpers/FetchVideoTitle';
+import SongService from '../services/SongService';
+
+async function createSongFromId(youtubeId: string) : Promise<Song> {
+  const name = await FetchVideoTitle.fetch(youtubeId);
+
+  const song: Song = {
+    name,
+    youtubeId,
+    trimStartSeconds: null,
+    trimEndSeconds: null,
+    timesPlayed: 0,
+  };
+
+  return song;
+}
 
 async function queue(songName: string) : Promise<string> {
   const song: Song = await SongRepository.getByName(songName);
+  const potentialYoutubeId = songName.split(' ')[0];
+  const actualSong = song
+    ? song
+    : await createSongFromId(potentialYoutubeId);
 
-  if (!song) {
-    const youtubeId = songName.split(' ')[0];
-    const unknownSong: Song = {
-      name: 'Niespodzianka',
-      youtubeId,
-      trimStartSeconds: null,
-      trimEndSeconds: null,
-      timesPlayed: 0,
-    };
-
-    const eventMessage: QueueEventMessage = { song: unknownSong };
-    IoConnection.broadcast('queue', eventMessage);
-    return Promise.resolve(`Dodano film o id ${youtubeId} do kolejki`);
-  }
-
-  const eventMessage: QueueEventMessage = { song };
+  const eventMessage: QueueEventMessage = { song: actualSong };
   IoConnection.broadcast('queue', eventMessage);
-  return `Dodano ${song.name} do kolejki`;
+
+  SongService.bumpPlayCount(actualSong.youtubeId, actualSong.name);
+
+  return `Dodano "${actualSong.name}" do kolejki`;
 }
 
 const commandDefinition: CommandDefinition = {
