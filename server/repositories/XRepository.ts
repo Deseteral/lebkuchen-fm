@@ -7,6 +7,10 @@ function getCollection() {
   return collection;
 }
 
+function insert(sound: XSound) {
+  return getCollection().insertOne(sound);
+}
+
 function getByName(name: string) {
   return getCollection().findOne({ name });
 }
@@ -22,5 +26,6 @@ function replace(sound: XSound) {
 export default {
   getByName,
   getAll,
+  insert,
   replace,
 };

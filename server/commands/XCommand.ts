@@ -24,7 +24,7 @@ async function xProcess(soundName: string) : Promise<string> {
 const commandDefinition: CommandDefinition = {
   key: 'x',
   process: xProcess,
-  helpMessage: 'Puszcza szalony dźwięk! :parrot:',
+  helpMessage: 'Puszcza szalony dźwięk! (parrot)',
 };
 
 export default commandDefinition;
