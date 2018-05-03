@@ -43,5 +43,8 @@
     "tslint-config-airbnb": "5.8.0",
     "typescript": "2.7.2"
   },
-  "proxy": "http://localhost:9000/"
+  "proxy": "http://localhost:9000/",
+  "nodemonConfig": {
+    "ignore": ["build/*", "dist/*"]
+  }
 }
