@@ -5,16 +5,19 @@
   "scripts": {
     "start": "node dist/Main.js",
     "build": "npm run server:build && npm run frontend:build",
+    "lint": "npm run lint:server && npm run lint:frontend",
     "test": "exit 0",
     "postinstall": "npm run build",
     "install-frontend": "mkdir -p ./dist/public && cp -R ./build/* ./dist/public/",
     "frontend:dev": "react-scripts start",
     "frontend:build": "react-scripts build && npm run install-frontend",
     "server:build": "tsc",
-    "server:dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/Main.js\""
+    "server:dev": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"tsc -w\" \"nodemon --inspect dist/Main.js\"",
+    "lint:server": "eslint server --ext ts,tsx",
+    "lint:frontend": "eslint src --ext ts,tsx"
   },
   "dependencies": {
-    "@deseteral/react-scripts-ts": "1.1.4-6",
+    "@deseteral/react-scripts-ts": "1.1.4-9",
     "body-parser": "1.18.2",
     "compression": "1.7.1",
     "express": "4.16.2",
@@ -39,9 +42,7 @@
     "@types/socket.io-client": "1.4.32",
     "concurrently": "3.5.1",
     "nodemon": "1.13.0",
-    "tslint": "5.9.1",
-    "tslint-config-airbnb": "5.8.0",
-    "typescript": "2.7.2"
+    "typescript": "2.8.3"
   },
   "proxy": "http://localhost:9000/"
 }
