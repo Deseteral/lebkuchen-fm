@@ -44,5 +44,8 @@
     "nodemon": "1.13.0",
     "typescript": "2.8.3"
   },
-  "proxy": "http://localhost:9000/"
+  "proxy": "http://localhost:9000/",
+  "nodemonConfig": {
+    "ignore": ["build/*", "dist/*"]
+  }
 }
