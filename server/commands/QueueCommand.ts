@@ -27,16 +27,12 @@ async function queue(songName: string) : Promise<string> {
     ? song
     : await createSongFromId(potentialYoutubeId);
 
-  if (actualSong.youtubeId !== 'kDw1G-l8T-g') {
-    const eventMessage: QueueEventMessage = { song: actualSong };
-    IoConnection.broadcast('queue', eventMessage);
+  const eventMessage: QueueEventMessage = { song: actualSong };
+  IoConnection.broadcast('queue', eventMessage);
 
-    SongService.bumpPlayCount(actualSong.youtubeId, actualSong.name);
+  SongService.bumpPlayCount(actualSong.youtubeId, actualSong.name);
 
-    return `Dodano "${actualSong.name}" do kolejki`;
-  } else {
-    return 'W tym pokoju nie mówi się, że się czegoś nie lubi bo zaraz będzie puszczone\nhttps://media.giphy.com/media/PAujV4AqViWCA/giphy.gif';
-  }
+  return `Dodano "${actualSong.name}" do kolejki`;
 }
 
 const commandDefinition: CommandDefinition = {
