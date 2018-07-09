@@ -27,9 +27,13 @@ async function search(phrase: string) : Promise<string> {
     song,
   };
 
-  IoConnection.broadcast('queue', eventMessage);
-  SongService.bumpPlayCount(song.youtubeId);
-  return `Dodano film "${title}" do kolejki`;
+  if (song.youtubeId !== 'kDw1G-l8T-g') {
+    IoConnection.broadcast('queue', eventMessage);
+    SongService.bumpPlayCount(song.youtubeId);
+    return `Dodano film "${title}" do kolejki`;
+  } else {
+    return 'W tym pokoju nie mówi się, że się czegoś nie lubi bo zaraz będzie puszczone\nhttps://media.giphy.com/media/PAujV4AqViWCA/giphy.gif';
+  }
 }
 
 const commandDefinition: CommandDefinition = {
