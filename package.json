@@ -41,11 +41,14 @@
     "@types/socket.io": "1.4.33",
     "@types/socket.io-client": "1.4.32",
     "concurrently": "3.5.1",
-    "nodemon": "1.13.0",
+    "nodemon": "1.18.3",
     "typescript": "2.8.3"
   },
   "proxy": "http://localhost:9000/",
   "nodemonConfig": {
-    "ignore": ["build/*", "dist/*"]
+    "ignore": [
+      "build/*",
+      "dist/*"
+    ]
   }
 }
