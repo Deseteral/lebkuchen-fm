@@ -20,8 +20,7 @@ recognition.onresult = function(event) {
         }
       };
 
-      console.log('fetch');
-      fetch('https://lebkuchen-fm-service-yjt4m1xsw.herokuapp.com/commands/hipchat', {
+      fetch('/commands/hipchat', {
       	method: 'POST',
         body: JSON.stringify(body),
         headers: { 'Content-Type': 'application/json' }
