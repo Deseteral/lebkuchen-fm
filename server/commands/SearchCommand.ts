@@ -34,6 +34,7 @@ async function search(phrase: string) : Promise<string> {
 
 const commandDefinition: CommandDefinition = {
   key: 'search',
+  shortKey: 's',
   process: search,
   helpMessage: 'Odtwarza pierwszy wynik wyszukiwania danej frazy na YouTube',
 };

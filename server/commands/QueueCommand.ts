@@ -37,6 +37,7 @@ async function queue(songName: string) : Promise<string> {
 
 const commandDefinition: CommandDefinition = {
   key: 'queue',
+  shortKey: 'q',
   process: queue,
   helpMessage: 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID', // tslint:disable
 };
