@@ -20,6 +20,10 @@ interface ISayMessage {
   text: string;
 }
 
+interface IVolumeMessage {
+  volume: number;
+}
+
 interface IXMessage {
   soundUrl: string;
 }
@@ -42,9 +46,12 @@ function handleSkip(message: any) {
   youtubePlayer.playNextVideo();
 }
 
-
 function handleX(xsound: IXMessage) {
   xService.play(xsound.soundUrl);
+}
+
+function handleVolume(xvolume: IVolumeMessage) {
+  youtubePlayer.changeVolume(xvolume.volume);
 }
 
 function initSocket() {
@@ -54,6 +61,7 @@ function initSocket() {
   socket.on('skip', handleSkip);
   socket.on('say', handleSay);
   socket.on('x', handleX);
+  socket.on('volume', handleVolume);
   return socket;
 }
 
