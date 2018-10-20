@@ -1,22 +1,20 @@
 import CommandDefinition from '../domain/CommandDefinition';
 import IoConnection from '../clients/IoConnection';
 import VolumeEventMessage from "../domain/event-messages/VolumeEventMessage";
-import {isNumber} from "util";
 
 async function volume(value: string) : Promise<string> {
-  const numericValue: number = isNumber(value) ? +value : -1;
+  const parsedInt: number = parseInt(value, 10);
+  const numericValue: number = isNaN(parsedInt) ? -1 : parsedInt;
 
   if (numericValue < 0 || numericValue > 100) {
     return `Nieprawidłowa głośność ${value}, podaj liczbę z zakresu 0-100`;
   }
 
-  const eventMessage: VolumeEventMessage = {
-    volume: numericValue,
-  };
+  const eventMessage: VolumeEventMessage = { volume: numericValue };
 
   IoConnection.broadcast('volume', eventMessage);
 
-  return `Ustawiono głośność na "${value}"`;
+  return `Ustawiono głośność na "${numericValue}"`;
 }
 
 const commandDefinition: CommandDefinition = {
