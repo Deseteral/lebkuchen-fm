@@ -10,6 +10,7 @@ import ListCommand from '../ListCommand';
 import AddCommand from '../AddCommand';
 import HelpCommand from '../HelpCommand';
 import XListCommand from '../XListCommand';
+import ResumeCommand from '../ResumeCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -23,6 +24,7 @@ function initialize() {
   CommandRegistry.register(AddCommand);
   CommandRegistry.register(HelpCommand);
   CommandRegistry.register(XListCommand);
+  CommandRegistry.register(ResumeCommand);
 }
 
 export default {
