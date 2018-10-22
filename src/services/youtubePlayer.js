@@ -61,6 +61,10 @@ function setOnVideoChangeListener(callback) {
   subscribers.videoChange.add(callback);
 }
 
+function resumeYoutubeVideo(callback) {
+  player.playVideo();
+}
+
 function pauseYoutubeVideo() {
   return player.pauseVideo();
 }
@@ -70,6 +74,7 @@ export default {
   initPlayer,
   playNextVideo,
   playYoutubeVideo,
+  resumeYoutubeVideo,
   setOnVideoChangeListener,
   pauseYoutubeVideo,
 }

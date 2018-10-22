@@ -42,6 +42,10 @@ function handleSkip(message: any) {
   youtubePlayer.playNextVideo();
 }
 
+function handleResume(message: any) {
+  youtubePlayer.resumeYoutubeVideo();
+}
+
 function handlePause(message: any) {
   youtubePlayer.pauseYoutubeVideo();
 }
@@ -55,6 +59,7 @@ function initSocket() {
   socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
   socket.on('queue', handleIncomingMsg);
   socket.on('skip', handleSkip);
+  socket.on('resume', handleResume);
   socket.on('pause', handlePause);
   socket.on('say', handleSay);
   socket.on('x', handleX);
