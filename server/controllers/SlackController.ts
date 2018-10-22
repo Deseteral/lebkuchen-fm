@@ -11,8 +11,8 @@ function getSlackMessage(message: string) {
 }
 
 function postCommand(req: Request, res: Response) {
-  console.log(req.query);
-  const text = `${req.query.command} ${req.query.text}`;
+  console.log(req.body);
+  const text = `${req.body.command} ${req.body.text}`;
 
   CommandService.executeCommand(text)
     .then(responseMessage => getSlackMessage(responseMessage))
