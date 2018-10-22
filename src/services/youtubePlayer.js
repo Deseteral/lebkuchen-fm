@@ -65,6 +65,10 @@ function resumeYoutubeVideo(callback) {
   player.playVideo();
 }
 
+function pauseYoutubeVideo() {
+  return player.pauseVideo();
+}
+
 export default {
   changeVolume,
   initPlayer,
@@ -72,4 +76,5 @@ export default {
   playYoutubeVideo,
   resumeYoutubeVideo,
   setOnVideoChangeListener,
+  pauseYoutubeVideo,
 }

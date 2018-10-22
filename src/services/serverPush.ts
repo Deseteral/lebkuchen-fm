@@ -46,6 +46,9 @@ function handleResume(message: any) {
   youtubePlayer.resumeYoutubeVideo();
 }
 
+function handlePause(message: any) {
+  youtubePlayer.pauseYoutubeVideo();
+}
 
 function handleX(xsound: IXMessage) {
   xService.play(xsound.soundUrl);
@@ -57,6 +60,7 @@ function initSocket() {
   socket.on('queue', handleIncomingMsg);
   socket.on('skip', handleSkip);
   socket.on('resume', handleResume);
+  socket.on('pause', handlePause);
   socket.on('say', handleSay);
   socket.on('x', handleX);
   return socket;
