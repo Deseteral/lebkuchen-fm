@@ -8,6 +8,7 @@ import MongoConnection from './clients/MongoConnection';
 import IoConnection from './clients/IoConnection';
 import XController from './controllers/XController';
 import CommandInitializer from './commands/registry/CommandInitializer';
+import SlackController from './controllers/SlackController';
 
 let app: (express.Express | null) = null;
 let server: (http.Server | null) = null;
@@ -24,6 +25,7 @@ function configureExpress() {
 function registerControllers() {
   if (!app) return;
   app.post('/commands/hipchat', HipChatController.postCommand);
+  app.post('/commands/slack', SlackController.postCommand);
   app.get('/xsounds', XController.getSounds);
 }
 
