@@ -42,6 +42,9 @@ function handleSkip(message: any) {
   youtubePlayer.playNextVideo();
 }
 
+function handlePause(message: any) {
+  youtubePlayer.pauseYoutubeVideo();
+}
 
 function handleX(xsound: IXMessage) {
   xService.play(xsound.soundUrl);
@@ -52,6 +55,7 @@ function initSocket() {
   socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
   socket.on('queue', handleIncomingMsg);
   socket.on('skip', handleSkip);
+  socket.on('pause', handlePause);
   socket.on('say', handleSay);
   socket.on('x', handleX);
   return socket;

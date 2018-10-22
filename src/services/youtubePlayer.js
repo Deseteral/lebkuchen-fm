@@ -61,10 +61,15 @@ function setOnVideoChangeListener(callback) {
   subscribers.videoChange.add(callback);
 }
 
+function pauseYoutubeVideo() {
+  return player.pauseVideo();
+}
+
 export default {
   changeVolume,
   initPlayer,
   playNextVideo,
   playYoutubeVideo,
   setOnVideoChangeListener,
+  pauseYoutubeVideo,
 }
