@@ -4,16 +4,20 @@ import Configuration from '../application/Configuration';
 
 const FAIL_GIF_URL = 'https://media.giphy.com/media/11StaZ9Lj74oCY/giphy.gif';
 
-function getSlackMessage(message: string) {
+function getSlackMessage(message: string, visibleToSenderOnly: boolean = false) {
   return {
     text: message,
-    response_type: 'in_channel',
+    response_type: visibleToSenderOnly ? 'ephemeral' : 'in_channel',
   };
 }
 
 function postCommand(req: Request, res: Response) {
   if (req.body.channel_name !== Configuration.CHANNEL_NAME) {
-    return;
+    const errorMessage = getSlackMessage(
+      `Tej komendy można używać tylko na kanale ${Configuration.CHANNEL_NAME}`,
+      true,
+    );
+    res.send(errorMessage);
   }
 
   const text = `${req.body.command} ${req.body.text}`;
