@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import CommandService from '../services/CommandService';
+import Configuration from '../application/Configuration';
 
 const FAIL_GIF_URL = 'https://media.giphy.com/media/11StaZ9Lj74oCY/giphy.gif';
 
@@ -11,7 +12,10 @@ function getSlackMessage(message: string) {
 }
 
 function postCommand(req: Request, res: Response) {
-  console.log(req.body);
+  if (req.body.channel_name !== Configuration.CHANNEL_NAME) {
+    return;
+  }
+
   const text = `${req.body.command} ${req.body.text}`;
 
   CommandService.executeCommand(text)
