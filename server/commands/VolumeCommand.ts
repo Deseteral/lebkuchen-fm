@@ -6,7 +6,7 @@ async function volume(value: string) : Promise<string> {
   const parsedInt: number = parseInt(value, 10);
   const numericValue: number = isNaN(parsedInt) ? -1 : parsedInt;
 
-  if (numericValue < 0 || numericValue > 100) {
+  if (isNaN(parsedInt) || (parsedInt < 0 || parsedInt > 100)) {
     return `Nieprawidłowa głośność ${value}, podaj liczbę z zakresu 0-100`;
   }
 
