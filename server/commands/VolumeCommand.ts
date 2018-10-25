@@ -11,7 +11,6 @@ async function volume(value: string) : Promise<string> {
   }
 
   const eventMessage: VolumeEventMessage = { volume: numericValue };
-
   IoConnection.broadcast('volume', eventMessage);
 
   return `Ustawiono głośność na "${numericValue}"`;
