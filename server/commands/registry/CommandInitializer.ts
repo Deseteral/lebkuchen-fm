@@ -11,6 +11,7 @@ import ListCommand from '../ListCommand';
 import AddCommand from '../AddCommand';
 import HelpCommand from '../HelpCommand';
 import XListCommand from '../XListCommand';
+import VolumeCommand from '../VolumeCommand';
 import ResumeCommand from '../ResumeCommand';
 
 function initialize() {
@@ -25,6 +26,7 @@ function initialize() {
   CommandRegistry.register(AddCommand);
   CommandRegistry.register(HelpCommand);
   CommandRegistry.register(XListCommand);
+  CommandRegistry.register(VolumeCommand);
   CommandRegistry.register(ResumeCommand);
   CommandRegistry.register(PauseCommand);
 }

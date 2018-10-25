@@ -20,6 +20,10 @@ interface ISayMessage {
   text: string;
 }
 
+interface IVolumeMessage {
+  volume: number;
+}
+
 interface IXMessage {
   soundUrl: string;
 }
@@ -54,6 +58,10 @@ function handleX(xsound: IXMessage) {
   xService.play(xsound.soundUrl);
 }
 
+function handleVolume(xvolume: IVolumeMessage) {
+  youtubePlayer.changeVolume(xvolume.volume);
+}
+
 function initSocket() {
   socket = io();
   socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
@@ -63,6 +71,7 @@ function initSocket() {
   socket.on('pause', handlePause);
   socket.on('say', handleSay);
   socket.on('x', handleX);
+  socket.on('volume', handleVolume);
   return socket;
 }
 
