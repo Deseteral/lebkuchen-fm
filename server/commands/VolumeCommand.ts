@@ -5,7 +5,7 @@ import VolumeEventMessage from "../domain/event-messages/VolumeEventMessage";
 const volChangeTypes: { [s: string]: string; } = {
   '+': 'increase',
   '-': 'decrease',
-  default: 'setter',
+  default: 'set',
 };
 
 function getVolChangeType(value: string):string {
