@@ -13,7 +13,7 @@ const subscribers = {
 function playNextVideo() {
   const youtubeVideo = youtubeQueue.pop();
   if (youtubeVideo) {
-    playYoutubeVideo(youtubeVideo)
+    playYoutubeVideo(youtubeVideo);
   } else {
     player.stopVideo();
   }
@@ -53,7 +53,19 @@ function changeVolume(val) {
   return player.setVolume(val);
 }
 
-function triggerOnVideoChange(){
+async function increaseVolume(val) {
+  const oldVolume = await player.getVolume();
+  const newVolume = Math.min(oldVolume + val, 100);
+  return player.setVolume(newVolume);
+}
+
+async function decreaseVolume(val) {
+  const oldVolume = await player.getVolume();
+  const newVolume = Math.max(oldVolume - val, 0);
+  return player.setVolume(newVolume);
+}
+
+function triggerOnVideoChange() {
   subscribers.videoChange.forEach((callback) => callback(nowPlaying));
 }
 
@@ -71,6 +83,8 @@ function pauseYoutubeVideo() {
 
 export default {
   changeVolume,
+  increaseVolume,
+  decreaseVolume,
   initPlayer,
   playNextVideo,
   playYoutubeVideo,

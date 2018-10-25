@@ -22,6 +22,7 @@ interface ISayMessage {
 
 interface IVolumeMessage {
   volume: number;
+  changeType?: "increase" | "decrease" | "setter"
 }
 
 interface IXMessage {
@@ -59,7 +60,13 @@ function handleX(xsound: IXMessage) {
 }
 
 function handleVolume(xvolume: IVolumeMessage) {
-  youtubePlayer.changeVolume(xvolume.volume);
+  if (xvolume.changeType === 'increase') {
+    youtubePlayer.increaseVolume(xvolume.volume)
+  } else if (xvolume.changeType === 'decrease') {
+    youtubePlayer.decreaseVolume(xvolume.volume)
+  } else {
+    youtubePlayer.changeVolume(xvolume.volume);
+  }
 }
 
 function initSocket() {
