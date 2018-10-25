@@ -9,7 +9,7 @@ async function volume(value: string) : Promise<string> {
     return `Nieprawidłowa głośność ${value}, podaj liczbę z zakresu 0-100`;
   }
 
-  const eventMessage: VolumeEventMessage = { volume: numericValue };
+  const eventMessage: VolumeEventMessage = { volume: parsedInt };
   IoConnection.broadcast('volume', eventMessage);
 
   return `Ustawiono głośność na "${numericValue}"`;
