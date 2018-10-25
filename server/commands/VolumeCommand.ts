@@ -12,7 +12,7 @@ async function volume(value: string) : Promise<string> {
   const eventMessage: VolumeEventMessage = { volume: parsedInt };
   IoConnection.broadcast('volume', eventMessage);
 
-  return `Ustawiono głośność na "${numericValue}"`;
+  return `Ustawiono głośność na "${parsedInt}"`;
 }
 
 const commandDefinition: CommandDefinition = {
