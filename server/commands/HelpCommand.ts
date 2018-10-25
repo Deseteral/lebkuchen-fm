@@ -4,6 +4,7 @@ import CommandRegistry from './registry/CommandRegistry';
 async function help(parameterComponent: string) : Promise<string> {
   const commandRegistry = CommandRegistry.getRegistry();
   const message = Object.keys(commandRegistry)
+    .filter(key => key === commandRegistry[key].key)
     .map(key => commandRegistry[key])
     .sort((a, b) => a.key.localeCompare(b.key))
     .map(definition => `- ${definition.key}: ${definition.helpMessage}`)
