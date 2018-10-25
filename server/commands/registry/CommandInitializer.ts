@@ -2,6 +2,7 @@ import CommandRegistry from './CommandRegistry';
 import EchoCommand from '../EchoCommand';
 import SayCommand from '../SayCommand';
 import SkipCommand from '../SkipCommand';
+import PauseCommand from '../PauseCommand';
 import XCommand from '../XCommand';
 import AddXCommand from '../AddXCommand';
 import SearchCommand from '../SearchCommand';
@@ -11,6 +12,7 @@ import AddCommand from '../AddCommand';
 import HelpCommand from '../HelpCommand';
 import XListCommand from '../XListCommand';
 import VolumeCommand from '../VolumeCommand';
+import ResumeCommand from '../ResumeCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -25,6 +27,8 @@ function initialize() {
   CommandRegistry.register(HelpCommand);
   CommandRegistry.register(XListCommand);
   CommandRegistry.register(VolumeCommand);
+  CommandRegistry.register(ResumeCommand);
+  CommandRegistry.register(PauseCommand);
 }
 
 export default {
