@@ -21,7 +21,11 @@ function getQueue() {
 }
 
 function add(video) {
-  queue.push(video);
+  if (video.playNext) {
+    queue.unshift(video);
+  } else {
+    queue.push(video);
+  }
   if (queue.length === 1) {
     subscribers.added.forEach((callback)=> callback());
   }

@@ -5,6 +5,7 @@ interface Song {
   trimStartSeconds: (number | null);
   trimEndSeconds: (number | null);
   timesPlayed: number;
+  playNext?: boolean;
 }
 
 export default Song;

@@ -7,6 +7,7 @@ import XCommand from '../XCommand';
 import AddXCommand from '../AddXCommand';
 import SearchCommand from '../SearchCommand';
 import QueueCommand from '../QueueCommand';
+import QueueNextCommand from '../QueueNextCommand';
 import ListCommand from '../ListCommand';
 import AddCommand from '../AddCommand';
 import HelpCommand from '../HelpCommand';
@@ -29,6 +30,7 @@ function initialize() {
   CommandRegistry.register(VolumeCommand);
   CommandRegistry.register(ResumeCommand);
   CommandRegistry.register(PauseCommand);
+  CommandRegistry.register(QueueNextCommand);
 }
 
 export default {

@@ -14,6 +14,7 @@ interface ISong {
   trimStartSeconds: (number | null);
   trimEndSeconds: (number | null);
   timesPlayed: number;
+  playNext?: boolean;
 }
 
 interface ISayMessage {
