@@ -23,7 +23,7 @@ async function createSongFromId(youtubeId: string) : Promise<Song> {
 async function queueNext(songName: string) : Promise<string> {
   const song: Song = await SongRepository.getByName(songName);
   const potentialYoutubeId = songName.split(' ')[0];
-  const actualSong = song
+  const actualSong = song || await createSongFromId(potentialYoutubeId);
     ? song
     : await createSongFromId(potentialYoutubeId);
 
