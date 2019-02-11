@@ -9,7 +9,7 @@ interface GetSlackMessageOptions {
   command?: string;
 }
 
-const SENDER_ONLY_MESSAGES = ['help', 'xlist', 'list'];
+const SENDER_ONLY_MESSAGES = ['/fm help', 'xlist', 'list'];
 
 function getSlackMessage(message: string, options: GetSlackMessageOptions = {}) {
   const { visibleToSenderOnly, command } = options;
@@ -44,7 +44,7 @@ function postCommand(req: Request, res: Response) {
   const text = `${req.body.command} ${req.body.text}`;
 
   CommandService.executeCommand(text)
-    .then(responseMessage => getSlackMessage(responseMessage, { command: req.body.command }))
+    .then(responseMessage => getSlackMessage(responseMessage, { command: req.body.text.slice(' ')[0] }))
     .then((slackMessage) => {
       if (slackMessage.text === '') {
         res.status(200).end();
