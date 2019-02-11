@@ -8,7 +8,7 @@ function say(invocation: string) : Promise<string> {
   };
 
   IoConnection.broadcast('say', eventMessage);
-  return Promise.resolve('');
+  return Promise.resolve(`_"${invocation}"_`);
 }
 
 const commandDefinition: CommandDefinition = {

@@ -3,7 +3,7 @@ import IoConnection from '../clients/IoConnection';
 
 function skip(parameterComponent: string) : Promise<string> {
   IoConnection.broadcast('skip', null);
-  return Promise.resolve('');
+  return Promise.resolve('Lecimy dalej!');
 }
 
 const commandDefinition: CommandDefinition = {

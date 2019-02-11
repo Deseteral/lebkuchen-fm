@@ -18,13 +18,13 @@ async function xProcess(soundName: string) : Promise<string> {
 
   IoConnection.broadcast('x', xEventMessage);
   XSoundService.bumpPlayCount(xsound.name);
-  return '';
+  return ':ultrafastparrot:';
 }
 
 const commandDefinition: CommandDefinition = {
   key: 'x',
   process: xProcess,
-  helpMessage: 'Puszcza szalony dźwięk! (parrot)',
+  helpMessage: 'Puszcza szalony dźwięk! :parrot:',
 };
 
 export default commandDefinition;

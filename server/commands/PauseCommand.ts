@@ -3,7 +3,7 @@ import IoConnection from '../clients/IoConnection';
 
 function pause(parameterComponent: string) : Promise<string> {
   IoConnection.broadcast('pause', null);
-  return Promise.resolve('');
+  return Promise.resolve('Spauzowano muzykę');
 }
 
 const commandDefinition: CommandDefinition = {
