@@ -9,7 +9,7 @@ interface GetSlackMessageOptions {
   command?: string;
 }
 
-const SENDER_ONLY_MESSAGES = ['/fm help', 'xlist', 'list'];
+const SENDER_ONLY_MESSAGES = ['help', 'xlist', 'list'];
 
 function getSlackMessage(message: string, options: GetSlackMessageOptions = {}) {
   const { visibleToSenderOnly, command } = options;

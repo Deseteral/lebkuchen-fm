@@ -14,9 +14,9 @@ class NowPlaying extends React.Component {
 
   render() {
     const nowPlaying = [
-      <span key='a' className="dimmed">now playing </span>,
+      <span key="a" className="dimmed">now playing </span>,
       this.state.nowPlaying,
-      <span key='b' className="dimmed">now playing </span>
+      <span key="b" className="dimmed">now playing </span>,
     ];
 
     return (
@@ -29,20 +29,12 @@ class NowPlaying extends React.Component {
             className: 'status',
             direction: 'right',
             scrollamount: '10',
-          }
+          },
         )
         )}
       </div>
-    )
+    );
   }
-
 }
 
 export default NowPlaying;
-
-//
-// <div className="status">
-//   <span className="dimmed"> now playing </span>
-//   {this.state.nowPlaying}
-//   <span className="dimmed"> now playing </span>
-// </div>
