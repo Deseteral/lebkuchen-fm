@@ -12,8 +12,9 @@ function getSlackMessage(message: string, visibleToSenderOnly: boolean = false) 
 }
 
 function postCommand(req: Request, res: Response) {
-  if (req.body.channel_name !== Configuration.CHANNEL_NAME) {
-    console.log(`Message from channel ${req.body.channel_name}`);
+  if (req.body.channel_id !== Configuration.SLACK_CHANNEL_ID) {
+    console.log(req.body.channel_id);
+
     const errorMessage = getSlackMessage(
       'Tej komendy można używać tylko na dedykowanym kanale',
       true,
