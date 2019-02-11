@@ -14,10 +14,11 @@ function getSlackMessage(message: string, visibleToSenderOnly: boolean = false) 
 function postCommand(req: Request, res: Response) {
   if (req.body.channel_name !== Configuration.CHANNEL_NAME) {
     const errorMessage = getSlackMessage(
-      `Tej komendy można używać tylko na kanale ${Configuration.CHANNEL_NAME}`,
+      'Tej komendy można używać tylko na dedykowanym kanale',
       true,
     );
     res.send(errorMessage);
+    return;
   }
 
   const text = `${req.body.command} ${req.body.text}`;
