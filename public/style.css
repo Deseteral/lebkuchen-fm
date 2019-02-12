@@ -20,7 +20,6 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  /*border: 1px solid red;*/
 }
 
 .status-container {
@@ -29,7 +28,6 @@ body {
   right: 0;
   top: 0;
   width: calc(100% - 453px);
-  /*border: 1px solid yellow;*/
   background: rgba(255, 255, 0, 0.5);
   display: flex;
   align-items: center;
@@ -53,7 +51,6 @@ body {
   height: 300px;
   width: 700px;
   box-sizing: border-box;
-  /*border: 1px solid yellow;*/
   background: rgba(255, 255, 0, 0.5);
   transform: rotate(-30deg);
   padding: 160px 120px;
@@ -73,8 +70,6 @@ body {
 }
 
 .queue-container {
-  /*border: 1px solid greenyellow;*/
-  /*background: rgba(255, 255, 0, 0.22);*/
   position: absolute;
   height: 100%;
   width: 450px;
@@ -108,7 +103,6 @@ body {
 .queue-item {
   height: calc((100%) / 9);
   width: 100%;
-  /*border: 1px solid deepskyblue;*/
   background: rgba(0, 191, 255, 0.5);
   transform: rotate(-30deg);
   display: flex;
@@ -120,8 +114,6 @@ body {
 }
 
 .dashboard-container {
-  /*border: 1px solid yellow;*/
-  /*background: rgba(255, 255, 0, 0.22);*/
   position: absolute;
   bottom: 0;
   right: 0;
@@ -139,7 +131,6 @@ body {
 }
 
 .dashboard-container .queue .queue-item {
-  /*height: 100px;*/
   height: calc((399%) / 9);
   text-align: left;
   align-items: center;
@@ -163,7 +154,6 @@ body {
   height: 300px;
   width: 700px;
   box-sizing: border-box;
-  /*border: 1px solid yellow;*/
   background: rgba(255, 255, 0, 0.5);
   transform: rotate(-30deg);
   padding: 160px 120px;
@@ -177,7 +167,6 @@ body {
   top: 42px;
   left: 463px;
   transform: rotate(30deg);
-  /*border: 1px solid white;*/
   width: 142px;
   height: 40px;
   overflow: hidden;
@@ -188,7 +177,6 @@ body {
 }
 
 .player-container {
-  /*border: 1px solid magenta;*/
   background: rgba(255, 0, 255, 0.5);
   position: absolute;
   top: 102px;
@@ -211,7 +199,6 @@ body {
   text-align: center;
   transform: rotate(20deg);
   background-color: transparent;
-  /*background: repeating-linear-gradient(45deg, #2b2b2b 0%, #2b2b2b 10%, #222222 0%, #222222 50%);*/
   animation: containerSize 0.7s ease-in-out infinite alternate;
   border-radius: 8px;
 }
