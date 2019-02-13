@@ -12,6 +12,7 @@ body {
   margin: 0;
   background: #080808;
   overflow: hidden;
+  font-family: sans-serif;
 }
 
 .view {
