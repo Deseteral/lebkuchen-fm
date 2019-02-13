@@ -53,11 +53,5 @@
     "webpack-cli": "3.2.3",
     "webpack-dev-server": "3.1.14"
   },
-  "proxy": "http://localhost:9000/",
-  "nodemonConfig": {
-    "ignore": [
-      "build/*",
-      "dist/*"
-    ]
-  }
+  "heroku-run-build-script": true
 }
