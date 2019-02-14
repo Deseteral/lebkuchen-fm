@@ -46,27 +46,35 @@ function initPlayer(domId) {
         playNextVideo();
       }
     });
-  })
+  });
 }
 
-function changeVolume(val) {
-  return player.setVolume(val);
-}
-
-async function increaseVolume(val) {
+async function increaseVolume(value) {
   const oldVolume = await player.getVolume();
-  const newVolume = Math.min(oldVolume + val, 100);
+  const newVolume = Math.min(oldVolume + value, 100);
   return player.setVolume(newVolume);
 }
 
-async function decreaseVolume(val) {
+async function decreaseVolume(value) {
   const oldVolume = await player.getVolume();
-  const newVolume = Math.max(oldVolume - val, 0);
+  const newVolume = Math.max(oldVolume - value, 0);
   return player.setVolume(newVolume);
+}
+
+function changeVolume(value) {
+  if (typeof value === 'string' && value.length > 1) {
+    if (value[0] === '+') {
+      return increaseVolume(Math.abs(value));
+    }
+    if (value[0] === '-') {
+      return decreaseVolume(Math.abs(value));
+    }
+  }
+  return player.setVolume(parseInt(value, 10));
 }
 
 function triggerOnVideoChange() {
-  subscribers.videoChange.forEach((callback) => callback(nowPlaying));
+  subscribers.videoChange.forEach(callback => callback(nowPlaying));
 }
 
 function setOnVideoChangeListener(callback) {
@@ -83,12 +91,10 @@ function pauseYoutubeVideo() {
 
 export default {
   changeVolume,
-  increaseVolume,
-  decreaseVolume,
   initPlayer,
   playNextVideo,
   playYoutubeVideo,
   resumeYoutubeVideo,
   setOnVideoChangeListener,
   pauseYoutubeVideo,
-}
+};

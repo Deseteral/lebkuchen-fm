@@ -59,14 +59,8 @@ function handleX(xsound: IXMessage) {
   xService.play(xsound.soundUrl);
 }
 
-function handleVolume(xvolume: IVolumeMessage) {
-  if (xvolume.changeType === 'increase') {
-    youtubePlayer.increaseVolume(xvolume.volume)
-  } else if (xvolume.changeType === 'decrease') {
-    youtubePlayer.decreaseVolume(xvolume.volume)
-  } else {
-    youtubePlayer.changeVolume(xvolume.volume);
-  }
+function handleVolume(volume: IVolumeMessage) {
+  youtubePlayer.changeVolume(volume.volume);
 }
 
 function initSocket() {

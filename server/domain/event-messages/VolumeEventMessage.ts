@@ -1,6 +1,5 @@
 interface VolumeEventMessage {
-  volume: number;
-  changeType: string;
+  volume: string;
 }
 
 export default VolumeEventMessage;

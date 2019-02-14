@@ -2,24 +2,16 @@ import CommandDefinition from '../domain/CommandDefinition';
 import IoConnection from '../clients/IoConnection';
 import VolumeEventMessage from "../domain/event-messages/VolumeEventMessage";
 
-const volChangeTypes: { [s: string]: string; } = {
-  '+': 'increase',
-  '-': 'decrease',
-  default: 'set',
-};
-
-function getVolChangeType(value: string):string {
-  return volChangeTypes[value.charAt(0)] || volChangeTypes.default;
-}
-
-function getFeedbackMsg(eventMsg:VolumeEventMessage) {
-  if (volChangeTypes['+'] === eventMsg.changeType) {
-    return `Zwiększono głośność o "${eventMsg.volume}"`;
+function getFeedbackMessage(eventMsg:VolumeEventMessage) {
+  const { volume } = eventMsg;
+  switch (volume[0]) {
+    case '+':
+      return `Zwiększono głośność o "${volume.substring(1)}"`;
+    case '-':
+      return `Zmniejszono głośność o "${volume.substring(1)}"`;
+    default:
+      return `Ustawiono głośność na "${volume}"`;
   }
-  if (volChangeTypes['-'] === eventMsg.changeType) {
-    return `Zmniejszono głośność o "${eventMsg.volume}"`;
-  }
-  return `Ustawiono głośność na "${eventMsg.volume}"`;
 }
 
 async function volume(value: string) : Promise<string> {
@@ -29,13 +21,13 @@ async function volume(value: string) : Promise<string> {
     return `Nieprawidłowa głośność ${value}, podaj liczbę z zakresu 0-100, lub deltę +/-liczba`;
   }
 
-  const eventMessage: VolumeEventMessage = { 
-    volume: parsedInt,
-    changeType: getVolChangeType(value),
+  const eventMessage: VolumeEventMessage = {
+    volume: value,
   };
+
   IoConnection.broadcast('volume', eventMessage);
 
-  return getFeedbackMsg(eventMessage);
+  return getFeedbackMessage(eventMessage);
 }
 
 const commandDefinition: CommandDefinition = {
