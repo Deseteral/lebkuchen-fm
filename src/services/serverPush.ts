@@ -21,8 +21,7 @@ interface ISayMessage {
 }
 
 interface IVolumeMessage {
-  volume: number;
-  changeType?: "increase" | "decrease" | "setter"
+  volume: string;
 }
 
 interface IXMessage {
