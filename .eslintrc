@@ -1,3 +1,10 @@
 {
-  "extends": "./node_modules/@deseteral/react-scripts-ts/config/eslint.json"
+  "extends": "airbnb",
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "import/no-unresolved": "off",
+    "no-unused-vars": "off",
+    "no-undef": "off"
+  }
 }
