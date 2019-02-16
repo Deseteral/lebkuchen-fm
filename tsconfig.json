@@ -1,31 +1,24 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "target": "es5",
-    "lib": ["es6", "dom"],
-    "jsx": "react",
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "outDir": "dist",
-    "noImplicitAny": true,
-    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "strict": true,
+    "esModuleInterop": true,
     "noUnusedLocals": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "experimentalDecorators": true,
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "src/types/*",
-        "server/types/*"
-      ]
-    }
+    "noImplicitAny": true,
+    "declaration": true,
+    "target": "es2015",
+    "module": "es2015",
+    "strict": true
   },
   "include": [
+    "src/**/*",
     "server/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts"
   ]
 }

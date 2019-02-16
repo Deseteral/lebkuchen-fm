@@ -12,7 +12,9 @@
     "server:build": "gulp",
     "server:dev": "npm run server:build",
     "lint:server": "eslint server --ext ts,tsx",
-    "lint:frontend": "eslint src --ext ts,tsx"
+    "lint:frontend": "eslint src --ext ts,tsx",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch"
   },
   "dependencies": {
     "body-parser": "1.18.3",
