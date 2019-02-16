@@ -4,7 +4,8 @@
 ## Application configuration
 You can configure the application using environment variables:
 
-- `MONGO_URI` - MongoDB connection URI
+- `SLACK_CHANNEL_ID` - Allowed Slack channel ID. Messages from other channels will be ignored.
+- `MONGO_URI` - MongoDB connection URI.
 - `YOUTUBE_KEY` - YouTube Data API key. Used to search on YouTube. Optional.
 
 ## Development
@@ -17,10 +18,10 @@ npm run server:dev
 npm run frontend:dev
 ```
 
-Backend server runs on port 9000 while frontend server runs on port 3000.
-They're both able to communicate using proxy server that `frontend:dev` provides.
-
 You also need to have MongoDB running on localhost.
+
+## Scripts
+Scripts related to the projects live in the `scripts` directory.
 
 ## License
 This project is licensed under the [MIT license](LICENSE).
