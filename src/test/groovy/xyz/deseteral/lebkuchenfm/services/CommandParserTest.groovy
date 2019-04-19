@@ -15,11 +15,11 @@ class CommandParserTest extends Specification {
         command.get().args == args
 
         where:
-        title                                | text                          || key      | args
-        'simple command'                     | '/fm skip'                    || 'skip'   | []
-        'command with single argument'       | '/fm queue youtube-id'        || 'queue'  | ['youtube-id']
-        'command with many arguments'        | '/fm search some test phrase' || 'search' | ['some', 'test', 'phrase']
-        'command with additional whitespace' | ' /fm  search  some   test  phrase  '   || 'search'  | ['some', 'test', 'phrase']
+        title                                | text                                  || key      | args
+        'simple command'                     | '/fm skip'                            || 'skip'   | []
+        'command with single argument'       | '/fm queue youtube-id'                || 'queue'  | ['youtube-id']
+        'command with many arguments'        | '/fm search some test phrase'         || 'search' | ['some', 'test', 'phrase']
+        'command with additional whitespace' | ' /fm  search  some   test  phrase  ' || 'search' | ['some', 'test', 'phrase']
     }
 
     def 'should not parse #title'() {
