@@ -50,15 +50,15 @@ class TestCommandWithArgs implements CommandProcessor {
 }
 
 @Unroll
-class CommandResolverTest extends Specification {
+class RootCommandProcessorTest extends Specification {
     def 'should resolve #title'() {
         given:
         def testCommand = new TestCommand()
         def testCommandWithArgs = new TestCommandWithArgs()
-        def commandResolver = new CommandResolver([testCommand, testCommandWithArgs])
+        def rootProcessor = new RootCommandProcessor([testCommand, testCommandWithArgs])
 
         when:
-        def processingResponse = commandResolver.resolve(new Command(key, args))
+        def processingResponse = rootProcessor.process(new Command(key, args))
 
         then:
         processingResponse.response == response

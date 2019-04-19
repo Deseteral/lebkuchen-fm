@@ -8,28 +8,21 @@ import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 import java.util.List;
 
 @Component
-public class CommandResolver {
+public class RootCommandProcessor {
     private final List<CommandProcessor> commandProcessors;
 
     @Autowired
-    public CommandResolver(List<CommandProcessor> commandProcessors) {
+    public RootCommandProcessor(List<CommandProcessor> commandProcessors) {
         this.commandProcessors = commandProcessors;
     }
 
-    public CommandProcessingResponse resolve(Command command) {
+    public CommandProcessingResponse process(Command command) {
         return commandProcessors
             .stream()
-            .filter(processor -> doesCommandQualify(processor, command))
+            .filter(processor -> processor.matches(command))
             .findFirst()
             .map(processor -> processor.process(command.getArgs()))
-            .orElseGet(CommandResolver::getDefaultResponse);
-    }
-
-    private boolean doesCommandQualify(CommandProcessor processor, Command command) {
-        return (
-            processor.getKey().equals(command.getKey()) ||
-                processor.getShortKey().isPresent() && processor.getShortKey().get().equals(command.getKey())
-        );
+            .orElseGet(RootCommandProcessor::getDefaultResponse);
     }
 
     private static CommandProcessingResponse getDefaultResponse() {
