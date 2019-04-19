@@ -6,8 +6,11 @@ import spock.lang.Unroll
 @Unroll
 class CommandParserTest extends Specification {
     def 'should parse #title'() {
+        given:
+        def parser = new CommandParser()
+
         when:
-        def command = CommandParser.parse(text)
+        def command = parser.parse(text)
 
         then:
         command.present
@@ -23,8 +26,11 @@ class CommandParserTest extends Specification {
     }
 
     def 'should not parse #title'() {
+        given:
+        def parser = new CommandParser()
+
         when:
-        def command = CommandParser.parse(text)
+        def command = parser.parse(text)
 
         then:
         !command.present

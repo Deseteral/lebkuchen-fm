@@ -10,8 +10,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class CommandParser {
-
-    public static Optional<Command> parse(String text) {
+    public Optional<Command> parse(String text) {
         String parseableText = Optional.ofNullable(text).orElse("");
         List<String> tokens = Arrays
             .asList(parseableText.split(" "))
