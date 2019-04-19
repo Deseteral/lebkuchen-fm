@@ -21,7 +21,8 @@ public class GenericController {
 
     @PostMapping("/commands/generic")
     GenericCommandResponseDto processCommand(@RequestBody GenericCommandRequestDto commandDto) {
-        return parser.parse(commandDto.getText())
+        return parser
+            .parse(commandDto.getText())
             .map(processor::process)
             .map(GenericCommandResponseDtoMapper::from)
             .orElse(new GenericCommandResponseDto("Given text is not a command"));
