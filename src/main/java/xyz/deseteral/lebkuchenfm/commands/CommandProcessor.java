@@ -8,14 +8,19 @@ import java.util.Optional;
 
 interface CommandProcessor {
     CommandProcessingResponse process(List<String> args);
+
     String getKey();
+
     Optional<String> getShortKey();
+
     String getHelpMessage();
 
     default boolean matches(Command command) {
-        return (
-            this.getKey().equals(command.getKey()) ||
-                this.getShortKey().isPresent() && this.getShortKey().get().equals(command.getKey())
-        );
+        final boolean keyMatch = this.getKey().equals(command.getKey());
+        final boolean shortKeyMatch = this.getShortKey()
+            .map(shortKey -> shortKey.equals(command.getKey()))
+            .orElse(false);
+
+        return (keyMatch || shortKeyMatch);
     }
 }

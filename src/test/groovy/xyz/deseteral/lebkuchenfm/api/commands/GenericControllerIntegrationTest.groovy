@@ -11,7 +11,7 @@ import static groovy.json.JsonOutput.toJson
 class GenericControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to ping command'() {
         given:
-        def body = [text:'/fm ping']
+        def body = [text: '/fm ping']
         def request = RequestEntity.post(localUri('/commands/generic'))
             .contentType(MediaType.APPLICATION_JSON)
             .body(toJson(body))
