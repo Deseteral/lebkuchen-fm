@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.commands;
+package xyz.deseteral.lebkuchenfm.services.commands;
 
 import xyz.deseteral.lebkuchenfm.domain.Command;
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;

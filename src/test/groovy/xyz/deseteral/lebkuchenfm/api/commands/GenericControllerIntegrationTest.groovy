@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-import xyz.deseteral.lebkuchenfm.domain.GenericCommandResponseDto
+import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto
 
 import static groovy.json.JsonOutput.toJson
 

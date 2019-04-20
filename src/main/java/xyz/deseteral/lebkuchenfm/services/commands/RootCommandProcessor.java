@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.commands;
+package xyz.deseteral.lebkuchenfm.services.commands;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

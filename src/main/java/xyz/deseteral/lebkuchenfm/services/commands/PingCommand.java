@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.commands;
+package xyz.deseteral.lebkuchenfm.services.commands;
 
 import org.springframework.stereotype.Component;
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;

@@ -13,8 +13,7 @@ public class CommandParser {
     public Optional<Command> parse(String text) {
         final String parsableText = Optional.ofNullable(text).orElse("");
         final List<String> tokens = Arrays
-            .asList(parsableText.split(" "))
-            .stream()
+            .stream(parsableText.split(" "))
             .map(String::trim)
             .filter(s -> !s.isEmpty())
             .collect(Collectors.toList());

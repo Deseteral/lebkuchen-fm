@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.commands
+package xyz.deseteral.lebkuchenfm.services.commands
 
 import spock.lang.Specification
 import spock.lang.Unroll

@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.domain;
+package xyz.deseteral.lebkuchenfm.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
