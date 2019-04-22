@@ -11,7 +11,6 @@ import java.util.List;
 public class RootCommandProcessor {
     private final List<CommandProcessor> commandProcessors;
 
-    @Autowired
     public RootCommandProcessor(List<CommandProcessor> commandProcessors) {
         this.commandProcessors = commandProcessors;
     }
