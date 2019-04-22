@@ -30,7 +30,7 @@ class TestCommand implements CommandProcessor {
 class TestCommandWithArgs implements CommandProcessor {
     @Override
     CommandProcessingResponse process(List<String> args) {
-        return new CommandProcessingResponse('TestCommandWithArgs [' + args.join(',') + ']')
+        return new CommandProcessingResponse("TestCommandWithArgs [${args.join(',')}]")
     }
 
     @Override
