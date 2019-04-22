@@ -1,6 +1,5 @@
 package xyz.deseteral.lebkuchenfm.services.commands;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import xyz.deseteral.lebkuchenfm.domain.Command;
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
