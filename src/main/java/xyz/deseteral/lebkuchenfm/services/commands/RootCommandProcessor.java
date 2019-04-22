@@ -21,10 +21,6 @@ public class RootCommandProcessor {
             .filter(processor -> processor.matches(command))
             .findFirst()
             .map(processor -> processor.process(command.getArgs()))
-            .orElseGet(RootCommandProcessor::getDefaultResponse);
-    }
-
-    private static CommandProcessingResponse getDefaultResponse() {
-        return new CommandProcessingResponse("Komenda nie istnieje.");
+            .orElseThrow(() -> new NoSuchCommandException(command));
     }
 }

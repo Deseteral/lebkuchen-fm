@@ -69,6 +69,18 @@ class RootCommandProcessorTest extends Specification {
         'command with short key'          | 't'            | []               || 'TestCommand'
         'command with args'               | 'testWithArgs' | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
         'command with short key and args' | 'twa'          | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
-        'not existing command'            | 'notExisting'  | []               || 'Komenda nie istnieje.'
+    }
+
+    def 'should handle not existing command'() {
+        given:
+        def testCommand = new TestCommand()
+        def rootProcessor = new RootCommandProcessor([testCommand])
+
+        when:
+        rootProcessor.process(new Command('notExisting', []))
+
+        then:
+        NoSuchCommandException ex = thrown()
+        ex.message == 'Komenda `notExisting` nie istnieje.'
     }
 }

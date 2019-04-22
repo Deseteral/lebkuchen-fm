@@ -11,6 +11,7 @@ import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandRequestDto;
 import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto;
 import xyz.deseteral.lebkuchenfm.domain.mappers.GenericCommandResponseDtoMapper;
 import xyz.deseteral.lebkuchenfm.services.CommandParser;
+import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
 import xyz.deseteral.lebkuchenfm.services.commands.RootCommandProcessor;
 
 @RestController
@@ -32,9 +33,14 @@ public class GenericController {
             .orElseThrow(TextIsNotACommandException::new);
     }
 
+    @ExceptionHandler(NoSuchCommandException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public GenericCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandException ex) {
+        return GenericCommandResponseDtoMapper.from(ex);
+    }
+
     @ExceptionHandler(TextIsNotACommandException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ResponseBody
     public GenericCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
         return GenericCommandResponseDtoMapper.from(ex);
     }

@@ -36,7 +36,7 @@ class GenericControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
-        response.body.response == 'Komenda nie istnieje.'
+        response.body.response == 'Komenda `notExisting` nie istnieje.'
     }
 
     def 'should respond to text that is not a command'() {
