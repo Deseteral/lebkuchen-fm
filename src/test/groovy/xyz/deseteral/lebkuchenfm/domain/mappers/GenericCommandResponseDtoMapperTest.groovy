@@ -1,17 +1,22 @@
 package xyz.deseteral.lebkuchenfm.domain.mappers
 
 import spock.lang.Specification
+import spock.lang.Unroll
+import xyz.deseteral.lebkuchenfm.api.commands.TextIsNotACommandException
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse
 
+@Unroll
 class GenericCommandResponseDtoMapperTest extends Specification {
-    def 'should map from CommandProcessingResponse to GenericCommandResponseDto'() {
-        given:
-        def processingResponse = new CommandProcessingResponse('some test response')
-
+    def 'should map from #fromTitle to GenericCommandResponseDto'() {
         when:
-        def commandResponseDto = GenericCommandResponseDtoMapper.from(processingResponse)
+        def commandResponseDto = GenericCommandResponseDtoMapper.from(from)
 
         then:
-        commandResponseDto.response == 'some test response'
+        commandResponseDto.response == response
+
+        where:
+        fromTitle                     | from                                                || response
+        'CommandProcessingResponse'   | new CommandProcessingResponse('some test response') || 'some test response'
+        'TextIsNotACommand exception' | new TextIsNotACommandException()                    || 'Given text is not a command'
     }
 }

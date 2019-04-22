@@ -23,4 +23,34 @@ class GenericControllerIntegrationTest extends IntegrationSpecification {
         response.statusCode == HttpStatus.OK
         response.body.response == 'pong'
     }
+
+    def 'should respond to not existing command'() {
+        given:
+        def body = [text: '/fm notExisting']
+        def request = RequestEntity.post(localUri('/commands/generic'))
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(toJson(body))
+
+        when:
+        def response = restTemplate.exchange(request, GenericCommandResponseDto)
+
+        then:
+        response.statusCode == HttpStatus.BAD_REQUEST
+        response.body.response == 'Komenda nie istnieje.'
+    }
+
+    def 'should respond to text that is not a command'() {
+        given:
+        def body = [text: 'some test string']
+        def request = RequestEntity.post(localUri('/commands/generic'))
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(toJson(body))
+
+        when:
+        def response = restTemplate.exchange(request, GenericCommandResponseDto)
+
+        then:
+        response.statusCode == HttpStatus.BAD_REQUEST
+        response.body.response == 'Given text is not a command'
+    }
 }

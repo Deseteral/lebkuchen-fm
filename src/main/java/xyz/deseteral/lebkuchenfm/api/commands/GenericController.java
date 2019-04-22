@@ -1,7 +1,11 @@
 package xyz.deseteral.lebkuchenfm.api.commands;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandRequestDto;
 import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto;
@@ -25,6 +29,13 @@ public class GenericController {
             .parse(commandDto.getText())
             .map(processor::process)
             .map(GenericCommandResponseDtoMapper::from)
-            .orElse(new GenericCommandResponseDto("Given text is not a command"));
+            .orElseThrow(TextIsNotACommandException::new);
+    }
+
+    @ExceptionHandler(TextIsNotACommandException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public GenericCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
+        return GenericCommandResponseDtoMapper.from(ex);
     }
 }
