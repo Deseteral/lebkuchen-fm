@@ -1,13 +1,13 @@
-package xyz.deseteral.lebkuchenfm.domain.dto;
+package xyz.deseteral.lebkuchenfm.api.commands;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GenericCommandResponseDto {
+final class TextCommandResponseDto {
     private final String response;
 
     @JsonCreator
-    public GenericCommandResponseDto(@JsonProperty("response") String response) {
+    public TextCommandResponseDto(@JsonProperty("response") String response) {
         this.response = response;
     }
 

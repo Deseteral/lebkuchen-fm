@@ -6,9 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandRequestDto;
-import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto;
-import xyz.deseteral.lebkuchenfm.domain.mappers.GenericCommandResponseDtoMapper;
 import xyz.deseteral.lebkuchenfm.services.CommandParser;
 import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
 import xyz.deseteral.lebkuchenfm.services.commands.RootCommandProcessor;
@@ -24,7 +21,7 @@ final class TextCommandController {
     }
 
     @PostMapping("/commands/text")
-    GenericCommandResponseDto processCommand(@RequestBody GenericCommandRequestDto commandDto) {
+    TextCommandResponseDto processCommand(@RequestBody TextCommandRequestDto commandDto) {
         return parser
             .parse(commandDto.getText())
             .map(processor::process)
@@ -34,13 +31,13 @@ final class TextCommandController {
 
     @ExceptionHandler(NoSuchCommandException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public GenericCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandException ex) {
+    public TextCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandException ex) {
         return GenericCommandResponseDtoMapper.from(ex);
     }
 
     @ExceptionHandler(TextIsNotACommandException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public GenericCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
+    public TextCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
         return GenericCommandResponseDtoMapper.from(ex);
     }
 }

@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto
 
 import static groovy.json.JsonOutput.toJson
 
@@ -17,7 +16,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, GenericCommandResponseDto)
+        def response = restTemplate.exchange(request, TextCommandResponseDto)
 
         then:
         response.statusCode == HttpStatus.OK
@@ -32,7 +31,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, GenericCommandResponseDto)
+        def response = restTemplate.exchange(request, TextCommandResponseDto)
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
@@ -47,7 +46,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, GenericCommandResponseDto)
+        def response = restTemplate.exchange(request, TextCommandResponseDto)
 
         then:
         response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
