@@ -8,11 +8,11 @@ import xyz.deseteral.lebkuchenfm.domain.dto.GenericCommandResponseDto
 
 import static groovy.json.JsonOutput.toJson
 
-class GenericControllerIntegrationTest extends IntegrationSpecification {
+class TextCommandControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to ping command'() {
         given:
         def body = [text: '/fm ping']
-        def request = RequestEntity.post(localUri('/commands/generic'))
+        def request = RequestEntity.post(localUri('/commands/text'))
             .contentType(MediaType.APPLICATION_JSON)
             .body(toJson(body))
 
@@ -27,7 +27,7 @@ class GenericControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to not existing command'() {
         given:
         def body = [text: '/fm notExisting']
-        def request = RequestEntity.post(localUri('/commands/generic'))
+        def request = RequestEntity.post(localUri('/commands/text'))
             .contentType(MediaType.APPLICATION_JSON)
             .body(toJson(body))
 
@@ -42,7 +42,7 @@ class GenericControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to text that is not a command'() {
         given:
         def body = [text: 'some test string']
-        def request = RequestEntity.post(localUri('/commands/generic'))
+        def request = RequestEntity.post(localUri('/commands/text'))
             .contentType(MediaType.APPLICATION_JSON)
             .body(toJson(body))
 

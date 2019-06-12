@@ -14,16 +14,16 @@ import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
 import xyz.deseteral.lebkuchenfm.services.commands.RootCommandProcessor;
 
 @RestController
-public class GenericController {
+final class TextCommandController {
     private final CommandParser parser;
     private final RootCommandProcessor processor;
 
-    public GenericController(CommandParser parser, RootCommandProcessor processor) {
+    public TextCommandController(CommandParser parser, RootCommandProcessor processor) {
         this.parser = parser;
         this.processor = processor;
     }
 
-    @PostMapping("/commands/generic")
+    @PostMapping("/commands/text")
     GenericCommandResponseDto processCommand(@RequestBody GenericCommandRequestDto commandDto) {
         return parser
             .parse(commandDto.getText())
