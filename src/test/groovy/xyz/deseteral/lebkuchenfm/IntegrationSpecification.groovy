@@ -10,7 +10,6 @@ import spock.lang.Specification
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@DirtiesContext
 abstract class IntegrationSpecification extends Specification {
 
     @Value('${local.server.port}')
