@@ -3,7 +3,7 @@ package xyz.deseteral.lebkuchenfm.api.commands;
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
 
-public class GenericCommandResponseDtoMapper {
+final class TextCommandResponseDtoMapper {
     public static TextCommandResponseDto from(CommandProcessingResponse processingResponse) {
         return new TextCommandResponseDto(processingResponse.getResponse());
     }
