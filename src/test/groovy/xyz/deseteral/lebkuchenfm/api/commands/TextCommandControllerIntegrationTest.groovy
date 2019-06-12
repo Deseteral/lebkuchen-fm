@@ -36,7 +36,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
-        response.body.response == 'Komenda `notExisting` nie istnieje.'
+        response.body.response == "Komenda 'notExisting' nie istnieje."
     }
 
     def 'should respond to text that is not a command'() {
@@ -50,7 +50,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
         def response = restTemplate.exchange(request, GenericCommandResponseDto)
 
         then:
-        response.statusCode == HttpStatus.BAD_REQUEST
-        response.body.response == 'Given text is not a command'
+        response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
+        response.body.response == "Text 'some test string' is not a command"
     }
 }

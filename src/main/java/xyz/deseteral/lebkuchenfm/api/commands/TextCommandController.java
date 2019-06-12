@@ -29,7 +29,7 @@ final class TextCommandController {
             .parse(commandDto.getText())
             .map(processor::process)
             .map(GenericCommandResponseDtoMapper::from)
-            .orElseThrow(TextIsNotACommandException::new);
+            .orElseThrow(() -> new TextIsNotACommandException(commandDto.getText()));
     }
 
     @ExceptionHandler(NoSuchCommandException.class)
@@ -39,7 +39,7 @@ final class TextCommandController {
     }
 
     @ExceptionHandler(TextIsNotACommandException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public GenericCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
         return GenericCommandResponseDtoMapper.from(ex);
     }

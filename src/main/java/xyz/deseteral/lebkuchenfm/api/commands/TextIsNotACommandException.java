@@ -1,7 +1,7 @@
 package xyz.deseteral.lebkuchenfm.api.commands;
 
 public class TextIsNotACommandException extends RuntimeException {
-    public TextIsNotACommandException() {
-        super("Given text is not a command");
+    public TextIsNotACommandException(String text) {
+        super(String.format("Text '%s' is not a command", text));
     }
 }
