@@ -20,6 +20,6 @@ class GenericCommandResponseDtoMapperTest extends Specification {
         fromTitle                     | from                                                   || response
         'CommandProcessingResponse'   | new CommandProcessingResponse('some test response')    || 'some test response'
         'TextIsNotACommand exception' | new TextIsNotACommandException('some text')            || "Text 'some text' is not a command"
-        'NoSuchCommand exception'     | new NoSuchCommandException(new Command('testKey', [])) || "Komenda 'testKey' nie istnieje."
+        'NoSuchCommand exception'     | new NoSuchCommandException(new Command('testKey', [])) || "Command 'testKey' does not exist"
     }
 }

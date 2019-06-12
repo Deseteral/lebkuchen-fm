@@ -36,7 +36,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
-        response.body.response == "Komenda 'notExisting' nie istnieje."
+        response.body.response == "Command 'notExisting' does not exist"
     }
 
     def 'should respond to text that is not a command'() {

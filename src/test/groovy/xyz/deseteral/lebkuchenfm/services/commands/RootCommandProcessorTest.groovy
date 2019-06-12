@@ -81,6 +81,6 @@ class RootCommandProcessorTest extends Specification {
 
         then:
         NoSuchCommandException ex = thrown()
-        ex.message == "Komenda 'notExisting' nie istnieje."
+        ex.message == "Command 'notExisting' does not exist"
     }
 }
