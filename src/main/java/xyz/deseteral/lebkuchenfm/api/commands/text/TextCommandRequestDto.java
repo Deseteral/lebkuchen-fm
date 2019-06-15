@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.api.commands;
+package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

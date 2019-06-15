@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.api.commands;
+package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

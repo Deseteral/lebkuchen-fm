@@ -1,9 +1,7 @@
-package xyz.deseteral.lebkuchenfm.domain.mappers
+package xyz.deseteral.lebkuchenfm.api.commands.text
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.api.commands.TextCommandResponseDtoMapper
-import xyz.deseteral.lebkuchenfm.api.commands.TextIsNotACommandException
 import xyz.deseteral.lebkuchenfm.domain.Command
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException

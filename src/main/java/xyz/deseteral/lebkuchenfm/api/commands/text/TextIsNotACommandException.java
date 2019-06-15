@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.api.commands;
+package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 final class TextIsNotACommandException extends RuntimeException {
     TextIsNotACommandException(String text) {

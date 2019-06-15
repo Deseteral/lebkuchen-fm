@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.api.commands;
+package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
