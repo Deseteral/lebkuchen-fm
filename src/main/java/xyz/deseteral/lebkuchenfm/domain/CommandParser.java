@@ -1,16 +1,12 @@
-package xyz.deseteral.lebkuchenfm.services;
-
-import org.springframework.stereotype.Component;
-import xyz.deseteral.lebkuchenfm.domain.Command;
+package xyz.deseteral.lebkuchenfm.domain;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Component
-public class CommandParser {
-    public Optional<Command> parse(String text) {
+final class CommandParser {
+    public static Optional<Command> parse(String text) {
         final String parsableText = Optional.ofNullable(text).orElse("");
         final List<String> tokens = Arrays
             .stream(parsableText.split(" "))

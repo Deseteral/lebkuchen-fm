@@ -1,25 +1,28 @@
-package xyz.deseteral.lebkuchenfm.services.commands;
+package xyz.deseteral.lebkuchenfm.domain;
 
 import org.springframework.stereotype.Component;
-import xyz.deseteral.lebkuchenfm.domain.Command;
-import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 
 import java.util.List;
 
 @Component
-public class RootCommandProcessor {
+public class CommandExecutor {
     private final List<CommandProcessor> commandProcessors;
 
-    public RootCommandProcessor(List<CommandProcessor> commandProcessors) {
+    public CommandExecutor(List<CommandProcessor> commandProcessors) {
         this.commandProcessors = commandProcessors;
     }
 
     public CommandProcessingResponse process(Command command) {
-        return commandProcessors
-            .stream()
+        return commandProcessors.stream()
             .filter(processor -> processor.matches(command))
             .findFirst()
             .map(processor -> processor.process(command.getArgs()))
             .orElseThrow(() -> new NoSuchCommandException(command));
+    }
+
+    public CommandProcessingResponse processFromText(String commandText) {
+        return CommandParser.parse(commandText)
+            .map(this::process)
+            .orElseThrow(() -> new TextIsNotACommandException(commandText));
     }
 }

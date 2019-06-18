@@ -1,7 +1,8 @@
-package xyz.deseteral.lebkuchenfm.services
+package xyz.deseteral.lebkuchenfm.domain
 
 import spock.lang.Specification
 import spock.lang.Unroll
+import xyz.deseteral.lebkuchenfm.domain.CommandParser
 
 @Unroll
 class CommandParserTest extends Specification {

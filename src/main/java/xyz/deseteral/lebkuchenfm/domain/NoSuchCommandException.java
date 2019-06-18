@@ -1,6 +1,4 @@
-package xyz.deseteral.lebkuchenfm.services.commands;
-
-import xyz.deseteral.lebkuchenfm.domain.Command;
+package xyz.deseteral.lebkuchenfm.domain;
 
 public class NoSuchCommandException extends RuntimeException {
     public NoSuchCommandException(Command command) {

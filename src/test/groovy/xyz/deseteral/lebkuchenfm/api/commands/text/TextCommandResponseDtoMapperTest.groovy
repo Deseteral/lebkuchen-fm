@@ -4,7 +4,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.Command
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse
-import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException
+import xyz.deseteral.lebkuchenfm.domain.TextIsNotACommandException
+import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandException
 
 @Unroll
 class TextCommandResponseDtoMapperTest extends Specification {

@@ -1,7 +1,8 @@
 package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
-import xyz.deseteral.lebkuchenfm.services.commands.NoSuchCommandException;
+import xyz.deseteral.lebkuchenfm.domain.TextIsNotACommandException;
+import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandException;
 
 final class TextCommandResponseDtoMapper {
     public static TextCommandResponseDto from(CommandProcessingResponse processingResponse) {
