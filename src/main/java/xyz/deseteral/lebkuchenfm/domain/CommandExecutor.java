@@ -14,7 +14,7 @@ public class CommandExecutor {
 
     public CommandProcessingResponse process(Command command) {
         return commandProcessors.stream()
-            .filter(processor -> processor.matches(command))
+            .filter(processor -> command.matchProcessor(processor))
             .findFirst()
             .map(processor -> processor.process(command.getArgs()))
             .orElseThrow(() -> new NoSuchCommandProcessorException(command));

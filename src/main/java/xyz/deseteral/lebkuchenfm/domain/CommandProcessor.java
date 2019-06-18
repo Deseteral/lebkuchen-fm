@@ -11,13 +11,4 @@ interface CommandProcessor {
     Optional<String> getShortKey();
 
     String getHelpMessage();
-
-    default boolean matches(Command command) {
-        final boolean keyMatch = this.getKey().equals(command.getKey());
-        final boolean shortKeyMatch = this.getShortKey()
-            .map(shortKey -> shortKey.equals(command.getKey()))
-            .orElse(false);
-
-        return (keyMatch || shortKeyMatch);
-    }
 }
