@@ -22,18 +22,18 @@ final class TextCommandController {
     @PostMapping("/commands/text")
     public TextCommandResponseDto processCommand(@RequestBody TextCommandRequestDto commandDto) {
         CommandProcessingResponse processingResponse = processor.processFromText(commandDto.getText());
-        return TextCommandResponseDtoMapper.from(processingResponse);
+        return new TextCommandResponseDto(processingResponse);
     }
 
     @ExceptionHandler(NoSuchCommandProcessorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public TextCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandProcessorException ex) {
-        return TextCommandResponseDtoMapper.from(ex);
+        return new TextCommandResponseDto(ex);
     }
 
     @ExceptionHandler(TextIsNotACommandException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public TextCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
-        return TextCommandResponseDtoMapper.from(ex);
+        return new TextCommandResponseDto(ex);
     }
 }
