@@ -2,7 +2,7 @@ package xyz.deseteral.lebkuchenfm.api.commands.text;
 
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 import xyz.deseteral.lebkuchenfm.domain.TextIsNotACommandException;
-import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandException;
+import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandProcessorException;
 
 final class TextCommandResponseDtoMapper {
     public static TextCommandResponseDto from(CommandProcessingResponse processingResponse) {
@@ -13,7 +13,7 @@ final class TextCommandResponseDtoMapper {
         return new TextCommandResponseDto(exception.getMessage());
     }
 
-    public static TextCommandResponseDto from(NoSuchCommandException exception) {
+    public static TextCommandResponseDto from(NoSuchCommandProcessorException exception) {
         return new TextCommandResponseDto(exception.getMessage());
     }
 }

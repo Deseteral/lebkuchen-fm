@@ -9,7 +9,7 @@ public class CommandExecutor {
     private final List<CommandProcessor> commandProcessors;
 
     public CommandExecutor(List<CommandProcessor> commandProcessors) {
-        this.commandProcessors = commandProcessors;
+        this.commandProcessors = List.copyOf(commandProcessors);
     }
 
     public CommandProcessingResponse process(Command command) {
@@ -17,7 +17,7 @@ public class CommandExecutor {
             .filter(processor -> processor.matches(command))
             .findFirst()
             .map(processor -> processor.process(command.getArgs()))
-            .orElseThrow(() -> new NoSuchCommandException(command));
+            .orElseThrow(() -> new NoSuchCommandProcessorException(command));
     }
 
     public CommandProcessingResponse processFromText(String commandText) {

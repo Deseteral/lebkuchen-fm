@@ -5,7 +5,7 @@ import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.Command
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.TextIsNotACommandException
-import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandException
+import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandProcessorException
 
 @Unroll
 class TextCommandResponseDtoMapperTest extends Specification {
@@ -17,9 +17,9 @@ class TextCommandResponseDtoMapperTest extends Specification {
         commandResponseDto.response == response
 
         where:
-        fromTitle                     | from                                                   || response
-        'CommandProcessingResponse'   | new CommandProcessingResponse('some test response')    || 'some test response'
-        'TextIsNotACommand exception' | new TextIsNotACommandException('some text')            || "Text 'some text' is not a command"
-        'NoSuchCommand exception'     | new NoSuchCommandException(new Command('testKey', [])) || "Command 'testKey' does not exist"
+        fromTitle                     | from                                                            || response
+        'CommandProcessingResponse'   | new CommandProcessingResponse('some test response')             || 'some test response'
+        'TextIsNotACommand exception' | new TextIsNotACommandException('some text')                     || "Text 'some text' is not a command"
+        'NoSuchCommand exception'     | new NoSuchCommandProcessorException(new Command('testKey', [])) || "Command 'testKey' does not exist"
     }
 }

@@ -1,5 +1,6 @@
 package xyz.deseteral.lebkuchenfm.domain;
 
+import java.util.Collections;
 import java.util.List;
 
 final class Command {
@@ -8,7 +9,7 @@ final class Command {
 
     Command(String key, List<String> args) {
         this.key = key;
-        this.args = args;
+        this.args = List.copyOf(args);
     }
 
     String getKey() {
@@ -16,6 +17,6 @@ final class Command {
     }
 
     List<String> getArgs() {
-        return args;
+        return Collections.unmodifiableList(args);
     }
 }

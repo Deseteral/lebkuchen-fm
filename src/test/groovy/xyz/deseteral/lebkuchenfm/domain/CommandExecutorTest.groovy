@@ -33,7 +33,7 @@ class CommandExecutorTest extends Specification {
         commandExecutor.process(new Command('notExisting', []))
 
         then:
-        NoSuchCommandException ex = thrown()
+        NoSuchCommandProcessorException ex = thrown()
         ex.message == "Command 'notExisting' does not exist"
     }
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.deseteral.lebkuchenfm.domain.CommandProcessingResponse;
 import xyz.deseteral.lebkuchenfm.domain.CommandExecutor;
 import xyz.deseteral.lebkuchenfm.domain.TextIsNotACommandException;
-import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandException;
+import xyz.deseteral.lebkuchenfm.domain.NoSuchCommandProcessorException;
 
 @RestController
 final class TextCommandController {
@@ -20,20 +20,20 @@ final class TextCommandController {
     }
 
     @PostMapping("/commands/text")
-    TextCommandResponseDto processCommand(@RequestBody TextCommandRequestDto commandDto) {
+    public TextCommandResponseDto processCommand(@RequestBody TextCommandRequestDto commandDto) {
         CommandProcessingResponse processingResponse = processor.processFromText(commandDto.getText());
         return TextCommandResponseDtoMapper.from(processingResponse);
     }
 
-    @ExceptionHandler(NoSuchCommandException.class)
+    @ExceptionHandler(NoSuchCommandProcessorException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    TextCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandException ex) {
+    public TextCommandResponseDto noSuchCommandExceptionHandler(NoSuchCommandProcessorException ex) {
         return TextCommandResponseDtoMapper.from(ex);
     }
 
     @ExceptionHandler(TextIsNotACommandException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    TextCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
+    public TextCommandResponseDto textIsNotACommandExceptionHandler(TextIsNotACommandException ex) {
         return TextCommandResponseDtoMapper.from(ex);
     }
 }
