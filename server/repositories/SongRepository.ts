@@ -16,7 +16,7 @@ function getByName(name: string) {
 }
 
 function getAll() {
-  return getCollection().find({}).toArray();
+  return getCollection().find({}).sort({ timesPlayed: -1 }).toArray();
 }
 
 function getByYoutubeId(youtubeId: string) {
