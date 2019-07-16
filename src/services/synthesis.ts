@@ -9,6 +9,7 @@ function speechApiSay(message, callback?) {
   // @ts-ignore
   window.crappyBugHackUtterances.push(msg);
   const savedVolume = youtubePlayer.getVolume();
+  console.log(`savedVolume: ${savedVolume}`);
   youtubePlayer.changeVolume(10);
   msg.text = message;
   msg.voice = window.speechSynthesis
