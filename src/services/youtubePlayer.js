@@ -53,6 +53,10 @@ function changeVolume(val) {
   return player.setVolume(val);
 }
 
+function getVolume() {
+  return player.getVolume();
+}
+
 function triggerOnVideoChange(){
   subscribers.videoChange.forEach((callback) => callback(nowPlaying));
 }
@@ -71,6 +75,7 @@ function pauseYoutubeVideo() {
 
 export default {
   changeVolume,
+  getVolume,
   initPlayer,
   playNextVideo,
   playYoutubeVideo,

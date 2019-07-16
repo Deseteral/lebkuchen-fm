@@ -8,6 +8,7 @@ function speechApiSay(message, callback?) {
   const msg = new SpeechSynthesisUtterance();
   // @ts-ignore
   window.crappyBugHackUtterances.push(msg);
+  const savedVolume = youtubePlayer.getVolume();
   youtubePlayer.changeVolume(10);
   msg.text = message;
   msg.voice = window.speechSynthesis
@@ -16,7 +17,7 @@ function speechApiSay(message, callback?) {
   msg.lang = 'pl-PL';
 
   msg.onend = () => {
-    youtubePlayer.changeVolume(100);
+    youtubePlayer.changeVolume(savedVolume);
     if (callback) {
       callback();
     }
