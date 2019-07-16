@@ -2,14 +2,13 @@ import youtubePlayer from './youtubePlayer';
 
 window.speechSynthesis.getVoices();
 
-function speechApiSay(message, callback?) {
+async function speechApiSay(message, callback?) {
   // @ts-ignore
   window.crappyBugHackUtterances = [];
   const msg = new SpeechSynthesisUtterance();
   // @ts-ignore
   window.crappyBugHackUtterances.push(msg);
-  const savedVolume = youtubePlayer.getVolume();
-  console.log(`savedVolume: ${savedVolume}`);
+  const savedVolume = await youtubePlayer.getVolume();
   youtubePlayer.changeVolume(10);
   msg.text = message;
   msg.voice = window.speechSynthesis
