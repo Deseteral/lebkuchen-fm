@@ -13,6 +13,7 @@ import HelpCommand from '../HelpCommand';
 import XListCommand from '../XListCommand';
 import VolumeCommand from '../VolumeCommand';
 import ResumeCommand from '../ResumeCommand';
+import RandomCommand from '../RandomCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -29,6 +30,7 @@ function initialize() {
   CommandRegistry.register(VolumeCommand);
   CommandRegistry.register(ResumeCommand);
   CommandRegistry.register(PauseCommand);
+  CommandRegistry.register(RandomCommand);
 }
 
 export default {
