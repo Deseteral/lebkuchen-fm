@@ -1,6 +1,5 @@
 import CommandRegistry from '../commands/registry/CommandRegistry';
-
-const PROMPT = '/fm';
+import Configuration from '../application/Configuration';
 
 function requireMinLength(minLength: number, tokens: string[]) : boolean {
   return (tokens.length < minLength);
@@ -13,7 +12,7 @@ function executeCommand(textCommand: string) : Promise<string> {
       .filter(s => s !== '')
       .map(s => s.trim());
 
-    if (tokens[0] !== PROMPT) {
+    if (tokens[0] !== Configuration.COMMAND) {
       const errorMessage = `Given text message is not a command. Expected ${PROMPT} prompt, received ${tokens[0]}`; // tslint:disable-line
       const err = new Error(errorMessage);
       reject(err);
