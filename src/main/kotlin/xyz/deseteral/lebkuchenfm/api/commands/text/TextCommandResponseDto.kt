@@ -21,10 +21,10 @@ internal class TextCommandResponseDto {
     }
 
     constructor(exception: TextIsNotACommandException) {
-        this.response = exception.message
+        this.response = exception.message.toString()
     }
 
     constructor(exception: NoSuchCommandProcessorException) {
-        this.response = exception.message
+        this.response = exception.message.toString()
     }
 }

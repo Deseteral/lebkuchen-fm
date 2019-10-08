@@ -10,8 +10,11 @@ class CommandTest extends Specification {
 
     @Unroll
     def 'should #desc'() {
+        given:
+        def command = new Command(key, [])
+
         when:
-        def result = new Command(key, []).matchProcessor(testCommand)
+        def result = CommandKt.matchProcessor(command, testCommand)
 
         then:
         result == matches
@@ -35,8 +38,8 @@ class CommandTest extends Specification {
         }
 
         @Override
-        Optional<String> getShortKey() {
-            return Optional.of('t')
+        String getShortKey() {
+            return 't'
         }
 
         @Override

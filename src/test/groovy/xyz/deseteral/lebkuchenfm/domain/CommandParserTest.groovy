@@ -14,9 +14,9 @@ class CommandParserTest extends Specification {
         def command = parser.parse(text)
 
         then:
-        command.present
-        command.get().key == key
-        command.get().args == args
+        command != null
+        command.key == key
+        command.args == args
 
         where:
         title                                | text                                  || key      | args
@@ -34,12 +34,11 @@ class CommandParserTest extends Specification {
         def command = parser.parse(text)
 
         then:
-        !command.present
+        command == null
 
         where:
         title                          | text
         'string that is not a command' | 'some test text'
         'empty string'                 | ''
-        'null'                         | null
     }
 }

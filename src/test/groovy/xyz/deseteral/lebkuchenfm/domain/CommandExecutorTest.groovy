@@ -74,8 +74,8 @@ class TestCommand implements CommandProcessor {
     }
 
     @Override
-    Optional<String> getShortKey() {
-        return Optional.of('t')
+    String getShortKey() {
+        return 't'
     }
 
     @Override
@@ -96,8 +96,8 @@ class TestCommandWithArgs implements CommandProcessor {
     }
 
     @Override
-    Optional<String> getShortKey() {
-        return Optional.of('twa')
+    String getShortKey() {
+        return 'twa'
     }
 
     @Override
