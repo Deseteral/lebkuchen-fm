@@ -1,6 +1,8 @@
-package xyz.deseteral.lebkuchenfm.domain
+package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
 import org.springframework.stereotype.Component
+import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
+import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 
 @Component
 internal class PingCommandProcessor : CommandProcessor {

@@ -1,6 +1,8 @@
-package xyz.deseteral.lebkuchenfm.domain
+package xyz.deseteral.lebkuchenfm.domain.commands.parser
 
-internal object CommandParser {
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
+
+internal object TextCommandParser {
     fun parse(text: String): Command? {
         val tokens = text.split(" ")
             .map { it.trim() }

@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.api.commands.text
+package xyz.deseteral.lebkuchenfm.api.commands.text.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

@@ -2,13 +2,13 @@ package xyz.deseteral.lebkuchenfm.domain
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.domain.CommandParser
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
 
 @Unroll
-class CommandParserTest extends Specification {
+class TextCommandParserTest extends Specification {
     def 'should parse #title'() {
         given:
-        def parser = new CommandParser()
+        def parser = new TextCommandParser()
 
         when:
         def command = parser.parse(text)
@@ -28,7 +28,7 @@ class CommandParserTest extends Specification {
 
     def 'should not parse #title'() {
         given:
-        def parser = new CommandParser()
+        def parser = new TextCommandParser()
 
         when:
         def command = parser.parse(text)
