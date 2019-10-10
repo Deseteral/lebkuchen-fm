@@ -3,13 +3,13 @@ package xyz.deseteral.lebkuchenfm.domain.commands.parser
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 
 internal object TextCommandParser {
-    fun parse(text: String): Command? {
+    fun parse(text: String): Command {
         val tokens = text.split(" ")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
 
         if (tokens.isEmpty() || tokens.first() != "/fm") {
-            return null
+            throw TextIsNotACommandException(text)
         }
 
         return Command(

@@ -16,11 +16,6 @@ class CommandExecutorService(val commandProcessors: List<CommandProcessor>) {
 
     fun processFromText(commandText: String): CommandProcessingResponse {
         val command = TextCommandParser.parse(commandText)
-
-        if (command != null) {
-            return this.process(command)
-        } else {
-            throw TextIsNotACommandException(commandText)
-        }
+        return this.process(command)
     }
 }

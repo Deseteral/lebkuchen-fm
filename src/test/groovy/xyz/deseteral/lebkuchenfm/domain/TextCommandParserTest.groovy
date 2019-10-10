@@ -3,6 +3,7 @@ package xyz.deseteral.lebkuchenfm.domain
 import spock.lang.Specification
 import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Unroll
 class TextCommandParserTest extends Specification {
@@ -31,14 +32,15 @@ class TextCommandParserTest extends Specification {
         def parser = new TextCommandParser()
 
         when:
-        def command = parser.parse(text)
+        parser.parse(text)
 
         then:
-        command == null
+        TextIsNotACommandException ex = thrown()
+        ex.message == message
 
         where:
-        title                          | text
-        'string that is not a command' | 'some test text'
-        'empty string'                 | ''
+        title                          | text             || message
+        'string that is not a command' | 'some test text' || "Text 'some test text' is not a command"
+        'empty string'                 | ''               || "Text '' is not a command"
     }
 }
