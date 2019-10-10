@@ -5,7 +5,6 @@ import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.commands.model.matchProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
-import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Component
 class CommandExecutorService(val commandProcessors: List<CommandProcessor>) {
