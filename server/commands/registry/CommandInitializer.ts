@@ -14,6 +14,7 @@ import XListCommand from '../XListCommand';
 import VolumeCommand from '../VolumeCommand';
 import ResumeCommand from '../ResumeCommand';
 import RandomCommand from '../RandomCommand';
+import RandomNCommand from '../RandomNCommand';
 
 function initialize() {
   CommandRegistry.register(EchoCommand);
@@ -31,6 +32,7 @@ function initialize() {
   CommandRegistry.register(ResumeCommand);
   CommandRegistry.register(PauseCommand);
   CommandRegistry.register(RandomCommand);
+  CommandRegistry.register(RandomNCommand);
 }
 
 export default {
