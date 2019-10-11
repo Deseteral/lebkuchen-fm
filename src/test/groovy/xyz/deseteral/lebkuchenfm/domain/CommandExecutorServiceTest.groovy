@@ -3,15 +3,21 @@ package xyz.deseteral.lebkuchenfm.domain
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
+import xyz.deseteral.lebkuchenfm.domain.commands.CommandExecutorService
+import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.deseteral.lebkuchenfm.domain.commands.NoSuchCommandProcessorException
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
+import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 
 @Unroll
-class CommandExecutorTest extends Specification {
+class CommandExecutorServiceTest extends Specification {
     @Shared
     def testCommand = new TestCommand()
     @Shared
     def testCommandWithArgs = new TestCommandWithArgs()
     @Shared
-    def commandExecutor = new CommandExecutor([testCommand, testCommandWithArgs])
+    def commandExecutor = new CommandExecutorService([testCommand, testCommandWithArgs])
 
     def 'should resolve #title'() {
         when:
@@ -74,8 +80,8 @@ class TestCommand implements CommandProcessor {
     }
 
     @Override
-    Optional<String> getShortKey() {
-        return Optional.of('t')
+    String getShortKey() {
+        return 't'
     }
 
     @Override
@@ -96,8 +102,8 @@ class TestCommandWithArgs implements CommandProcessor {
     }
 
     @Override
-    Optional<String> getShortKey() {
-        return Optional.of('twa')
+    String getShortKey() {
+        return 'twa'
     }
 
     @Override

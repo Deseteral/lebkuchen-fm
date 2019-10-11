@@ -2,21 +2,22 @@ package xyz.deseteral.lebkuchenfm.domain
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.domain.CommandParser
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Unroll
-class CommandParserTest extends Specification {
+class TextCommandParserTest extends Specification {
     def 'should parse #title'() {
         given:
-        def parser = new CommandParser()
+        def parser = new TextCommandParser()
 
         when:
         def command = parser.parse(text)
 
         then:
-        command.present
-        command.get().key == key
-        command.get().args == args
+        command != null
+        command.key == key
+        command.args == args
 
         where:
         title                                | text                                  || key      | args
@@ -28,18 +29,18 @@ class CommandParserTest extends Specification {
 
     def 'should not parse #title'() {
         given:
-        def parser = new CommandParser()
+        def parser = new TextCommandParser()
 
         when:
-        def command = parser.parse(text)
+        parser.parse(text)
 
         then:
-        !command.present
+        TextIsNotACommandException ex = thrown()
+        ex.message == message
 
         where:
-        title                          | text
-        'string that is not a command' | 'some test text'
-        'empty string'                 | ''
-        'null'                         | null
+        title                          | text             || message
+        'string that is not a command' | 'some test text' || "Text 'some test text' is not a command"
+        'empty string'                 | ''               || "Text '' is not a command"
     }
 }

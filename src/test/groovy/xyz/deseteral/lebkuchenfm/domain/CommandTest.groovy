@@ -3,6 +3,10 @@ package xyz.deseteral.lebkuchenfm.domain
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
+import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandKt
+import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 
 class CommandTest extends Specification {
     @Shared
@@ -10,8 +14,11 @@ class CommandTest extends Specification {
 
     @Unroll
     def 'should #desc'() {
+        given:
+        def command = new Command(key, [])
+
         when:
-        def result = new Command(key, []).matchProcessor(testCommand)
+        def result = CommandKt.matchProcessor(command, testCommand)
 
         then:
         result == matches
@@ -35,8 +42,8 @@ class CommandTest extends Specification {
         }
 
         @Override
-        Optional<String> getShortKey() {
-            return Optional.of('t')
+        String getShortKey() {
+            return 't'
         }
 
         @Override
