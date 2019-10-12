@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.domain
+package xyz.deseteral.lebkuchenfm.domain.commands.model
 
 import spock.lang.Shared
 import spock.lang.Specification
