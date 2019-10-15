@@ -4,8 +4,8 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
-import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Unroll
 class CommandExecutorServiceTest extends Specification {
