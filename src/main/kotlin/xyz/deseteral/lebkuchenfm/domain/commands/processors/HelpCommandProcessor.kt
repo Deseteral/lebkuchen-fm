@@ -21,7 +21,10 @@ internal class HelpCommandProcessor(val commandProcessors: List<CommandProcessor
         list.add(this)
         list.sortBy { it.key }
 
-        val commandHelpMessages = list.joinToString("\n") { "- ${it.key}: ${it.helpMessage}" }
+        val commandHelpMessages = list.joinToString("\n") {
+            val shortKeyText = if (it.shortKey != null) " [${it.shortKey}]" else ""
+            "- ${it.key}${shortKeyText}: ${it.helpMessage}"
+        }
 
         return CommandProcessingResponse(listOf(
             "Lista komend:",

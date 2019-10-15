@@ -23,6 +23,6 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
         response.statusCode == HttpStatus.OK
         response.body.response == """Lista komend:
                                     |- help: Pokazuje tę wiadomość ;)
-                                    |- ping: Ping pongs you""".stripMargin()
+                                    |- ping [p]: Ping pongs you""".stripMargin()
     }
 }
