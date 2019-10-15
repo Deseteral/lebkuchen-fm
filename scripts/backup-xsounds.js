@@ -1,6 +1,5 @@
-const fs = require('fs');
 const path = require('path');
-const fetch = require('node-fetch');
+const { downloadFile, readJson } = require('./helpers');
 
 if (!process.argv[2] && !process.argv[3]) {
   console.log('backup-xsounds <lebkuchen-fm service URL> <backup directory path>');
@@ -21,41 +20,31 @@ function mapSoundToFileInfo(sound) {
   });
 }
 
-function saveResponseToFile(response, fileInfo) {
+function mapFileInfoToPromise({ name, url, extension }) {
   return new Promise((resolve, reject) => {
-    const filePath = path.resolve(backupDirectoryPath, `${fileInfo.name}${fileInfo.extension}`);
-    const fileStream = fs.createWriteStream(filePath);
-
-    response.body.pipe(fileStream);
-    response.body.on('error', err => reject(err));
-    fileStream.on('finish', () => resolve());
-  });
-}
-
-function mapFileInfoToPromise(fileInfo) {
-  return new Promise((resolve, reject) => {
-    fetch(fileInfo.url)
-      .then(response => saveResponseToFile(response, fileInfo))
+    const filePath = path.resolve(backupDirectoryPath, `${name}${extension}`);
+    downloadFile({ url, filePath })
       .then(() => {
         progress++;
 
-        console.log(`Saved sound ${progress} of ${soundCount}`);
+        const counter = `[${progress.toString().padStart(`${soundCount}`.length, ' ')}/${soundCount}]`;
+        console.log(`${counter} Saved "${name}"`);
         resolve();
       })
       .catch((err) => {
-        console.error(`Failed to fetch ${fileInfo.name} (${fileInfo.url})`);
+        console.error(`Failed to fetch ${name} (${url})`);
         console.error(err);
-        process.exit(1);
       });
   });
 }
 
 (async () => {
-  const soundList = (await (await fetch(`${serviceUrl}/xsounds`)).json());
+  const soundList = await readJson(`${serviceUrl}/xsounds`);
 
   soundCount = soundList.length;
 
   Promise
-    .all(soundList.map(mapSoundToFileInfo).map(mapFileInfoToPromise))
-    .then(() => console.log('Done!'));
+    .allSettled(soundList.map(mapSoundToFileInfo).map(mapFileInfoToPromise))
+    .then(() => console.log('Done!'))
+    .catch(console.error);
 })();
