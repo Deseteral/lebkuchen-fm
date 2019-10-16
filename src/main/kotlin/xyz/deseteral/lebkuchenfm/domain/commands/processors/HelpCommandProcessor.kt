@@ -5,7 +5,19 @@ import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 
 @Component
-internal class HelpCommandProcessor(val commandProcessors: List<CommandProcessor>) : CommandProcessor {
+internal class HelpCommandProcessor(commandProcessors: List<CommandProcessor>) : CommandProcessor {
+    private final val processors: List<CommandProcessor>
+
+    init {
+        val list = mutableListOf<CommandProcessor>().also {
+            it.addAll(commandProcessors)
+            it.add(this)
+        }
+        list.sortBy { it.key }
+
+        this.processors = list.toList()
+    }
+
     override val key: String
         get() = "help"
 
@@ -16,12 +28,7 @@ internal class HelpCommandProcessor(val commandProcessors: List<CommandProcessor
         get() = "Pokazuje tę wiadomość ;)"
 
     override fun process(args: List<String>): CommandProcessingResponse {
-        val list = mutableListOf<CommandProcessor>();
-        list.addAll(commandProcessors)
-        list.add(this)
-        list.sortBy { it.key }
-
-        val commandHelpMessages = list.joinToString("\n") {
+        val commandHelpMessages = processors.joinToString("\n") {
             val shortKeyText = if (it.shortKey != null) " [${it.shortKey}]" else ""
             "- ${it.key}${shortKeyText}: ${it.helpMessage}"
         }
