@@ -9,10 +9,9 @@ internal class HelpCommandProcessor(commandProcessors: List<CommandProcessor>) :
     private final val processors: List<CommandProcessor>
 
     init {
-        val list = mutableListOf<CommandProcessor>().also {
-            it.addAll(commandProcessors)
-            it.add(this)
-        }
+        val list = mutableListOf<CommandProcessor>()
+        list.addAll(commandProcessors)
+        list.add(this)
         list.sortBy { it.key }
 
         this.processors = list.toList()
