@@ -1,11 +1,10 @@
-package xyz.deseteral.lebkuchenfm.api.commands.text
+package xyz.deseteral.lebkuchenfm.api.commands.text.model
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandResponseDto
+import xyz.deseteral.lebkuchenfm.domain.commands.NoSuchCommandProcessorException
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
-import xyz.deseteral.lebkuchenfm.domain.commands.NoSuchCommandProcessorException
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 class TextCommandResponseDtoTest extends Specification {

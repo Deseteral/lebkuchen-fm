@@ -1,10 +1,10 @@
-package xyz.deseteral.lebkuchenfm.domain
+package xyz.deseteral.lebkuchenfm.domain.commands.model
 
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandKt
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 

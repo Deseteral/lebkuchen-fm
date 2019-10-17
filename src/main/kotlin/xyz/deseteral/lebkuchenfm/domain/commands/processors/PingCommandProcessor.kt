@@ -10,7 +10,7 @@ internal class PingCommandProcessor : CommandProcessor {
         get() = "ping"
 
     override val shortKey: String?
-        get() = null
+        get() = "p"
 
     override val helpMessage: String
         get() = "Ping pongs you"

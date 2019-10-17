@@ -1,4 +1,4 @@
-package xyz.deseteral.lebkuchenfm.domain
+package xyz.deseteral.lebkuchenfm.domain.commands.parser
 
 import spock.lang.Specification
 import spock.lang.Unroll
