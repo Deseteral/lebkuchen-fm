@@ -28,9 +28,7 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
 
         then:
         listResponse.statusCode == HttpStatus.OK
-        parseJsonText(listResponse.body) == [
-            response: '- test'
-        ]
+        parseJsonText(listResponse.body) == [response: '- test']
     }
 
     def 'should list all sounds'() {

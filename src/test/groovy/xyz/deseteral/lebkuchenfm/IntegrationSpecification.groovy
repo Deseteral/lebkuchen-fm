@@ -8,7 +8,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
-import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
 
 import static groovy.json.JsonOutput.toJson
@@ -16,7 +15,6 @@ import static groovy.json.JsonOutput.toJson
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 abstract class IntegrationSpecification extends Specification {
     static private final JsonSlurper JSON_SLURPER = new JsonSlurper()
 
