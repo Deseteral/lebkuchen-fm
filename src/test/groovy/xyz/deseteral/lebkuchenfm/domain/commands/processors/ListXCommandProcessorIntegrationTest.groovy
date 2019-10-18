@@ -2,7 +2,6 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
 import org.springframework.http.HttpStatus
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandResponseDto
 
 import java.util.stream.Collectors
 
@@ -25,11 +24,13 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
         def listRequest = textCommandRequest('/fm listx')
 
         when:
-        def listResponse = restTemplate.exchange(listRequest, TextCommandResponseDto)
+        def listResponse = restTemplate.exchange(listRequest, String)
 
         then:
         listResponse.statusCode == HttpStatus.OK
-        listResponse.body.response == '- test'
+        parseJsonText(listResponse.body) == [
+            response: '- test'
+        ]
     }
 
     def 'should list all sounds'() {
@@ -42,22 +43,24 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
         ].stream().map({ it -> textCommandRequest(it) }).collect(Collectors.toList())
 
         when:
-        def responses = requests.stream().map({ it -> restTemplate.exchange(it, TextCommandResponseDto) })
+        def responses = requests.stream().map({ it -> restTemplate.exchange(it, String) })
 
         then:
-        responses.forEach({ it-> assert it.statusCode == HttpStatus.OK })
+        responses.forEach({ it -> assert it.statusCode == HttpStatus.OK })
 
         and:
         def listRequest = textCommandRequest('/fm listx')
 
         when:
-        def listResponse = restTemplate.exchange(listRequest, TextCommandResponseDto)
+        def listResponse = restTemplate.exchange(listRequest, String)
 
         then:
         listResponse.statusCode == HttpStatus.OK
-        listResponse.body.response == """- a-test
-                                        |- b-test
-                                        |- c-test
-                                        |- d-test""".stripMargin()
+        parseJsonText(listResponse.body) == [
+            response: """- a-test
+                        |- b-test
+                        |- c-test
+                        |- d-test""".stripMargin()
+        ]
     }
 }
