@@ -11,10 +11,7 @@ import static groovy.json.JsonOutput.toJson
 class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
     def 'should display help message for all commands'() {
         given:
-        def body = [text: '/fm help']
-        def request = RequestEntity.post(localUri('/commands/text'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+        def request = textCommandRequest('/fm help')
 
         when:
         def response = restTemplate.exchange(request, TextCommandResponseDto)
@@ -22,7 +19,9 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
         then:
         response.statusCode == HttpStatus.OK
         response.body.response == """Lista komend:
+                                    |- addx: Dodaje efekt dźwiękowy `addx sound name|url`
                                     |- help: Pokazuje tę wiadomość ;)
+                                    |- listx: Wypisuje listę czaderskich dźwięków w bazie
                                     |- ping [p]: Ping pongs you""".stripMargin()
     }
 }

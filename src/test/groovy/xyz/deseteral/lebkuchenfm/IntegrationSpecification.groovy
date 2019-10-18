@@ -1,15 +1,24 @@
 package xyz.deseteral.lebkuchenfm
 
+import groovy.json.JsonSlurper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.http.MediaType
+import org.springframework.http.RequestEntity
+import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Specification
+
+import static groovy.json.JsonOutput.toJson
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 abstract class IntegrationSpecification extends Specification {
+    static private final JsonSlurper JSON_SLURPER = new JsonSlurper()
 
     @Value('${local.server.port}')
     protected int port
@@ -17,7 +26,21 @@ abstract class IntegrationSpecification extends Specification {
     @Autowired
     TestRestTemplate restTemplate
 
+    @Autowired
+    MongoTemplate mongoTemplate
+
     protected URI localUri(String endpoint) {
         return new URI("http://localhost:$port$endpoint")
+    }
+
+    protected RequestEntity textCommandRequest(String command) {
+        def body = [text: command]
+        return RequestEntity.post(localUri('/commands/text'))
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(toJson(body))
+    }
+
+    protected static Object parseJsonText(String string) {
+        return JSON_SLURPER.parseText(string)
     }
 }
