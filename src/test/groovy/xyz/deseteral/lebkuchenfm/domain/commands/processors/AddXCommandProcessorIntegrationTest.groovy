@@ -1,9 +1,14 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
+import org.bson.Document
 import org.springframework.http.HttpStatus
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 
 class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
+    def setup() {
+        mongoTemplate.getDb().getCollection("x").deleteMany(new Document())
+    }
+
     def 'should not add sounds with the same name'() {
         given:
         def firstAddRequest = textCommandRequest('/fm addx test|first-url.com')
