@@ -13,7 +13,7 @@ class XSoundService(private val xSoundRepository: XSoundRepository) {
     }
 
     fun addNewSound(soundName: String, url: String) {
-        val xSound = XSound(soundName, url, 0)
+        val xSound = XSound(soundName, url, timesPlayed =  0)
 
         try {
             xSoundRepository.save(xSound)

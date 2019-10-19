@@ -29,7 +29,11 @@ abstract class IntegrationSpecification extends Specification {
     MongoTemplate mongoTemplate
 
     def setup() {
-        mongoTemplate.getDb().getCollection("x").deleteMany(new Document())
+        def dropCollectionWithoutDroppingIndexes = { collectionName ->
+            mongoTemplate.getDb().getCollection("x").deleteMany(new Document())
+        }
+
+        dropCollectionWithoutDroppingIndexes('x')
     }
 
     protected URI localUri(String endpoint) {
