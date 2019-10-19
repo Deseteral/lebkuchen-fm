@@ -6,27 +6,6 @@ import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 import java.util.stream.Collectors
 
 class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
-    def 'should add new sound'() {
-        given:
-        def request = textCommandRequest('/fm addx test|testurl.com')
-
-        when:
-        def response = restTemplate.exchange(request, String)
-
-        then:
-        response.statusCode == HttpStatus.OK
-
-        and:
-        def listRequest = textCommandRequest('/fm listx')
-
-        when:
-        def listResponse = restTemplate.exchange(listRequest, String)
-
-        then:
-        listResponse.statusCode == HttpStatus.OK
-        parseJsonText(listResponse.body) == [response: '- test']
-    }
-
     def 'should list all sounds'() {
         given:
         def requests = [
