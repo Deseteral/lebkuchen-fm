@@ -14,13 +14,13 @@ class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandPr
         get() = null
 
     override val helpMessage: String
-        get() = "Dodaje efekt dźwiękowy `addx sound name|url`"
+        get() = "Dodaje efekt dźwiękowy (`addx sound name|url`)"
 
     override fun process(args: List<String>): CommandProcessingResponse {
-        if (args.isEmpty()) return CommandProcessingResponse("No ale co chcesz dodać?") // TODO: Unit test that
+        if (args.isEmpty()) return CommandProcessingResponse("Musisz podać nazwę i URL (`addx sound name|url`)")
 
-        val addxArgs = args[0].split('|')
-        if (addxArgs.size != 2) return CommandProcessingResponse("Ilość argumentów nie jest okej") // TODO: Unit test that
+        val addxArgs = args[0].split('|').map { it.trim() }.filter { it.isNotEmpty() }
+        if (addxArgs.size != 2) return CommandProcessingResponse("Musisz podać nazwę i URL (`addx sound name|url`)")
 
         val (soundName, url) = addxArgs
         xSoundService.addNewSound(soundName, url)

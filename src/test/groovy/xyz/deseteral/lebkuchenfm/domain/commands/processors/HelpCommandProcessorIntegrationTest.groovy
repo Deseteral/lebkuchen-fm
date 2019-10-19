@@ -15,7 +15,7 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
         response.statusCode == HttpStatus.OK
         parseJsonText(response.body) == [
             response: """Lista komend:
-                        |- addx: Dodaje efekt dźwiękowy `addx sound name|url`
+                        |- addx: Dodaje efekt dźwiękowy (`addx sound name|url`)
                         |- help: Pokazuje tę wiadomość ;)
                         |- listx: Wypisuje listę czaderskich dźwięków w bazie
                         |- ping [p]: Ping pongs you""".stripMargin()
