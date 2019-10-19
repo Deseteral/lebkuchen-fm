@@ -17,10 +17,10 @@ class TextCommandResponseDtoTest extends Specification {
         responseDto.response == expected
 
         where:
-        desc                              | value                                                              || expected
-        'string'                          | 'test value'                                                       || 'test value'
-        'CommandProcessingResponse'       | new CommandProcessingResponse('test value')                        || 'test value'
-        'TextIsNotACommandException'      | new TextIsNotACommandException('test value')                       || "Text 'test value' is not a command"
-        'NoSuchCommandProcessorException' | new NoSuchCommandProcessorException(new Command('test value', [])) || "Command 'test value' does not exist"
+        desc                              | value                                                                  || expected
+        'string'                          | 'test value'                                                           || 'test value'
+        'CommandProcessingResponse'       | new CommandProcessingResponse('test value')                            || 'test value'
+        'TextIsNotACommandException'      | new TextIsNotACommandException('test value')                           || "Text 'test value' is not a command"
+        'NoSuchCommandProcessorException' | new NoSuchCommandProcessorException(new Command('test value', [], '')) || "Command 'test value' does not exist"
     }
 }

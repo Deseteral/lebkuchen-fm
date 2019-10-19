@@ -18,7 +18,7 @@ class CommandExecutorServiceTest extends Specification {
 
     def 'should resolve #title'() {
         when:
-        def processingResponse = commandExecutor.process(new Command(key, args))
+        def processingResponse = commandExecutor.process(new Command(key, args, args.join(' ')))
 
         then:
         processingResponse.response == response
@@ -33,7 +33,7 @@ class CommandExecutorServiceTest extends Specification {
 
     def 'should handle not existing command'() {
         when:
-        commandExecutor.process(new Command('notExisting', []))
+        commandExecutor.process(new Command('notExisting', [], ''))
 
         then:
         NoSuchCommandProcessorException ex = thrown()
@@ -90,7 +90,7 @@ class TestCommand implements CommandProcessor {
 class TestCommandWithArgs implements CommandProcessor {
     @Override
     CommandProcessingResponse process(Command command) {
-        return new CommandProcessingResponse("TestCommandWithArgs [${args.join(',')}]")
+        return new CommandProcessingResponse("TestCommandWithArgs [${command.args.join(',')}]")
     }
 
     @Override

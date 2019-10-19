@@ -2,6 +2,7 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
 import spock.lang.Specification
 import spock.lang.Unroll
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
 class AddXCommandProcessorTest extends Specification {
@@ -11,7 +12,7 @@ class AddXCommandProcessorTest extends Specification {
         def processor = new AddXCommandProcessor(Mock(XSoundService))
 
         when:
-        def response = processor.process(args)
+        def response = processor.process(new Command('addx', args, args.join(' ')))
 
         then:
         response.response == 'Musisz podać nazwę i URL (`addx sound name|url`)'

@@ -10,7 +10,7 @@ import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
 class CommandExecutorService(val commandProcessors: List<CommandProcessor>) {
     fun process(command: Command): CommandProcessingResponse = commandProcessors
         .firstOrNull { processor -> matchProcessor(command, processor) }
-        ?.process(command.args)
+        ?.process(command)
         ?: throw NoSuchCommandProcessorException(command)
 
     fun processFromText(commandText: String): CommandProcessingResponse {

@@ -15,7 +15,7 @@ class CommandTest extends Specification {
     @Unroll
     def 'should #desc'() {
         given:
-        def command = new Command(key, [])
+        def command = new Command(key, [], '')
 
         when:
         def result = CommandKt.matchProcessor(command, testCommand)
