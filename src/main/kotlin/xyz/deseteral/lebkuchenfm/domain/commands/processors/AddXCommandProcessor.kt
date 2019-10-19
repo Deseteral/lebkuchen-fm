@@ -5,7 +5,7 @@ import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
-private val MESSAGE_WRONG_ARGS = "Musisz podać nazwę i URL (`addx sound name|url`)"
+private const val MESSAGE_WRONG_ARGS = "Musisz podać nazwę i URL (`addx sound name|url`)"
 
 @Component
 class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandProcessor {
