@@ -22,6 +22,7 @@ class AddXCommandProcessorTest extends Specification {
         'one arg'                  | ['test']
         'one arg and empty string' | ['test|']
         'two whitespaces'          | [' | ']
+        'two empty strings'        | ['|']
         'three or more args'       | ['test|url|garbage']
     }
 }
