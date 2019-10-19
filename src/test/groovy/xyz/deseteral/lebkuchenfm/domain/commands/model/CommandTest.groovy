@@ -32,7 +32,7 @@ class CommandTest extends Specification {
 
     class TestCommand implements CommandProcessor {
         @Override
-        CommandProcessingResponse process(List<String> args) {
+        CommandProcessingResponse process(Command command) {
             return new CommandProcessingResponse('TestCommand')
         }
 

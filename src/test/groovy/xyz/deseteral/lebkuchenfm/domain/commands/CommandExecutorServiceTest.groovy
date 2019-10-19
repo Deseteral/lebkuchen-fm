@@ -67,7 +67,7 @@ class CommandExecutorServiceTest extends Specification {
 
 class TestCommand implements CommandProcessor {
     @Override
-    CommandProcessingResponse process(List<String> args) {
+    CommandProcessingResponse process(Command command) {
         return new CommandProcessingResponse('TestCommand')
     }
 
@@ -89,7 +89,7 @@ class TestCommand implements CommandProcessor {
 
 class TestCommandWithArgs implements CommandProcessor {
     @Override
-    CommandProcessingResponse process(List<String> args) {
+    CommandProcessingResponse process(Command command) {
         return new CommandProcessingResponse("TestCommandWithArgs [${args.join(',')}]")
     }
 
