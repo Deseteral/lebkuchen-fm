@@ -3,6 +3,7 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 import org.springframework.stereotype.Component
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
+import xyz.deseteral.lebkuchenfm.domain.x.SoundAlreadyExistsException
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
 private const val MESSAGE_WRONG_ARGS = "Musisz podać nazwę i URL (`addx sound name|url`)"
@@ -25,7 +26,12 @@ class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandPr
         if (addxArgs.size != 2) return CommandProcessingResponse(MESSAGE_WRONG_ARGS)
 
         val (soundName, url) = addxArgs
-        xSoundService.addNewSound(soundName, url)
+        try {
+            xSoundService.addNewSound(soundName, url)
+        } catch (ex: SoundAlreadyExistsException) {
+            return CommandProcessingResponse("Dźwięk \"$soundName\" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.")
+        }
+        
         return CommandProcessingResponse("Dodałem efekt \"$soundName\" do biblioteki!")
     }
 }
