@@ -23,7 +23,7 @@ class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandPr
     override fun process(command: Command): CommandProcessingResponse {
         if (command.args.isEmpty()) return CommandProcessingResponse(MESSAGE_WRONG_ARGS)
 
-        val addxArgs = command.args[0].split('|').map { it.trim() }.filter { it.isNotEmpty() }
+        val addxArgs = command.rawArgs.split('|').map { it.trim() }.filter { it.isNotEmpty() }
         if (addxArgs.size != 2) return CommandProcessingResponse(MESSAGE_WRONG_ARGS)
 
         val (soundName, url) = addxArgs
