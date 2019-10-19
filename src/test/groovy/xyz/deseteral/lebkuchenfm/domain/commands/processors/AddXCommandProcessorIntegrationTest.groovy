@@ -4,6 +4,33 @@ import org.springframework.http.HttpStatus
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 
 class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
+    def "should add sound with spaces in it's name"() {
+        given:
+        def firstAddRequest = textCommandRequest('/fm addx super test sound|super-test-sound.com')
+
+        when:
+        def firstAddResponse = restTemplate.exchange(firstAddRequest, String)
+
+        then:
+        firstAddResponse.statusCode == HttpStatus.OK
+        parseJsonText(firstAddResponse.body) == [response: 'Dodałem efekt "super test sound" do biblioteki!']
+
+        and:
+        def listResponse = restTemplate.getForEntity('/xsounds', String)
+
+        then:
+        listResponse.statusCode == HttpStatus.OK
+        parseJsonText(listResponse.body) == [
+            sounds: [
+                [
+                    name: 'super test sound',
+                    url: 'super-test-sound.com',
+                    timesPlayed: 0,
+                ]
+            ]
+        ]
+    }
+
     def 'should not add sounds with the same name'() {
         given:
         def firstAddRequest = textCommandRequest('/fm addx test|first-url.com')

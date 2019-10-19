@@ -12,9 +12,11 @@ internal object TextCommandParser {
             throw TextIsNotACommandException(text)
         }
 
+        val args = tokens.subList(2, tokens.size)
         return Command(
             key = tokens[1],
-            args = tokens.subList(2, tokens.size)
+            args = args,
+            rawArgs = args.joinToString(" ")
         )
     }
 }
