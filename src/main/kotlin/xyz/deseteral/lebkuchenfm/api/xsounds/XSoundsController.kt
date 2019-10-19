@@ -11,7 +11,7 @@ import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 class XSoundsController(val xSoundService: XSoundService) {
 
     @GetMapping
-    fun listAll() : XSoundsDto {
+    fun listAll(): XSoundsDto {
         return XSoundsDto(xSoundService.getAllXSounds())
     }
 }
