@@ -1,6 +1,7 @@
 package xyz.deseteral.lebkuchenfm
 
 import groovy.json.JsonSlurper
+import org.bson.Document
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,6 +27,10 @@ abstract class IntegrationSpecification extends Specification {
 
     @Autowired
     MongoTemplate mongoTemplate
+
+    def setup() {
+        mongoTemplate.getDb().getCollection("x").deleteMany(new Document())
+    }
 
     protected URI localUri(String endpoint) {
         return new URI("http://localhost:$port$endpoint")

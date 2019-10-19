@@ -6,10 +6,6 @@ import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 import java.util.stream.Collectors
 
 class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
-    def setup() {
-        mongoTemplate.getDb().drop()
-    }
-
     def 'should add new sound'() {
         given:
         def request = textCommandRequest('/fm addx test|testurl.com')
