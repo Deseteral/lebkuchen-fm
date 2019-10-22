@@ -50,8 +50,6 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
-        parseJsonText(response.body) == [
-            response: "Text 'some test string' is not a command"
-        ]
+        parseJsonText(response.body) == [response: "Text 'some test string' is not a command"]
     }
 }
