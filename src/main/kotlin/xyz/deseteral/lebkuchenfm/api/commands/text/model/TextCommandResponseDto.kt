@@ -17,7 +17,7 @@ internal class TextCommandResponseDto {
     }
 
     constructor(processingResponse: CommandProcessingResponse) {
-        this.response = processingResponse.response
+        this.response = processingResponse.getMessages().map { it.text }.joinToString("\n")
     }
 
     constructor(exception: TextIsNotACommandException) {

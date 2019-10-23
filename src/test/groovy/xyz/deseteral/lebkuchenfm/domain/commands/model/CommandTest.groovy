@@ -33,7 +33,7 @@ class CommandTest extends Specification {
     class TestCommand implements CommandProcessor {
         @Override
         CommandProcessingResponse process(List<String> args) {
-            return new CommandProcessingResponse('TestCommand')
+            return new SingleMessageResponse('TestCommand')
         }
 
         @Override
