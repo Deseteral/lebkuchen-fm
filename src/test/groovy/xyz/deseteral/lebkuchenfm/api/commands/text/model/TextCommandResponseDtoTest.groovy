@@ -21,6 +21,6 @@ class TextCommandResponseDtoTest extends Specification {
         'string'                          | 'test value'                                                       || 'test value'
         'CommandProcessingResponse'       | new CommandProcessingResponse('test value')                        || 'test value'
         'TextIsNotACommandException'      | new TextIsNotACommandException('test value')                       || "Text 'test value' is not a command"
-        'NoSuchCommandProcessorException' | new NoSuchCommandProcessorException(new Command('test value', [])) || "Command 'test value' does not exist"
+        'NoSuchCommandProcessorException' | new NoSuchCommandProcessorException(new Command('test value', '')) || "Command 'test value' does not exist"
     }
 }

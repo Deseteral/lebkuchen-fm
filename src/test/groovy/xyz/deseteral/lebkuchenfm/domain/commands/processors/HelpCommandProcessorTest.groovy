@@ -3,6 +3,7 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 import org.jetbrains.annotations.NotNull
 import spock.lang.Specification
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 
 class FakeTestCommandProcessor implements CommandProcessor {
@@ -32,7 +33,7 @@ class FakeTestCommandProcessor implements CommandProcessor {
     }
 
     @Override
-    CommandProcessingResponse process(@NotNull List<String> args) {
+    CommandProcessingResponse process(@NotNull Command command) {
         return null
     }
 }
@@ -48,7 +49,7 @@ class HelpCommandProcessorTest extends Specification {
         def processor = new HelpCommandProcessor(commandProcessors)
 
         when:
-        def processingResponse = processor.process([])
+        def processingResponse = processor.process(new Command('help', ''))
 
         then:
         processingResponse.response == """Lista komend:

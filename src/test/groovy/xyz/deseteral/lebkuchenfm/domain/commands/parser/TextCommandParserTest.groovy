@@ -17,14 +17,15 @@ class TextCommandParserTest extends Specification {
         then:
         command != null
         command.key == key
-        command.args == args
+        command.rawArgs == rawArgs
 
         where:
-        title                                | text                                  || key      | args
-        'simple command'                     | '/fm skip'                            || 'skip'   | []
-        'command with single argument'       | '/fm queue youtube-id'                || 'queue'  | ['youtube-id']
-        'command with many arguments'        | '/fm search some test phrase'         || 'search' | ['some', 'test', 'phrase']
-        'command with additional whitespace' | ' /fm  search  some   test  phrase  ' || 'search' | ['some', 'test', 'phrase']
+        title                                | text                                  || key      | rawArgs
+        'simple command'                     | '/fm skip'                            || 'skip'   | ''
+        'command with single argument'       | '/fm queue youtube-id'                || 'queue'  | 'youtube-id'
+        'command with many arguments'        | '/fm search some test phrase'         || 'search' | 'some test phrase'
+        'command with additional whitespace' | ' /fm  search  some   test  phrase  ' || 'search' | ' some   test  phrase  '
+        'command with pipe separated args'   | '/fm addx some name|example.com'      || 'addx'   | 'some name|example.com'
     }
 
     def 'should not parse #title'() {
@@ -40,6 +41,7 @@ class TextCommandParserTest extends Specification {
 
         where:
         title                          | text             || message
+        'prompt without key'           | '/fm'             | "Text '/fm' is not a command"
         'string that is not a command' | 'some test text' || "Text 'some test text' is not a command"
         'empty string'                 | ''               || "Text '' is not a command"
     }
