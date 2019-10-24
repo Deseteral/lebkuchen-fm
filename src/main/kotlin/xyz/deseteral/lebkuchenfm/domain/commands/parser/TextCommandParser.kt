@@ -13,9 +13,7 @@ internal object TextCommandParser {
         val prompt = tokens.first()
         val key = tokens[1]
 
-        if (tokens.isEmpty() || prompt != "/fm") {
-            throw TextIsNotACommandException(text)
-        }
+        if (prompt != "/fm") throw TextIsNotACommandException(text)
 
         val rawArgsIndex = (text.indexOf(key) + (key.length) + 1)
         val rawArgs = try {
