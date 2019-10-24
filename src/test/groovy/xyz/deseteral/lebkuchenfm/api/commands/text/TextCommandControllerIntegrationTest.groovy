@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandResponseDto
 
 import static groovy.json.JsonOutput.toJson
 
@@ -41,11 +40,11 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, TextCommandResponseDto)
+        def response = restTemplate.exchange(request, String)
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
-        response.body.response == "Command 'notExisting' does not exist"
+        parseJsonText(response.body) == [response: "Command 'notExisting' does not exist"]
     }
 
     def 'should respond to text that is not a command'() {
@@ -56,10 +55,10 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, TextCommandResponseDto)
+        def response = restTemplate.exchange(request, String)
 
         then:
         response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
-        response.body.response == "Text 'some test string' is not a command"
+        parseJsonText(response.body) == [response: "Text 'some test string' is not a command"]
     }
 }

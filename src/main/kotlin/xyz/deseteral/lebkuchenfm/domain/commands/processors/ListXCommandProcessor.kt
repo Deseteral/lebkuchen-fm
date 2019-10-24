@@ -4,20 +4,21 @@ import org.springframework.stereotype.Component
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
-import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
+import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
 @Component
-internal class PingCommandProcessor : CommandProcessor {
+class ListXCommandProcessor(private val xSoundService: XSoundService) : CommandProcessor {
     override val key: String
-        get() = "ping"
+        get() = "listx"
 
     override val shortKey: String?
-        get() = "p"
+        get() = null
 
     override val helpMessage: String
-        get() = "Ping pongs you"
+        get() = "Wypisuje listę czaderskich dźwięków w bazie"
 
     override fun process(command: Command): CommandProcessingResponse {
-        return SingleMessageResponse("pong")
+        val response = xSoundService.getAllXSounds().joinToString("\n") { "- ${it.name}" }
+        return CommandProcessingResponse(response)
     }
 }

@@ -19,22 +19,22 @@ class CommandExecutorServiceTest extends Specification {
 
     def 'should resolve #title'() {
         when:
-        def processingResponse = commandExecutor.process(new Command(key, args))
+        def processingResponse = commandExecutor.process(new Command(key, rawArgs))
 
         then:
         processingResponse.getMessages()*.text == [response]
 
         where:
-        title                             | key            | args             || response
-        'command'                         | 'test'         | []               || 'TestCommand'
-        'command with short key'          | 't'            | []               || 'TestCommand'
-        'command with args'               | 'testWithArgs' | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
-        'command with short key and args' | 'twa'          | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
+        title                             | key            | rawArgs     || response
+        'command'                         | 'test'         | ''          || 'TestCommand'
+        'command with short key'          | 't'            | ''          || 'TestCommand'
+        'command with args'               | 'testWithArgs' | 'some args' || 'TestCommandWithArgs [some,args]'
+        'command with short key and args' | 'twa'          | 'some args' || 'TestCommandWithArgs [some,args]'
     }
 
     def 'should handle not existing command'() {
         when:
-        commandExecutor.process(new Command('notExisting', []))
+        commandExecutor.process(new Command('notExisting', ''))
 
         then:
         NoSuchCommandProcessorException ex = thrown()
@@ -68,7 +68,7 @@ class CommandExecutorServiceTest extends Specification {
 
 class TestCommand implements CommandProcessor {
     @Override
-    CommandProcessingResponse process(List<String> args) {
+    CommandProcessingResponse process(Command command) {
         return new SingleMessageResponse('TestCommand')
     }
 
@@ -90,7 +90,7 @@ class TestCommand implements CommandProcessor {
 
 class TestCommandWithArgs implements CommandProcessor {
     @Override
-    CommandProcessingResponse process(List<String> args) {
+    CommandProcessingResponse process(Command command) {
         return new SingleMessageResponse("TestCommandWithArgs [${args.join(',')}]")
     }
 

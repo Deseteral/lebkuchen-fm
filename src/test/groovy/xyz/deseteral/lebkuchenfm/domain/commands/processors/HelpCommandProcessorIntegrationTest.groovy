@@ -3,8 +3,6 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 import groovy.json.DefaultJsonGenerator
 import groovy.json.JsonGenerator
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 
 import static groovy.json.JsonOutput.toJson
@@ -12,10 +10,7 @@ import static groovy.json.JsonOutput.toJson
 class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
     def 'should display help message for all commands'() {
         given:
-        def body = [text: '/fm help']
-        def request = RequestEntity.post(localUri('/commands/text'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+        def request = textCommandRequest('/fm help')
 
         when:
         def response = restTemplate.exchange(request, Map)
