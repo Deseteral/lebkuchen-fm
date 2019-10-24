@@ -6,64 +6,37 @@ import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 class TextCommandControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to ping command'() {
         given:
-        def request = textCommandRequest('/fm', 'ping')
+        def request = textCommandRequest('/fm ping')
 
         when:
         def response = restTemplate.exchange(request, String)
 
         then:
         response.statusCode == HttpStatus.OK
-        parseJsonText(response.body) == [
-            blocks: [[
-                         type: "section",
-                         fields: [[
-                                      type: "plain_text",
-                                      text: "pong",
-                                      emoji: true
-                                  ]]
-                     ]]
-        ]
+        parseJsonText(response.body) == [response: 'pong']
     }
 
     def 'should respond to not existing command'() {
         given:
-        def request = textCommandRequest('/fm', 'notExisting')
+        def request = textCommandRequest('/fm notExisting')
 
         when:
         def response = restTemplate.exchange(request, String)
 
         then:
-        response.statusCode == HttpStatus.OK
-        parseJsonText(response.body) == [
-            blocks: [[
-                         type: "section",
-                         fields: [[
-                                      type: "plain_text",
-                                      text: "Command 'notExisting' does not exist",
-                                      emoji: true
-                                  ]]
-                     ]]
-        ]
+        response.statusCode == HttpStatus.BAD_REQUEST
+        parseJsonText(response.body) == [response: "Command 'notExisting' does not exist"]
     }
 
     def 'should respond to text that is not a command'() {
         given:
-        def request = textCommandRequest('some test string', '')
+        def request = textCommandRequest('some test string')
 
         when:
         def response = restTemplate.exchange(request, String)
 
         then:
-        response.statusCode == HttpStatus.OK
-        parseJsonText(response.body) == [
-            blocks: [[
-                         type: "section",
-                         fields: [[
-                                      type: "plain_text",
-                                      text: "Text 'some test string ' is not a command",
-                                      emoji: true
-                                  ]]
-                     ]]
-        ]
+        response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
+        parseJsonText(response.body) == [response: "Text 'some test string' is not a command"]
     }
 }
