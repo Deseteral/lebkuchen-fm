@@ -1,0 +1,14 @@
+{
+  "name": "tv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"TV client tests\" && exit 0"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react": "^16.11.0"
+  }
+}
