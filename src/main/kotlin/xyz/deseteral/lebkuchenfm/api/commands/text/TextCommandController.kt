@@ -22,13 +22,13 @@ internal class TextCommandController(private val processor: CommandExecutorServi
     }
 
     @ExceptionHandler(NoSuchCommandProcessorException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     fun noSuchCommandExceptionHandler(ex: NoSuchCommandProcessorException): TextCommandResponseDto {
         return TextCommandResponseDto(SingleMessageResponse(ex.message.orEmpty()))
     }
 
     @ExceptionHandler(TextIsNotACommandException::class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseStatus(HttpStatus.OK)
     fun textIsNotACommandExceptionHandler(ex: TextIsNotACommandException): TextCommandResponseDto {
         return TextCommandResponseDto(SingleMessageResponse(ex.message.orEmpty()))
     }
