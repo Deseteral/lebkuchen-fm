@@ -5,6 +5,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
+import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Unroll
@@ -21,7 +22,7 @@ class CommandExecutorServiceTest extends Specification {
         def processingResponse = commandExecutor.process(new Command(key, rawArgs))
 
         then:
-        processingResponse.response == response
+        processingResponse.getMessages()*.text == [response]
 
         where:
         title                             | key            | rawArgs     || response
@@ -45,7 +46,7 @@ class CommandExecutorServiceTest extends Specification {
         def processingResponse = commandExecutor.processFromText(text)
 
         then:
-        processingResponse.response == response
+        processingResponse.getMessages()*.text == [response]
 
         where:
         title                             | text                         || response
@@ -68,7 +69,7 @@ class CommandExecutorServiceTest extends Specification {
 class TestCommand implements CommandProcessor {
     @Override
     CommandProcessingResponse process(Command command) {
-        return new CommandProcessingResponse('TestCommand')
+        return new SingleMessageResponse('TestCommand')
     }
 
     @Override
@@ -90,7 +91,7 @@ class TestCommand implements CommandProcessor {
 class TestCommandWithArgs implements CommandProcessor {
     @Override
     CommandProcessingResponse process(Command command) {
-        return new CommandProcessingResponse("TestCommandWithArgs [${command.getArgsByDelimiter(" ").join(",")}]")
+        return new SingleMessageResponse("TestCommandWithArgs [${command.getArgsByDelimiter(' ').join(',')}]")
     }
 
     @Override

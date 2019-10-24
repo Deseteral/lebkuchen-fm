@@ -1,5 +1,6 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
+
 import org.springframework.http.HttpStatus
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 
@@ -13,12 +14,45 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.OK
+
         parseJsonText(response.body) == [
-            response: """Lista komend:
-                        |- addx: Dodaje efekt dźwiękowy (`addx sound name|url`)
-                        |- help: Pokazuje tę wiadomość ;)
-                        |- listx: Wypisuje listę czaderskich dźwięków w bazie
-                        |- ping [p]: Ping pongs you""".stripMargin()
+            blocks: [
+                [
+                    type: "divider"
+                ],
+                [
+                    type: "section",
+                    text: [
+                        type: "mrkdwn",
+                        text: "*Lista komend:*"
+                    ]
+                ],
+                [
+                    type: "section",
+                    fields: [
+                        [
+                            type: "plain_text",
+                            text: "addx: Dodaje efekt dźwiękowy (`addx sound name|url`)",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "help: Pokazuje tę wiadomość ;)",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "listx: Wypisuje listę czaderskich dźwięków w bazie",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "ping [p]: Ping pongs you",
+                            emoji: true
+                        ]
+                    ]
+                ],
+            ]
         ]
     }
 }

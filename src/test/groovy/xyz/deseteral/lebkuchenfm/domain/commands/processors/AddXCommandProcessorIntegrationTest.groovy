@@ -13,7 +13,20 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
 
         then:
         firstAddResponse.statusCode == HttpStatus.OK
-        parseJsonText(firstAddResponse.body) == [response: 'Dodałem efekt "super test sound" do biblioteki!']
+        parseJsonText(firstAddResponse.body) == [
+            blocks: [
+                [
+                    type: 'section',
+                    fields: [
+                        [
+                            type: 'plain_text',
+                            text: 'Dodałem efekt "super test sound" do biblioteki!',
+                            emoji: true
+                        ]
+                    ]
+                ],
+            ]
+        ]
 
         and:
         def listResponse = restTemplate.getForEntity('/xsounds', String)
@@ -40,7 +53,20 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
 
         then:
         firstAddResponse.statusCode == HttpStatus.OK
-        parseJsonText(firstAddResponse.body) == [response: 'Dodałem efekt "test" do biblioteki!']
+        parseJsonText(firstAddResponse.body) == [
+            blocks: [
+                [
+                    type: 'section',
+                    fields: [
+                        [
+                            type: 'plain_text',
+                            text: 'Dodałem efekt "test" do biblioteki!',
+                            emoji: true
+                        ]
+                    ]
+                ],
+            ]
+        ]
 
         and:
         def secondAddRequest = textCommandRequest('/fm addx test|second-url.com')
@@ -51,7 +77,18 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
         then:
         secondAddResponse.statusCode == HttpStatus.OK
         parseJsonText(secondAddResponse.body) == [
-            response: 'Dźwięk "test" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.'
+            blocks: [
+                [
+                    type: 'section',
+                    fields: [
+                        [
+                            type: 'plain_text',
+                            text: 'Dźwięk "test" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.',
+                            emoji: true
+                        ]
+                    ]
+                ],
+            ]
         ]
 
         and:

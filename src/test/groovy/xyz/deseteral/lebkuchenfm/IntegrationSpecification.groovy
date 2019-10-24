@@ -1,5 +1,7 @@
 package xyz.deseteral.lebkuchenfm
 
+import groovy.json.DefaultJsonGenerator
+import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
 import org.bson.Document
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +20,7 @@ import static groovy.json.JsonOutput.toJson
 )
 abstract class IntegrationSpecification extends Specification {
     static private final JsonSlurper JSON_SLURPER = new JsonSlurper()
+    static private final JSON_GENERATOR = new DefaultJsonGenerator(new JsonGenerator.Options().disableUnicodeEscaping());
 
     @Value('${local.server.port}')
     protected int port
@@ -49,5 +52,9 @@ abstract class IntegrationSpecification extends Specification {
 
     protected static Object parseJsonText(String string) {
         return JSON_SLURPER.parseText(string)
+    }
+
+    protected static toJson(Object obj) {
+        return JSON_GENERATOR.toJson(obj)
     }
 }

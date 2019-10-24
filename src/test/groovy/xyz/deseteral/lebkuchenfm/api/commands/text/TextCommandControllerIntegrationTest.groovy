@@ -20,7 +20,16 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.OK
-        parseJsonText(response.body) == [response: 'pong']
+        parseJsonText(response.body) == [
+            blocks: [[
+                         type: "section",
+                         fields: [[
+                                      type: "plain_text",
+                                      text: "pong",
+                                      emoji: true
+                                  ]]
+                     ]]
+        ]
     }
 
     def 'should respond to not existing command'() {
@@ -35,7 +44,16 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.BAD_REQUEST
-        parseJsonText(response.body) == [response: "Command 'notExisting' does not exist"]
+        parseJsonText(response.body) == [
+            blocks: [[
+                         type: "section",
+                         fields: [[
+                                      type: "plain_text",
+                                      text: "Command 'notExisting' does not exist",
+                                      emoji: true
+                                  ]]
+                     ]]
+        ]
     }
 
     def 'should respond to text that is not a command'() {
@@ -50,6 +68,15 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
         then:
         response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
-        parseJsonText(response.body) == [response: "Text 'some test string' is not a command"]
+        parseJsonText(response.body) == [
+            blocks: [[
+                         type: "section",
+                         fields: [[
+                                      type: "plain_text",
+                                      text: "Text 'some test string' is not a command",
+                                      emoji: true
+                                  ]]
+                     ]]
+        ]
     }
 }

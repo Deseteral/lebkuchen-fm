@@ -4,10 +4,11 @@ import org.springframework.stereotype.Component
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
+import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
 import xyz.deseteral.lebkuchenfm.domain.x.SoundAlreadyExistsException
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
-private val WRONG_MESSAGE_RESPONSE = CommandProcessingResponse("Musisz podać nazwę i URL (`addx sound name|url`)")
+private val WRONG_MESSAGE_RESPONSE = SingleMessageResponse("Musisz podać nazwę i URL (`addx sound name|url`)")
 
 @Component
 class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandProcessor {
@@ -31,9 +32,9 @@ class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandPr
 
         return try {
             xSoundService.addNewSound(soundName, url)
-            CommandProcessingResponse("Dodałem efekt \"$soundName\" do biblioteki!")
+            SingleMessageResponse("Dodałem efekt \"$soundName\" do biblioteki!")
         } catch (ex: SoundAlreadyExistsException) {
-            CommandProcessingResponse("Dźwięk \"$soundName\" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.")
+            SingleMessageResponse("Dźwięk \"$soundName\" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.")
         }
     }
 }

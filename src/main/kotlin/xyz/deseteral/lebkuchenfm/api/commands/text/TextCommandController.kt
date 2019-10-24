@@ -10,6 +10,7 @@ import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandRequestDto
 import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandResponseDto
 import xyz.deseteral.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.deseteral.lebkuchenfm.domain.commands.NoSuchCommandProcessorException
+import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @RestController
@@ -24,12 +25,12 @@ internal class TextCommandController(private val processor: CommandExecutorServi
     @ExceptionHandler(NoSuchCommandProcessorException::class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun noSuchCommandExceptionHandler(ex: NoSuchCommandProcessorException): TextCommandResponseDto {
-        return TextCommandResponseDto(ex)
+        return TextCommandResponseDto(SingleMessageResponse(ex.message.orEmpty()))
     }
 
     @ExceptionHandler(TextIsNotACommandException::class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     fun textIsNotACommandExceptionHandler(ex: TextIsNotACommandException): TextCommandResponseDto {
-        return TextCommandResponseDto(ex)
+        return TextCommandResponseDto(SingleMessageResponse(ex.message.orEmpty()))
     }
 }

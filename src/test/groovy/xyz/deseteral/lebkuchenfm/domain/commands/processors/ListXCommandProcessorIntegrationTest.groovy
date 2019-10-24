@@ -30,10 +30,33 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
         then:
         listResponse.statusCode == HttpStatus.OK
         parseJsonText(listResponse.body) == [
-            response: """- a-test
-                        |- b-test
-                        |- c-test
-                        |- d-test""".stripMargin()
+            blocks: [
+                [
+                    type: "section",
+                    fields: [
+                        [
+                            type: "plain_text",
+                            text: "a-test",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "b-test",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "c-test",
+                            emoji: true
+                        ],
+                        [
+                            type: "plain_text",
+                            text: "d-test",
+                            emoji: true
+                        ]
+                    ]
+                ],
+            ]
         ]
     }
 }

@@ -2,10 +2,9 @@ package xyz.deseteral.lebkuchenfm.api.commands.text.model
 
 import spock.lang.Specification
 import spock.lang.Unroll
-import xyz.deseteral.lebkuchenfm.domain.commands.NoSuchCommandProcessorException
-import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
-import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
-import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
+import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
+
+import static groovy.json.JsonOutput.toJson
 
 class TextCommandResponseDtoTest extends Specification {
     @Unroll
@@ -14,13 +13,10 @@ class TextCommandResponseDtoTest extends Specification {
         def responseDto = new TextCommandResponseDto(value)
 
         then:
-        responseDto.response == expected
+        responseDto.blocks == expected.blocks
 
         where:
-        desc                              | value                                                              || expected
-        'string'                          | 'test value'                                                       || 'test value'
-        'CommandProcessingResponse'       | new CommandProcessingResponse('test value')                        || 'test value'
-        'TextIsNotACommandException'      | new TextIsNotACommandException('test value')                       || "Text 'test value' is not a command"
-        'NoSuchCommandProcessorException' | new NoSuchCommandProcessorException(new Command('test value', '')) || "Command 'test value' does not exist"
+        desc                        | value                                   || expected
+        'CommandProcessingResponse' | new SingleMessageResponse('test value') || [blocks: [[type: 'section', fields: [[type: 'plain_text', text: 'test value', emoji: true]]]]]
     }
 }
