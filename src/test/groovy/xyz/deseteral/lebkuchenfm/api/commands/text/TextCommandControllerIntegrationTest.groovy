@@ -17,11 +17,20 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, TextCommandResponseDto)
+        def response = restTemplate.exchange(request, Map)
 
         then:
         response.statusCode == HttpStatus.OK
-        response.body.response == 'pong'
+        response.body.response == toJson([
+            blocks: [[
+                type: "section",
+                fields: [[
+                    type: "plain_text",
+                    text: "pong",
+                    emoji: true
+                ]]
+            ]]
+        ])
     }
 
     def 'should respond to not existing command'() {

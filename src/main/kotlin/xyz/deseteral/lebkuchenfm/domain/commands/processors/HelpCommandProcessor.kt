@@ -31,7 +31,7 @@ internal class HelpCommandProcessor(commandProcessors: List<CommandProcessor>) :
     override fun process(args: List<String>): CommandProcessingResponse {
         val a = listOf(Message("Lista komend:", MessageType.HEADER)).plus(processors.map {
             val shortKeyText = if (it.shortKey != null) " [${it.shortKey}]" else ""
-            "- ${it.key}$shortKeyText: ${it.helpMessage}"
+            "${it.key}$shortKeyText: ${it.helpMessage}"
         }
             .map { Message(it, MessageType.PLAIN) })
 

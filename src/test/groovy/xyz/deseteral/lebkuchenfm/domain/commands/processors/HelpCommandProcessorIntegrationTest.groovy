@@ -1,10 +1,11 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
+import groovy.json.DefaultJsonGenerator
+import groovy.json.JsonGenerator
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-import xyz.deseteral.lebkuchenfm.api.commands.text.model.TextCommandResponseDto
 
 import static groovy.json.JsonOutput.toJson
 
@@ -17,12 +18,43 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
             .body(toJson(body))
 
         when:
-        def response = restTemplate.exchange(request, TextCommandResponseDto)
+        def response = restTemplate.exchange(request, Map)
 
         then:
         response.statusCode == HttpStatus.OK
-        response.body.response == """Lista komend:
-                                    |- help: Pokazuje tę wiadomość ;)
-                                    |- ping [p]: Ping pongs you""".stripMargin()
+
+        def jsonGenerator = new DefaultJsonGenerator(new JsonGenerator.Options().disableUnicodeEscaping());
+
+        def jsonExpected = jsonGenerator.toJson([
+            "blocks": [
+                [
+                    "type": "divider"
+                ],
+                [
+                    "type": "section",
+                    "text": [
+                        "type": "mrkdwn",
+                        "text": "*Lista komend:*"
+                    ]
+                ],
+                [
+                    "type": "section",
+                    "fields": [
+                        [
+                            "type": "plain_text",
+                            "text": "help: Pokazuje tę wiadomość ;)",
+                            "emoji": true
+                        ],
+                        [
+                            "type": "plain_text",
+                            "text": "ping [p]: Ping pongs you",
+                            "emoji": true
+                        ]
+                    ]
+                ],
+            ]
+        ])
+
+        response.body.response == jsonExpected
     }
 }

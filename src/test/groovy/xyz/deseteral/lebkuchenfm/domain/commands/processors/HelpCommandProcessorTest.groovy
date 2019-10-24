@@ -52,9 +52,9 @@ class HelpCommandProcessorTest extends Specification {
 
         then:
         processingResponse.messages*.text == ["Lista komend:",
-                                         "- a-key [k]: A message",
-                                         "- b-key [b]: B message",
-                                         "- c-key: C message",
-                                         "- help: Pokazuje tę wiadomość ;)"]
+                                         "a-key [k]: A message",
+                                         "b-key [b]: B message",
+                                         "c-key: C message",
+                                         "help: Pokazuje tę wiadomość ;)"]
     }
 }
