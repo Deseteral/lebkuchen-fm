@@ -1,7 +1,6 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.parser
 
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
-import java.lang.Exception
 
 internal object TextCommandParser {
     fun parse(text: String): Command {
