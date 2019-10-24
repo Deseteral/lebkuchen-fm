@@ -18,11 +18,11 @@ class XSoundsControllerIntegrationTest extends IntegrationSpecification {
     def 'should return list of sounds'() {
         given:
         def requests = [
-            '/fm addx c-test|testurl-c.com',
-            '/fm addx a-test|testurl-a.com',
-            '/fm addx d-test|testurl-d.com',
-            '/fm addx b-test|testurl-b.com',
-        ].stream().map({ it -> textCommandRequest(it) }).collect(Collectors.toList())
+            ['/fm', 'addx c-test|testurl-c.com'],
+            ['/fm', 'addx a-test|testurl-a.com'],
+            ['/fm', 'addx d-test|testurl-d.com'],
+            ['/fm', 'addx b-test|testurl-b.com'],
+        ].stream().map({ it -> textCommandRequest(it[0], it[1]) }).collect(Collectors.toList())
 
         when:
         def responses = requests.stream().map({ it -> restTemplate.exchange(it, String) })

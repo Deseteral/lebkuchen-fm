@@ -7,7 +7,7 @@ import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
     def 'should display help message for all commands'() {
         given:
-        def request = textCommandRequest('/fm help')
+        def request = textCommandRequest('/fm', 'help')
 
         when:
         def response = restTemplate.exchange(request, String)

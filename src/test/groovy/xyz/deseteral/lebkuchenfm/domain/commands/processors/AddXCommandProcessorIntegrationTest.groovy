@@ -6,7 +6,7 @@ import xyz.deseteral.lebkuchenfm.IntegrationSpecification
 class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
     def "should add sound with spaces in it's name"() {
         given:
-        def firstAddRequest = textCommandRequest('/fm addx super test sound|super-test-sound.com')
+        def firstAddRequest = textCommandRequest('/fm', 'addx super test sound|super-test-sound.com')
 
         when:
         def firstAddResponse = restTemplate.exchange(firstAddRequest, String)
@@ -46,7 +46,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
 
     def 'should not add sounds with the same name'() {
         given:
-        def firstAddRequest = textCommandRequest('/fm addx test|first-url.com')
+        def firstAddRequest = textCommandRequest('/fm', 'addx test|first-url.com')
 
         when:
         def firstAddResponse = restTemplate.exchange(firstAddRequest, String)
@@ -69,7 +69,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
         ]
 
         and:
-        def secondAddRequest = textCommandRequest('/fm addx test|second-url.com')
+        def secondAddRequest = textCommandRequest('/fm', 'addx test|second-url.com')
 
         when:
         def secondAddResponse = restTemplate.exchange(secondAddRequest, String)
