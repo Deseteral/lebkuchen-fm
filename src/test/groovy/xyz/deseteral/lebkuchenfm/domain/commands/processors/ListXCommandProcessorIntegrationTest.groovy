@@ -25,11 +25,11 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
         def listRequest = textCommandRequest('/fm listx')
 
         when:
-        def listResponse = restTemplate.exchange(listRequest, Map)
+        def listResponse = restTemplate.exchange(listRequest, String)
 
         then:
         listResponse.statusCode == HttpStatus.OK
-        listResponse.body.response == toJson([
+        parseJsonText(listResponse.body) == [
             blocks: [
                 [
                     type: "section",
@@ -57,6 +57,6 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
                     ]
                 ],
             ]
-        ])
+        ]
     }
 }

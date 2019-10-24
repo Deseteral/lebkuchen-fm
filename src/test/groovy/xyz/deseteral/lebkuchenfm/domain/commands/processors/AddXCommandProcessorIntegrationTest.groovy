@@ -9,11 +9,11 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
         def firstAddRequest = textCommandRequest('/fm addx super test sound|super-test-sound.com')
 
         when:
-        def firstAddResponse = restTemplate.exchange(firstAddRequest, Map)
+        def firstAddResponse = restTemplate.exchange(firstAddRequest, String)
 
         then:
         firstAddResponse.statusCode == HttpStatus.OK
-        firstAddResponse.body.response == toJson([
+        parseJsonText(firstAddResponse.body) == [
             blocks: [
                 [
                     type: 'section',
@@ -26,7 +26,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
                     ]
                 ],
             ]
-        ])
+        ]
 
         and:
         def listResponse = restTemplate.getForEntity('/xsounds', String)
@@ -49,11 +49,11 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
         def firstAddRequest = textCommandRequest('/fm addx test|first-url.com')
 
         when:
-        def firstAddResponse = restTemplate.exchange(firstAddRequest, Map)
+        def firstAddResponse = restTemplate.exchange(firstAddRequest, String)
 
         then:
         firstAddResponse.statusCode == HttpStatus.OK
-        firstAddResponse.body.response == toJson([
+        parseJsonText(firstAddResponse.body) == [
             blocks: [
                 [
                     type: 'section',
@@ -66,17 +66,17 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
                     ]
                 ],
             ]
-        ])
+        ]
 
         and:
         def secondAddRequest = textCommandRequest('/fm addx test|second-url.com')
 
         when:
-        def secondAddResponse = restTemplate.exchange(secondAddRequest, Map)
+        def secondAddResponse = restTemplate.exchange(secondAddRequest, String)
 
         then:
         secondAddResponse.statusCode == HttpStatus.OK
-        secondAddResponse.body.response == toJson([
+        parseJsonText(secondAddResponse.body) == [
             blocks: [
                 [
                     type: 'section',
@@ -89,7 +89,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
                     ]
                 ],
             ]
-        ])
+        ]
 
         and:
         def listResponse = restTemplate.getForEntity('/xsounds', String)

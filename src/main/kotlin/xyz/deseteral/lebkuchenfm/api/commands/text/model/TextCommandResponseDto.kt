@@ -1,22 +1,15 @@
 package xyz.deseteral.lebkuchenfm.api.commands.text.model
 
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.ObjectMapper
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.commands.model.MessageType
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-internal class TextCommandResponseDto {
-    val response: String
+internal class TextCommandResponseDto(processingResponse: CommandProcessingResponse) {
+    val blocks: List<Any>
 
-    @JsonCreator
-    constructor(@JsonProperty("response") response: String) {
-        this.response = response
-    }
-
-    constructor(processingResponse: CommandProcessingResponse) {
+    init {
         val blocks = mutableListOf<Map<*, *>>()
         processingResponse.getMessages().forEach {
             when (it.type) {
@@ -32,11 +25,7 @@ internal class TextCommandResponseDto {
                 }
             }
         }
-        this.response = ObjectMapper().writeValueAsString(mapOf("blocks" to blocks))
-    }
-
-    constructor(exception: Exception) {
-        this.response = exception.message.toString()
+        this.blocks = blocks
     }
 }
 

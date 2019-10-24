@@ -1,11 +1,8 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.processors
 
-import groovy.json.DefaultJsonGenerator
-import groovy.json.JsonGenerator
+
 import org.springframework.http.HttpStatus
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-
-import static groovy.json.JsonOutput.toJson
 
 class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
     def 'should display help message for all commands'() {
@@ -13,12 +10,12 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
         def request = textCommandRequest('/fm help')
 
         when:
-        def response = restTemplate.exchange(request, Map)
+        def response = restTemplate.exchange(request, String)
 
         then:
         response.statusCode == HttpStatus.OK
 
-        def jsonExpected = toJson([
+        parseJsonText(response.body) == [
             blocks: [
                 [
                     type: "divider"
@@ -56,8 +53,6 @@ class HelpCommandProcessorIntegrationTest extends IntegrationSpecification {
                     ]
                 ],
             ]
-        ])
-
-        response.body.response == jsonExpected
+        ]
     }
 }
