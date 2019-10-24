@@ -24,7 +24,7 @@ internal class TextCommandResponseDto {
                     blocks.add(mapOf("type" to "divider"))
                     blocks.add(mapOf("type" to "section", "text" to mapOf("type" to "mrkdwn", "text" to "*${it.text}*")))
                 }
-                MessageType.PLAIN -> {
+                MessageType.PLAIN_TEXT -> {
                     if (blocks.isEmpty() || blocks.last()["fields"] == null) {
                         blocks.add(mapOf("type" to "section", "fields" to mutableListOf<Any>()))
                     }

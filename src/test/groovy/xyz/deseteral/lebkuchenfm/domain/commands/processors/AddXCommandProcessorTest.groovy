@@ -17,7 +17,7 @@ class AddXCommandProcessorTest extends Specification {
         def response = processor.process(new Command('addx', rawArgs))
 
         then:
-        response.messages as List == [new Message('Musisz podać nazwę i URL (`addx sound name|url`)', MessageType.PLAIN)]
+        response.messages as List == [new Message('Musisz podać nazwę i URL (`addx sound name|url`)', MessageType.PLAIN_TEXT)]
 
         where:
         title                      | rawArgs

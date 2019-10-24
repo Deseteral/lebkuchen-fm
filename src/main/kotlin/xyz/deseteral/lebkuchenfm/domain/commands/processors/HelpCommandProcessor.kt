@@ -37,10 +37,8 @@ internal class HelpCommandProcessor(commandProcessors: List<CommandProcessor>) :
                         val shortKeyText = if (it.shortKey != null) " [${it.shortKey}]" else ""
                         "${it.key}$shortKeyText: ${it.helpMessage}"
                     }
-                    .map { Message(it, MessageType.PLAIN) }
+                    .map { Message(it, MessageType.PLAIN_TEXT) }
             )
-
-
 
         return MultiMessageResponse(messages)
     }
