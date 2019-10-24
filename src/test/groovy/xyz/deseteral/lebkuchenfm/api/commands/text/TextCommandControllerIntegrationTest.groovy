@@ -10,10 +10,7 @@ import static groovy.json.JsonOutput.toJson
 class TextCommandControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to ping command'() {
         given:
-        def body = [text: '/fm ping']
-        def request = RequestEntity.post(localUri('/commands/text'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+        def request = textCommandRequest('/fm', 'ping')
 
         when:
         def response = restTemplate.exchange(request, String)
@@ -34,10 +31,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
     def 'should respond to not existing command'() {
         given:
-        def body = [text: '/fm notExisting']
-        def request = RequestEntity.post(localUri('/commands/text'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+        def request = textCommandRequest('/fm', 'notExisting')
 
         when:
         def response = restTemplate.exchange(request, String)
@@ -58,10 +52,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
 
     def 'should respond to text that is not a command'() {
         given:
-        def body = [text: 'some test string']
-        def request = RequestEntity.post(localUri('/commands/text'))
-            .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+        def request = textCommandRequest('some test string', '')
 
         when:
         def response = restTemplate.exchange(request, String)
@@ -73,7 +64,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
                          type: "section",
                          fields: [[
                                       type: "plain_text",
-                                      text: "Text 'some test string' is not a command",
+                                      text: "Text 'some test string ' is not a command",
                                       emoji: true
                                   ]]
                      ]]
