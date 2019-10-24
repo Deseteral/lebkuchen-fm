@@ -3,7 +3,7 @@ name: Build
 on: [push, pull_request]
 
 jobs:
-  Backend service CI:
+  backend-service:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -14,7 +14,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
-  TV client CI:
+  tv-client:
     runs-on: ubuntu-latest
     strategy:
       matrix:
