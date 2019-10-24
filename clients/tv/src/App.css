@@ -1,0 +1,96 @@
+:root {
+    --main-font-color: #efefef;
+    --main-bg-color: #222;
+    --accent-color: #ff009a;
+    --secondary-color: #0099ff;
+    --counter-size: 10;
+}
+
+.app {
+    background-color: var(--main-bg-color);
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+}
+
+.player {
+    width: 100%;
+    height: 100%;
+}
+
+.player-logo {
+    position: absolute;
+    top: 2vh;
+    right: 3vh;
+    font-size: 4vh;
+}
+
+.player-logo-text {
+    font-family: Pacifico;
+    color: var(--accent-color);
+    text-shadow:
+       0.2vh 0.2vh 0 var(--main-font-color),
+     -0.1vh -0.1vh 0 var(--main-font-color),
+      0.1vh -0.1vh 0 var(--main-font-color),
+      -0.1vh 0.1vh 0 var(--main-font-color),
+       0.1vh 0.1vh 0 var(--main-font-color);
+}
+
+
+.counter {
+    position: absolute;
+    width: calc(1vh * var(--counter-size));
+    height: calc(1vh * var(--counter-size));
+    left: 3vh;
+    top: 3vh;
+}
+
+.counter-face {
+    width: 100%;
+    height: 100%;
+    background-color: var(--accent-color);
+    position: absolute;
+    border-radius: calc(1vh * var(--counter-size));
+    border-style: dashed;
+    border-width: calc(1vh * 0.2 * var(--counter-size) / 8);
+    border-color: var(--main-font-color);
+    box-sizing: border-box;
+    animation:spin 4s linear infinite;
+}
+
+.counter-text {
+    line-height: calc(1vh * (var(--counter-size) - 0.12 * var(--counter-size)));
+    text-align: center;
+    color: var(--main-font-color);
+    font-family: Pacifico;
+    font-size: calc(1vh * (var(--counter-size) - 0.5 * var(--counter-size)));
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.next {
+    color: var(--main-font-color);
+    position: absolute;
+    top: 3vh;
+    left: calc(1vh * (var(--counter-size) + 5));
+    background-color: var(--accent-color);
+    line-height: calc(1vh * var(--counter-size));
+    height: calc(1vh * var(--counter-size));
+    padding: 0 4vh;
+    /* border-top-left-radius: 2vh; */
+    /* border-bottom-right-radius: 2vh; */
+}
+
+.next-label {
+    font-weight: bold;
+
+}
+
+.next-label:after {
+    content: ' ';
+    margin-right: 1vh;
+}
