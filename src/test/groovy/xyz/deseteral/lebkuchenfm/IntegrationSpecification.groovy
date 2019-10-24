@@ -13,7 +13,10 @@ import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import spock.lang.Specification
 
-import static groovy.json.JsonOutput.toJson
+import java.nio.charset.Charset
+
+import static org.springframework.web.util.UriUtils.decode
+import static org.springframework.web.util.UriUtils.encode
 
 @SpringBootTest(
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
@@ -43,11 +46,16 @@ abstract class IntegrationSpecification extends Specification {
         return new URI("http://localhost:$port$endpoint")
     }
 
-    protected RequestEntity textCommandRequest(String command) {
-        def body = [text: command]
-        return RequestEntity.post(localUri('/commands/text'))
+    protected RequestEntity textCommandRequest(String command, String args) {
+        def encodedArgs = encodeGracefully(args)
+        def encodedCommand = encodeGracefully(command)
+        return RequestEntity.post(localUri("/commands/text?command=$encodedCommand&text=$encodedArgs"))
             .contentType(MediaType.APPLICATION_JSON)
-            .body(toJson(body))
+            .build()
+    }
+
+    private String encodeGracefully(String args) {
+        encode(decode(args, Charset.defaultCharset()), Charset.defaultCharset())
     }
 
     protected static Object parseJsonText(String string) {
