@@ -31,7 +31,7 @@ class CommandTest extends Specification {
     }
 
     @Unroll
-    def 'should get args by "#delimiter" delimiter'() {
+    def 'should get args from "#rawArgs" by "#delimiter" delimiter'() {
         given:
         def command = new Command('key', rawArgs)
 
@@ -46,7 +46,8 @@ class CommandTest extends Specification {
         'some args list'                         | ' '       || ['some', 'args', 'list']
         'some|args|list'                         | '|'       || ['some', 'args', 'list']
         '  some    args with    whitespaces    ' | ' '       || ['some', 'args', 'with', 'whitespaces']
-
+        ''                                       | ' '       || []
+        ' '                                      | '|'       || [' ']
     }
 
     class TestCommand implements CommandProcessor {

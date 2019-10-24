@@ -4,11 +4,11 @@ import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 
 internal object TextCommandParser {
     fun parse(text: String): Command {
-        if (text.isEmpty()) throw TextIsNotACommandException(text)
-
         val tokens = text.split(" ")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
+
+        if (tokens.size < 2) throw TextIsNotACommandException(text)
 
         val prompt = tokens.first()
         val key = tokens[1]

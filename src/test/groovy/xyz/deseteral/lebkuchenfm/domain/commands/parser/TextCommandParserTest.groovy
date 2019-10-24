@@ -41,6 +41,7 @@ class TextCommandParserTest extends Specification {
 
         where:
         title                          | text             || message
+        'prompt without key'           | '/fm'             | "Text '/fm' is not a command"
         'string that is not a command' | 'some test text' || "Text 'some test text' is not a command"
         'empty string'                 | ''               || "Text '' is not a command"
     }
