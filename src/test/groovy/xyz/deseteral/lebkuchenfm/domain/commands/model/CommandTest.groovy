@@ -15,7 +15,7 @@ class CommandTest extends Specification {
     @Unroll
     def 'should #desc'() {
         given:
-        def command = new Command(key, [])
+        def command = new Command(key, '')
 
         when:
         def result = CommandKt.matchProcessor(command, testCommand)
@@ -30,9 +30,29 @@ class CommandTest extends Specification {
         'not match command processor'          | 'something' || false
     }
 
+    @Unroll
+    def 'should get args from "#rawArgs" by "#delimiter" delimiter'() {
+        given:
+        def command = new Command('key', rawArgs)
+
+        when:
+        def args = command.getArgsByDelimiter(delimiter)
+
+        then:
+        args == expectedArgs
+
+        where:
+        rawArgs                                  | delimiter || expectedArgs
+        'some args list'                         | ' '       || ['some', 'args', 'list']
+        'some|args|list'                         | '|'       || ['some', 'args', 'list']
+        '  some    args with    whitespaces    ' | ' '       || ['some', 'args', 'with', 'whitespaces']
+        ''                                       | ' '       || []
+        ' '                                      | '|'       || [' ']
+    }
+
     class TestCommand implements CommandProcessor {
         @Override
-        CommandProcessingResponse process(List<String> args) {
+        CommandProcessingResponse process(Command command) {
             return new CommandProcessingResponse('TestCommand')
         }
 

@@ -8,13 +8,20 @@ internal object TextCommandParser {
             .map { it.trim() }
             .filter { it.isNotEmpty() }
 
-        if (tokens.isEmpty() || tokens.first() != "/fm") {
-            throw TextIsNotACommandException(text)
+        if (tokens.size < 2) throw TextIsNotACommandException(text)
+
+        val prompt = tokens.first()
+        val key = tokens[1]
+
+        if (prompt != "/fm") throw TextIsNotACommandException(text)
+
+        val rawArgsIndex = (text.indexOf(key) + (key.length) + 1)
+        val rawArgs = try {
+            text.substring(rawArgsIndex)
+        } catch (ex: Exception) {
+            ""
         }
 
-        return Command(
-            key = tokens[1],
-            args = tokens.subList(2, tokens.size)
-        )
+        return Command(key, rawArgs)
     }
 }

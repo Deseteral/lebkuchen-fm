@@ -1,5 +1,6 @@
 package xyz.deseteral.lebkuchenfm.domain.commands
 
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 
 interface CommandProcessor {
@@ -7,5 +8,5 @@ interface CommandProcessor {
     val shortKey: String?
     val helpMessage: String
 
-    fun process(args: List<String>): CommandProcessingResponse
+    fun process(command: Command): CommandProcessingResponse
 }
