@@ -9,7 +9,7 @@ import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandExcepti
 class TextCommandParserTest extends Specification {
     def 'should parse #title'() {
         given:
-        def parser = new TextCommandParser()
+        def parser = new TextCommandParser('/fm')
 
         when:
         def command = parser.parse(text)
@@ -30,7 +30,7 @@ class TextCommandParserTest extends Specification {
 
     def 'should not parse #title'() {
         given:
-        def parser = new TextCommandParser()
+        def parser = new TextCommandParser('/fm')
 
         when:
         parser.parse(text)

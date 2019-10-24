@@ -7,14 +7,14 @@ import xyz.deseteral.lebkuchenfm.domain.commands.model.matchProcessor
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
 
 @Component
-class CommandExecutorService(val commandProcessors: List<CommandProcessor>) {
+class CommandExecutorService(val commandProcessors: List<CommandProcessor>, val parser: TextCommandParser) {
     fun process(command: Command): CommandProcessingResponse = commandProcessors
         .firstOrNull { processor -> matchProcessor(command, processor) }
         ?.process(command)
         ?: throw NoSuchCommandProcessorException(command)
 
     fun processFromText(commandText: String): CommandProcessingResponse {
-        val command = TextCommandParser.parse(commandText)
+        val command = parser.parse(commandText)
         return this.process(command)
     }
 }
