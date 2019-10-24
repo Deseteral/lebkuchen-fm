@@ -1,11 +1,7 @@
 package xyz.deseteral.lebkuchenfm.api.commands.text
 
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.http.RequestEntity
 import xyz.deseteral.lebkuchenfm.IntegrationSpecification
-
-import static groovy.json.JsonOutput.toJson
 
 class TextCommandControllerIntegrationTest extends IntegrationSpecification {
     def 'should respond to ping command'() {
@@ -37,7 +33,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
         def response = restTemplate.exchange(request, String)
 
         then:
-        response.statusCode == HttpStatus.BAD_REQUEST
+        response.statusCode == HttpStatus.OK
         parseJsonText(response.body) == [
             blocks: [[
                          type: "section",
@@ -58,7 +54,7 @@ class TextCommandControllerIntegrationTest extends IntegrationSpecification {
         def response = restTemplate.exchange(request, String)
 
         then:
-        response.statusCode == HttpStatus.UNPROCESSABLE_ENTITY
+        response.statusCode == HttpStatus.OK
         parseJsonText(response.body) == [
             blocks: [[
                          type: "section",
