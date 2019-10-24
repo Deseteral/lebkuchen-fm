@@ -91,7 +91,7 @@ class TestCommand implements CommandProcessor {
 class TestCommandWithArgs implements CommandProcessor {
     @Override
     CommandProcessingResponse process(Command command) {
-        return new SingleMessageResponse("TestCommandWithArgs [${args.join(',')}]")
+        return new SingleMessageResponse("TestCommandWithArgs [${command.getArgsByDelimiter(' ').join(',')}]")
     }
 
     @Override

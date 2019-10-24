@@ -3,6 +3,8 @@ package xyz.deseteral.lebkuchenfm.domain.commands.processors
 import spock.lang.Specification
 import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
+import xyz.deseteral.lebkuchenfm.domain.commands.model.Message
+import xyz.deseteral.lebkuchenfm.domain.commands.model.MessageType
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
 class AddXCommandProcessorTest extends Specification {
@@ -15,7 +17,7 @@ class AddXCommandProcessorTest extends Specification {
         def response = processor.process(new Command('addx', rawArgs))
 
         then:
-        response.response == 'Musisz podać nazwę i URL (`addx sound name|url`)'
+        response.messages as List == [new Message('Musisz podać nazwę i URL (`addx sound name|url`)', MessageType.PLAIN)]
 
         where:
         title                      | rawArgs

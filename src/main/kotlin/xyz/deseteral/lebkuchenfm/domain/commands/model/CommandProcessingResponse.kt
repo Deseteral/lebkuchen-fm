@@ -13,3 +13,7 @@ enum class MessageType {
 class SingleMessageResponse(private val text: String) : CommandProcessingResponse {
     override fun getMessages(): Iterable<Message> = listOf(Message(text, MessageType.PLAIN))
 }
+
+class MultiMessageResponse(private val list: Iterable<Message>) : CommandProcessingResponse {
+    override fun getMessages(): Iterable<Message> = list
+}
