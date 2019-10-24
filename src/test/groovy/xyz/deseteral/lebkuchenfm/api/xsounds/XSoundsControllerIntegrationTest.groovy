@@ -40,19 +40,19 @@ class XSoundsControllerIntegrationTest extends IntegrationSpecification {
                 [
                     name: 'a-test',
                     url: 'testurl-a.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ], [
                     name: 'b-test',
                     url: 'testurl-b.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ], [
                     name: 'c-test',
                     url: 'testurl-c.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ], [
                     name: 'd-test',
                     url: 'testurl-d.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ],
             ]
         ]

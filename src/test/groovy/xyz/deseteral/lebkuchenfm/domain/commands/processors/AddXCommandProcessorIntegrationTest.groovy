@@ -25,7 +25,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
                 [
                     name: 'super test sound',
                     url: 'super-test-sound.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ]
             ]
         ]
@@ -64,7 +64,7 @@ class AddXCommandProcessorIntegrationTest extends IntegrationSpecification {
                 [
                     name: 'test',
                     url: 'first-url.com',
-                    timesPlayed: 0,
+                    playCount: 0,
                 ]
             ]
         ]

@@ -8,5 +8,5 @@ data class XSound(
     @Indexed(unique = true)
     val name: String,
     val url: String,
-    val timesPlayed: Int
+    val playCount: Int
 )
