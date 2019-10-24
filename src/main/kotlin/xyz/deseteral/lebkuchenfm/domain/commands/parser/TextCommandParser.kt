@@ -18,7 +18,11 @@ internal object TextCommandParser {
         }
 
         val rawArgsIndex = (text.indexOf(key) + (key.length) + 1)
-        val rawArgs = try { text.substring(rawArgsIndex) } catch (ex: Exception) { "" }
+        val rawArgs = try {
+            text.substring(rawArgsIndex)
+        } catch (ex: Exception) {
+            ""
+        }
 
         return Command(key, rawArgs)
     }
