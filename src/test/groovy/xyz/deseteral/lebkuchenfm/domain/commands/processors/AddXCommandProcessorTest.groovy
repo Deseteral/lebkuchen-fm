@@ -12,18 +12,18 @@ class AddXCommandProcessorTest extends Specification {
         def processor = new AddXCommandProcessor(Mock(XSoundService))
 
         when:
-        def response = processor.process(new Command('addx', args, args.join(' ')))
+        def response = processor.process(new Command('addx', rawArgs))
 
         then:
         response.response == 'Musisz podać nazwę i URL (`addx sound name|url`)'
 
         where:
-        title                      | args
-        'no args'                  | []
-        'one arg'                  | ['test']
-        'one arg and empty string' | ['test|']
-        'two whitespaces'          | [' | ']
-        'two empty strings'        | ['|']
-        'three or more args'       | ['test|url|garbage']
+        title                      | rawArgs
+        'no args'                  | ''
+        'one arg'                  | 'test'
+        'one arg and empty string' | 'test|'
+        'two whitespaces'          | ' | '
+        'two empty strings'        | '|'
+        'three or more args'       | 'test|url|garbage'
     }
 }

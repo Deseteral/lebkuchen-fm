@@ -18,22 +18,22 @@ class CommandExecutorServiceTest extends Specification {
 
     def 'should resolve #title'() {
         when:
-        def processingResponse = commandExecutor.process(new Command(key, args, args.join(' ')))
+        def processingResponse = commandExecutor.process(new Command(key, rawArgs))
 
         then:
         processingResponse.response == response
 
         where:
-        title                             | key            | args             || response
-        'command'                         | 'test'         | []               || 'TestCommand'
-        'command with short key'          | 't'            | []               || 'TestCommand'
-        'command with args'               | 'testWithArgs' | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
-        'command with short key and args' | 'twa'          | ['some', 'args'] || 'TestCommandWithArgs [some,args]'
+        title                             | key            | rawArgs     || response
+        'command'                         | 'test'         | ''          || 'TestCommand'
+        'command with short key'          | 't'            | ''          || 'TestCommand'
+        'command with args'               | 'testWithArgs' | 'some args' || 'TestCommandWithArgs [some,args]'
+        'command with short key and args' | 'twa'          | 'some args' || 'TestCommandWithArgs [some,args]'
     }
 
     def 'should handle not existing command'() {
         when:
-        commandExecutor.process(new Command('notExisting', [], ''))
+        commandExecutor.process(new Command('notExisting', ''))
 
         then:
         NoSuchCommandProcessorException ex = thrown()
@@ -90,7 +90,7 @@ class TestCommand implements CommandProcessor {
 class TestCommandWithArgs implements CommandProcessor {
     @Override
     CommandProcessingResponse process(Command command) {
-        return new CommandProcessingResponse("TestCommandWithArgs [${command.args.join(',')}]")
+        return new CommandProcessingResponse("TestCommandWithArgs [${command.getArgsByDelimiter(" ").join(",")}]")
     }
 
     @Override

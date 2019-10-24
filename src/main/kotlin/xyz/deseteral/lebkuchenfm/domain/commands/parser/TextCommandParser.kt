@@ -1,22 +1,26 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.parser
 
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
+import java.lang.Exception
 
 internal object TextCommandParser {
     fun parse(text: String): Command {
+        if (text.isEmpty()) throw TextIsNotACommandException(text)
+
         val tokens = text.split(" ")
             .map { it.trim() }
             .filter { it.isNotEmpty() }
 
-        if (tokens.isEmpty() || tokens.first() != "/fm") {
+        val prompt = tokens.first()
+        val key = tokens[1]
+
+        if (tokens.isEmpty() || prompt != "/fm") {
             throw TextIsNotACommandException(text)
         }
 
-        val args = tokens.subList(2, tokens.size)
-        return Command(
-            key = tokens[1],
-            args = args,
-            rawArgs = args.joinToString(" ")
-        )
+        val rawArgsIndex = (text.indexOf(key) + (key.length) + 1)
+        val rawArgs = try { text.substring(rawArgsIndex) } catch (ex: Exception) { "" }
+
+        return Command(key, rawArgs)
     }
 }

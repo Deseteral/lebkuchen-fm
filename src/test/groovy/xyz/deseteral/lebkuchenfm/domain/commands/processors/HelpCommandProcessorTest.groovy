@@ -49,7 +49,7 @@ class HelpCommandProcessorTest extends Specification {
         def processor = new HelpCommandProcessor(commandProcessors)
 
         when:
-        def processingResponse = processor.process(new Command('help', [], ''))
+        def processingResponse = processor.process(new Command('help', ''))
 
         then:
         processingResponse.response == """Lista komend:

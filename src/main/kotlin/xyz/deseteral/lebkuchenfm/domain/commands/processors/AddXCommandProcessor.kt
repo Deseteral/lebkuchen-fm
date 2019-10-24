@@ -7,7 +7,7 @@ import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.x.SoundAlreadyExistsException
 import xyz.deseteral.lebkuchenfm.domain.x.XSoundService
 
-private const val MESSAGE_WRONG_ARGS = "Musisz podać nazwę i URL (`addx sound name|url`)"
+private val WRONG_MESSAGE_RESPONSE = CommandProcessingResponse("Musisz podać nazwę i URL (`addx sound name|url`)")
 
 @Component
 class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandProcessor {
@@ -21,18 +21,19 @@ class AddXCommandProcessor(private val xSoundService: XSoundService) : CommandPr
         get() = "Dodaje efekt dźwiękowy (`addx sound name|url`)"
 
     override fun process(command: Command): CommandProcessingResponse {
-        if (command.args.isEmpty()) return CommandProcessingResponse(MESSAGE_WRONG_ARGS)
+        val args = command.getArgsByDelimiter("|")
+        if (args.isEmpty() || args.size != 2) return WRONG_MESSAGE_RESPONSE
 
-        val addxArgs = command.rawArgs.split('|').map { it.trim() }.filter { it.isNotEmpty() }
-        if (addxArgs.size != 2) return CommandProcessingResponse(MESSAGE_WRONG_ARGS)
+        val soundName = args[0].trim()
+        val url = args[1].trim()
 
-        val (soundName, url) = addxArgs
-        try {
+        if (soundName.isEmpty() || url.isEmpty()) return WRONG_MESSAGE_RESPONSE
+
+        return try {
             xSoundService.addNewSound(soundName, url)
+            CommandProcessingResponse("Dodałem efekt \"$soundName\" do biblioteki!")
         } catch (ex: SoundAlreadyExistsException) {
-            return CommandProcessingResponse("Dźwięk \"$soundName\" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.")
+            CommandProcessingResponse("Dźwięk \"$soundName\" już istnieje. Wybierz inną nazwę, albo zastanów się co robisz.")
         }
-
-        return CommandProcessingResponse("Dodałem efekt \"$soundName\" do biblioteki!")
     }
 }
