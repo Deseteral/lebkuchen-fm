@@ -6,13 +6,11 @@ import groovy.json.JsonSlurper
 import org.bson.Document
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
-import org.springframework.test.context.TestPropertySource
 import spock.lang.Specification
 
 import java.nio.charset.Charset

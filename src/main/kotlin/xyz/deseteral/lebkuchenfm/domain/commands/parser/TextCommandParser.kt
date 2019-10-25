@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 
 @Component
-class TextCommandParser(@Value("\${COMMAND_PROMPT:/fm}") val commandPrompt:String) {
+class TextCommandParser(@Value("\${COMMAND_PROMPT:/fm}") val commandPrompt: String) {
     fun parse(text: String): Command {
         val tokens = text.split(" ")
             .map { it.trim() }
