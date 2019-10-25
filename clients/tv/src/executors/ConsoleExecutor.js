@@ -1,7 +1,7 @@
-import CommandEmmitter from '../services/CommandEmmitter';
+import CommandEmitter from '../services/CommandEmitter';
 
 function executeFmCommand(command, options){
-    CommandEmmitter.emmit(command, options);
+    CommandEmitter.emit(command, options);
 }
 
 export default {

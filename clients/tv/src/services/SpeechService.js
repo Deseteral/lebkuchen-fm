@@ -1,22 +1,9 @@
-import mitt from 'mitt';
-
 class SpeechService {
-    static instance;
-    static getInstance() {
-        if (!SpeechService.instance) {
-            SpeechService.instance = new SpeechService();
-        }
-        return SpeechService.instance;
-    }
-
-    constructor() {
-        const emitter = mitt();
-        emitter.on('speech', (type, e) => console.log(type, e) )
-        //emitter.on('speech', ({options}) => this.say(...options))
+    constructor(emitter) {
+        emitter.on('speech', ({options}) => this.say(...options))
     }
 
     say(phrase) {
-        console.log('say');
         const utterance = new SpeechSynthesisUtterance(phrase);
         utterance.pitch = 1;
         utterance.rate = 1;
