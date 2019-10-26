@@ -7,9 +7,9 @@
     "@types/node": "12.11.6",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
-    "mitt": "^1.2.0",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "mitt": "1.2.0",
+    "react": "16.11.0",
+    "react-dom": "16.11.0",
     "react-scripts": "3.2.0",
     "typeface-pacifico": "0.0.76",
     "typescript": "3.6.4"

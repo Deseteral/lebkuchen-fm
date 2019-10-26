@@ -1,6 +1,6 @@
 class SpeechService {
     constructor(emitter) {
-        emitter.on('speech', ({options}) => this.say(...options))
+        emitter.on('speech', ({ options }) => this.say(...options))
     }
 
     say(phrase) {

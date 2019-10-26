@@ -1,17 +1,17 @@
 import mitt from 'mitt'
 import SpeechService from './SpeechService';
 
-const CommandEmitter = {
-    emitter: mitt(),
-    init() {
-        this.observers = [
-            new SpeechService(this.emitter),
-        ];
-    },
-    emit(command, ...options) {
-        this.emitter.emit(command, { options });
-    }
-}
-CommandEmitter.init();
+const CommandEmitter = (() => {
+    const emitter = mitt();
+    return {
+        emitter,
+        observers: [
+            new SpeechService(emitter),
+        ],
+        emit(command, ...options) {
+            this.emitter.emit(command, { options });
+        },
+    };
+})();
 
 export default CommandEmitter;
