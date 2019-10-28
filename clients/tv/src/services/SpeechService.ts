@@ -1,9 +1,12 @@
 class SpeechService {
-    constructor(emitter) {
-        emitter.on('speech', ({ options }) => this.say(...options))
+    constructor(emitter:mitt.Emitter) {
+        emitter.on('speech', ({ options }) => {
+            const [phrase] = options;
+            this.say(phrase);
+        });
     }
 
-    say(phrase) {
+    say(phrase:string):void {
         const utterance = new SpeechSynthesisUtterance(phrase);
         utterance.pitch = 1;
         utterance.rate = 1;
