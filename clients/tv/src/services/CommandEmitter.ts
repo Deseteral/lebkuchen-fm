@@ -8,7 +8,7 @@ const CommandEmitter = (() => {
         observers: [
             new SpeechService(emitter),
         ],
-        emit(command, ...options) {
+        emit(command:string, ...options:Array<string>) {
             this.emitter.emit(command, { options });
         },
     };
