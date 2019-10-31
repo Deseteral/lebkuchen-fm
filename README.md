@@ -8,6 +8,7 @@
 - `MONGODB_URI` - MongoDB connection string
 - `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond
 - `YOUTUBE_DATA_API_TOKEN` - YouTube Data API token
+- `COMMAND_PROMPT` - command prompt (optional, default to `/fm`)
 
 ## Scripts
 Scripts related to the project live in the `scripts` directory.
