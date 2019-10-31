@@ -66,7 +66,7 @@ class CommandExecutorServiceTest extends Specification {
         processingResponse.getMessages()*.text == [response]
 
         where:
-        title                             | text                         || response
+        title                             | text                            || response
         'command'                         | '/other test'                   || 'TestCommand'
         'command with short key'          | '/other t'                      || 'TestCommand'
         'command with args'               | '/other testWithArgs some args' || 'TestCommandWithArgs [some,args]'
