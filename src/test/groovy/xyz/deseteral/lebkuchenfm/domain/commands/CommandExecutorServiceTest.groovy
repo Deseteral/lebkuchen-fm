@@ -6,6 +6,7 @@ import spock.lang.Unroll
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 import xyz.deseteral.lebkuchenfm.domain.commands.model.CommandProcessingResponse
 import xyz.deseteral.lebkuchenfm.domain.commands.model.SingleMessageResponse
+import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextCommandParser
 import xyz.deseteral.lebkuchenfm.domain.commands.parser.TextIsNotACommandException
 
 @Unroll
@@ -15,7 +16,7 @@ class CommandExecutorServiceTest extends Specification {
     @Shared
     def testCommandWithArgs = new TestCommandWithArgs()
     @Shared
-    def commandExecutor = new CommandExecutorService([testCommand, testCommandWithArgs])
+    def commandExecutor = new CommandExecutorService([testCommand, testCommandWithArgs], new TextCommandParser("/fm"))
 
     def 'should resolve #title'() {
         when:
@@ -54,6 +55,22 @@ class CommandExecutorServiceTest extends Specification {
         'command with short key'          | '/fm t'                      || 'TestCommand'
         'command with args'               | '/fm testWithArgs some args' || 'TestCommandWithArgs [some,args]'
         'command with short key and args' | '/fm twa some args'          || 'TestCommandWithArgs [some,args]'
+    }
+
+    def 'should accept configured prompt'() {
+        when:
+        def commandExecutor = new CommandExecutorService([testCommand, testCommandWithArgs], new TextCommandParser("/other"))
+        def processingResponse = commandExecutor.processFromText(text)
+
+        then:
+        processingResponse.getMessages()*.text == [response]
+
+        where:
+        title                             | text                            || response
+        'command'                         | '/other test'                   || 'TestCommand'
+        'command with short key'          | '/other t'                      || 'TestCommand'
+        'command with args'               | '/other testWithArgs some args' || 'TestCommandWithArgs [some,args]'
+        'command with short key and args' | '/other twa some args'          || 'TestCommandWithArgs [some,args]'
     }
 
     def 'should handle text not being a command'() {

@@ -1,8 +1,11 @@
 package xyz.deseteral.lebkuchenfm.domain.commands.parser
 
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import xyz.deseteral.lebkuchenfm.domain.commands.model.Command
 
-internal object TextCommandParser {
+@Component
+class TextCommandParser(@Value("\${COMMAND_PROMPT:/fm}") val commandPrompt: String) {
     fun parse(text: String): Command {
         val tokens = text.split(" ")
             .map { it.trim() }
@@ -13,7 +16,7 @@ internal object TextCommandParser {
         val prompt = tokens.first()
         val key = tokens[1]
 
-        if (prompt != "/fm") throw TextIsNotACommandException(text)
+        if (prompt != commandPrompt) throw TextIsNotACommandException(text)
 
         val rawArgsIndex = (text.indexOf(key) + (key.length) + 1)
         val rawArgs = try {
