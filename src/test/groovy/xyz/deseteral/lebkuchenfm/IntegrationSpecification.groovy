@@ -46,15 +46,22 @@ abstract class IntegrationSpecification extends Specification {
         return new URI("http://localhost:$port$endpoint")
     }
 
-    protected RequestEntity textCommandRequest(String command, String args) {
+    protected RequestEntity textCommandRequest(String command) {
+        def body = [text: command]
+        return RequestEntity.post(localUri('/commands/text'))
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(toJson(body))
+    }
+
+    protected RequestEntity slackCommandRequest(String command, String args) {
         def encodedArgs = encodeGracefully(args)
         def encodedCommand = encodeGracefully(command)
-        return RequestEntity.post(localUri("/commands/text?command=$encodedCommand&text=$encodedArgs"))
+        return RequestEntity.post(localUri("/commands/slack?command=$encodedCommand&text=$encodedArgs"))
             .contentType(MediaType.APPLICATION_JSON)
             .build()
     }
 
-    private String encodeGracefully(String args) {
+    private static String encodeGracefully(String args) {
         encode(decode(args, Charset.defaultCharset()), Charset.defaultCharset())
     }
 

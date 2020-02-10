@@ -13,7 +13,7 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
             ['/fm', 'addx a-test|testurl-a.com'],
             ['/fm', 'addx d-test|testurl-d.com'],
             ['/fm', 'addx b-test|testurl-b.com'],
-        ].stream().map({ it -> textCommandRequest(it[0], it[1]) }).collect(Collectors.toList())
+        ].stream().map({ it -> slackCommandRequest(it[0], it[1]) }).collect(Collectors.toList())
 
         when:
         def responses = requests.stream().map({ it -> restTemplate.exchange(it, String) })
@@ -22,7 +22,7 @@ class ListXCommandProcessorIntegrationTest extends IntegrationSpecification {
         responses.forEach({ it -> assert it.statusCode == HttpStatus.OK })
 
         and:
-        def listRequest = textCommandRequest('/fm', 'listx')
+        def listRequest = slackCommandRequest('/fm', 'listx')
 
         when:
         def listResponse = restTemplate.exchange(listRequest, String)
