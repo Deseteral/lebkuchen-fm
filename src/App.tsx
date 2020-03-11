@@ -3,6 +3,7 @@ import * as React from 'react';
 import NowPlaying from './components/NowPlaying/NowPlaying';
 import Queue from './components/Queue/Queue';
 import YoutubePlayer from './components/YoutubePlayer/YoutubePlayer';
+import TimeAlerts from './components/TimeAlerts/TimeAlerts';
 
 class App extends React.Component {
   public render() {
@@ -17,6 +18,7 @@ class App extends React.Component {
         <YoutubePlayer />
         <NowPlaying />
         <Queue />
+        <TimeAlerts />
 
         <div className="footer-container">
           <div className="footer">
