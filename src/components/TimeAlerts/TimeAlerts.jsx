@@ -1,5 +1,7 @@
 import React from 'react';
 
+const timeFormatter = new Intl.DateTimeFormat('pl', { hour: '2-digit', minute: '2-digit' });
+
 class TimeAlerts extends React.Component {
   constructor(props) {
     super(props);
@@ -25,7 +27,7 @@ class TimeAlerts extends React.Component {
     const { alerts } = this.state;
     alerts.forEach(({ time, days }) => {
       const currentDay = new Date().getDay();
-      const currentTime = new Date().toISOString().substr(11, 5);
+      const currentTime = timeFormatter.format(new Date());
 
       if (days.includes(currentDay) && (currentTime === time)) {
         this.audio.current.pause();
