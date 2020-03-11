@@ -32,8 +32,8 @@ class TimeAlerts extends React.Component {
       const currentTime = timeFormatter.format(new Date());
 
       if (days.includes(currentDay) && (currentTime === time)) {
-        this.audio.current.pause();
-        setTimeout(() => this.audio.current.stop(), (10 * 1000));
+        this.audio.current.play();
+        setTimeout(() => this.audio.current.pause(), (10 * 1000));
       }
     });
   }
