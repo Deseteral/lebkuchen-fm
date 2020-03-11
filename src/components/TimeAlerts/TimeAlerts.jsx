@@ -14,6 +14,8 @@ class TimeAlerts extends React.Component {
   componentDidMount() {
     setInterval(() => this.refreshConfiguration(), (60 * 1000));
     setInterval(() => this.checkTimeAndRunAlarm(), (30 * 1000));
+
+    this.refreshConfiguration();
     window.alertStop = () => this.audio.current.pause();
   }
 
