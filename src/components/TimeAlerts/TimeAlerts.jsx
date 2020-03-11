@@ -10,23 +10,28 @@ class TimeAlerts extends React.Component {
   }
 
   componentDidMount() {
+    setInterval(() => this.refreshConfiguration(), (60 * 1000));
+    setInterval(() => this.checkTimeAndRunAlarm(), (30 * 1000));
+    window.alertStop = () => this.audio.current.pause();
+  }
+
+  refreshConfiguration() {
     fetch('/timeAlerts')
       .then(data => data.json())
       .then(data => this.setState(data));
+  }
 
-    setInterval(() => {
-      const { alerts } = this.state;
-      alerts.forEach(({ time, days }) => {
-        const currentDay = new Date().getDay();
-        const currentTime = new Date().toISOString().substr(11, 5);
-        if (days.includes(currentDay) && (currentTime === time)) {
-          this.audio.current.pause();
-          setTimeout(() => this.audio.current.stop(), (10 * 1000));
-        }
-      });
-    }, (30 * 1000));
+  checkTimeAndRunAlarm() {
+    const { alerts } = this.state;
+    alerts.forEach(({ time, days }) => {
+      const currentDay = new Date().getDay();
+      const currentTime = new Date().toISOString().substr(11, 5);
 
-    window.alertStop = () => this.audio.current.pause();
+      if (days.includes(currentDay) && (currentTime === time)) {
+        this.audio.current.pause();
+        setTimeout(() => this.audio.current.stop(), (10 * 1000));
+      }
+    });
   }
 
   render() {
