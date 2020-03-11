@@ -22,7 +22,7 @@ class TimeAlerts extends React.Component {
   refreshConfiguration() {
     fetch('/timeAlerts')
       .then(data => data.json())
-      .then(data => this.setState(...data, () => console.log(`Alerts config: ${this.state.alerts}`)));
+      .then(data => this.setState(data, () => console.log(`Alerts config: ${this.state.alerts}`)));
   }
 
   checkTimeAndRunAlarm() {
