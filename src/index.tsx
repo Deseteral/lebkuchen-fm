@@ -5,6 +5,15 @@ import serverPush from './services/serverPush';
 
 ReactDOM.render(
   <App />,
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
-serverPush.initSocket();
+
+const checkIoId = setInterval(() => {
+  console.log('checking for socket.io');
+
+  // @ts-ignore
+  if (window.io) {
+    serverPush.initSocket();
+    clearInterval(checkIoId);
+  }
+}, 100);

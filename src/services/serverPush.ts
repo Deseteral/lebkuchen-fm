@@ -31,8 +31,7 @@ interface IXMessage {
 let socket;
 
 function handleIncomingMsg(msg: IIcomingMsg) {
-  console.log('incoming message'); // tslint:disable-line
-  console.log(msg); // tslint:disable-line
+  console.log('incoming message', msg); // tslint:disable-line
   if (msg.song) {
     youtubeQueue.add(msg.song);
   }
@@ -64,7 +63,7 @@ function handleVolume(xvolume: IVolumeMessage) {
 
 function initSocket() {
   socket = io();
-  socket.on('connect', ()=> console.log('SOCKET CONNECTED!')); // tslint:disable-line
+  socket.on('connect', () => console.log('Socket connected!')); // tslint:disable-line
   socket.on('queue', handleIncomingMsg);
   socket.on('skip', handleSkip);
   socket.on('resume', handleResume);
