@@ -9,25 +9,6 @@
 - `YOUTUBE_DATA_API_TOKEN` - YouTube Data API token
 - `COMMAND_PROMPT` - command prompt (optional, default is `/fm`)
 
-## API
-### Data models
-```typescript
-interface XSound {
-    name: string,
-    url: string,
-    playCount: number,
-}
-```
-
-### Endpoints
-`GET /xsounds` \
-Returns list of all sounds
-```typescript
-interface XSoundsDTO {
-    sounds: Array<XSound>,
-}
-```
-
 ## Scripts
 Scripts related to the project live in the `scripts` directory.
 
