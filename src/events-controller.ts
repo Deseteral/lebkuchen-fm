@@ -1,13 +1,19 @@
 import express from 'express';
 import WebSocket from 'ws';
-import { EventData, processEventData } from './events-service';
+import shortid from 'shortid';
+import * as EventsService from './events-service';
+import { EventData } from './events-service';
 
 function eventsController(ws: WebSocket, _: express.Request) {
+  const wsid = shortid.generate();
+
+  EventsService.connectionOpened(wsid, ws);
+
   ws.on('message', (msg: string) => {
     const eventData = (JSON.parse(msg) as EventData);
-    processEventData(eventData);
+    EventsService.processEventData(eventData, wsid);
   });
-  ws.on('close', () => console.log('close'));
+  ws.on('close', () => EventsService.connectionClosed(wsid));
 }
 
 export {
