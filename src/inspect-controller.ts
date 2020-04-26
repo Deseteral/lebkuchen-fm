@@ -1,7 +1,9 @@
 import express from 'express';
-import * as EventsService from './events-service';
+import * as EventStream from './event-stream';
 
 function inspectController(_: express.Request, res: express.Response) {
+  const socketKeys = Object.keys(EventStream.getIo().sockets.sockets);
+
   const html = `
     <html>
     <head>
@@ -42,6 +44,10 @@ function inspectController(_: express.Request, res: express.Response) {
       <main>
         <section>
           <h2>WS connections</h2>
+          <div>Current connections: ${socketKeys.length}</div>
+          <ul>
+            ${socketKeys.map((socketId) => (`<li><code>${socketId}</code></li>`)).join('')}
+          </ul>
         </section>
       </main>
     </body>

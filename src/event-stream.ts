@@ -3,8 +3,10 @@ import socketIo from 'socket.io';
 import * as Logger from './logger';
 import * as EventsService from './events-service';
 
+let io: SocketIO.Server;
+
 function initialize(server: http.Server) {
-  const io = socketIo(server);
+  io = socketIo(server);
 
   io.on('connection', (socket) => {
     Logger.get().info('New user connected');
@@ -16,6 +18,11 @@ function initialize(server: http.Server) {
   });
 }
 
+function getIo() {
+  return io;
+}
+
 export {
   initialize,
+  getIo,
 };
