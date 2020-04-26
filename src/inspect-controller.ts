@@ -42,10 +42,6 @@ function inspectController(_: express.Request, res: express.Response) {
       <main>
         <section>
           <h2>WS connections</h2>
-          <div>Currently connected: ${Object.keys(EventsService.connectionPool).length}</div>
-          <ul>
-            ${Object.keys(EventsService.connectionPool).map((wsid) => `<li><code>${wsid}</code></li>`).join('')}
-          </ul>
         </section>
       </main>
     </body>

@@ -1,4 +1,4 @@
-import WebSocket from 'ws';
+import socketIo from 'socket.io';
 
 const PLAYER_STATE_UPDATE = 'PLAYER_STATE_UPDATE';
 interface PlayerStateUpdateEvent {
@@ -14,46 +14,39 @@ interface PlaterStateRequestEvent {
 type EventData = (PlayerStateUpdateEvent | PlaterStateRequestEvent);
 
 interface PlayerState {
-  time: string;
-  queue: string[];
+  time: number;
 }
 
 const EMPTY_PLAYER_STATE: PlayerState = {
-  time: '00:00',
-  queue: [],
+  time: 0,
 };
 
-const connectionPool : {[wsid: string]: WebSocket} = {};
+function onUserConnected(socket: socketIo.Socket, io: socketIo.Server) {
+  const connectedSocketCount = Object.keys(io.sockets.sockets).length;
 
-function processEventData(eventData: EventData, wsid: string) {
-  console.log(eventData, wsid);
-}
-
-function connectionOpened(wsid: string, ws: WebSocket) {
-  connectionPool[wsid] = ws;
-}
-
-function connectionClosed(wsid: string) {
-  delete connectionPool[wsid];
-}
-
-function sendPlayerState(receiverWsid: string) {
-  const connectionPoolKeys = Object.keys(connectionPool);
-  const sourceWsid = connectionPoolKeys.find((wsid) => (wsid !== receiverWsid));
-
-  if (!sourceWsid) {
+  if (connectedSocketCount <= 1) {
     const eventData: PlayerStateUpdateEvent = {
       id: 'PLAYER_STATE_UPDATE',
       state: EMPTY_PLAYER_STATE,
     };
-    connectionPool[receiverWsid].send(eventData);
+    socket.emit('events', eventData);
+  } else {
+    const reqEventData: PlaterStateRequestEvent = {
+      id: 'PLAYER_STATE_REQUEST',
+    };
+    const primaryClientId = Object.keys(io.sockets.sockets)[0];
+    const primaryClient = io.sockets.sockets[primaryClientId]; // TODO: This looks like a hack
+    primaryClient.emit('events', reqEventData, (primaryClientState: PlayerState) => {
+      const updateEventData: PlayerStateUpdateEvent = {
+        id: 'PLAYER_STATE_UPDATE',
+        state: primaryClientState,
+      };
+      socket.emit('events', updateEventData);
+    });
   }
 }
 
 export {
   EventData,
-  processEventData,
-  connectionOpened,
-  connectionClosed,
-  connectionPool,
+  onUserConnected,
 };
