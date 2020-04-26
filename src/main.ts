@@ -5,8 +5,6 @@ import * as Logger from './logger';
 import * as EventStream from './event-stream';
 import { inspectController } from './inspect-controller';
 
-Logger.initialize();
-
 const port = 3000;
 const app = express();
 const server = new http.Server(app);

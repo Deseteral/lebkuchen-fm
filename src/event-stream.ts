@@ -7,11 +7,11 @@ function initialize(server: http.Server) {
   const io = socketIo(server);
 
   io.on('connection', (socket) => {
-    Logger.get().sockets('New user connected');
+    Logger.get().info('New user connected');
     EventsService.onUserConnected(socket, io);
 
     socket.on('disconnect', () => {
-      Logger.get().sockets('User disconnected');
+      Logger.get().info('User disconnected');
     });
   });
 }
