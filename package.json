@@ -9,10 +9,10 @@
   "scripts": {
     "start": "node build/main.js",
     "build": "babel src -d build --extensions '.ts,.js'",
-    "dev": "yarn build && yarn start",
-    "test": "yarn test:type-check",
+    "dev": "npm run build && npm run start",
+    "test": "npm run test:type-check",
     "test:type-check": "tsc --noEmit",
-    "test:type-check:watch": "yarn test:type-check -- --watch"
+    "test:type-check:watch": "npm run test:type-check -- --watch"
   },
   "dependencies": {
     "express": "4.17.1",
