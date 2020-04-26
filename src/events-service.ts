@@ -23,4 +23,5 @@ export {
   processEventData,
   connectionOpened,
   connectionClosed,
+  connectionPool,
 };
