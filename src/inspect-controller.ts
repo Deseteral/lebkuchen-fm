@@ -1,8 +1,12 @@
 import express from 'express';
 import * as EventStream from './event-stream';
+import * as Logger from './logger';
 
-function inspectController(_: express.Request, res: express.Response) {
+async function inspectController(_: express.Request, res: express.Response) {
   const socketKeys = Object.keys(EventStream.getIo().sockets.sockets);
+  const loggerLabels = Logger.get().levels.labels;
+  const logs = (await Logger.getRawLogsFromFile())
+    .map((log) => `${new Date(log.time).toLocaleString()} | ${loggerLabels[log.level]} | ${log.msg}`);
 
   const html = `
     <html>
@@ -10,6 +14,9 @@ function inspectController(_: express.Request, res: express.Response) {
       <title>LebkuchenFM service inspector</title>
       <meta charset="utf-8">
       <style>
+        * {
+          box-sizing: border-box;
+        }
         body {
           background: #c0c0c0;
         }
@@ -36,6 +43,12 @@ function inspectController(_: express.Request, res: express.Response) {
         ul {
           margin: 0;
         }
+        .textarea {
+          margin: 8px;
+          border: 2px solid;
+          border-style: inset;
+          background: white;
+        }
       </style>
     </head>
     <body>
@@ -49,6 +62,8 @@ function inspectController(_: express.Request, res: express.Response) {
             ${socketKeys.map((socketId) => (`<li><code>${socketId}</code></li>`)).join('')}
           </ul>
         </section>
+
+        <section style="height: 450px; background: white;">${logs.map((s) => `<code>${s}</code>`).join('<br>')}</section>
       </main>
     </body>
     </html>

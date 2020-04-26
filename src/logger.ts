@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import util from 'util';
+import pino from 'pino';
 import pinoms from 'pino-multi-stream';
 
 const readFile = util.promisify(fs.readFile);
@@ -19,8 +20,11 @@ function get() {
   return logger;
 }
 
-function getRawLogsFromFile() : Promise<string> {
-  return readFile(LOGS_FILE_PATH, { encoding: 'utf8' });
+async function getRawLogsFromFile() : Promise<pino.LogDescriptor[]> {
+  return (await readFile(LOGS_FILE_PATH, { encoding: 'utf8' }))
+    .split('\n')
+    .filter((s) => (s.length > 0))
+    .map((rawJson) => (JSON.parse(rawJson) as pino.LogDescriptor));
 }
 
 export {
