@@ -1,11 +1,11 @@
 import http from 'http';
 import path from 'path';
 import express from 'express';
-import signale from 'signale';
+import * as Logger from './logger';
 import * as EventStream from './event-stream';
 import { inspectController } from './inspect-controller';
 
-signale.config({ displayTimestamp: true });
+Logger.initialize();
 
 const port = 3000;
 const app = express();
@@ -16,4 +16,4 @@ EventStream.initialize(server);
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/inspect', inspectController);
 
-server.listen(port, () => signale.info(`LebkuchenFM service started on port ${port}`));
+server.listen(port, () => Logger.get().info(`LebkuchenFM service started on port ${port}`));
