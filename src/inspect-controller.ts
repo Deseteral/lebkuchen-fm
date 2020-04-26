@@ -65,6 +65,14 @@ async function inspectController(_: express.Request, res: express.Response) {
 
         <section style="height: 450px; background: white;">${logs.map((s) => `<code>${s}</code>`).join('<br>')}</section>
       </main>
+      <script>
+        setInterval(async () => {
+          const htmlTxt = (await (await fetch('/inspect')).text());
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(htmlTxt, 'text/html');
+          document.querySelector('main').innerHTML = htmlDoc.querySelector('main').innerHTML;
+        }, 1000);
+      </script>
     </body>
     </html>
   `;
