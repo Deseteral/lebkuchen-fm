@@ -15,6 +15,7 @@
     "test:type-check:watch": "npm run test:type-check -- --watch"
   },
   "dependencies": {
+    "compression": "1.7.4",
     "express": "4.17.1",
     "pino": "6.2.1",
     "pino-multi-stream": "5.0.0",
@@ -27,6 +28,7 @@
     "@babel/preset-env": "7.9.5",
     "@babel/preset-typescript": "7.9.0",
     "@deseteral/eslint-config": "2.1.0",
+    "@types/compression": "1.7.0",
     "@types/express": "4.17.6",
     "@types/pino": "6.0.0",
     "@types/pino-multi-stream": "3.1.2",

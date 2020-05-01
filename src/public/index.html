@@ -10,15 +10,17 @@
   <script>
     var socket = io();
     var state = { time: 0 };
-    socket.on('events', (eventData, responseCb) => {
-      if (eventData.id === 'PLAYER_STATE_UPDATE') {
-        console.log('my new state', eventData.state);
-        state = eventData.state;
-      }
 
-      if (eventData.id === 'PLAYER_STATE_REQUEST') {
-        console.log('sending state', state);
-        responseCb(state);
+    socket.on('events', (eventData, responseCb) => {
+      switch (eventData.id) {
+        case 'PLAYER_STATE_UPDATE': {
+          console.log('my new state', eventData.state);
+          state = eventData.state;
+        } break;
+        case 'PLAYER_STATE_REQUEST': {
+          console.log('sending state', state);
+          responseCb(state);
+        } break;
       }
     });
 

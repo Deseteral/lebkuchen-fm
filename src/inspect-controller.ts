@@ -2,7 +2,9 @@ import express from 'express';
 import * as EventStream from './event-stream';
 import * as Logger from './logger';
 
-async function inspectController(_: express.Request, res: express.Response) {
+const router = express.Router();
+
+router.get('/', async (_, res) => {
   const socketKeys = Object.keys(EventStream.getIo().sockets.sockets);
   const loggerLabels = Logger.get().levels.labels;
   const logs = (await Logger.getRawLogsFromFile())
@@ -77,8 +79,8 @@ async function inspectController(_: express.Request, res: express.Response) {
     </html>
   `;
   res.send(html);
-}
+});
 
 export {
-  inspectController,
+  router,
 };
