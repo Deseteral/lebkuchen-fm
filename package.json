@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "start": "node packages/service/build/main.js",
-    "build": "lerna run build && cp packages/fm-player/dist/* packages/service/build/public/"
+    "build": "lerna run build && cp packages/fm-player/dist/* packages/service/build/public/",
+    "test": "lerna run test"
   },
   "devDependencies": {
     "lerna": "3.22.1"
