@@ -1,0 +1,19 @@
+{
+  "name": "lebkuchen-fm-player",
+  "version": "2.0.0",
+  "description": "Lebkuchen FM player frontend",
+  "author": "Deseteral <deseteral@gmail.com>",
+  "homepage": "https://github.com/Deseteral/lebkuchen-fm#readme",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Deseteral/lebkuchen-fm.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/Deseteral/lebkuchen-fm/issues"
+  }
+}
