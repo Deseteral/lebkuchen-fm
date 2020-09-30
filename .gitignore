@@ -1,5 +1,7 @@
 node_modules/
 build/
+dist/
+.cache/
 
 *.log
 .DS_Store
