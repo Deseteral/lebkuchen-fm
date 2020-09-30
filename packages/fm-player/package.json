@@ -1,0 +1,27 @@
+{
+  "name": "lebkuchen-fm-player",
+  "version": "2.0.0",
+  "description": "Lebkuchen FM player frontend",
+  "main": "src/index.js",
+  "repository": "https://github.com/Deseteral/lebkuchen-fm.git",
+  "author": "Deseteral <deseteral@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "parcel build src/index.html",
+    "dev": "parcel src/index.html",
+    "test": "npm run test:type-check && npm run test:lint",
+    "test:type-check": "tsc --noEmit",
+    "test:type-check:watch": "npm run test:type-check -- --watch",
+    "test:lint": "eslint src --ext js,jsx,ts,tsx"
+  },
+  "devDependencies": {
+    "@deseteral/eslint-config": "2.1.1",
+    "eslint": "7.10.0",
+    "parcel-bundler": "1.12.4",
+    "typescript": "4.0.3"
+  },
+  "eslintConfig": {
+    "extends": "@deseteral/eslint-config/typescript"
+  }
+}
