@@ -11,5 +11,5 @@ const server = new http.Server(app);
 app.use(compression());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const port = Configuration.get().PORT;
+const port = Configuration.read().PORT;
 server.listen(port, () => Logger.info(`LebkuchenFM service started on port ${port}`));
