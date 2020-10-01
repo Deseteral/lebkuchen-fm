@@ -4,7 +4,8 @@ import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import * as Configuration from './application/configuration';
-import * as Logger from './application/logger';
+import * as Logger from './infrastructure/logger';
+import * as Storage from './infrastructure/storage';
 
 const app: express.Express = express();
 const server: http.Server = new http.Server(app);
@@ -23,5 +24,6 @@ function runApplication() {
 
 Promise.resolve()
   .then(configureExpress)
+  .then(() => Storage.connect())
   .then(runApplication)
   .catch((err) => Logger.error(err, 'app-init'));
