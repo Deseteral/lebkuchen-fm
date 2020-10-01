@@ -8,7 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "babel src -d build --extensions '.ts,.js' --copy-files",
+    "start": "node build/main.js",
+    "build": "rm -rf build && babel src -d build --extensions '.ts,.js' --copy-files",
     "dev": "npm run build && npm run start",
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
@@ -16,6 +17,7 @@
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
+    "body-parser": "1.19.0",
     "compression": "1.7.4",
     "express": "4.17.1"
   },
@@ -25,6 +27,7 @@
     "@babel/preset-env": "7.11.5",
     "@babel/preset-typescript": "7.10.4",
     "@deseteral/eslint-config": "2.1.1",
+    "@types/body-parser": "1.19.0",
     "@types/compression": "1.7.0",
     "@types/express": "4.17.8",
     "eslint": "7.10.0",
