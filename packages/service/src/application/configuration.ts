@@ -1,4 +1,13 @@
-function read() {
+interface Configuration {
+  PORT: string,
+  DATABASE_NAME: string,
+  MONGODB_URI: string,
+  YOUTUBE_API_KEY: (string | null),
+  SLACK_CHANNEL_ID: string,
+  COMMAND_PROMPT: string,
+}
+
+function read(): Configuration {
   // TODO: Update documentation
   return {
     PORT: (process.env.PORT || '9000'),

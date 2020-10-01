@@ -5,7 +5,7 @@ interface Log {
   message: string,
 }
 
-function printToConsole(l: Log) {
+function printToConsole(l: Log): void {
   const { datetime, group, level, message } = l;
   const msg = `[${datetime.toLocaleString()}] [${group}] ${level.toUpperCase()}: ${message}`;
   console.log(msg); // eslint-disable-line no-console
@@ -16,7 +16,7 @@ function getLoggerHistory(): Log[] {
   return loggerHistory;
 }
 
-function log(level: string, message: string, group?: string) {
+function log(level: string, message: string, group?: string): void {
   const l: Log = {
     datetime: new Date(),
     group: group || 'default',
@@ -28,15 +28,15 @@ function log(level: string, message: string, group?: string) {
   printToConsole(l);
 }
 
-function info(message: string, group?: string) {
+function info(message: string, group?: string): void {
   log('info', message, group);
 }
 
-function warn(message: string, group?: string) {
+function warn(message: string, group?: string): void {
   log('warn', message, group);
 }
 
-function error(message: string, group?: string) {
+function error(message: string, group?: string): void {
   log('error', message, group);
 }
 
