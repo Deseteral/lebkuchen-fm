@@ -1,4 +1,4 @@
-import XSoundsRepository from './x-sounds-repository';
+import * as XSoundsRepository from './x-sounds-repository';
 import XSound from './x-sound';
 
 function getAll(): Promise<XSound[]> {

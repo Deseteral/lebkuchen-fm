@@ -1,4 +1,4 @@
-import { Db, MongoClient } from 'mongodb';
+import { Collection, MongoClient } from 'mongodb';
 import * as Configuration from '../application/configuration';
 import * as Logger from '../infrastructure/logger';
 
@@ -13,9 +13,9 @@ async function connect(): Promise<void> {
   Logger.info('Connected to MongoDB server', 'mongo-client');
 }
 
-function getDatabase(): Db {
+function collection<T>(collectionName: string): Collection<T> {
   const databaseName = Configuration.read().DATABASE_NAME;
-  return client.db(databaseName);
+  return client.db(databaseName).collection(collectionName);
 }
 
-export { connect, getDatabase };
+export { connect, collection };

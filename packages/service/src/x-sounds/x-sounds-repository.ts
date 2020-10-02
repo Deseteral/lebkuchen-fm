@@ -3,7 +3,7 @@ import * as Storage from '../infrastructure/storage';
 import XSound from './x-sound';
 
 function getCollection(): Collection<XSound> {
-  return Storage.getDatabase().collection('x');
+  return Storage.collection<XSound>('x');
 }
 
 function insert(sound: XSound): Promise<InsertOneWriteOpResult<WithId<XSound>>> {
@@ -22,7 +22,7 @@ function replace(sound: XSound): Promise<ReplaceWriteOpResult> {
   return getCollection().replaceOne({ _id: sound._id }, sound);
 }
 
-export default {
+export {
   findByName,
   findAll,
   insert,
