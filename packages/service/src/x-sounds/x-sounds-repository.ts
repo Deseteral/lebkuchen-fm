@@ -6,16 +6,16 @@ function getCollection(): Collection<XSound> {
   return Storage.collection<XSound>('x');
 }
 
-function insert(sound: XSound): Promise<InsertOneWriteOpResult<WithId<XSound>>> {
-  return getCollection().insertOne(sound);
+function findAll(): Promise<XSound[]> {
+  return getCollection().find({}).toArray();
 }
 
 function findByName(name: string): Promise<XSound | null> {
   return getCollection().findOne({ name });
 }
 
-function findAll(): Promise<XSound[]> {
-  return getCollection().find({}).toArray();
+function insert(sound: XSound): Promise<InsertOneWriteOpResult<WithId<XSound>>> {
+  return getCollection().insertOne(sound);
 }
 
 function replace(sound: XSound): Promise<ReplaceWriteOpResult> {
