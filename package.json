@@ -1,6 +1,9 @@
 {
   "name": "root",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "start": "node packages/service/build/main.js",
     "build": "lerna run build && cp packages/fm-player/dist/* packages/service/build/public/",

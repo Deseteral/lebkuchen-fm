@@ -7,6 +7,9 @@
   "author": "Deseteral <deseteral@gmail.com>",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": "14.x"
+  },
   "scripts": {
     "build": "parcel build src/index.html",
     "dev": "parcel src/index.html",
