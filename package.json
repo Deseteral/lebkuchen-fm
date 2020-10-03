@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node packages/service/build/main.js",
     "build": "lerna run build && cp packages/fm-player/dist/* packages/service/build/public/",
-    "test": "lerna run test"
+    "test": "lerna run test",
+    "postinstall": "lerna bootstrap"
   },
   "devDependencies": {
     "lerna": "3.22.1"
