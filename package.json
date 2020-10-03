@@ -6,7 +6,8 @@
   },
   "scripts": {
     "start": "node packages/service/build/main.js",
-    "build": "lerna run build && cp packages/fm-player/dist/* packages/service/build/public/",
+    "build": "lerna run build && npm run build:static",
+    "build:static": "mkdir -p packages/service/build/public && cp packages/fm-player/dist/* packages/service/build/public/",
     "test": "lerna run test",
     "postinstall": "lerna bootstrap"
   },
