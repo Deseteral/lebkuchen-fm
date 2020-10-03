@@ -1,4 +1,4 @@
-import nodeFetch from 'node-fetch';
+import fetch from 'node-fetch';
 import * as Configuration from '../application/Configuration';
 
 const { YOUTUBE_API_KEY } = Configuration.read();
@@ -9,7 +9,7 @@ function request<T>(url: string): Promise<T> {
     'Content-Type': 'application/json',
   };
 
-  return nodeFetch(url, { headers }).then((data) => data.json());
+  return fetch(url, { headers }).then((data) => data.json());
 }
 
 function getSearchUrl(phrase: string): string {
