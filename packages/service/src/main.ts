@@ -6,8 +6,12 @@ import bodyParser from 'body-parser';
 import * as Configuration from './application/configuration';
 import * as Logger from './infrastructure/logger';
 import * as Storage from './infrastructure/storage';
+import * as CommandInitializer from './commands/registry/command-initializer';
 
 import XSoundsController from './x-sounds/x-sounds-controller';
+import SlackCommandController from './slack/slack-command-controller';
+
+import './polyfills';
 
 const app: express.Express = express();
 const server: http.Server = new http.Server(app);
@@ -21,6 +25,7 @@ function configureExpress(): void {
 
 function setupRouting(): void {
   app.use('/x-sounds', XSoundsController);
+  app.use('/commands/slack', SlackCommandController);
 }
 
 function runApplication(): void {
@@ -30,6 +35,7 @@ function runApplication(): void {
 
 Promise.resolve()
   .then(() => Storage.connect())
+  .then(() => CommandInitializer.initialize())
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)
