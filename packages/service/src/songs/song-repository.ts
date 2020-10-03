@@ -6,7 +6,7 @@ function getCollection(): Collection<Song> {
   return Storage.collection<Song>('songs');
 }
 
-function findAll(): Promise<Song[]> {
+function findAllOrderByTimesPlayedDesc(): Promise<Song[]> {
   return getCollection().find({}).sort({ timesPlayed: -1 }).toArray();
 }
 
@@ -27,7 +27,7 @@ function replace(song: Song): Promise<ReplaceWriteOpResult> {
 }
 
 export {
-  findAll,
+  findAllOrderByTimesPlayedDesc,
   findByName,
   findByYoutubeId,
   insert,
