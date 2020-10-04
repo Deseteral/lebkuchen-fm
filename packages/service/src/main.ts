@@ -7,6 +7,7 @@ import * as Configuration from './application/configuration';
 import * as Logger from './infrastructure/logger';
 import * as Storage from './infrastructure/storage';
 import * as CommandInitializer from './commands/registry/command-initializer';
+import * as EventStream from './event-stream/event-stream';
 
 import XSoundsController from './x-sounds/x-sounds-controller';
 import SlackCommandController from './slack/slack-command-controller';
@@ -36,6 +37,7 @@ function runApplication(): void {
 Promise.resolve()
   .then(() => Storage.connect())
   .then(() => CommandInitializer.initialize())
+  .then(() => EventStream.initialize(server))
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)
