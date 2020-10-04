@@ -1,7 +1,7 @@
 import CommandDefinition from './command-definition';
 
 interface CommandRegistry {
-  [key: string]: CommandDefinition;
+  [key: string]: CommandDefinition,
 }
 
 const commands: CommandRegistry = {};

@@ -1,7 +1,7 @@
 interface SlackPlainText {
   type: 'plain_text',
   text: string,
-  emoji: boolean
+  emoji: boolean,
 }
 
 interface SlackMarkdownText {

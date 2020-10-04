@@ -4,7 +4,7 @@ Array.prototype.last = function last<T>(): T { // eslint-disable-line no-extend-
 
 declare global {
   interface Array<T> {
-    last(): T;
+    last(): T,
   }
 }
 
