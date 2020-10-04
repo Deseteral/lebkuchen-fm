@@ -1,7 +1,7 @@
 import Command from '../command';
-import MessageBlock from '../message-block';
+import CommandProcessingResponse from '../command-processing-response';
 
-type ProcessFunction = (command: Command) => Promise<MessageBlock[]>;
+type ProcessFunction = (command: Command) => Promise<CommandProcessingResponse>;
 
 interface CommandDefinition {
   key: string,

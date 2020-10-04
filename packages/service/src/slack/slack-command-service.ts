@@ -1,6 +1,7 @@
 import * as CommandExecutorService from '../commands/command-executor-service';
-import MessageBlock from '../commands/message-block';
+import CommandProcessingResponse, { MessageBlock } from '../commands/command-processing-response';
 import SlackBlock, { SectionSlackBlock } from './slack-block';
+import { SlackBlockResponse } from './slack-response';
 
 function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
   const blocks: SlackBlock[] = [];
@@ -34,10 +35,18 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
   return blocks;
 }
 
-async function processSlackCommand(command: string, text: string): Promise<SlackBlock[]> {
+function mapProcessingResponseToSlackResponse(processingResponse: CommandProcessingResponse)
+: SlackBlockResponse {
+  return {
+    response_type: processingResponse.isVisibleToIssuerOnly ? 'ephemeral' : 'in_channel',
+    blocks: mapMessagesToSlackBlocks(processingResponse.messages),
+  };
+}
+
+async function processSlackCommand(command: string, text: string): Promise<SlackBlockResponse> {
   const messageContent = `${command} ${text}`;
   const commandProcessingResponse = await CommandExecutorService.processFromText(messageContent);
-  return mapMessagesToSlackBlocks(commandProcessingResponse);
+  return mapProcessingResponseToSlackResponse(commandProcessingResponse);
 }
 
 export {

@@ -2,25 +2,9 @@
 import express from 'express';
 import * as SlackCommandService from './slack-command-service';
 import * as Configuration from '../application/configuration';
-import SlackBlock from './slack-block';
+import { makeSimpleResponse } from './slack-response';
 
 const router = express.Router();
-
-interface SlackBlockResponse {
-  blocks: SlackBlock[],
-}
-
-interface SlackSimpleResponse {
-  response_type: ('ephemeral' | 'in_channel'), // eslint-disable-line camelcase
-  text: string,
-}
-
-function makeSimpleResponse(text: string, visibleToSenderOnly: boolean): SlackSimpleResponse {
-  return {
-    response_type: visibleToSenderOnly ? 'ephemeral' : 'in_channel',
-    text,
-  };
-}
 
 router.post('/', async function processSlackCommand(req, res) {
   const isValidChannelId = (req.body.channel_id === Configuration.read().SLACK_CHANNEL_ID);
@@ -29,9 +13,7 @@ router.post('/', async function processSlackCommand(req, res) {
   }
 
   const { command, text } = req.body;
-  const blocks = await SlackCommandService.processSlackCommand(command, text);
-
-  const response: SlackBlockResponse = { blocks };
+  const response = await SlackCommandService.processSlackCommand(command, text);
   res.send(response);
 });
 
