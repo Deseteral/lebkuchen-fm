@@ -1,5 +1,4 @@
-import { PlayerState } from 'lebkuchen-fm-service';
-import Song from 'lebkuchen-fm-service/src/songs/song';
+import { PlayerState, Song } from 'lebkuchen-fm-service';
 
 type PlayerStateAction =
   | ReplacePlayerStateAction

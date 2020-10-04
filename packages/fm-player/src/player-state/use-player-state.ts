@@ -1,6 +1,5 @@
 import React from 'react';
-import { PlayerState } from 'lebkuchen-fm-service';
-import Song from 'lebkuchen-fm-service/src/songs/song';
+import { PlayerState, Song } from 'lebkuchen-fm-service';
 import PlayerStateContext from './player-state-context';
 
 interface UsePlayerStateT {
