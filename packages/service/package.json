@@ -2,7 +2,7 @@
   "name": "lebkuchen-fm-service",
   "version": "2.0.0",
   "description": "LebkuchenFM backend service",
-  "main": "src/lib.js",
+  "main": "src/lib.ts",
   "repository": "https://github.com/Deseteral/lebkuchen-fm.git",
   "author": "Deseteral <deseteral@gmail.com>",
   "license": "MIT",
