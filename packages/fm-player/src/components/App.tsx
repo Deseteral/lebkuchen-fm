@@ -1,4 +1,5 @@
 import * as React from 'react';
+import YouTubePlayer from './YouTubePlayer';
 import * as EventStreamClient from '../services/event-stream-client';
 
 function App() {
@@ -7,7 +8,10 @@ function App() {
   }, []);
 
   return (
-    <div>LebkuchenFM</div>
+    <>
+      <div>LebkuchenFM</div>
+      <YouTubePlayer />
+    </>
   );
 }
 
