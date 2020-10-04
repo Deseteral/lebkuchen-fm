@@ -1,3 +1,4 @@
+// TODO: Move away from using class
 class Command {
   key: string;
   rawArgs: string;

@@ -1,10 +1,12 @@
+import Song from '../songs/song';
+
 interface PlayerState {
-  time: number,
+  queue: Song[],
 }
 
 function makeDefaultPlayerState(): PlayerState {
   return {
-    time: 0,
+    queue: [],
   };
 }
 
