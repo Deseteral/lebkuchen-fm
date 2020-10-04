@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { EventData } from '../../service/src/event-stream/events';
+import { EventData } from 'lebkuchen-fm-service';
 
 const client = io('/');
 

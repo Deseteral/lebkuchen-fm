@@ -19,6 +19,7 @@
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
+    "lebkuchen-fm-service": "*",
     "socket.io-client": "2.3.1"
   },
   "devDependencies": {
