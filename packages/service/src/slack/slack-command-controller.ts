@@ -12,6 +12,7 @@ router.post('/', async function processSlackCommand(req, res) {
   if (!isValidChannelId) {
     res.send(makeSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true));
     Logger.warn('Received Slack slash command with invalid channel ID', 'slack-command-controller');
+    return;
   }
 
   const { command, text } = req.body;
