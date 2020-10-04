@@ -23,10 +23,10 @@ async function listXCommandProcessor() : Promise<CommandProcessingResponse> {
   };
 }
 
-const commandDefinition: CommandDefinition = {
+const listXCommandDefinition: CommandDefinition = {
   key: 'listx',
   processor: listXCommandProcessor,
   helpMessage: 'Wypisuje listę czaderskich dźwięków w bazie',
 };
 
-export default commandDefinition;
+export default listXCommandDefinition;
