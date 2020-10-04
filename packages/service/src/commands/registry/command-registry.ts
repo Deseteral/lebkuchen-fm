@@ -1,4 +1,5 @@
 import CommandDefinition from './command-definition';
+import * as Logger from '../../infrastructure/logger';
 
 interface CommandRegistry {
   [key: string]: CommandDefinition,
@@ -11,6 +12,8 @@ function register(definition: CommandDefinition): void {
   if (definition.shortKey) {
     commands[definition.shortKey] = definition;
   }
+
+  Logger.info(`Initialized ${definition.key} command`, 'command-registry');
 }
 
 function findCommandByKey(commandKey: string): CommandDefinition {
