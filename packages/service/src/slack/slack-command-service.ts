@@ -16,17 +16,18 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
         });
         break;
 
-      case 'PLAIN_TEXT':
+      case 'PLAIN_TEXT': {
         if (blocks.length === 0 || !((blocks.last() as SectionSlackBlock).fields)) {
           blocks.push({ type: 'section', fields: [] });
         }
 
-        (blocks.last() as SectionSlackBlock).fields?.push({
+        const lastBlock = (blocks.last() as SectionSlackBlock);
+        lastBlock.fields?.push({
           type: 'plain_text',
           text: message.text,
           emoji: true,
         });
-        break;
+      } break;
 
       default: break;
     }
