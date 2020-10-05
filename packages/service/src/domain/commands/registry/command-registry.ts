@@ -1,5 +1,5 @@
 import CommandDefinition from './command-definition';
-import * as Logger from '../../infrastructure/logger';
+import * as Logger from '../../../infrastructure/logger';
 
 // TODO: Use Map instead
 interface CommandRegistry {

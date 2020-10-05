@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import express from 'express';
-import * as CommandExecutorService from '../../commands/command-executor-service';
+import * as CommandExecutorService from '../../domain/commands/command-executor-service';
 import * as Configuration from '../../application/configuration';
 import * as Logger from '../../infrastructure/logger';
 import { makeSimpleResponse, mapCommandProcessingResponseToSlackResponse } from './model/slack-response';

@@ -1,6 +1,6 @@
 import * as SongRepository from './song-repository';
 import Song from './song';
-import * as YouTubeDataService from '../youtube/youtube-data-service';
+import * as YouTubeDataService from '../../youtube/youtube-data-service';
 
 async function createNewSong(youtubeId: string, songTitle?: string): Promise<Song> {
   const name = songTitle || await YouTubeDataService.fetchVideoTitleForId(youtubeId);

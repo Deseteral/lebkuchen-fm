@@ -1,9 +1,9 @@
 import * as SongService from '../../songs/song-service';
-import * as EventStreamService from '../../event-stream/event-stream-service';
+import * as EventStreamService from '../../../event-stream/event-stream-service';
 import Command from '../command';
 import CommandProcessingResponse, { makeSingleTextMessage } from '../command-processing-response';
 import CommandDefinition from '../registry/command-definition';
-import { AddSongToQueueRequestEvent } from '../../event-stream/events';
+import { AddSongToQueueRequestEvent } from '../../../event-stream/events';
 
 async function queueCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;

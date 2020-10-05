@@ -1,4 +1,4 @@
-import CommandProcessingResponse from '../../../commands/command-processing-response';
+import CommandProcessingResponse from '../../../domain/commands/command-processing-response';
 import SlackBlock, { mapMessagesToSlackBlocks } from './slack-block';
 
 type SlackResponseType = ('ephemeral' | 'in_channel');

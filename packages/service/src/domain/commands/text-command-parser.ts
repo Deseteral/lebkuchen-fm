@@ -1,5 +1,5 @@
 import Command from './command';
-import * as Configuration from '../application/configuration';
+import * as Configuration from '../../application/configuration';
 
 function parse(text: string): (Command | null) {
   const tokens = text.split(' ')

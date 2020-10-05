@@ -6,10 +6,10 @@ import bodyParser from 'body-parser';
 import * as Configuration from './application/configuration';
 import * as Logger from './infrastructure/logger';
 import * as Storage from './infrastructure/storage';
-import * as CommandInitializer from './commands/registry/command-initializer';
+import * as CommandInitializer from './domain/commands/registry/command-initializer';
 import * as EventStream from './event-stream/event-stream';
 
-import XSoundsController from './x-sounds/x-sounds-controller';
+import XSoundsController from './domain/x-sounds/x-sounds-controller';
 import SlackCommandController from './api/slack/slack-command-controller';
 
 import './polyfills';

@@ -1,4 +1,4 @@
-import Song from '../songs/song';
+import Song from './songs/song';
 
 interface PlayerState {
   queue: Song[],

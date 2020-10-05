@@ -1,4 +1,4 @@
-import { MessageBlock } from '../../../commands/command-processing-response';
+import { MessageBlock } from '../../../domain/commands/command-processing-response';
 
 interface SlackPlainText {
   type: 'plain_text',

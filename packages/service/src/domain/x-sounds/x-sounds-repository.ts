@@ -1,5 +1,5 @@
 import { Collection, InsertOneWriteOpResult, ReplaceWriteOpResult, WithId } from 'mongodb';
-import * as Storage from '../infrastructure/storage';
+import * as Storage from '../../infrastructure/storage';
 import XSound from './x-sound';
 
 function getCollection(): Collection<XSound> {

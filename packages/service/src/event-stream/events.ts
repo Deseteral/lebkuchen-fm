@@ -1,5 +1,5 @@
 import PlayerState from '../domain/player-state';
-import Song from '../songs/song';
+import Song from '../domain/songs/song';
 
 interface PlayerStateUpdateEvent {
   id: 'PlayerStateUpdateEvent',
