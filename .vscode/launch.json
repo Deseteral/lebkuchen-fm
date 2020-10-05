@@ -5,7 +5,8 @@
       "type": "node",
       "request": "launch",
       "name": "Launch LebkuchenFM service",
-      "program": "${workspaceFolder}/packages/service/build/main.js"
+      "program": "${workspaceFolder}/packages/service/build/main.js",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }
