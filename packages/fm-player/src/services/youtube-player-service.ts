@@ -1,30 +1,21 @@
-import YouTubePlayerFactory from 'youtube-player';
-import { YouTubePlayer } from 'youtube-player/dist/types';
-import YouTubePlayerStates from 'youtube-player/dist/constants/PlayerStates';
-import { Song } from 'lebkuchen-fm-service';
+import YTPlayer from 'yt-player';
 import * as PlayerStateService from './player-state-service';
 
-function playVideo(player: YouTubePlayer, song: Song) {
-  player.loadVideoById(song.youtubeId);
-  player.playVideo();
-}
-
-function playNextVideo(player: YouTubePlayer) {
+function playNextVideo(player: YTPlayer) {
   const song = PlayerStateService.popFromQueueFront();
   if (song) {
-    playVideo(player, song);
+    player.load(song.youtubeId);
+    player.play();
   } else {
-    player.stopVideo();
+    player.stop();
   }
 }
 
 function initialize(domId: string) {
-  const player = YouTubePlayerFactory(domId);
+  const player = new YTPlayer(`#${domId}`);
 
-  player.on('stateChange', (event) => {
-    if (event.data === YouTubePlayerStates.ENDED) {
-      playNextVideo(player);
-    }
+  player.on('ended', () => {
+    playNextVideo(player);
   });
 
   player.on('error', (event) => {
@@ -32,14 +23,15 @@ function initialize(domId: string) {
     playNextVideo(player);
   });
 
-  PlayerStateService.on('songAddedToQueueFront', async () => {
-    const youTubePlayerState = await player.getPlayerState();
-    const playerIsReadyToPlayNextVideo = (
-      (youTubePlayerState === YouTubePlayerStates.ENDED) ||
-      (youTubePlayerState === YouTubePlayerStates.VIDEO_CUED)
-    );
+  player.on('unplayable', () => {
+    playNextVideo(player);
+  });
 
-    if (playerIsReadyToPlayNextVideo) {
+  PlayerStateService.on('songAddedToQueueFront', async () => {
+    const ytPlayerState = player.getState();
+
+    const isReadyToPlayNextVideo = (ytPlayerState !== 'playing');
+    if (isReadyToPlayNextVideo) {
       playNextVideo(player);
     }
   });
