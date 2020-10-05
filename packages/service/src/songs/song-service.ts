@@ -10,7 +10,7 @@ async function createNewSong(youtubeId: string, songTitle?: string): Promise<Son
     youtubeId,
     trimStartSeconds: null,
     trimEndSeconds: null,
-    timesPlayed: 1,
+    timesPlayed: 0,
   };
 }
 
@@ -22,10 +22,20 @@ async function incrementPlayCount(youtubeId: string, songTitle?: string): Promis
     SongRepository.replace({ ...foundSong, timesPlayed });
   } else {
     const song = await createNewSong(youtubeId, songTitle);
+    song.timesPlayed = 1;
     SongRepository.insert(song);
   }
 }
 
+async function getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId: string): Promise<Song> {
+  const songFromStorage = await SongRepository.findByName(songNameOrYouTubeId);
+  if (songFromStorage) return songFromStorage;
+
+  const youTubeId = songNameOrYouTubeId.split(' ')[0].trim();
+  return createNewSong(youTubeId);
+}
+
 export {
   incrementPlayCount,
+  getSongByNameWithYouTubeIdFallback,
 };

@@ -1,20 +1,28 @@
 import PlayerState from '../domain/player-state';
+import Song from '../songs/song';
 
-const PLAYER_STATE_UPDATE = 'PLAYER_STATE_UPDATE';
 interface PlayerStateUpdateEvent {
-  id: typeof PLAYER_STATE_UPDATE,
+  id: 'PlayerStateUpdateEvent',
   state: PlayerState,
 }
 
-const PLAYER_STATE_REQUEST = 'PLAYER_STATE_REQUEST';
 interface PlayerStateRequestEvent {
-  id: typeof PLAYER_STATE_REQUEST,
+  id: 'PlayerStateRequestEvent',
 }
 
-type EventData = (PlayerStateUpdateEvent | PlayerStateRequestEvent);
+interface AddSongToQueueRequestEvent {
+  id: 'AddSongToQueueRequestEvent',
+  song: Song,
+}
+
+type EventData =
+  | PlayerStateUpdateEvent
+  | PlayerStateRequestEvent
+  | AddSongToQueueRequestEvent;
 
 export {
   EventData,
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
+  AddSongToQueueRequestEvent,
 };

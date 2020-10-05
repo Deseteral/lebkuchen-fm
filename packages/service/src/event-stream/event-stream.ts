@@ -7,7 +7,7 @@ let io: SocketIO.Server;
 
 function newConnectionHandler(socket: socketIo.Socket): void {
   Logger.info('New user connected to event stream', 'event-stream');
-  EventStreamService.onUserConnected(socket, io);
+  EventStreamService.onUserConnected(socket);
 
   socket.on('disconnect', () => Logger.info('User disconnected from event stream', 'event-stream'));
 }
@@ -17,6 +17,11 @@ function initialize(server: http.Server): void {
   io.on('connection', newConnectionHandler);
 }
 
+function socketIoServer(): SocketIO.Server {
+  return io;
+}
+
 export {
   initialize,
+  socketIoServer,
 };

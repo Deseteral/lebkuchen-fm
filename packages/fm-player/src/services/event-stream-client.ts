@@ -7,16 +7,20 @@ function connect() {
 
   client.on('events', (eventData: EventData, sendResponse: Function) => {
     switch (eventData.id) {
-      case 'PLAYER_STATE_UPDATE':
+      case 'PlayerStateUpdateEvent':
         PlayerStateService.setState(eventData.state);
         console.log('new state', eventData.state);
         break;
 
-      case 'PLAYER_STATE_REQUEST': {
+      case 'PlayerStateRequestEvent': {
         const state = PlayerStateService.getState();
         console.log(state);
         sendResponse(state);
       } break;
+
+      case 'AddSongToQueueRequestEvent':
+        PlayerStateService.addToQueue(eventData.song);
+        break;
 
       default:
         break;
