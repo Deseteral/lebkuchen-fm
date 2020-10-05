@@ -3,6 +3,8 @@ import PlayerState, { makeDefaultPlayerState } from '../domain/player-state';
 import * as EventStream from './event-stream';
 import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './events';
 
+// TODO: Sort event-stream package into correct folder
+
 function getPrimaryClientSocket(): SocketIO.Socket {
   const ioServer = EventStream.socketIoServer();
   const primaryClientId = Object.keys(ioServer.sockets.sockets)[0];

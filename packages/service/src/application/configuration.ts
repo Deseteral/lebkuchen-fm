@@ -7,6 +7,7 @@ interface Configuration {
   COMMAND_PROMPT: string,
 }
 
+// TODO: Remove call to read function
 function read(): Configuration {
   // TODO: Update documentation
   return {

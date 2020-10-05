@@ -18,4 +18,7 @@ function collection<T>(collectionName: string): Collection<T> {
   return client.db(databaseName).collection(collectionName);
 }
 
-export { connect, collection };
+export {
+  connect,
+  collection,
+};
