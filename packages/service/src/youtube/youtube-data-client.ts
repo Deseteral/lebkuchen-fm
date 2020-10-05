@@ -4,12 +4,13 @@ import * as Configuration from '../application/configuration';
 const { YOUTUBE_API_KEY } = Configuration.read();
 const YOUTUBE_DATA_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
-function request<T>(url: string): Promise<T> {
+async function request<T>(url: string): Promise<T> {
   const headers = {
     'Content-Type': 'application/json',
   };
 
-  return fetch(url, { headers }).then((data) => data.json());
+  const res = await fetch(url, { headers });
+  return res.json();
 }
 
 function getSearchUrl(phrase: string): string {
