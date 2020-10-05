@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "lebkuchen-fm-service": "*",
+    "mitt": "2.1.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "socket.io-client": "2.3.1",
