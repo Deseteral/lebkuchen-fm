@@ -10,7 +10,7 @@ import * as CommandInitializer from './commands/registry/command-initializer';
 import * as EventStream from './event-stream/event-stream';
 
 import XSoundsController from './x-sounds/x-sounds-controller';
-import SlackCommandController from './slack/slack-command-controller';
+import SlackCommandController from './api/slack/slack-command-controller';
 
 import './polyfills';
 

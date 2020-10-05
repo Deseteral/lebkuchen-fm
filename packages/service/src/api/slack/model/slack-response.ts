@@ -1,4 +1,5 @@
-import SlackBlock from './slack-block';
+import CommandProcessingResponse from '../../../commands/command-processing-response';
+import SlackBlock, { mapMessagesToSlackBlocks } from './slack-block';
 
 type SlackResponseType = ('ephemeral' | 'in_channel');
 
@@ -19,9 +20,18 @@ function makeSimpleResponse(text: string, visibleToSenderOnly: boolean): SlackSi
   };
 }
 
+function mapCommandProcessingResponseToSlackResponse(processingResponse: CommandProcessingResponse)
+: SlackBlockResponse {
+  return {
+    response_type: processingResponse.isVisibleToIssuerOnly ? 'ephemeral' : 'in_channel',
+    blocks: mapMessagesToSlackBlocks(processingResponse.messages),
+  };
+}
+
 export {
   SlackResponseType,
   SlackBlockResponse,
   SlackSimpleResponse,
   makeSimpleResponse,
+  mapCommandProcessingResponseToSlackResponse,
 };
