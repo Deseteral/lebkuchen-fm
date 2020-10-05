@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import * as Configuration from '../application/Configuration';
+import * as Configuration from '../application/configuration';
 
 const { YOUTUBE_API_KEY } = Configuration.read();
 const YOUTUBE_DATA_BASE_URL = 'https://www.googleapis.com/youtube/v3';
