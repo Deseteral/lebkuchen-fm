@@ -32,8 +32,8 @@ function initialize(domId: string) {
     playNextVideo(player);
   });
 
-  PlayerStateService.on('songAddedToQueueFront', () => {
-    const youTubePlayerState = player.getPlayerState();
+  PlayerStateService.on('songAddedToQueueFront', async () => {
+    const youTubePlayerState = await player.getPlayerState();
     const playerIsReadyToPlayNextVideo = (
       (youTubePlayerState === YouTubePlayerStates.ENDED) ||
       (youTubePlayerState === YouTubePlayerStates.VIDEO_CUED)
