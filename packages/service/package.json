@@ -58,7 +58,8 @@
   "eslintConfig": {
     "extends": "@deseteral/eslint-config/typescript",
     "rules": {
-      "@typescript-eslint/explicit-function-return-type": "error"
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "max-len": "off"
     }
   }
 }

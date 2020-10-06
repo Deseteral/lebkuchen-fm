@@ -1,13 +1,10 @@
 import Command from './model/command';
 import * as TextCommandParser from './text-command-parser';
 import * as CommandRegistry from './registry/command-registry';
-import CommandProcessingResponse, { makeSingleTextMessage } from './model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
 
 function commandDoesNotExistResponse(): CommandProcessingResponse {
-  return {
-    messages: makeSingleTextMessage('Komenda nie istnieje'),
-    isVisibleToIssuerOnly: true,
-  };
+  return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
 }
 
 async function processCommand(command: Command): Promise<CommandProcessingResponse> {

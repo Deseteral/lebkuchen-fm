@@ -1,4 +1,4 @@
-import CommandProcessingResponse, { makeSingleTextMessage, MessageBlock } from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse, MessageBlock } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 import * as XSoundsService from '../../x-sounds/x-sounds-service';
 
@@ -6,10 +6,7 @@ async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
   const sounds = await XSoundsService.getAll();
 
   if (sounds.length === 0) {
-    return {
-      messages: makeSingleTextMessage('Brak dźwięków w bazie'),
-      isVisibleToIssuerOnly: false,
-    };
+    return makeSingleTextProcessingResponse('Brak dźwięków w bazie', false);
   }
 
   const soundNames: MessageBlock[] = sounds

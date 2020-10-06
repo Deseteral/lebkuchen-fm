@@ -1,7 +1,7 @@
 import { SayEvent } from '../../../event-stream/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 
 async function sayCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
@@ -13,10 +13,7 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
 
   EventStreamService.broadcast(eventMessage);
 
-  return {
-    messages: makeSingleTextMessage(`_"${text}"_`),
-    isVisibleToIssuerOnly: false,
-  };
+  return makeSingleTextProcessingResponse(`_"${text}"_`, false);
 }
 
 const sayCommandDefinition: CommandDefinition = {

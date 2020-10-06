@@ -1,34 +1,25 @@
 import Command, { getCommandArgsByDelimiter } from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as XSoundService from '../../x-sounds/x-sounds-service';
 
 async function addXCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const commandArgs = getCommandArgsByDelimiter(command, '|');
 
   if (commandArgs.length < 2) {
-    return {
-      messages: makeSingleTextMessage('Zbyt mała liczba argumentów'),
-      isVisibleToIssuerOnly: false,
-    };
+    return makeSingleTextProcessingResponse('Zbyt mała liczba argumentów', false);
   }
 
   const [name, url] = commandArgs;
 
   const foundSound = await XSoundService.getByName(name);
   if (foundSound !== null) {
-    return {
-      messages: makeSingleTextMessage(`Dźwięk o nazwie "${name}" już jest w bazie`),
-      isVisibleToIssuerOnly: false,
-    };
+    return makeSingleTextProcessingResponse(`Dźwięk o nazwie "${name}" już jest w bazie`, false);
   }
 
   await XSoundService.createNewSound(name, url);
 
-  return {
-    messages: makeSingleTextMessage(`Dodałem dźwięk "${name}" do biblioteki`),
-    isVisibleToIssuerOnly: false,
-  };
+  return makeSingleTextProcessingResponse(`Dodałem dźwięk "${name}" do biblioteki`, false);
 }
 
 const addXCommandDefinition: CommandDefinition = {

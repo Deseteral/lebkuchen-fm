@@ -1,7 +1,7 @@
 import * as SongService from '../../songs/song-service';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 import { AddSongToQueueEvent } from '../../../event-stream/events';
 
@@ -14,10 +14,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
 
   SongService.incrementPlayCount(song.youtubeId, song.name);
 
-  return {
-    messages: makeSingleTextMessage(`Dodano "${song.name}" do kolejki`),
-    isVisibleToIssuerOnly: false,
-  };
+  return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
 }
 
 const queueCommandDefinition: CommandDefinition = {

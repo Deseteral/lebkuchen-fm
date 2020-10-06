@@ -1,12 +1,9 @@
 import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 
 async function echoCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  return {
-    messages: makeSingleTextMessage(command.rawArgs),
-    isVisibleToIssuerOnly: false,
-  };
+  return makeSingleTextProcessingResponse(command.rawArgs, false);
 }
 
 const echoCommandDefinition: CommandDefinition = {

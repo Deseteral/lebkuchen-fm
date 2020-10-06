@@ -8,13 +8,15 @@ interface CommandProcessingResponse {
   isVisibleToIssuerOnly: boolean,
 }
 
-// TODO: Change it to produce CommandProcessingResponse
-function makeSingleTextMessage(text: string): MessageBlock[] {
-  return [{ text, type: 'PLAIN_TEXT' }];
+function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly: boolean): CommandProcessingResponse {
+  return {
+    messages: [{ text, type: 'PLAIN_TEXT' }],
+    isVisibleToIssuerOnly,
+  };
 }
 
 export default CommandProcessingResponse;
 export {
   MessageBlock,
-  makeSingleTextMessage,
+  makeSingleTextProcessingResponse,
 };
