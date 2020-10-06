@@ -3,14 +3,14 @@ import express from 'express';
 import * as CommandExecutorService from '../../domain/commands/command-executor-service';
 import * as Configuration from '../../application/configuration';
 import * as Logger from '../../infrastructure/logger';
-import { makeSimpleResponse, mapCommandProcessingResponseToSlackResponse } from './model/slack-response';
+import { makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse } from './model/slack-response-dto';
 
 const router = express.Router();
 
 router.post('/', async function processSlackCommand(req, res) {
   const isValidChannelId = (req.body.channel_id === Configuration.read().SLACK_CHANNEL_ID);
   if (!isValidChannelId) {
-    res.send(makeSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true));
+    res.send(makeSlackSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true));
     Logger.warn('Received Slack slash command with invalid channel ID', 'slack-command-controller');
     return;
   }

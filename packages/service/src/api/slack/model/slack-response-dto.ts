@@ -3,17 +3,18 @@ import SlackBlock, { mapMessagesToSlackBlocks } from './slack-block';
 
 type SlackResponseType = ('ephemeral' | 'in_channel');
 
-interface SlackBlockResponse {
+interface SlackBlockResponseDto {
   response_type: SlackResponseType, // eslint-disable-line camelcase
   blocks: SlackBlock[],
 }
 
-interface SlackSimpleResponse {
+interface SlackSimpleResponseDto {
   response_type: SlackResponseType, // eslint-disable-line camelcase
   text: string,
 }
 
-function makeSimpleResponse(text: string, visibleToSenderOnly: boolean): SlackSimpleResponse {
+function makeSlackSimpleResponse(text: string, visibleToSenderOnly: boolean)
+: SlackSimpleResponseDto {
   return {
     response_type: visibleToSenderOnly ? 'ephemeral' : 'in_channel',
     text,
@@ -21,7 +22,7 @@ function makeSimpleResponse(text: string, visibleToSenderOnly: boolean): SlackSi
 }
 
 function mapCommandProcessingResponseToSlackResponse(processingResponse: CommandProcessingResponse)
-: SlackBlockResponse {
+: SlackBlockResponseDto {
   return {
     response_type: processingResponse.isVisibleToIssuerOnly ? 'ephemeral' : 'in_channel',
     blocks: mapMessagesToSlackBlocks(processingResponse.messages),
@@ -30,8 +31,8 @@ function mapCommandProcessingResponseToSlackResponse(processingResponse: Command
 
 export {
   SlackResponseType,
-  SlackBlockResponse,
-  SlackSimpleResponse,
-  makeSimpleResponse,
+  SlackBlockResponseDto,
+  SlackSimpleResponseDto,
+  makeSlackSimpleResponse,
   mapCommandProcessingResponseToSlackResponse,
 };
