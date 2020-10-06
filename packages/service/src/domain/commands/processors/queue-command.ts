@@ -5,7 +5,7 @@ import CommandProcessingResponse, { makeSingleTextMessage } from '../model/comma
 import CommandDefinition from '../model/command-definition';
 import { AddSongToQueueEvent } from '../../../event-stream/events';
 
-async function queueCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
   const song = await SongService.getSongByNameWithYouTubeIdFallback(songName);
 

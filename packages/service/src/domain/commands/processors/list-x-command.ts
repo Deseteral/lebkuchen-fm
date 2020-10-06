@@ -2,7 +2,7 @@ import CommandProcessingResponse, { makeSingleTextMessage, MessageBlock } from '
 import CommandDefinition from '../model/command-definition';
 import * as XSoundsService from '../../x-sounds/x-sounds-service';
 
-async function listXCommandProcessor() : Promise<CommandProcessingResponse> {
+async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
   const sounds = await XSoundsService.getAll();
 
   if (sounds.length === 0) {

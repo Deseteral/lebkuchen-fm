@@ -2,7 +2,7 @@ import * as CommandRegistry from '../registry/command-registry';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
 
-async function helpCommandProcessor() : Promise<CommandProcessingResponse> {
+async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
   const registry = CommandRegistry.getRegistry();
 
   const messages: MessageBlock[] = Object.keys(registry)

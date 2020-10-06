@@ -5,7 +5,7 @@ import * as XSoundService from '../../x-sounds/x-sounds-service';
 import { PlayXSoundEvent } from '../../../event-stream/events';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 
-async function xCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const soundName = command.rawArgs;
   const xSound = await XSoundService.getByName(soundName);
 

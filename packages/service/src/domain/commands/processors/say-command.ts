@@ -4,7 +4,7 @@ import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 
-async function sayCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function sayCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const text = command.rawArgs;
   const eventMessage: SayEvent = {
     id: 'SayEvent',
