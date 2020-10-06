@@ -1,5 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './components/App';
+import EntryScreen from './components/EntryScreen';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<EntryScreen />, document.getElementById('app'));

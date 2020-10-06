@@ -10,6 +10,7 @@ function getState(): PlayerState {
 
 function setState(nextState: PlayerState): void {
   playerState = nextState;
+  emitter.emit('playerStateReplaced');
 }
 
 function popFromQueueFront(): (Song | null) {
@@ -24,8 +25,11 @@ function addToQueue(song: Song) {
   }
 }
 
-type PlayerStateEventType = 'songAddedToQueueFront';
 type PlayerStateEvent = void;
+type PlayerStateEventType = (
+  | 'songAddedToQueueFront'
+  | 'playerStateReplaced'
+);
 
 function on(eventType: PlayerStateEventType, callback: Handler<PlayerStateEvent>) {
   emitter.on<PlayerStateEvent>(eventType, callback);
