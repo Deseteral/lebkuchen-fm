@@ -16,7 +16,7 @@ function parse(text: string): (Command | null) {
   const rawArgsIndex = (text.indexOf(key) + (key.length) + 1);
   const rawArgs = text.substring(rawArgsIndex);
 
-  return new Command(key, rawArgs);
+  return { key, rawArgs };
 }
 
 export {
