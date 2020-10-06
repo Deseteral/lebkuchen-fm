@@ -2,6 +2,7 @@ import io from 'socket.io-client';
 import { EventData } from 'lebkuchen-fm-service';
 import * as PlayerStateService from './player-state-service';
 import * as SoundPlayerService from '../services/sound-player-service';
+import * as SpeechService from '../services/speech-service';
 
 function connect() {
   const client = io('/');
@@ -26,6 +27,10 @@ function connect() {
 
       case 'PlayXSoundEvent':
         SoundPlayerService.playSound(eventData.soundUrl);
+        break;
+
+      case 'SayEvent':
+        SpeechService.say(eventData.text);
         break;
 
       default:

@@ -20,11 +20,17 @@ interface PlayXSoundEvent {
   soundUrl: string,
 }
 
+interface SayEvent {
+  id: 'SayEvent',
+  text: string,
+}
+
 type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
   | AddSongToQueueEvent
-  | PlayXSoundEvent;
+  | PlayXSoundEvent
+  | SayEvent;
 
 export {
   EventData,
@@ -32,4 +38,5 @@ export {
   PlayerStateUpdateEvent,
   AddSongToQueueEvent,
   PlayXSoundEvent,
+  SayEvent,
 };
