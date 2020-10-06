@@ -1,5 +1,5 @@
 import { EventData } from './event-stream/events';
-import PlayerState, { makeDefaultPlayerState } from './domain/player-state';
+import PlayerState, { makeDefaultPlayerState } from './domain/player-state/player-state';
 import Song from './domain/songs/song';
 
 export {
