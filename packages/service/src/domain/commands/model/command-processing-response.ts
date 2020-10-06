@@ -8,6 +8,7 @@ interface CommandProcessingResponse {
   isVisibleToIssuerOnly: boolean,
 }
 
+// TODO: Change it to produce CommandProcessingResponse
 function makeSingleTextMessage(text: string): MessageBlock[] {
   return [{ text, type: 'PLAIN_TEXT' }];
 }

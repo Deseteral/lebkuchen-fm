@@ -22,8 +22,20 @@ async function incrementPlayCount(soundName: string): Promise<void> {
   }
 }
 
+async function createNewSound(name: string, url: string): Promise<void> {
+  const xSound = {
+    name,
+    url,
+    timesPlayed: 0,
+  };
+
+  // TODO: What about error handling?
+  await XSoundsRepository.insert(xSound);
+}
+
 export {
   getAll,
   getByName,
   incrementPlayCount,
+  createNewSound,
 };
