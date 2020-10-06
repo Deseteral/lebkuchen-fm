@@ -16,6 +16,7 @@ interface AddSongToQueueEvent {
 }
 
 interface PlayXSoundEvent {
+  id: 'PlayXSoundEvent',
   soundUrl: string,
 }
 

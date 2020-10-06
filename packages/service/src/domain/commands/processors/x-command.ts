@@ -16,7 +16,10 @@ async function xCommandProcessor(command: Command) : Promise<CommandProcessingRe
     };
   }
 
-  const playXSoundEvent: PlayXSoundEvent = { soundUrl: xSound.url };
+  const playXSoundEvent: PlayXSoundEvent = {
+    id: 'PlayXSoundEvent',
+    soundUrl: xSound.url,
+  };
   EventStreamService.broadcast(playXSoundEvent);
 
   XSoundService.incrementPlayCount(xSound.name);

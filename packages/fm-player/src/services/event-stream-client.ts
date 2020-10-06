@@ -1,6 +1,7 @@
 import io from 'socket.io-client';
 import { EventData } from 'lebkuchen-fm-service';
 import * as PlayerStateService from './player-state-service';
+import * as SoundPlayerService from '../services/sound-player-service';
 
 function connect() {
   const client = io('/');
@@ -19,8 +20,12 @@ function connect() {
         sendResponse(state);
       } break;
 
-      case 'AddSongToQueueRequestEvent':
+      case 'AddSongToQueueEvent':
         PlayerStateService.addToQueue(eventData.song);
+        break;
+
+      case 'PlayXSoundEvent':
+        SoundPlayerService.playSound(eventData.soundUrl);
         break;
 
       default:
