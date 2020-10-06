@@ -10,19 +10,25 @@ interface PlayerStateRequestEvent {
   id: 'PlayerStateRequestEvent',
 }
 
-interface AddSongToQueueRequestEvent {
-  id: 'AddSongToQueueRequestEvent',
+interface AddSongToQueueEvent {
+  id: 'AddSongToQueueEvent',
   song: Song,
+}
+
+interface PlayXSoundEvent {
+  soundUrl: string,
 }
 
 type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
-  | AddSongToQueueRequestEvent;
+  | AddSongToQueueEvent
+  | PlayXSoundEvent;
 
 export {
   EventData,
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
-  AddSongToQueueRequestEvent,
+  AddSongToQueueEvent,
+  PlayXSoundEvent,
 };
