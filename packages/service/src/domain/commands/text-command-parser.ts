@@ -1,4 +1,4 @@
-import Command from './command';
+import Command from './model/command';
 import * as Configuration from '../../application/configuration';
 
 function parse(text: string): (Command | null) {

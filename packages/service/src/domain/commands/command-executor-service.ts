@@ -1,7 +1,7 @@
-import Command from './command';
+import Command from './model/command';
 import * as TextCommandParser from './text-command-parser';
 import * as CommandRegistry from './registry/command-registry';
-import CommandProcessingResponse, { makeSingleTextMessage } from './command-processing-response';
+import CommandProcessingResponse, { makeSingleTextMessage } from './model/command-processing-response';
 
 function commandDoesNotExistResponse(): CommandProcessingResponse {
   return {

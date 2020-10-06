@@ -1,4 +1,4 @@
-import CommandDefinition from './command-definition';
+import CommandDefinition from '../model/command-definition';
 import * as Logger from '../../../infrastructure/logger';
 
 // TODO: Use Map instead

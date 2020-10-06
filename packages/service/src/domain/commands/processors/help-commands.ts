@@ -1,6 +1,6 @@
 import * as CommandRegistry from '../registry/command-registry';
-import CommandDefinition from '../registry/command-definition';
-import CommandProcessingResponse, { MessageBlock } from '../command-processing-response';
+import CommandDefinition from '../model/command-definition';
+import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
 
 async function helpCommandProcessor() : Promise<CommandProcessingResponse> {
   const registry = CommandRegistry.getRegistry();

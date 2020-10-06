@@ -1,5 +1,5 @@
-import CommandProcessingResponse, { makeSingleTextMessage, MessageBlock } from '../command-processing-response';
-import CommandDefinition from '../registry/command-definition';
+import CommandProcessingResponse, { makeSingleTextMessage, MessageBlock } from '../model/command-processing-response';
+import CommandDefinition from '../model/command-definition';
 import * as XSoundsService from '../../x-sounds/x-sounds-service';
 
 async function listXCommandProcessor() : Promise<CommandProcessingResponse> {

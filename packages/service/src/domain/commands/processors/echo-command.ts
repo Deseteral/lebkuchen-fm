@@ -1,6 +1,6 @@
-import Command from '../command';
-import CommandProcessingResponse, { makeSingleTextMessage } from '../command-processing-response';
-import CommandDefinition from '../registry/command-definition';
+import Command from '../model/command';
+import CommandProcessingResponse, { makeSingleTextMessage } from '../model/command-processing-response';
+import CommandDefinition from '../model/command-definition';
 
 async function echoCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   return {

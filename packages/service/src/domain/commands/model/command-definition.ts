@@ -1,5 +1,5 @@
-import Command from '../command';
-import CommandProcessingResponse from '../command-processing-response';
+import Command from '../model/command';
+import CommandProcessingResponse from '../model/command-processing-response';
 
 type ProcessFunction = (command: Command) => Promise<CommandProcessingResponse>;
 
