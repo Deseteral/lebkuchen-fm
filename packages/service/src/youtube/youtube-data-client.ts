@@ -13,7 +13,7 @@ async function request<T>(url: string): Promise<T> {
 
 // function getSearchUrl(phrase: string): URL {
 //   const url = new URL(`${YOUTUBE_DATA_BASE_URL}/search`);
-//   url.searchParams.set('q', encodeURI(phrase));
+//   url.searchParams.set('q', encodeURI(phrase)); // encodeURI is probably not needed
 //   url.searchParams.set('part', 'snippet');
 //   url.searchParams.set('maxResults', '1');
 //   url.searchParams.set('key', YOUTUBE_API_KEY);
@@ -23,7 +23,7 @@ async function request<T>(url: string): Promise<T> {
 function getVideoUrl(youtubeId: string): URL {
   const url = new URL(`${YOUTUBE_DATA_BASE_URL}/videos`);
   url.searchParams.set('id', youtubeId);
-  url.searchParams.set('part', encodeURIComponent('id,snippet'));
+  url.searchParams.set('part', 'id,snippet');
   url.searchParams.set('key', YOUTUBE_API_KEY);
   return url;
 }
