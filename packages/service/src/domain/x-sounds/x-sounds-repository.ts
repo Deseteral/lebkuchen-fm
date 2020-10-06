@@ -6,8 +6,8 @@ function getCollection(): Collection<XSound> {
   return Storage.collection<XSound>('x');
 }
 
-function findAll(): Promise<XSound[]> {
-  return getCollection().find({}).toArray();
+function findAllOrderByNameAsc(): Promise<XSound[]> {
+  return getCollection().find({}).sort({ name: 1 }).toArray();
 }
 
 function findByName(name: string): Promise<XSound | null> {
@@ -24,7 +24,7 @@ function replace(sound: XSound): Promise<ReplaceWriteOpResult> {
 
 export {
   findByName,
-  findAll,
+  findAllOrderByNameAsc,
   insert,
   replace,
 };

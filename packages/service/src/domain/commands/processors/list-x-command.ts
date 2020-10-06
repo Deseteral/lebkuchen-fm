@@ -13,7 +13,6 @@ async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
   }
 
   const soundNames: MessageBlock[] = sounds
-    .sort((a, b) => a.name.localeCompare(b.name))
     .map((sound) => sound.name)
     .map((soundName) => ({ type: 'PLAIN_TEXT', text: soundName }));
 
