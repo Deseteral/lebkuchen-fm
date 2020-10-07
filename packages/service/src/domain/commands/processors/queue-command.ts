@@ -7,7 +7,7 @@ import { AddSongToQueueEvent } from '../../../event-stream/events';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
-  const song = await SongService.getSongByNameWithYouTubeIdFallback(songName);
+  const song = await SongService.getSongByNameWithYouTubeIdFallback(songName); // TODO: Error handling
 
   const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
   EventStreamService.broadcast(eventData);

@@ -2,16 +2,20 @@ import * as CommandRegistry from '../registry/command-registry';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
 
-async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
+function getAllUniqueCommands(): CommandDefinition[] {
   const registry = CommandRegistry.getRegistry();
-
-  const messages: MessageBlock[] = Object.keys(registry)
+  return Object.keys(registry)
     .filter((objectKey) => (objectKey === registry[objectKey].key))
     .map((key) => registry[key])
-    .sort((a, b) => a.key.localeCompare(b.key))
+    .sort((a, b) => a.key.localeCompare(b.key));
+}
+
+async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
+  const messages: MessageBlock[] = getAllUniqueCommands()
     .map((definition) => {
-      const shortKeyFragment = definition.shortKey ? ` [${definition.shortKey}]` : '';
-      return `${definition.key}${shortKeyFragment}: ${definition.helpMessage}`;
+      const { key, shortKey, helpMessage } = definition;
+      const shortKeyFragment = (shortKey ? ` [${shortKey}]` : '');
+      return `${key}${shortKeyFragment}: ${helpMessage}`;
     })
     .map((commandHelpText) => ({ type: 'PLAIN_TEXT', text: commandHelpText }));
 
