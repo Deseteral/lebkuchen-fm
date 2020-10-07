@@ -22,11 +22,16 @@ async function incrementPlayCount(soundName: string): Promise<void> {
   }
 }
 
-async function createNewSound(name: string, url: string): Promise<void> {
-  const xSound = {
+async function createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
+  const foundSound = await getByName(name);
+  if (foundSound !== null) {
+    throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
+  }
+
+  const xSound: XSound = {
     name,
     url,
-    timesPlayed: 0,
+    timesPlayed,
   };
 
   // TODO: What about error handling?
