@@ -6,8 +6,14 @@ function getAll(): Promise<XSound[]> {
   return XSoundsRepository.findAllOrderByNameAsc();
 }
 
-function getByName(soundName: string): Promise<XSound | null> {
-  return XSoundsRepository.findByName(soundName);
+async function getByName(soundName: string): Promise<XSound> {
+  const xSound = await XSoundsRepository.findByName(soundName);
+
+  if (!xSound) {
+    throw new Error(`Nie ma takiego dźwięku: ${soundName}`);
+  }
+
+  return xSound;
 }
 
 async function incrementPlayCount(soundName: string): Promise<void> {
@@ -19,7 +25,12 @@ async function incrementPlayCount(soundName: string): Promise<void> {
       timesPlayed: (xSound.timesPlayed + 1),
     };
 
-    XSoundsRepository.replace(updatedSound);
+    try {
+      XSoundsRepository.replace(updatedSound);
+    } catch (e) {
+      Logger.error('Could not increment XSound play count', 'x-sounds-service');
+      throw new Error('Wystąpił problem z dostępem do bazy dźwięków');
+    }
   }
 }
 
@@ -38,7 +49,7 @@ async function createNewSound(name: string, url: string, timesPlayed = 0): Promi
   try {
     await XSoundsRepository.insert(xSound);
   } catch (e) {
-    Logger.error('Could not insert new XSound to repository', 'xsound-service');
+    Logger.error('Could not insert new XSound to repository', 'x-sound-service');
     throw new Error('Nie udało się dodać nowego dźwięku');
   }
 }

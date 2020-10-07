@@ -7,21 +7,21 @@ import * as EventStreamService from '../../../event-stream/event-stream-service'
 
 async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const soundName = command.rawArgs;
-  const xSound = await XSoundService.getByName(soundName);
 
-  if (!xSound) {
-    return makeSingleTextProcessingResponse(`Nie ma takiego dźwięku: ${soundName}`, false);
+  try {
+    const xSound = await XSoundService.getByName(soundName);
+    const playXSoundEvent: PlayXSoundEvent = {
+      id: 'PlayXSoundEvent',
+      soundUrl: xSound.url,
+    };
+
+    EventStreamService.broadcast(playXSoundEvent);
+    XSoundService.incrementPlayCount(xSound.name);
+
+    return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
+  } catch (e) {
+    return makeSingleTextProcessingResponse((e as Error).message, false);
   }
-
-  const playXSoundEvent: PlayXSoundEvent = {
-    id: 'PlayXSoundEvent',
-    soundUrl: xSound.url,
-  };
-  EventStreamService.broadcast(playXSoundEvent);
-
-  XSoundService.incrementPlayCount(xSound.name);
-
-  return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
 }
 
 const xCommandDefinition: CommandDefinition = {

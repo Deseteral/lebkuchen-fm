@@ -18,8 +18,8 @@ async function insert(sound: XSound): Promise<void> {
   await getCollection().insertOne(sound);
 }
 
-function replace(sound: XSound): Promise<ReplaceWriteOpResult> {
-  return getCollection().replaceOne({ _id: sound._id }, sound);
+async function replace(sound: XSound): Promise<void> {
+  await getCollection().replaceOne({ _id: sound._id }, sound);
 }
 
 export {
