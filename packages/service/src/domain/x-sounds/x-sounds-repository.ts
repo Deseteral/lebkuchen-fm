@@ -1,4 +1,4 @@
-import { Collection, InsertOneWriteOpResult, ReplaceWriteOpResult, WithId } from 'mongodb';
+import { Collection, ReplaceWriteOpResult } from 'mongodb';
 import * as Storage from '../../infrastructure/storage';
 import XSound from './x-sound';
 
@@ -14,8 +14,8 @@ function findByName(name: string): Promise<XSound | null> {
   return getCollection().findOne({ name });
 }
 
-function insert(sound: XSound): Promise<InsertOneWriteOpResult<WithId<XSound>>> {
-  return getCollection().insertOne(sound);
+async function insert(sound: XSound): Promise<void> {
+  await getCollection().insertOne(sound);
 }
 
 function replace(sound: XSound): Promise<ReplaceWriteOpResult> {

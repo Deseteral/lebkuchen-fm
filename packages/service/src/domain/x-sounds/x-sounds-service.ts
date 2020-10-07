@@ -1,4 +1,5 @@
 import * as XSoundsRepository from './x-sounds-repository';
+import * as Logger from '../../infrastructure/logger';
 import XSound from './x-sound';
 
 function getAll(): Promise<XSound[]> {
@@ -34,8 +35,12 @@ async function createNewSound(name: string, url: string, timesPlayed = 0): Promi
     timesPlayed,
   };
 
-  // TODO: What about error handling?
-  await XSoundsRepository.insert(xSound);
+  try {
+    await XSoundsRepository.insert(xSound);
+  } catch (e) {
+    Logger.error('Could not insert new XSound to repository', 'xsound-service');
+    throw new Error('Nie udało się dodać nowego dźwięku');
+  }
 }
 
 export {
