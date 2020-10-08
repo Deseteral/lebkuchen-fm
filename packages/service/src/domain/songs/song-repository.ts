@@ -1,4 +1,4 @@
-import { Collection, InsertOneWriteOpResult, ReplaceWriteOpResult, WithId } from 'mongodb';
+import { Collection } from 'mongodb';
 import * as Storage from '../../infrastructure/storage';
 import Song from './song';
 
@@ -18,12 +18,12 @@ function findByYoutubeId(youtubeId: string): Promise<Song | null> {
   return getCollection().findOne({ youtubeId });
 }
 
-function insert(song: Song): Promise<InsertOneWriteOpResult<WithId<Song>>> {
-  return getCollection().insertOne(song);
+async function insert(song: Song): Promise<void> {
+  await getCollection().insertOne(song);
 }
 
-function replace(song: Song): Promise<ReplaceWriteOpResult> {
-  return getCollection().replaceOne({ _id: song._id }, song);
+async function replace(song: Song): Promise<void> {
+  await getCollection().replaceOne({ _id: song._id }, song);
 }
 
 export {

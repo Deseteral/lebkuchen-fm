@@ -2,16 +2,20 @@ import * as SongRepository from './song-repository';
 import * as YouTubeDataClient from '../../youtube/youtube-data-client';
 import Song from './song';
 
-async function createNewSong(youtubeId: string, songTitle?: string): Promise<Song> {
-  const name = songTitle || await YouTubeDataClient.fetchVideoTitleForId(youtubeId);
+async function createNewSong(
+  youtubeId: string, songTitle?: string, timesPlayed = 0, trimStartSeconds?: number, trimEndSeconds?: number,
+): Promise<void> {
+  const name = songTitle || (await YouTubeDataClient.fetchVideoTitleForId(youtubeId));
 
-  return {
+  const song: Song = {
     name,
     youtubeId,
-    trimStartSeconds: null,
-    trimEndSeconds: null,
-    timesPlayed: 0,
+    timesPlayed,
+    trimStartSeconds: trimStartSeconds || null,
+    trimEndSeconds: trimEndSeconds || null,
   };
+
+  await SongRepository.insert(song);
 }
 
 async function incrementPlayCount(youtubeId: string, songTitle?: string): Promise<void> {
@@ -19,20 +23,19 @@ async function incrementPlayCount(youtubeId: string, songTitle?: string): Promis
 
   if (foundSong) {
     const timesPlayed = (foundSong.timesPlayed + 1);
-    SongRepository.replace({ ...foundSong, timesPlayed });
+    await SongRepository.replace({ ...foundSong, timesPlayed });
   } else {
-    const song = await createNewSong(youtubeId, songTitle);
-    song.timesPlayed = 1;
-    SongRepository.insert(song);
+    await createNewSong(youtubeId, songTitle, 1);
   }
 }
 
 async function getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId: string): Promise<Song> {
-  const songFromStorage = await SongRepository.findByName(songNameOrYouTubeId);
-  if (songFromStorage) return songFromStorage;
+  const foundSong = await SongRepository.findByName(songNameOrYouTubeId);
+  if (foundSong) return foundSong;
 
   const youTubeId = songNameOrYouTubeId.split(' ')[0].trim();
-  return createNewSong(youTubeId);
+  await createNewSong(youTubeId);
+  return getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId);
 }
 
 export {

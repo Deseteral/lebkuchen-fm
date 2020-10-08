@@ -1,4 +1,4 @@
-import { Collection, ReplaceWriteOpResult } from 'mongodb';
+import { Collection } from 'mongodb';
 import * as Storage from '../../infrastructure/storage';
 import XSound from './x-sound';
 
