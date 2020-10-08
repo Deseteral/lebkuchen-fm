@@ -13,7 +13,7 @@ function parse(text: string): (Command | null) {
 
   if (prompt !== Configuration.read().COMMAND_PROMPT) return null;
 
-  const rawArgsIndex = (text.indexOf(key) + (key.length) + 1);
+  const rawArgsIndex = (text.indexOf(key) + key.length + 1);
   const rawArgs = text.substring(rawArgsIndex);
 
   return { key, rawArgs };

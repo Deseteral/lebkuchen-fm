@@ -11,7 +11,11 @@ async function processCommand(command: Command): Promise<CommandProcessingRespon
   const commandDefinition = CommandRegistry.getRegistry()[command.key];
   if (!commandDefinition) return commandDoesNotExistResponse();
 
-  return commandDefinition.processor(command);
+  try {
+    return commandDefinition.processor(command);
+  } catch (e) {
+    return makeSingleTextProcessingResponse((e as Error).message, false);
+  }
 }
 
 async function processFromText(textCommand: string): Promise<CommandProcessingResponse> {
