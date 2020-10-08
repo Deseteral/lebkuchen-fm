@@ -1,5 +1,4 @@
 import * as XSoundsRepository from './x-sounds-repository';
-import * as Logger from '../../infrastructure/logger';
 import XSound from './x-sound';
 
 function getAll(): Promise<XSound[]> {
@@ -25,12 +24,7 @@ async function incrementPlayCount(soundName: string): Promise<void> {
       timesPlayed: (xSound.timesPlayed + 1),
     };
 
-    try {
-      XSoundsRepository.replace(updatedSound);
-    } catch (e) {
-      Logger.error('Could not increment XSound play count', 'x-sounds-service');
-      throw new Error('Wystąpił problem z dostępem do bazy dźwięków');
-    }
+    await XSoundsRepository.replace(updatedSound);
   }
 }
 
@@ -46,12 +40,7 @@ async function createNewSound(name: string, url: string, timesPlayed = 0): Promi
     timesPlayed,
   };
 
-  try {
-    await XSoundsRepository.insert(xSound);
-  } catch (e) {
-    Logger.error('Could not insert new XSound to repository', 'x-sound-service');
-    throw new Error('Nie udało się dodać nowego dźwięku');
-  }
+  await XSoundsRepository.insert(xSound);
 }
 
 export {

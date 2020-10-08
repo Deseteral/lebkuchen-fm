@@ -12,12 +12,8 @@ async function addXCommandProcessor(command: Command): Promise<CommandProcessing
 
   const [name, url] = commandArgs;
 
-  try {
-    await XSoundService.createNewSound(name, url);
-    return makeSingleTextProcessingResponse(`Dodałem dźwięk "${name}" do biblioteki`, false);
-  } catch (e) {
-    return makeSingleTextProcessingResponse((e as Error).message, false);
-  }
+  await XSoundService.createNewSound(name, url);
+  return makeSingleTextProcessingResponse(`Dodałem dźwięk "${name}" do biblioteki`, false);
 }
 
 const addXCommandDefinition: CommandDefinition = {
