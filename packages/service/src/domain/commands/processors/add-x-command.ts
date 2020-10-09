@@ -7,7 +7,7 @@ async function addXCommandProcessor(command: Command): Promise<CommandProcessing
   const commandArgs = getCommandArgsByDelimiter(command, '|');
 
   if (commandArgs.length < 2) {
-    return makeSingleTextProcessingResponse('Zbyt mała liczba argumentów', false);
+    throw new Error('Zbyt mała liczba argumentów');
   }
 
   const [name, url] = commandArgs;
