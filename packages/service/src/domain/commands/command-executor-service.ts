@@ -12,7 +12,7 @@ async function processCommand(command: Command): Promise<CommandProcessingRespon
   if (!commandDefinition) return commandDoesNotExistResponse();
 
   try {
-    return commandDefinition.processor(command);
+    return await commandDefinition.processor(command);
   } catch (e) {
     return makeSingleTextProcessingResponse((e as Error).message, false);
   }
