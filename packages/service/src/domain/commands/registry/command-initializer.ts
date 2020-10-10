@@ -11,6 +11,7 @@ import XCommand from '../processors/x-command';
 import SearchCommand from '../processors/search-command';
 import SkipCommand from '../processors/skip-command';
 import VolumeCommand from '../processors/volume-command';
+import RandomCommand from '../processors/random-command';
 
 function initialize(): void {
   CommandRegistry.register(AddCommand);
@@ -25,6 +26,7 @@ function initialize(): void {
   CommandRegistry.register(SearchCommand);
   CommandRegistry.register(SkipCommand);
   CommandRegistry.register(VolumeCommand);
+  CommandRegistry.register(RandomCommand);
 }
 
 export {

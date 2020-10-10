@@ -6,6 +6,10 @@ async function getByName(name: string): Promise<Song | null> {
   return SongRepository.findByName(name);
 }
 
+async function getAll(): Promise<Song[]> {
+  return SongRepository.findAllOrderByTimesPlayedDesc();
+}
+
 async function createNewSong(
   youtubeId: string, songName?: string, timesPlayed = 0, trimStartSeconds?: number, trimEndSeconds?: number,
 ): Promise<Song> {
@@ -44,6 +48,7 @@ async function getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId: string): 
 }
 
 export {
+  getAll,
   getByName,
   incrementPlayCount,
   getSongByNameWithYouTubeIdFallback,
