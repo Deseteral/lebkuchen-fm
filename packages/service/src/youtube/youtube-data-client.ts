@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import * as Configuration from '../application/configuration';
+import * as Logger from '../infrastructure/logger';
 
 function makeYouTubeUrl(path: string): URL {
   const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
@@ -11,7 +12,14 @@ async function request<T>(url: URL): Promise<T> {
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
   });
-  return res.json();
+  const data = await res.json();
+
+  if (data.error) {
+    Logger.error(data.error.message, 'youtube-data-client');
+    throw new Error(data.error.message);
+  }
+
+  return data;
 }
 
 // function getSearchUrl(phrase: string): URL {
