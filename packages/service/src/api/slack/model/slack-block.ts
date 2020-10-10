@@ -22,9 +22,15 @@ interface SectionSlackBlock {
   text: SlackText,
 }
 
+interface HeaderSlackBlock {
+  type: 'header',
+  text: SlackText,
+}
+
 type SlackBlock =
   | DividerSlackBlock
-  | SectionSlackBlock;
+  | SectionSlackBlock
+  | HeaderSlackBlock;
 
 function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
   const blocks: SlackBlock[] = [];
@@ -32,17 +38,23 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
   messages.forEach((message) => {
     switch (message.type) {
       case 'HEADER':
-        blocks.push({ type: 'divider' });
         blocks.push({
-          type: 'section',
-          text: { type: 'mrkdwn', text: `*${message.text}*` },
+          type: 'header',
+          text: { type: 'plain_text', text: message.text, emoji: true },
         });
         break;
 
       case 'PLAIN_TEXT':
         blocks.push({
           type: 'section',
-          text: { type: 'mrkdwn', text: `*${message.text}*` },
+          text: { type: 'plain_text', text: message.text, emoji: true },
+        });
+        break;
+
+      case 'MARKDOWN':
+        blocks.push({
+          type: 'section',
+          text: { type: 'mrkdwn', text: message.text },
         });
         break;
 

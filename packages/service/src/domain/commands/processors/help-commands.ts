@@ -1,6 +1,6 @@
 import * as CommandRegistry from '../registry/command-registry';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
+import CommandProcessingResponse from '../model/command-processing-response';
 
 function notNull<T>(value: T | null | undefined): value is T {
   return ((value !== null) && (value !== undefined));
@@ -16,16 +16,16 @@ function getAllUniqueCommands(): CommandDefinition[] {
 }
 
 async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
-  const messages: MessageBlock[] = getAllUniqueCommands()
+  const text = getAllUniqueCommands()
     .map((definition) => {
       const { key, shortKey, helpMessage } = definition;
       const shortKeyFragment = (shortKey ? ` [${shortKey}]` : '');
-      return `${key}${shortKeyFragment}: ${helpMessage}`;
+      return `\`${key}${shortKeyFragment}\`: ${helpMessage}`;
     })
-    .map((commandHelpText) => ({ type: 'PLAIN_TEXT', text: commandHelpText }));
+    .join('\n');
 
   return {
-    messages,
+    messages: [{ type: 'MARKDOWN', text }],
     isVisibleToIssuerOnly: false,
   };
 }

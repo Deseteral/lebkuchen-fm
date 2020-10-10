@@ -1,4 +1,4 @@
-import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
+import CommandProcessingResponse from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 import * as XSoundsService from '../../x-sounds/x-sounds-service';
 
@@ -9,12 +9,15 @@ async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
     throw new Error('Brak dźwięków w bazie');
   }
 
-  const soundNames: MessageBlock[] = sounds
-    .map((sound) => sound.name)
-    .map((soundName) => ({ type: 'PLAIN_TEXT', text: soundName }));
+  const soundListText = sounds
+    .map((sound) => `- ${sound.name}`)
+    .join('\n');
 
   return {
-    messages: [{ type: 'HEADER', text: 'X Sounds list' }, ...soundNames],
+    messages: [
+      { type: 'HEADER', text: 'X Sounds list' },
+      { type: 'MARKDOWN', text: soundListText },
+    ],
     isVisibleToIssuerOnly: false,
   };
 }

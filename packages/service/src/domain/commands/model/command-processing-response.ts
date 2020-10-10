@@ -1,6 +1,6 @@
 interface MessageBlock {
   text: string,
-  type: ('HEADER' | 'PLAIN_TEXT'),
+  type: ('HEADER' | 'PLAIN_TEXT' | 'MARKDOWN'),
 }
 
 interface CommandProcessingResponse {
