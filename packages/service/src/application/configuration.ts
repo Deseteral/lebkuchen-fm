@@ -9,7 +9,6 @@ interface ConfigurationT {
   COMMAND_PROMPT: string,
 }
 
-// TODO: Update documentation
 const Configuration: ConfigurationT = {
   PORT: (process.env.PORT || '9000'),
   DATABASE_NAME: 'lebkuchen-fm',

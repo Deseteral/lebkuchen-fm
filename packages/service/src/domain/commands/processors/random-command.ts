@@ -4,6 +4,8 @@ import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../
 import * as SongService from '../../songs/song-service';
 import QueueCommand from './queue-command';
 
+const MAX_TITLES_IN_MESSAGE = 10;
+
 async function randomCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const amount = command.rawArgs === ''
     ? 1
@@ -19,13 +21,24 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
   const shuffledSongList = [...songList].sort(() => (0.5 - Math.random()));
   const selectedSongs = shuffledSongList.slice(0, amount);
 
-  // TODO: Render titles
+  const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
     const queueCommand: Command = { key: 'queue', rawArgs: song.youtubeId };
+    videoTitles.push(song.name);
     await QueueCommand.processor(queueCommand);
   });
 
-  return makeSingleTextProcessingResponse(`Dodano do kolejki "${amount}" utworów`, false);
+  const titleMessages = videoTitles
+    .slice(0, MAX_TITLES_IN_MESSAGE)
+    .map((title) => `- ${title}`);
+
+  const message = [
+    'Dodano do kojeki:',
+    ...titleMessages,
+    (videoTitles.length > MAX_TITLES_IN_MESSAGE ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+  ].filter(Boolean).join('\n');
+
+  return makeSingleTextProcessingResponse(message, false);
 }
 
 const randomCommandDefinition: CommandDefinition = {
