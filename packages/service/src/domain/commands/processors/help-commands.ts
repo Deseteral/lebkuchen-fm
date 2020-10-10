@@ -2,11 +2,16 @@ import * as CommandRegistry from '../registry/command-registry';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
 
+function notNull<T>(value: T | null | undefined): value is T {
+  return ((value !== null) && (value !== undefined));
+}
+
 function getAllUniqueCommands(): CommandDefinition[] {
   const registry = CommandRegistry.getRegistry();
-  return Object.keys(registry)
-    .filter((objectKey) => (objectKey === registry[objectKey].key))
-    .map((key) => registry[key])
+  return Array.from(registry.keys())
+    .filter((objectKey) => (objectKey === registry.get(objectKey)?.key))
+    .map((key) => registry.get(key))
+    .filter(notNull)
     .sort((a, b) => a.key.localeCompare(b.key));
 }
 

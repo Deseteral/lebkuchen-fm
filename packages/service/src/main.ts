@@ -33,7 +33,7 @@ function setupRouting(): void {
 
 function runApplication(): void {
   const port = Configuration.PORT;
-  server.listen(port, () => Logger.info(`LebkuchenFM service started on port ${port}`));
+  server.listen(port, () => Logger.info(`LebkuchenFM service started on port ${port}`, 'app-init'));
 }
 
 Promise.resolve()

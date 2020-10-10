@@ -9,7 +9,7 @@ function commandDoesNotExistResponse(): CommandProcessingResponse {
 }
 
 async function processCommand(command: Command): Promise<CommandProcessingResponse> {
-  const commandDefinition = CommandRegistry.getRegistry()[command.key];
+  const commandDefinition = CommandRegistry.getRegistry().get(command.key);
   if (!commandDefinition) return commandDoesNotExistResponse();
 
   try {

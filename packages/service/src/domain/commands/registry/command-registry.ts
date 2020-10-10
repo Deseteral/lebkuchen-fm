@@ -1,32 +1,23 @@
 import CommandDefinition from '../model/command-definition';
 import * as Logger from '../../../infrastructure/logger';
 
-// TODO: Use Map instead
-interface CommandRegistry {
-  [key: string]: CommandDefinition,
-}
-
-const commands: CommandRegistry = {};
+const commands = new Map<string, CommandDefinition>();
 
 function register(definition: CommandDefinition): void {
-  commands[definition.key] = definition;
+  commands.set(definition.key, definition);
+
   if (definition.shortKey) {
-    commands[definition.shortKey] = definition;
+    commands.set(definition.shortKey, definition);
   }
 
   Logger.info(`Initialized ${definition.key} command`, 'command-registry');
 }
 
-function findCommandByKey(commandKey: string): CommandDefinition {
-  return commands[commandKey];
-}
-
-function getRegistry(): CommandRegistry {
+function getRegistry(): Map<string, CommandDefinition> {
   return commands;
 }
 
 export {
   register,
-  findCommandByKey,
   getRegistry,
 };
