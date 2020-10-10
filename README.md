@@ -49,15 +49,17 @@ Returns list of all XSounds in the database.
 
 **Response**
 ```json
-[
-  {
-    "_id": "storage_id",
-    "name": "example sound",
-    "url": "https://example.com/example_sound.wav",
-    "timesPlayed": 6
-  },
-  ...
-]
+{
+  "sounds": [
+    {
+      "_id": "storage_id",
+      "name": "example sound",
+      "url": "https://example.com/example_sound.wav",
+      "timesPlayed": 6
+    },
+    // ...
+  ]
+}
 ```
 
 ## Scripts

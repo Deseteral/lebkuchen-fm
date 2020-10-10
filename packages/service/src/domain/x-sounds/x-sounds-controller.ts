@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', async function getXSounds(_, res) {
   const sounds = await XSoundsService.getAll();
-  res.send(sounds);
+  res.send({ sounds });
 });
 
 export default router;
