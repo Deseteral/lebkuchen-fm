@@ -17,7 +17,7 @@ Node service with MongoDB storage that communicates with clients over WebSockets
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
 
 ### Event stream
-This service communicates with clients mostly using event stream implemented on WebSockets. For possible events checkout [event data models](packages/service/src/event-stream/events.ts).
+This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/events.ts).
 
 ### REST endpoints
 `POST /commands/slack` \

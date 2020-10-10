@@ -11,7 +11,7 @@ function printToConsole(l: Log): void {
   console.log(msg); // eslint-disable-line no-console
 }
 
-// TODO: Introduce maximum logger history length
+const MAX_LOGGER_HISTORY = 1000;
 const loggerHistory: Log[] = [];
 function getLoggerHistory(): Log[] {
   return loggerHistory;
@@ -26,6 +26,10 @@ function log(level: string, message: string, group?: string): void {
   };
 
   loggerHistory.push(l);
+  if (loggerHistory.length < MAX_LOGGER_HISTORY) {
+    loggerHistory.shift();
+  }
+
   printToConsole(l);
 }
 
