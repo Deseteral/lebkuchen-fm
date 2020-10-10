@@ -8,6 +8,7 @@ import QueueCommand from '../processors/queue-command';
 import ResumeCommand from '../processors/resume-command';
 import SayCommand from '../processors/say-command';
 import XCommand from '../processors/x-command';
+import SearchCommand from '../processors/search-command';
 
 function initialize(): void {
   CommandRegistry.register(AddCommand);
@@ -19,6 +20,7 @@ function initialize(): void {
   CommandRegistry.register(ResumeCommand);
   CommandRegistry.register(SayCommand);
   CommandRegistry.register(XCommand);
+  CommandRegistry.register(SearchCommand);
 }
 
 export {

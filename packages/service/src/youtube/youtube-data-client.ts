@@ -22,28 +22,24 @@ async function request<T>(url: URL): Promise<T> {
   return data;
 }
 
-// function getSearchUrl(phrase: string): URL {
-//   const url = new URL(`${YOUTUBE_DATA_BASE_URL}/search`);
-//   url.searchParams.set('q', encodeURI(phrase)); // encodeURI is probably not needed
-//   url.searchParams.set('part', 'snippet');
-//   url.searchParams.set('maxResults', '1');
-//   return url;
-// }
+interface SearchResults {
+  items: [
+    {
+      id: { videoId: string },
+      snippet: { title: string },
+    }
+  ]
+}
 
-// interface SearchResults {
-//   items: [
-//     {
-//       id: { videoId: string },
-//       snippet: { title: string },
-//     }
-//   ]
-// }
+async function getSearchResultsForPhrase(phrase: string, maxResults: number): Promise<SearchResults> {
+  const url = makeYouTubeUrl('/search');
+  url.searchParams.set('q', phrase);
+  url.searchParams.set('maxResults', maxResults.toString());
+  url.searchParams.set('part', 'snippet');
 
-// async function getSearchResults(phrase: string): Promise<SearchResults> {
-//   const url = getSearchUrl(phrase).toString();
-//   const data = await request<SearchResults>(url);
-//   return data;
-// }
+  const data = await request<SearchResults>(url);
+  return data;
+}
 
 interface VideoDetails {
   items: [
@@ -66,6 +62,12 @@ async function fetchVideoTitleForId(youtubeId: string): Promise<string> {
   return videoDetails.items[0].snippet.title;
 }
 
+async function fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
+  const data = await getSearchResultsForPhrase(phrase, 1);
+  return data.items[0].id.videoId;
+}
+
 export {
   fetchVideoTitleForId,
+  fetchFirstYouTubeIdForPhrase,
 };
