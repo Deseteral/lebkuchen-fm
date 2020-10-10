@@ -42,6 +42,10 @@ function connect() {
         YouTubePlayerService.resume();
         break;
 
+      case 'SkipEvent':
+        YouTubePlayerService.playNextSong();
+        break;
+
       default:
         break;
     }

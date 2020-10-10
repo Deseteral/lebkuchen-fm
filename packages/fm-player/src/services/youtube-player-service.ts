@@ -98,4 +98,5 @@ export {
   initialize,
   pause,
   resume,
+  playNextSong,
 };

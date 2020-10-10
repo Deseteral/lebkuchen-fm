@@ -33,6 +33,10 @@ interface ResumeEvent {
   id: 'ResumeEvent',
 }
 
+interface SkipEvent {
+  id: 'SkipEvent',
+}
+
 type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
@@ -40,7 +44,8 @@ type EventData =
   | PlayXSoundEvent
   | SayEvent
   | PauseEvent
-  | ResumeEvent;
+  | ResumeEvent
+  | SkipEvent;
 
 export {
   EventData,
@@ -51,4 +56,5 @@ export {
   SayEvent,
   PauseEvent,
   ResumeEvent,
+  SkipEvent,
 };
