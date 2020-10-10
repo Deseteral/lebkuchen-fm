@@ -1,10 +1,13 @@
 import fetch from 'node-fetch';
 import * as Configuration from '../application/configuration';
 
-const { YOUTUBE_API_KEY } = Configuration.read();
-const YOUTUBE_DATA_BASE_URL = 'https://www.googleapis.com/youtube/v3';
+function makeYouTubeUrl(path: string): URL {
+  const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
+  url.searchParams.set('key', Configuration.read().YOUTUBE_API_KEY);
+  return url;
+}
 
-async function request<T>(url: string): Promise<T> {
+async function request<T>(url: URL): Promise<T> {
   const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json' },
   });
@@ -16,17 +19,8 @@ async function request<T>(url: string): Promise<T> {
 //   url.searchParams.set('q', encodeURI(phrase)); // encodeURI is probably not needed
 //   url.searchParams.set('part', 'snippet');
 //   url.searchParams.set('maxResults', '1');
-//   url.searchParams.set('key', YOUTUBE_API_KEY);
 //   return url;
 // }
-
-function getVideoUrl(youtubeId: string): URL {
-  const url = new URL(`${YOUTUBE_DATA_BASE_URL}/videos`);
-  url.searchParams.set('id', youtubeId);
-  url.searchParams.set('part', 'id,snippet');
-  url.searchParams.set('key', YOUTUBE_API_KEY);
-  return url;
-}
 
 // interface SearchResults {
 //   items: [
@@ -52,9 +46,11 @@ interface VideoDetails {
 }
 
 async function getVideoDetails(youtubeId: string): Promise<VideoDetails> {
-  const url = getVideoUrl(youtubeId).toString();
-  const data = await request<VideoDetails>(url);
-  return data;
+  const url = makeYouTubeUrl('/videos');
+  url.searchParams.set('id', youtubeId);
+  url.searchParams.set('part', 'id,snippet');
+
+  return request<VideoDetails>(url);
 }
 
 async function fetchVideoTitleForId(youtubeId: string): Promise<string> {

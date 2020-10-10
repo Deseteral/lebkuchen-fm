@@ -3,6 +3,7 @@ import { EventData } from 'lebkuchen-fm-service';
 import * as PlayerStateService from './player-state-service';
 import * as SoundPlayerService from '../services/sound-player-service';
 import * as SpeechService from '../services/speech-service';
+import * as YouTubePlayerService from '../services/youtube-player-service';
 
 function connect() {
   const client = io('/');
@@ -31,6 +32,14 @@ function connect() {
 
       case 'SayEvent':
         SpeechService.say(eventData.text);
+        break;
+
+      case 'PauseEvent':
+        YouTubePlayerService.pause();
+        break;
+
+      case 'ResumeEvent':
+        YouTubePlayerService.resume();
         break;
 
       default:

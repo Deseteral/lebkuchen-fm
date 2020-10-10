@@ -8,7 +8,7 @@ async function getByName(name: string): Promise<Song | null> {
 
 async function createNewSong(
   youtubeId: string, songName?: string, timesPlayed = 0, trimStartSeconds?: number, trimEndSeconds?: number,
-): Promise<void> {
+): Promise<Song> {
   const name = songName || (await YouTubeDataClient.fetchVideoTitleForId(youtubeId));
 
   const song: Song = {
@@ -20,6 +20,7 @@ async function createNewSong(
   };
 
   await SongRepository.insert(song);
+  return song;
 }
 
 async function incrementPlayCount(youtubeId: string, songName?: string): Promise<void> {
@@ -38,8 +39,8 @@ async function getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId: string): 
   if (foundSong) return foundSong;
 
   const youTubeId = songNameOrYouTubeId.split(' ')[0].trim();
-  await createNewSong(youTubeId);
-  return getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId);
+  const song = await createNewSong(youTubeId);
+  return song;
 }
 
 export {

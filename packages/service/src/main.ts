@@ -1,3 +1,6 @@
+/* eslint-disable import/first */
+require('dotenv').config();
+
 import http from 'http';
 import path from 'path';
 import express from 'express';

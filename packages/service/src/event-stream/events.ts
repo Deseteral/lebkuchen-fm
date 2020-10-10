@@ -25,12 +25,22 @@ interface SayEvent {
   text: string,
 }
 
+interface PauseEvent {
+  id: 'PauseEvent',
+}
+
+interface ResumeEvent {
+  id: 'ResumeEvent',
+}
+
 type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
   | AddSongToQueueEvent
   | PlayXSoundEvent
-  | SayEvent;
+  | SayEvent
+  | PauseEvent
+  | ResumeEvent;
 
 export {
   EventData,
@@ -39,4 +49,6 @@ export {
   AddSongToQueueEvent,
   PlayXSoundEvent,
   SayEvent,
+  PauseEvent,
+  ResumeEvent,
 };

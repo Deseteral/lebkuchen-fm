@@ -2,6 +2,8 @@ import { Song } from 'lebkuchen-fm-service';
 import YTPlayer from 'yt-player';
 import * as PlayerStateService from './player-state-service';
 
+let player: YTPlayer;
+
 interface YTPlayerStateUpdateQueue {
   time: (number | null),
 }
@@ -13,7 +15,7 @@ const ytPlayerStateUpdateQueue: YTPlayerStateUpdateQueue = {
   time: null,
 };
 
-function playSong(player: YTPlayer, song: (Song | null), time = 0) {
+function playSong(song: (Song | null), time = 0) {
   if (song) {
     PlayerStateService.getState().currentlyPlaying = {
       song,
@@ -26,20 +28,28 @@ function playSong(player: YTPlayer, song: (Song | null), time = 0) {
   }
 }
 
-function playNextSong(player: YTPlayer) {
+function playNextSong() {
   const song = PlayerStateService.popFromQueueFront();
-  playSong(player, song);
+  playSong(song);
 }
 
-function initialize(domId: string) {
-  const player = new YTPlayer(`#${domId}`);
+function pause() {
+  player.pause();
+}
+
+function resume() {
+  player.play();
+}
+
+function initialize(playerContainerDomId: string) {
+  player = new YTPlayer(`#${playerContainerDomId}`);
 
   PlayerStateService.on('playerStateReplaced', () => {
     const state = PlayerStateService.getState();
 
     if (state.currentlyPlaying) {
       const { song, time } = state.currentlyPlaying;
-      playSong(player, song, time);
+      playSong(song, time);
       ytPlayerStateUpdateQueue.time = time;
     }
   });
@@ -63,24 +73,26 @@ function initialize(domId: string) {
 
     const isReadyToPlayNextVideo = (ytPlayerState !== 'playing');
     if (isReadyToPlayNextVideo) {
-      playNextSong(player);
+      playNextSong();
     }
   });
 
   player.on('ended', () => {
-    playNextSong(player);
+    playNextSong();
   });
 
   player.on('error', (event) => {
     console.error('YouTube player error', event);
-    playNextSong(player);
+    playNextSong();
   });
 
   player.on('unplayable', () => {
-    playNextSong(player);
+    playNextSong();
   });
 }
 
 export {
   initialize,
+  pause,
+  resume,
 };
