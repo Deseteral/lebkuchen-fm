@@ -17,6 +17,12 @@ function initialize(server: http.Server): void {
   io.on('connection', newConnectionHandler);
 }
 
+function getPrimaryClientSocket(): SocketIO.Socket {
+  const primaryClientId = Object.keys(io.sockets.sockets)[0];
+  const primaryClient = io.sockets.sockets[primaryClientId];
+  return primaryClient;
+}
+
 function socketIoServer(): SocketIO.Server {
   return io;
 }
@@ -24,4 +30,5 @@ function socketIoServer(): SocketIO.Server {
 export {
   initialize,
   socketIoServer,
+  getPrimaryClientSocket,
 };

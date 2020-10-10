@@ -3,13 +3,6 @@ import PlayerState, { makeDefaultPlayerState } from '../domain/player-state/play
 import * as EventStream from './event-stream';
 import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './events';
 
-function getPrimaryClientSocket(): SocketIO.Socket {
-  const ioServer = EventStream.socketIoServer();
-  const primaryClientId = Object.keys(ioServer.sockets.sockets)[0];
-  const primaryClient = ioServer.sockets.sockets[primaryClientId]; // TODO: This looks like a hack
-  return primaryClient;
-}
-
 function sendDefaultPlayerState(socket: socketIo.Socket): void {
   const eventData: PlayerStateUpdateEvent = {
     id: 'PlayerStateUpdateEvent',
@@ -20,7 +13,7 @@ function sendDefaultPlayerState(socket: socketIo.Socket): void {
 
 function requestAndSendPlayerState(socket: socketIo.Socket): void {
   const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
-  const primaryClient = getPrimaryClientSocket();
+  const primaryClient = EventStream.getPrimaryClientSocket();
 
   primaryClient.emit('events', reqEventData, (primaryClientState: PlayerState) => {
     const updateEventData: PlayerStateUpdateEvent = {
