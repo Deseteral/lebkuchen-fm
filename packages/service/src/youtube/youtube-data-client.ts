@@ -1,10 +1,11 @@
 import fetch from 'node-fetch';
-import * as Configuration from '../application/configuration';
+import Configuration from '../application/configuration';
 import * as Logger from '../infrastructure/logger';
 
 function makeYouTubeUrl(path: string): URL {
   const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
-  url.searchParams.set('key', Configuration.read().YOUTUBE_API_KEY);
+  console.log(Configuration);
+  url.searchParams.set('key', Configuration.YOUTUBE_API_KEY);
   return url;
 }
 

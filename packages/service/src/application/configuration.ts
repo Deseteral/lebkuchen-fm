@@ -1,4 +1,6 @@
-interface Configuration {
+require('dotenv').config();
+
+interface ConfigurationT {
   PORT: string,
   DATABASE_NAME: string,
   MONGODB_URI: string,
@@ -7,17 +9,14 @@ interface Configuration {
   COMMAND_PROMPT: string,
 }
 
-// TODO: Remove call to read function
-function read(): Configuration {
-  // TODO: Update documentation
-  return {
-    PORT: (process.env.PORT || '9000'),
-    DATABASE_NAME: 'lebkuchen-fm',
-    MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017',
-    YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || '',
-    SLACK_CHANNEL_ID: process.env.SLACK_CHANNEL_ID || '',
-    COMMAND_PROMPT: process.env.COMMAND_PROMPT || '/fm',
-  };
-}
+// TODO: Update documentation
+const Configuration: ConfigurationT = {
+  PORT: (process.env.PORT || '9000'),
+  DATABASE_NAME: 'lebkuchen-fm',
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017',
+  YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || '',
+  SLACK_CHANNEL_ID: process.env.SLACK_CHANNEL_ID || '',
+  COMMAND_PROMPT: process.env.COMMAND_PROMPT || '/fm',
+};
 
-export { read };
+export default Configuration;

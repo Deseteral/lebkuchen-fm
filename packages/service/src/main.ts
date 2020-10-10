@@ -1,12 +1,9 @@
-/* eslint-disable import/first */
-require('dotenv').config();
-
 import http from 'http';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-import * as Configuration from './application/configuration';
+import Configuration from './application/configuration';
 import * as Logger from './infrastructure/logger';
 import * as Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
@@ -35,7 +32,7 @@ function setupRouting(): void {
 }
 
 function runApplication(): void {
-  const port = Configuration.read().PORT;
+  const port = Configuration.PORT;
   server.listen(port, () => Logger.info(`LebkuchenFM service started on port ${port}`));
 }
 
