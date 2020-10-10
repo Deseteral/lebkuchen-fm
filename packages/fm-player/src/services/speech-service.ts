@@ -1,3 +1,5 @@
+import { getState } from './player-state-service';
+
 function initialize() {
   window.speechSynthesis.getVoices();
 }
@@ -11,6 +13,7 @@ function say(text: string) {
   const [, voice] = window.speechSynthesis.getVoices().filter((v) => v.lang === lang);
   msg.voice = voice;
   msg.lang = lang;
+  msg.volume = (getState().volume / 100);
 
   crappyBugHackUtterances.push(msg);
   window.speechSynthesis.speak(msg);

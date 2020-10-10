@@ -1,5 +1,6 @@
 import { makeDefaultPlayerState, PlayerState, Song } from 'lebkuchen-fm-service';
 import mitt, { Emitter, Handler } from 'mitt';
+import * as YouTubePlayerService from './youtube-player-service';
 
 let playerState: PlayerState = makeDefaultPlayerState();
 const emitter: Emitter = mitt();
@@ -25,6 +26,11 @@ function addToQueue(song: Song) {
   }
 }
 
+function changeVolume(nextVolume: number) {
+  playerState.volume = nextVolume;
+  YouTubePlayerService.setVolume(nextVolume);
+}
+
 type PlayerStateEvent = void;
 type PlayerStateEventType = (
   | 'songAddedToQueueFront'
@@ -40,5 +46,6 @@ export {
   setState,
   popFromQueueFront,
   addToQueue,
+  changeVolume,
   on,
 };

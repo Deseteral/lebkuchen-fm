@@ -9,6 +9,7 @@ interface PlayerState {
   currentlyPlaying: (CurrentlyPlaying | null),
   queue: Song[],
   isPlaying: boolean,
+  volume: number,
 }
 
 function makeDefaultPlayerState(): PlayerState {
@@ -16,6 +17,7 @@ function makeDefaultPlayerState(): PlayerState {
     currentlyPlaying: null,
     queue: [],
     isPlaying: true,
+    volume: 100,
   };
 }
 

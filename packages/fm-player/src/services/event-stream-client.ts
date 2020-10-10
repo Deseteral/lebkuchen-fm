@@ -46,6 +46,10 @@ function connect() {
         YouTubePlayerService.playNextSong();
         break;
 
+      case 'ChangeVolumeEvent':
+        PlayerStateService.changeVolume(eventData.nextVolume);
+        break;
+
       default:
         break;
     }

@@ -10,6 +10,7 @@ import SayCommand from '../processors/say-command';
 import XCommand from '../processors/x-command';
 import SearchCommand from '../processors/search-command';
 import SkipCommand from '../processors/skip-command';
+import VolumeCommand from '../processors/volume-command';
 
 function initialize(): void {
   CommandRegistry.register(AddCommand);
@@ -23,6 +24,7 @@ function initialize(): void {
   CommandRegistry.register(XCommand);
   CommandRegistry.register(SearchCommand);
   CommandRegistry.register(SkipCommand);
+  CommandRegistry.register(VolumeCommand);
 }
 
 export {

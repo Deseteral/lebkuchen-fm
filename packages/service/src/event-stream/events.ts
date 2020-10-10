@@ -37,6 +37,11 @@ interface SkipEvent {
   id: 'SkipEvent',
 }
 
+interface ChangeVolumeEvent {
+  id: 'ChangeVolumeEvent',
+  nextVolume: number,
+}
+
 type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
@@ -45,7 +50,8 @@ type EventData =
   | SayEvent
   | PauseEvent
   | ResumeEvent
-  | SkipEvent;
+  | SkipEvent
+  | ChangeVolumeEvent;
 
 export {
   EventData,
@@ -57,4 +63,5 @@ export {
   PauseEvent,
   ResumeEvent,
   SkipEvent,
+  ChangeVolumeEvent,
 };

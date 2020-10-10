@@ -44,11 +44,17 @@ function resume() {
   PlayerStateService.getState().isPlaying = true;
 }
 
+function setVolume(nextVolume: number) {
+  player.setVolume(nextVolume);
+}
+
 function initialize(playerContainerDomId: string) {
   player = new YTPlayer(`#${playerContainerDomId}`);
 
   PlayerStateService.on('playerStateReplaced', () => {
     const state = PlayerStateService.getState();
+
+    player.setVolume(state.volume);
 
     if (state.currentlyPlaying) {
       const { song, time } = state.currentlyPlaying;
@@ -99,4 +105,5 @@ export {
   pause,
   resume,
   playNextSong,
+  setVolume,
 };
