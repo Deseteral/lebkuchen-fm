@@ -19,8 +19,8 @@ async function createNewSong(
     name,
     youtubeId,
     timesPlayed,
-    trimStartSeconds: trimStartSeconds || null,
-    trimEndSeconds: trimEndSeconds || null,
+    trimStartSeconds: (trimStartSeconds || null),
+    trimEndSeconds: (trimEndSeconds || null),
   };
 
   await SongRepository.insert(song);
@@ -39,10 +39,13 @@ async function incrementPlayCount(youtubeId: string, songName?: string): Promise
 }
 
 async function getSongByNameWithYouTubeIdFallback(songNameOrYouTubeId: string): Promise<Song> {
-  const foundSong = await SongRepository.findByName(songNameOrYouTubeId);
-  if (foundSong) return foundSong;
+  const foundByNameSong = await SongRepository.findByName(songNameOrYouTubeId);
+  if (foundByNameSong) return foundByNameSong;
 
   const youTubeId = songNameOrYouTubeId.split(' ')[0].trim();
+  const foundByIdSong = await SongRepository.findByYoutubeId(youTubeId);
+  if (foundByIdSong) return foundByIdSong;
+
   const song = await createNewSong(youTubeId);
   return song;
 }

@@ -19,6 +19,7 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
   const shuffledSongList = [...songList].sort(() => (0.5 - Math.random()));
   const selectedSongs = shuffledSongList.slice(0, amount);
 
+  // TODO: Render titles
   selectedSongs.forEach(async (song) => {
     const queueCommand: Command = { key: 'queue', rawArgs: song.youtubeId };
     await QueueCommand.processor(queueCommand);
