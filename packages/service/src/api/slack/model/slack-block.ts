@@ -19,8 +19,7 @@ interface DividerSlackBlock {
 
 interface SectionSlackBlock {
   type: 'section',
-  text?: SlackText,
-  fields?: SlackText[],
+  text: SlackText,
 }
 
 type SlackBlock =
@@ -40,18 +39,12 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
         });
         break;
 
-      case 'PLAIN_TEXT': {
-        if (blocks.length === 0 || !((blocks.last() as SectionSlackBlock).fields)) {
-          blocks.push({ type: 'section', fields: [] });
-        }
-
-        const lastBlock = (blocks.last() as SectionSlackBlock);
-          lastBlock.fields?.push({
-            type: 'plain_text',
-            text: message.text,
-            emoji: true,
-          });
-      } break;
+      case 'PLAIN_TEXT':
+        blocks.push({
+          type: 'section',
+          text: { type: 'mrkdwn', text: `*${message.text}*` },
+        });
+        break;
 
       default: break;
     }
