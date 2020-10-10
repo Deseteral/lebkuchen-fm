@@ -17,12 +17,13 @@ const ytPlayerStateUpdateQueue: YTPlayerStateUpdateQueue = {
 
 function playSong(song: (Song | null), time = 0) {
   if (song) {
-    PlayerStateService.getState().currentlyPlaying = {
+    const state = PlayerStateService.getState();
+    state.currentlyPlaying = {
       song,
       time,
     };
 
-    player.load(song.youtubeId, true);
+    player.load(song.youtubeId, state.isPlaying);
   } else {
     player.stop();
   }
@@ -35,10 +36,12 @@ function playNextSong() {
 
 function pause() {
   player.pause();
+  PlayerStateService.getState().isPlaying = false;
 }
 
 function resume() {
   player.play();
+  PlayerStateService.getState().isPlaying = true;
 }
 
 function initialize(playerContainerDomId: string) {

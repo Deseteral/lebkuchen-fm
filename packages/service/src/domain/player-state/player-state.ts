@@ -8,12 +8,14 @@ interface CurrentlyPlaying {
 interface PlayerState {
   currentlyPlaying: (CurrentlyPlaying | null),
   queue: Song[],
+  isPlaying: boolean,
 }
 
 function makeDefaultPlayerState(): PlayerState {
   return {
     currentlyPlaying: null,
     queue: [],
+    isPlaying: true,
   };
 }
 
