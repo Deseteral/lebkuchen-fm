@@ -46,6 +46,10 @@ const randomCommandDefinition: CommandDefinition = {
   key: 'random',
   processor: randomCommandProcessor,
   helpMessage: 'Losuje utwory z historii',
+  helpUsages: [
+    '[amount; defaults to 1]',
+    '3',
+  ],
 };
 
 export default randomCommandDefinition;

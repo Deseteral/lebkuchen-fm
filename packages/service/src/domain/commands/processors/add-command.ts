@@ -45,6 +45,11 @@ const addCommandDefinition: CommandDefinition = {
   key: 'add',
   processor: addCommandProcessor,
   helpMessage: 'Dodaje przebój do bazy utworów',
+  helpUsages: [
+    '<youtube-id>|<video name>|[start time]|[end time]',
+    'jK4ICUBdsuc|aldonka slowmo',
+    'p28K7Fz0KrQ|transatlantik|0:00|1:53',
+  ],
 };
 
 export default addCommandDefinition;

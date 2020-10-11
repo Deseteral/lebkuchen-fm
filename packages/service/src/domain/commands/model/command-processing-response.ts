@@ -1,7 +1,33 @@
-interface MessageBlock {
+interface HeaderMessageBlock {
+  type: 'HEADER',
   text: string,
-  type: ('HEADER' | 'PLAIN_TEXT' | 'MARKDOWN'),
 }
+
+interface PlainTextMessageBlock {
+  type: 'PLAIN_TEXT',
+  text: string,
+}
+
+interface MarkdownMessageBlock {
+  type: 'MARKDOWN',
+  text: string,
+}
+
+interface ContextMessageBlock {
+  type: 'CONTEXT',
+  text: string,
+}
+
+interface DividerMessageBlock {
+  type: 'DIVIDER',
+}
+
+type MessageBlock =
+  | HeaderMessageBlock
+  | PlainTextMessageBlock
+  | MarkdownMessageBlock
+  | ContextMessageBlock
+  | DividerMessageBlock;
 
 interface CommandProcessingResponse {
   messages: MessageBlock[],
@@ -18,5 +44,10 @@ function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly: b
 export default CommandProcessingResponse;
 export {
   MessageBlock,
+  HeaderMessageBlock,
+  PlainTextMessageBlock,
+  MarkdownMessageBlock,
+  ContextMessageBlock,
+  DividerMessageBlock,
   makeSingleTextProcessingResponse,
 };

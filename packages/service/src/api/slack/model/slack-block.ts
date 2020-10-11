@@ -58,6 +58,10 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
         });
         break;
 
+      case 'DIVIDER':
+        blocks.push({ type: 'divider' });
+        break;
+
       default: break;
     }
   });

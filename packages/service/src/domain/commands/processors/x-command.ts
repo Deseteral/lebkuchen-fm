@@ -23,7 +23,11 @@ async function xCommandProcessor(command: Command): Promise<CommandProcessingRes
 const xCommandDefinition: CommandDefinition = {
   key: 'x',
   processor: xCommandProcessor,
-  helpMessage: 'Puszcza szalony dźwięk! :parrot:',
+  helpMessage: 'Puszcza szalony dźwięk!',
+  helpUsages: [
+    '<sound name>',
+    'airhorn',
+  ],
 };
 
 export default xCommandDefinition;

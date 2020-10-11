@@ -17,6 +17,10 @@ const searchCommandDefinition: CommandDefinition = {
   shortKey: 's',
   processor: searchCommandProcessor,
   helpMessage: 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube',
+  helpUsages: [
+    '<phrase>',
+    'krawczyk parostatek',
+  ],
 };
 
 export default searchCommandDefinition;

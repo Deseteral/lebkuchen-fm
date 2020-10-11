@@ -22,6 +22,11 @@ const queueCommandDefinition: CommandDefinition = {
   shortKey: 'q',
   processor: queueCommandProcessor,
   helpMessage: 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID',
+  helpUsages: [
+    '<video name or youtube-id>',
+    'transatlantik',
+    'p28K7Fz0KrQ',
+  ],
 };
 
 export default queueCommandDefinition;

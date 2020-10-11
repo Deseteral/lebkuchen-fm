@@ -26,6 +26,10 @@ const volumeCommandDefinition: CommandDefinition = {
   shortKey: 'vol',
   processor: volumeCommandProcessor,
   helpMessage: 'Ustawia głośność na zadaną z zakresu 0-100',
+  helpUsages: [
+    '<volume from 1-100>',
+    '55',
+  ],
 };
 
 export default volumeCommandDefinition;

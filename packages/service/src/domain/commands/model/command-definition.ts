@@ -8,6 +8,7 @@ interface CommandDefinition {
   shortKey?: string,
   processor: ProcessFunction,
   helpMessage: string,
+  helpUsages?: string[],
 }
 
 export default CommandDefinition;

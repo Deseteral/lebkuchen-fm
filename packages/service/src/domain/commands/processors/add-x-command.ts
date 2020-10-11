@@ -19,7 +19,11 @@ async function addXCommandProcessor(command: Command): Promise<CommandProcessing
 const addXCommandDefinition: CommandDefinition = {
   key: 'addx',
   processor: addXCommandProcessor,
-  helpMessage: 'Dodaje efekt dźwiękowy (addx name|url)',
+  helpMessage: 'Dodaje efekt dźwiękowy',
+  helpUsages: [
+    '<name>|<sound-url>',
+    'airhorn|https://example.com/airhorn.wav',
+  ],
 };
 
 export default addXCommandDefinition;
