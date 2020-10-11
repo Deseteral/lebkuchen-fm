@@ -4,7 +4,6 @@ import * as Logger from '../infrastructure/logger';
 
 function makeYouTubeUrl(path: string): URL {
   const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
-  console.log(Configuration);
   url.searchParams.set('key', Configuration.YOUTUBE_API_KEY);
   return url;
 }
