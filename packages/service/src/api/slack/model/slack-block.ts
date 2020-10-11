@@ -27,9 +27,15 @@ interface HeaderSlackBlock {
   text: SlackText,
 }
 
+interface ContextSlackBlock {
+  type: 'context',
+  elements: SlackPlainText[],
+}
+
 type SlackBlock =
   | DividerSlackBlock
   | SectionSlackBlock
+  | ContextSlackBlock
   | HeaderSlackBlock;
 
 function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
@@ -55,6 +61,13 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
         blocks.push({
           type: 'section',
           text: { type: 'mrkdwn', text: message.text },
+        });
+        break;
+
+      case 'CONTEXT':
+        blocks.push({
+          type: 'context',
+          elements: [{ type: 'plain_text', text: message.text, emoji: false }],
         });
         break;
 
