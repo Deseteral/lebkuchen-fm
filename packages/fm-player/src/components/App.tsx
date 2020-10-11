@@ -11,7 +11,6 @@ function App() {
 
   return (
     <>
-      <div>LebkuchenFM</div>
       <YouTubePlayer />
     </>
   );
