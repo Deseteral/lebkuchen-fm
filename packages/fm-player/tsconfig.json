@@ -16,7 +16,8 @@
     "lib": [
       "DOM",
       "es2018"
-    ]
+    ],
+    "types": ["react"]
   },
   "include": [
     "src/**/*"

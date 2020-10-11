@@ -3,5 +3,6 @@ build/
 dist/
 .cache/
 
+.env
 *.log
 .DS_Store
