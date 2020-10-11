@@ -7,7 +7,7 @@ import QueueCommand from './queue-command';
 const MAX_TITLES_IN_MESSAGE = 10;
 
 async function randomCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
-  const amount = command.rawArgs === ''
+  const amount = (command.rawArgs === '')
     ? 1
     : parseInt(command.rawArgs, 10);
 
@@ -15,11 +15,12 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
   const maxAllowedValue = songList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
-    return makeSingleTextProcessingResponse(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`, false);
+    throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const shuffledSongList = [...songList].sort(() => (0.5 - Math.random()));
-  const selectedSongs = shuffledSongList.slice(0, amount);
+  const selectedSongs = [...songList]
+    .randomShuffle()
+    .slice(0, amount);
 
   const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
@@ -35,7 +36,7 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
   const message = [
     'Dodano do kojeki:',
     ...titleMessages,
-    (videoTitles.length > MAX_TITLES_IN_MESSAGE ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+    ((videoTitles.length > MAX_TITLES_IN_MESSAGE) ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
   ].filter(Boolean).join('\n');
 
   return makeSingleTextProcessingResponse(message, false);
