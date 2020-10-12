@@ -1,7 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import Section from './Section';
 
-const Section = styled.section`
+const LogsSection = styled(Section)`
   height: 450px;
   background: white;
 `;
@@ -11,9 +12,9 @@ interface LogsProps {
 }
 
 const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
-  <Section>
+  <LogsSection>
     {logs.map((s) => (<code>{s}</code>))}
-  </Section>
+  </LogsSection>
 );
 
 export default Logs;
