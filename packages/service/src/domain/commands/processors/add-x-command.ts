@@ -1,7 +1,7 @@
 import Command, { getCommandArgsByDelimiter } from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as XSoundService from '../../x-sounds/x-sounds-service';
+import XSoundService from '../../x-sounds/x-sounds-service';
 
 async function addXCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const commandArgs = getCommandArgsByDelimiter(command, '|');
@@ -11,7 +11,7 @@ async function addXCommandProcessor(command: Command): Promise<CommandProcessing
   }
 
   const [name, url] = commandArgs;
-  await XSoundService.createNewSound(name, url);
+  await XSoundService.instance.createNewSound(name, url);
 
   return makeSingleTextProcessingResponse(`Dodałem dźwięk "${name}" do biblioteki`, false);
 }

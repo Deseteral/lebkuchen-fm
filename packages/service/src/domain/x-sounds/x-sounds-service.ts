@@ -1,51 +1,56 @@
 import XSoundsRepository from './x-sounds-repository';
 import XSound from './x-sound';
 
-function getAll(): Promise<XSound[]> {
-  return XSoundsRepository.instance.findAllOrderByNameAsc();
-}
+class XSoundsService {
+  private repository: XSoundsRepository;
 
-async function getByName(soundName: string): Promise<XSound> {
-  const xSound = await XSoundsRepository.instance.findByName(soundName);
-
-  if (!xSound) {
-    throw new Error(`Nie ma takiego dźwięku: ${soundName}`);
+  private constructor() {
+    this.repository = XSoundsRepository.instance;
   }
 
-  return xSound;
-}
+  getAll(): Promise<XSound[]> {
+    return this.repository.findAllOrderByNameAsc();
+  }
 
-async function incrementPlayCount(soundName: string): Promise<void> {
-  const xSound = await XSoundsRepository.instance.findByName(soundName);
+  async getByName(soundName: string): Promise<XSound> {
+    const xSound = await this.repository.findByName(soundName);
 
-  if (xSound) {
-    const updatedSound = {
-      ...xSound,
-      timesPlayed: (xSound.timesPlayed + 1),
+    if (!xSound) {
+      throw new Error(`Nie ma takiego dźwięku: ${soundName}`);
+    }
+
+    return xSound;
+  }
+
+  async incrementPlayCount(soundName: string): Promise<void> {
+    const xSound = await this.repository.findByName(soundName);
+
+    if (xSound) {
+      const updatedSound = {
+        ...xSound,
+        timesPlayed: (xSound.timesPlayed + 1),
+      };
+
+      await this.repository.replace(updatedSound);
+    }
+  }
+
+  async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
+    const foundSound = await this.getByName(name);
+    if (foundSound !== null) {
+      throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
+    }
+
+    const xSound: XSound = {
+      name,
+      url,
+      timesPlayed,
     };
 
-    await XSoundsRepository.instance.replace(updatedSound);
-  }
-}
-
-async function createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
-  const foundSound = await getByName(name);
-  if (foundSound !== null) {
-    throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
+    await this.repository.insert(xSound);
   }
 
-  const xSound: XSound = {
-    name,
-    url,
-    timesPlayed,
-  };
-
-  await XSoundsRepository.instance.insert(xSound);
+  static readonly instance = new XSoundsService();
 }
 
-export {
-  getAll,
-  getByName,
-  incrementPlayCount,
-  createNewSound,
-};
+export default XSoundsService;

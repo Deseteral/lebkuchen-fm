@@ -1,9 +1,9 @@
 import CommandProcessingResponse from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
-import * as XSoundsService from '../../x-sounds/x-sounds-service';
+import XSoundsService from '../../x-sounds/x-sounds-service';
 
 async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
-  const sounds = await XSoundsService.getAll();
+  const sounds = await XSoundsService.instance.getAll();
 
   if (sounds.length === 0) {
     throw new Error('Brak dźwięków w bazie');
