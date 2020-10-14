@@ -1,4 +1,4 @@
-import CommandRegistry from './command-registry';
+import CommandRegistryService from './command-registry-service';
 import AddCommand from '../processors/add-command';
 import AddXCommand from '../processors/add-x-command';
 import HelpCommand from '../processors/help-commands';
@@ -28,7 +28,7 @@ function initialize(): void {
     SkipCommand,
     VolumeCommand,
     XCommand,
-  ].forEach(CommandRegistry.instance.register);
+  ].forEach((command) => CommandRegistryService.instance.register(command));
 }
 
 export {

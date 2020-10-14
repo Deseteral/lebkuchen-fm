@@ -40,6 +40,11 @@ class Logger {
   error(message: string, group?: string): void {
     this.log('error', message, group);
   }
+
+  withError(error: Error, group?: string): void {
+    console.error(error); // eslint-disable-line no-console
+    this.log('error', error.message, group);
+  }
 }
 
 export default Logger;

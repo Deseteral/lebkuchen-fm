@@ -44,4 +44,4 @@ Promise.resolve()
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)
-  .catch((err) => logger.error(err));
+  .catch((err) => logger.withError(err));

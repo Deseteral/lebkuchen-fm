@@ -1,9 +1,11 @@
 import CommandDefinition from '../model/command-definition';
 import Logger from '../../../infrastructure/logger';
 
-class CommandRegistry {
+type CommandRegistry = Map<string, CommandDefinition>;
+
+class CommandRegistryService {
   private static logger = new Logger('command-registry');
-  private commands: Map<string, CommandDefinition>;
+  private commands: CommandRegistry;
 
   private constructor() {
     this.commands = new Map();
@@ -16,14 +18,17 @@ class CommandRegistry {
       this.commands.set(definition.shortKey, definition);
     }
 
-    CommandRegistry.logger.info(`Initialized ${definition.key} command`);
+    CommandRegistryService.logger.info(`Initialized ${definition.key} command`);
   }
 
   getRegistry(): Map<string, CommandDefinition> {
     return this.commands;
   }
 
-  static readonly instance = new CommandRegistry();
+  static readonly instance = new CommandRegistryService();
 }
 
-export default CommandRegistry;
+export default CommandRegistryService;
+export {
+  CommandRegistry,
+};

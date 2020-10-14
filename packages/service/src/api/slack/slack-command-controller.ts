@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import express from 'express';
-import * as CommandExecutorService from '../../domain/commands/command-executor-service';
+import CommandExecutorService from '../../domain/commands/command-executor-service';
 import Configuration from '../../infrastructure/configuration';
 import Logger from '../../infrastructure/logger';
 import { makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse } from './model/slack-response-dto';
@@ -21,7 +21,7 @@ router.post('/', async function processSlackCommand(req, res) {
 
   logger.info(`Received ${messageContent} command from Slack`);
 
-  const commandProcessingResponse = await CommandExecutorService.processFromText(messageContent);
+  const commandProcessingResponse = await CommandExecutorService.instance.processFromText(messageContent);
   const response = mapCommandProcessingResponseToSlackResponse(commandProcessingResponse);
   res.send(response);
 });
