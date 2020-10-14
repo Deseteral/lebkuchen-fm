@@ -39,7 +39,7 @@ function mapFileInfoToPromise({ name, url, extension }) {
 }
 
 (async () => {
-  const soundList = await readJson(`${serviceUrl}/xsounds`);
+  const soundList = (await readJson(`${serviceUrl}/x-sounds`)).sounds;
 
   soundCount = soundList.length;
 

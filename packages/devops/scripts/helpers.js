@@ -23,7 +23,9 @@ function downloadFile({ url, filePath }) {
 
 function readJson(url) {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
+    const client = url.startsWith('https') ? https : http;
+
+    client.get(url, (res) => {
       let body = '';
 
       res.on('data', (chunk) => {
