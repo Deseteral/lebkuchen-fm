@@ -13,7 +13,7 @@ function newConnectionHandler(socket: socketIo.Socket): void {
 }
 
 function initialize(server: http.Server): void {
-  io = socketIo(server);
+  io = socketIo(server, { serveClient: false });
   io.on('connection', newConnectionHandler);
 }
 

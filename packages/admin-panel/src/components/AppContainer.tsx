@@ -26,8 +26,8 @@ const MainContainer = styled.main`
   flex-direction: column;
 `;
 
-interface PanelProps {}
-const Panel: React.FunctionComponent<PanelProps> = ({ children }) => (
+interface AppContainerProps {}
+const AppContainer: React.FunctionComponent<AppContainerProps> = ({ children }) => (
   <Conatiner>
     <Heading>LebkuchenFM admin panel</Heading>
     <Banner src={BESTVIEWED_BANNER_URL} alt="This page is best viewed with Internet Explorer" />
@@ -37,5 +37,5 @@ const Panel: React.FunctionComponent<PanelProps> = ({ children }) => (
   </Conatiner>
 );
 
-export default Panel;
-export { PanelProps };
+export default AppContainer;
+export { AppContainerProps };

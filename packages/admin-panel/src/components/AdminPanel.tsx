@@ -1,14 +1,14 @@
 import * as React from 'react';
-import Panel from './Panel';
+import AppContainer from './AppContainer';
 import WsConnections from './WsConnections';
 import Logs from './Logs';
 
 interface AdminPanelProps {}
 const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => (
-  <Panel>
+  <AppContainer>
     <WsConnections sockets={[]} />
     <Logs logs={[]} />
-  </Panel>
+  </AppContainer>
 );
 
 export default AdminPanel;
