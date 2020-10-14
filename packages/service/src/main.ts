@@ -5,7 +5,7 @@ import compression from 'compression';
 import bodyParser from 'body-parser';
 import Configuration from './application/configuration';
 import Logger from './infrastructure/logger';
-import * as Storage from './infrastructure/storage';
+import Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
 import * as EventStream from './event-stream/event-stream';
 
@@ -38,7 +38,7 @@ function runApplication(): void {
 }
 
 Promise.resolve()
-  .then(() => Storage.connect())
+  .then(() => Storage.instance.connect())
   .then(() => CommandInitializer.initialize())
   .then(() => EventStream.initialize(server))
   .then(configureExpress)

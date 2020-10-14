@@ -1,9 +1,9 @@
 import { Collection } from 'mongodb';
-import * as Storage from '../../infrastructure/storage';
+import Storage from '../../infrastructure/storage';
 import XSound from './x-sound';
 
 function getCollection(): Collection<XSound> {
-  return Storage.collection<XSound>('x');
+  return Storage.instance.collection<XSound>('x');
 }
 
 function findAllOrderByNameAsc(): Promise<XSound[]> {

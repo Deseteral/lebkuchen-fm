@@ -1,9 +1,9 @@
 import { Collection } from 'mongodb';
-import * as Storage from '../../infrastructure/storage';
+import Storage from '../../infrastructure/storage';
 import Song from './song';
 
 function getCollection(): Collection<Song> {
-  return Storage.collection<Song>('songs');
+  return Storage.instance.collection<Song>('songs');
 }
 
 function findAllOrderByTimesPlayedDesc(): Promise<Song[]> {
