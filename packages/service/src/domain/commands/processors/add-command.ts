@@ -1,4 +1,4 @@
-import Command, { getCommandArgsByDelimiter } from '../model/command';
+import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import SongService from '../../songs/song-service';
@@ -21,7 +21,7 @@ function parseTimeStringToSeconds(text: string) : (number | undefined) {
 }
 
 async function addCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const songDetails = getCommandArgsByDelimiter(command, '|');
+  const songDetails = command.getArgsByDelimiter('|');
 
   if (songDetails.length < 2) {
     throw new Error('Zbyt mała liczba argumentów');

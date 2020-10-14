@@ -8,7 +8,7 @@ async function searchCommandProcessor(command: Command) : Promise<CommandProcess
   const phrase = command.rawArgs;
   const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
 
-  const queueCommand: Command = { key: 'queue', rawArgs: youtubeId };
+  const queueCommand = new Command('queue', youtubeId);
   return QueueCommand.processor(queueCommand);
 }
 

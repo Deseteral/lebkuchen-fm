@@ -24,7 +24,7 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
 
   const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
-    const queueCommand: Command = { key: 'queue', rawArgs: song.youtubeId };
+    const queueCommand = new Command('queue', song.youtubeId);
     videoTitles.push(song.name);
     await QueueCommand.processor(queueCommand);
   });
