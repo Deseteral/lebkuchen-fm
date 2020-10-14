@@ -4,9 +4,8 @@ import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './m
 import Logger from '../../infrastructure/logger';
 import CommandRegistryService, { CommandRegistry } from './registry/command-registry-service';
 
-const logger = new Logger('command-executor-service');
-
 class CommandExecutorService {
+  private static logger = new Logger('command-executor-service');
   private registry: CommandRegistry;
 
   private constructor() {
@@ -20,7 +19,7 @@ class CommandExecutorService {
     try {
       return await commandDefinition.processor(command);
     } catch (e) {
-      logger.error(e);
+      CommandExecutorService.logger.error(e);
       return makeSingleTextProcessingResponse((e as Error).message, false);
     }
   }
