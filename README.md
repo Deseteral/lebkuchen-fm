@@ -44,8 +44,7 @@ npm run test:type-check:watch
 ## Modules
 This projects consists of these modules:
 
-### Backend service
-`/packages/service`\
+### Backend service (`/packages/service`)
 Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
@@ -55,6 +54,9 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 - `YOUTUBE_API_KEY` - YouTube Data API token
 - `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
+
+#### Development
+Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
 
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/events.ts).
@@ -88,7 +90,7 @@ Plain text interface for slash commands.
 Returns list of all XSounds in the database.
 
 **Response**
-```json
+```jsonc
 {
   "sounds": [
     {
@@ -102,12 +104,15 @@ Returns list of all XSounds in the database.
 }
 ```
 
-### FM player
-`/packages/fm-player`\
+### FM player (`/packages/fm-player`)
 Web client for the player. Communicates with the service via WebSocket event stream.
 
-### Devops scripts
-`/packages/service`\
+#### Development
+Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.
+
+Running `npm run build` builds the application in production mode.
+
+### Devops scripts (`/packages/service`)
 Scripts related to maintenance of the service.
 
 ## License
