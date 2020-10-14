@@ -11,7 +11,7 @@ npm install
 
 You can run tests using:
 ```sh
-npm t
+npm test
 ```
 
 To build application run
