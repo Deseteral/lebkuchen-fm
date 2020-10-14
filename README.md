@@ -3,13 +3,36 @@
 
 Monorepo for Lebkuchen FM project - _YouTube TV-like_ service with super powers controlled via Slack.
 
+## Development
+Start by installing dependencies:
+```sh
+npm install
+```
+
+You can run tests using
+```sh
+npm t
+```
+
+This project is separated into independent modules with main ones being `service` and `fm-player`.
+For development information specific to modules refer to their _Development_ sections in this document.
+
+It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for development.
+
+### Type checking
+Modules using TypeScript will compile even when there are type checking errors in the code. This allows for fast development iteration. Type checking is done during `test` script. For development it's recommended that you use type checker in watch mode using:
+```sh
+npm run test:type-check:watch
+```
+
+## Modules
 This projects consists of these modules:
 
-## Backend service
+### Backend service
 `/packages/service`\
 Node service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
-### Configuration
+#### Configuration
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
 - `MONGODB_URI` - MongoDB connection string
 - `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
@@ -17,10 +40,10 @@ Node service with MongoDB storage that communicates with clients over WebSockets
 - `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
 
-### Event stream
+#### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/events.ts).
 
-### REST endpoints
+#### REST endpoints
 `POST /commands/slack` \
 Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
 
@@ -63,11 +86,11 @@ Returns list of all XSounds in the database.
 }
 ```
 
-## FM player
+### FM player
 `/packages/fm-player`\
 Web client for the player. Communicates with the service via WebSocket event stream.
 
-## Devops scripts
+### Devops scripts
 `/packages/service`\
 Scripts related to maintenance of the service.
 
