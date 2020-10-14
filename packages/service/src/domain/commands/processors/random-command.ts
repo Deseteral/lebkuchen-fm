@@ -1,7 +1,7 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as SongService from '../../songs/song-service';
+import SongService from '../../songs/song-service';
 import QueueCommand from './queue-command';
 
 const MAX_TITLES_IN_MESSAGE = 10;
@@ -11,7 +11,7 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
     ? 1
     : parseInt(command.rawArgs, 10);
 
-  const songList = await SongService.getAll();
+  const songList = await SongService.instance.getAll();
   const maxAllowedValue = songList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
