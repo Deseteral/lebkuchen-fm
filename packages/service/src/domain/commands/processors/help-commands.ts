@@ -1,7 +1,7 @@
-import * as CommandRegistry from '../registry/command-registry';
+import CommandRegistryService from '../registry/command-registry-service';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
-import Configuration from '../../../application/configuration';
+import Configuration from '../../../infrastructure/configuration';
 
 function notNull<T>(value: T | null | undefined): value is T {
   return ((value !== null) && (value !== undefined));
@@ -20,7 +20,7 @@ function formatDefinitionToMarkdown(definition: CommandDefinition): string {
 }
 
 function getAllUniqueCommands(): CommandDefinition[] {
-  const registry = CommandRegistry.getRegistry();
+  const registry = CommandRegistryService.instance.getRegistry();
   return Array.from(registry.keys())
     .filter((objectKey) => (objectKey === registry.get(objectKey)?.key))
     .map((key) => registry.get(key))

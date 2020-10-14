@@ -1,24 +1,33 @@
-import { Collection, MongoClient } from 'mongodb';
-import Configuration from '../application/configuration';
-import * as Logger from '../infrastructure/logger';
+import { Collection, Db, MongoClient } from 'mongodb';
+import Configuration from '../infrastructure/configuration';
+import Logger from '../infrastructure/logger';
 
-const client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
+class Storage {
+  private static logger = new Logger('mongo-client');
+  private client: MongoClient;
+  private db?: Db;
 
-async function connect(): Promise<void> {
-  await client.connect();
+  private constructor() {
+    this.client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
+  }
 
-  const databaseName = Configuration.DATABASE_NAME;
-  await client.db(databaseName).command({ ping: 1 });
+  async connect(): Promise<void> {
+    await this.client.connect();
 
-  Logger.info('Connected to MongoDB server', 'mongo-client');
+    this.db = this.client.db(Configuration.DATABASE_NAME);
+    await this.db.command({ ping: 1 });
+
+    Storage.logger.info('Connected to MongoDB server');
+  }
+
+  collection<T>(collectionName: string): Collection<T> {
+    if (!this.db) {
+      throw new Error('Storage must be connected before calling collection');
+    }
+    return this.db.collection(collectionName);
+  }
+
+  static readonly instance: Storage = new Storage();
 }
 
-function collection<T>(collectionName: string): Collection<T> {
-  const databaseName = Configuration.DATABASE_NAME;
-  return client.db(databaseName).collection(collectionName);
-}
-
-export {
-  connect,
-  collection,
-};
+export default Storage;

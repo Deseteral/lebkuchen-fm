@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "node build/main.js",
-    "build": "rm -rf build && babel src -d build --extensions '.ts,.js' --copy-files --source-maps",
+    "build": "babel src -d build --extensions '.ts,.js' --copy-files --source-maps",
+    "clean": "rm -rf build",
     "dev": "npm run build && npm run start",
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",

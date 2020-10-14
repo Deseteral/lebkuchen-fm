@@ -1,17 +1,17 @@
-import Command, { getCommandArgsByDelimiter } from '../model/command';
+import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as XSoundService from '../../x-sounds/x-sounds-service';
+import XSoundService from '../../x-sounds/x-sounds-service';
 
 async function addXCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const commandArgs = getCommandArgsByDelimiter(command, '|');
+  const commandArgs = command.getArgsByDelimiter('|');
 
   if (commandArgs.length < 2) {
     throw new Error('Zbyt mała liczba argumentów');
   }
 
   const [name, url] = commandArgs;
-  await XSoundService.createNewSound(name, url);
+  await XSoundService.instance.createNewSound(name, url);
 
   return makeSingleTextProcessingResponse(`Dodałem dźwięk "${name}" do biblioteki`, false);
 }

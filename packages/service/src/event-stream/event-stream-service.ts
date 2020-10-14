@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
 import PlayerState, { makeDefaultPlayerState } from '../domain/player-state/player-state';
 import * as EventStream from './event-stream';
-import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './events';
+import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './model/events';
 
 function sendDefaultPlayerState(socket: socketIo.Socket): void {
   const eventData: PlayerStateUpdateEvent = {
@@ -25,7 +25,7 @@ function requestAndSendPlayerState(socket: socketIo.Socket): void {
 }
 
 function onUserConnected(socket: socketIo.Socket): void {
-  const connectedSocketCount = Object.keys(EventStream.socketIoServer().sockets.sockets).length;
+  const connectedSocketCount = EventStream.getConnectedSocketCount();
 
   if (connectedSocketCount <= 1) {
     sendDefaultPlayerState(socket);
@@ -34,11 +34,11 @@ function onUserConnected(socket: socketIo.Socket): void {
   }
 }
 
-function broadcast(eventData: EventData): void {
-  EventStream.socketIoServer().sockets.emit('events', eventData);
+function sendToEveryone(event: EventData): void {
+  EventStream.broadcast(event);
 }
 
 export {
   onUserConnected,
-  broadcast,
+  sendToEveryone,
 };

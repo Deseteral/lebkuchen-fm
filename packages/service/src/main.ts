@@ -3,9 +3,9 @@ import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-import Configuration from './application/configuration';
-import * as Logger from './infrastructure/logger';
-import * as Storage from './infrastructure/storage';
+import Configuration from './infrastructure/configuration';
+import Logger from './infrastructure/logger';
+import Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
 import * as EventStream from './event-stream/event-stream';
 
@@ -17,6 +17,7 @@ import './polyfills';
 
 const app: express.Express = express();
 const server: http.Server = new http.Server(app);
+const logger = new Logger('app-init');
 
 function configureExpress(): void {
   app.use(compression());
@@ -33,14 +34,14 @@ function setupRouting(): void {
 
 function runApplication(): void {
   const port = Configuration.PORT;
-  server.listen(port, () => Logger.info(`LebkuchenFM service started on port ${port}`, 'app-init'));
+  server.listen(port, () => logger.info(`LebkuchenFM service started on port ${port}`));
 }
 
 Promise.resolve()
-  .then(() => Storage.connect())
+  .then(() => Storage.instance.connect())
   .then(() => CommandInitializer.initialize())
   .then(() => EventStream.initialize(server))
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)
-  .catch((err) => Logger.error(err, 'app-init'));
+  .catch((err) => logger.withError(err));

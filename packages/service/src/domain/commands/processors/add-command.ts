@@ -1,7 +1,7 @@
-import Command, { getCommandArgsByDelimiter } from '../model/command';
+import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as SongService from '../../songs/song-service';
+import SongService from '../../songs/song-service';
 
 function parseTimeStringToSeconds(text: string) : (number | undefined) {
   const [minutes, seconds] = text.split(':');
@@ -21,7 +21,7 @@ function parseTimeStringToSeconds(text: string) : (number | undefined) {
 }
 
 async function addCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const songDetails = getCommandArgsByDelimiter(command, '|');
+  const songDetails = command.getArgsByDelimiter('|');
 
   if (songDetails.length < 2) {
     throw new Error('Zbyt mała liczba argumentów');
@@ -29,14 +29,14 @@ async function addCommandProcessor(command: Command): Promise<CommandProcessingR
 
   const [youtubeId, name, trimStart, trimEnd] = songDetails;
 
-  const foundSong = await SongService.getByName(name);
+  const foundSong = await SongService.instance.getByName(name);
   if (foundSong !== null) {
     throw new Error(`Utwór o tytule "${name}" już jest w bazie`);
   }
 
   const trimStartSeconds = trimStart ? parseTimeStringToSeconds(trimStart) : undefined;
   const trimEndSeconds = trimEnd ? parseTimeStringToSeconds(trimEnd) : undefined;
-  SongService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
+  SongService.instance.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
   return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`, false);
 }
