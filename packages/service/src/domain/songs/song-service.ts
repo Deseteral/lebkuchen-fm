@@ -1,5 +1,5 @@
 import SongRepository from './song-repository';
-import * as YouTubeDataClient from '../../youtube/youtube-data-client';
+import YouTubeDataClient from '../../youtube/youtube-data-client';
 import Song from './song';
 
 class SongService {
