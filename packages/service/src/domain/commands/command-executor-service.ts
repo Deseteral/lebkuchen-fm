@@ -1,6 +1,6 @@
 import Command from './model/command';
 import * as TextCommandParser from './text-command-parser';
-import * as CommandRegistry from './registry/command-registry';
+import CommandRegistry from './registry/command-registry';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
 import Logger from '../../infrastructure/logger';
 
@@ -11,7 +11,7 @@ function commandDoesNotExistResponse(): CommandProcessingResponse {
 }
 
 async function processCommand(command: Command): Promise<CommandProcessingResponse> {
-  const commandDefinition = CommandRegistry.getRegistry().get(command.key);
+  const commandDefinition = CommandRegistry.instance.getRegistry().get(command.key);
   if (!commandDefinition) return commandDoesNotExistResponse();
 
   try {
