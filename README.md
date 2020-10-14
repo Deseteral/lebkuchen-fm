@@ -6,6 +6,7 @@ Monorepo for Lebkuchen FM project - _YouTube TV-like_ service with super powers 
 This projects consists of these modules:
 
 ## Backend service
+`/packages/service`\
 Node service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 ### Configuration
@@ -62,9 +63,13 @@ Returns list of all XSounds in the database.
 }
 ```
 
-## Scripts
-Scripts related to the project live in the `scripts` directory.
-TODO: Add missing scripts
+## FM player
+`/packages/fm-player`\
+Web client for the player. Communicates with the service via WebSocket event stream.
+
+## Devops scripts
+`/packages/service`\
+Scripts related to maintenance of the service.
 
 ## License
 This project is licensed under the [MIT license](LICENSE).
