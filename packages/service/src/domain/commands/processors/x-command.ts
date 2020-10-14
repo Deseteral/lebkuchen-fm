@@ -2,7 +2,7 @@ import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import XSoundService from '../../x-sounds/x-sounds-service';
-import { PlayXSoundEvent } from '../../../event-stream/events';
+import { PlayXSoundEvent } from '../../../event-stream/model/events';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 
 async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {

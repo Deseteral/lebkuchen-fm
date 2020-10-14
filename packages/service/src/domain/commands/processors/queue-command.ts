@@ -3,7 +3,7 @@ import * as EventStreamService from '../../../event-stream/event-stream-service'
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
-import { AddSongToQueueEvent } from '../../../event-stream/events';
+import { AddSongToQueueEvent } from '../../../event-stream/model/events';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;

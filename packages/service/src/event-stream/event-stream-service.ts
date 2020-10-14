@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
 import PlayerState, { makeDefaultPlayerState } from '../domain/player-state/player-state';
 import * as EventStream from './event-stream';
-import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './events';
+import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './model/events';
 
 function sendDefaultPlayerState(socket: socketIo.Socket): void {
   const eventData: PlayerStateUpdateEvent = {

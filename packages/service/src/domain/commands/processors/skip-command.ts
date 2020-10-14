@@ -1,7 +1,7 @@
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
-import { SkipEvent } from '../../../event-stream/events';
+import { SkipEvent } from '../../../event-stream/model/events';
 
 async function skipCommandProcessor() : Promise<CommandProcessingResponse> {
   const event: SkipEvent = { id: 'SkipEvent' };
