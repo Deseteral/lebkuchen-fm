@@ -14,7 +14,7 @@ async function xCommandProcessor(command: Command): Promise<CommandProcessingRes
     soundUrl: xSound.url,
   };
 
-  EventStreamService.broadcast(playXSoundEvent);
+  EventStreamService.sendToEveryone(playXSoundEvent);
   XSoundService.instance.incrementPlayCount(xSound.name);
 
   return makeSingleTextProcessingResponse(':ultrafastparrot:', false);

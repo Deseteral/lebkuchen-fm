@@ -5,7 +5,7 @@ import { PauseEvent } from '../../../event-stream/model/events';
 
 async function pauseCommandProcessor(): Promise<CommandProcessingResponse> {
   const event: PauseEvent = { id: 'PauseEvent' };
-  EventStreamService.broadcast(event);
+  EventStreamService.sendToEveryone(event);
 
   return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
 }

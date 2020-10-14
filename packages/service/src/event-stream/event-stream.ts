@@ -2,6 +2,7 @@ import http from 'http';
 import socketIo from 'socket.io';
 import Logger from '../infrastructure/logger';
 import * as EventStreamService from './event-stream-service';
+import { EventData } from './model/events';
 
 const logger = new Logger('event-stream');
 
@@ -25,12 +26,17 @@ function getPrimaryClientSocket(): SocketIO.Socket {
   return primaryClient;
 }
 
-function socketIoServer(): SocketIO.Server {
-  return io;
+function broadcast(eventData: EventData): void {
+  io.sockets.emit('events', eventData);
+}
+
+function getConnectedSocketCount(): number {
+  return Object.keys(io.sockets.sockets).length;
 }
 
 export {
   initialize,
-  socketIoServer,
   getPrimaryClientSocket,
+  broadcast,
+  getConnectedSocketCount,
 };

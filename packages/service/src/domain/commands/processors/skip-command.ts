@@ -5,7 +5,7 @@ import { SkipEvent } from '../../../event-stream/model/events';
 
 async function skipCommandProcessor() : Promise<CommandProcessingResponse> {
   const event: SkipEvent = { id: 'SkipEvent' };
-  EventStreamService.broadcast(event);
+  EventStreamService.sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
 

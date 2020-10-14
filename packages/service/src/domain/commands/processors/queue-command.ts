@@ -10,7 +10,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
 
   const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
-  EventStreamService.broadcast(eventData);
+  EventStreamService.sendToEveryone(eventData);
 
   SongService.instance.incrementPlayCount(song.youtubeId, song.name);
 

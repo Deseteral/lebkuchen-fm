@@ -5,7 +5,7 @@ import { ResumeEvent } from '../../../event-stream/model/events';
 
 async function resumeCommandProcessor(): Promise<CommandProcessingResponse> {
   const event: ResumeEvent = { id: 'ResumeEvent' };
-  EventStreamService.broadcast(event);
+  EventStreamService.sendToEveryone(event);
 
   return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
 }
