@@ -3,7 +3,7 @@ import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 import { SkipEvent } from '../../../event-stream/model/events';
 
-async function skipCommandProcessor() : Promise<CommandProcessingResponse> {
+async function skipCommandProcessor(): Promise<CommandProcessingResponse> {
   const event: SkipEvent = { id: 'SkipEvent' };
   EventStreamService.sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);

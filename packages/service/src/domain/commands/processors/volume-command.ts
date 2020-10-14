@@ -4,7 +4,7 @@ import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 
-async function volumeCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function volumeCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const value = command.rawArgs;
   const parsedValue = parseInt(value, 10);
 

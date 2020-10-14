@@ -6,7 +6,7 @@ import QueueCommand from './queue-command';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
-async function randomCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function randomCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const amount = (command.rawArgs === '')
     ? 1
     : parseInt(command.rawArgs, 10);
