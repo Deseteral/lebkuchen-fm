@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import Configuration from '../application/configuration';
+import Configuration from '../infrastructure/configuration';
 import Logger from '../infrastructure/logger';
 
 const logger = new Logger('youtube-data-client');

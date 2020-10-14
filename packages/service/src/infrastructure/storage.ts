@@ -1,5 +1,5 @@
 import { Collection, Db, MongoClient } from 'mongodb';
-import Configuration from '../application/configuration';
+import Configuration from '../infrastructure/configuration';
 import Logger from '../infrastructure/logger';
 
 class Storage {

@@ -1,7 +1,7 @@
 import * as CommandRegistry from '../registry/command-registry';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
-import Configuration from '../../../application/configuration';
+import Configuration from '../../../infrastructure/configuration';
 
 function notNull<T>(value: T | null | undefined): value is T {
   return ((value !== null) && (value !== undefined));

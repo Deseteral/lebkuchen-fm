@@ -3,7 +3,7 @@ import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
-import Configuration from './application/configuration';
+import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
