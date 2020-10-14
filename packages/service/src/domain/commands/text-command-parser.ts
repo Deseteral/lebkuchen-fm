@@ -1,7 +1,7 @@
 import Configuration from '../../infrastructure/configuration';
 import Command from './model/command';
 
-function parse(text: string): (Command | null) {
+function parseTextToCommand(text: string): (Command | null) {
   const tokens = text.split(' ')
     .map((s) => s.trim())
     .filter((s) => (s.length > 0));
@@ -20,5 +20,5 @@ function parse(text: string): (Command | null) {
 }
 
 export {
-  parse,
+  parseTextToCommand,
 };

@@ -1,5 +1,5 @@
 import Command from './model/command';
-import * as TextCommandParser from './text-command-parser';
+import { parseTextToCommand } from './text-command-parser';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
 import Logger from '../../infrastructure/logger';
 import CommandRegistryService, { CommandRegistry } from './registry/command-registry-service';
@@ -26,7 +26,7 @@ class CommandExecutorService {
   }
 
   async processFromText(textCommand: string): Promise<CommandProcessingResponse> {
-    const command = TextCommandParser.parse(textCommand);
+    const command = parseTextToCommand(textCommand);
     if (!command) return CommandExecutorService.commandDoesNotExistResponse;
 
     return this.processCommand(command);
