@@ -1,12 +1,12 @@
-import * as XSoundsRepository from './x-sounds-repository';
+import XSoundsRepository from './x-sounds-repository';
 import XSound from './x-sound';
 
 function getAll(): Promise<XSound[]> {
-  return XSoundsRepository.findAllOrderByNameAsc();
+  return XSoundsRepository.instance.findAllOrderByNameAsc();
 }
 
 async function getByName(soundName: string): Promise<XSound> {
-  const xSound = await XSoundsRepository.findByName(soundName);
+  const xSound = await XSoundsRepository.instance.findByName(soundName);
 
   if (!xSound) {
     throw new Error(`Nie ma takiego dźwięku: ${soundName}`);
@@ -16,7 +16,7 @@ async function getByName(soundName: string): Promise<XSound> {
 }
 
 async function incrementPlayCount(soundName: string): Promise<void> {
-  const xSound = await XSoundsRepository.findByName(soundName);
+  const xSound = await XSoundsRepository.instance.findByName(soundName);
 
   if (xSound) {
     const updatedSound = {
@@ -24,7 +24,7 @@ async function incrementPlayCount(soundName: string): Promise<void> {
       timesPlayed: (xSound.timesPlayed + 1),
     };
 
-    await XSoundsRepository.replace(updatedSound);
+    await XSoundsRepository.instance.replace(updatedSound);
   }
 }
 
@@ -40,7 +40,7 @@ async function createNewSound(name: string, url: string, timesPlayed = 0): Promi
     timesPlayed,
   };
 
-  await XSoundsRepository.insert(xSound);
+  await XSoundsRepository.instance.insert(xSound);
 }
 
 export {

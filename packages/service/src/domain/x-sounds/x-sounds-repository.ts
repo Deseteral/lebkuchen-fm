@@ -1,30 +1,28 @@
-import { Collection } from 'mongodb';
-import Storage from '../../infrastructure/storage';
+import Repository from '../../infrastructure/repository';
 import XSound from './x-sound';
 
-function getCollection(): Collection<XSound> {
-  return Storage.instance.collection<XSound>('x');
+class XSoundsRepository extends Repository<XSound> {
+  private constructor() {
+    super('x');
+  }
+
+  findAllOrderByNameAsc(): Promise<XSound[]> {
+    return this.collection.find({}).sort({ name: 1 }).toArray();
+  }
+
+  findByName(name: string): Promise<XSound | null> {
+    return this.collection.findOne({ name });
+  }
+
+  async insert(sound: XSound): Promise<void> {
+    await this.collection.insertOne(sound);
+  }
+
+  async replace(sound: XSound): Promise<void> {
+    await this.collection.replaceOne({ _id: sound._id }, sound);
+  }
+
+  static readonly instance = new XSoundsRepository();
 }
 
-function findAllOrderByNameAsc(): Promise<XSound[]> {
-  return getCollection().find({}).sort({ name: 1 }).toArray();
-}
-
-function findByName(name: string): Promise<XSound | null> {
-  return getCollection().findOne({ name });
-}
-
-async function insert(sound: XSound): Promise<void> {
-  await getCollection().insertOne(sound);
-}
-
-async function replace(sound: XSound): Promise<void> {
-  await getCollection().replaceOne({ _id: sound._id }, sound);
-}
-
-export {
-  findByName,
-  findAllOrderByNameAsc,
-  insert,
-  replace,
-};
+export default XSoundsRepository;
