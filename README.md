@@ -9,9 +9,25 @@ Start by installing dependencies:
 npm install
 ```
 
-You can run tests using
+You can run tests using:
 ```sh
 npm t
+```
+
+To build application run
+```sh
+npm run build
+```
+
+To run the application locally you have to have MongoDB installed and running on localhost. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).\
+Then create `.env` file in the root of this project and put YouTube Data API key in it (required if you want to use YouTube features):
+```
+YOUTUBE_API_KEY=<your-youtube-data-api-key>
+```
+
+When that's done you can just start the application:
+```sh
+npm start
 ```
 
 This project is separated into independent modules with main ones being `service` and `fm-player`.
@@ -20,7 +36,7 @@ For development information specific to modules refer to their _Development_ sec
 It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for development.
 
 ### Type checking
-Modules using TypeScript will compile even when there are type checking errors in the code. This allows for fast development iteration. Type checking is done during `test` script. For development it's recommended that you use type checker in watch mode using:
+Modules using TypeScript will compile even when there are type checking errors in the code. This allows for fast development iteration. Type checking is done during `test` script. For development it's recommended that you use type checker in watch mode:
 ```sh
 npm run test:type-check:watch
 ```
@@ -30,14 +46,14 @@ This projects consists of these modules:
 
 ### Backend service
 `/packages/service`\
-Node service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
+Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
 - `MONGODB_URI` - MongoDB connection string
 - `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
 - `YOUTUBE_API_KEY` - YouTube Data API token
-- `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond
+- `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
 
 #### Event stream
