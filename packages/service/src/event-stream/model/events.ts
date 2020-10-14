@@ -35,6 +35,8 @@ interface ResumeEvent {
 
 interface SkipEvent {
   id: 'SkipEvent',
+  all: boolean,
+  count: number,
 }
 
 interface ChangeVolumeEvent {
