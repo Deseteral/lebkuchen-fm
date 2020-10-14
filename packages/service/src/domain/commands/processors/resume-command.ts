@@ -1,11 +1,11 @@
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
-import { ResumeEvent } from '../../../event-stream/events';
+import { ResumeEvent } from '../../../event-stream/model/events';
 
 async function resumeCommandProcessor(): Promise<CommandProcessingResponse> {
   const event: ResumeEvent = { id: 'ResumeEvent' };
-  EventStreamService.broadcast(event);
+  EventStreamService.sendToEveryone(event);
 
   return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
 }

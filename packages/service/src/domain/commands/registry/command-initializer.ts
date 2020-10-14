@@ -1,4 +1,4 @@
-import * as CommandRegistry from './command-registry';
+import CommandRegistryService from './command-registry-service';
 import AddCommand from '../processors/add-command';
 import AddXCommand from '../processors/add-x-command';
 import HelpCommand from '../processors/help-commands';
@@ -14,19 +14,21 @@ import VolumeCommand from '../processors/volume-command';
 import XCommand from '../processors/x-command';
 
 function initialize(): void {
-  CommandRegistry.register(AddCommand);
-  CommandRegistry.register(AddXCommand);
-  CommandRegistry.register(HelpCommand);
-  CommandRegistry.register(ListXCommand);
-  CommandRegistry.register(PauseCommand);
-  CommandRegistry.register(QueueCommand);
-  CommandRegistry.register(RandomCommand);
-  CommandRegistry.register(ResumeCommand);
-  CommandRegistry.register(SayCommand);
-  CommandRegistry.register(SearchCommand);
-  CommandRegistry.register(SkipCommand);
-  CommandRegistry.register(VolumeCommand);
-  CommandRegistry.register(XCommand);
+  [
+    AddCommand,
+    AddXCommand,
+    HelpCommand,
+    ListXCommand,
+    PauseCommand,
+    QueueCommand,
+    RandomCommand,
+    ResumeCommand,
+    SayCommand,
+    SearchCommand,
+    SkipCommand,
+    VolumeCommand,
+    XCommand,
+  ].forEach((command) => CommandRegistryService.instance.register(command));
 }
 
 export {

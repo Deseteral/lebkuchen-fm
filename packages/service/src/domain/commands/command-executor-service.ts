@@ -1,33 +1,41 @@
 import Command from './model/command';
-import * as TextCommandParser from './text-command-parser';
-import * as CommandRegistry from './registry/command-registry';
+import { parseTextToCommand } from './text-command-parser';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
-import * as Logger from '../../infrastructure/logger';
+import Logger from '../../infrastructure/logger';
+import CommandRegistryService, { CommandRegistry } from './registry/command-registry-service';
 
-function commandDoesNotExistResponse(): CommandProcessingResponse {
-  return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
-}
+class CommandExecutorService {
+  private static logger = new Logger('command-executor-service');
+  private registry: CommandRegistry;
 
-async function processCommand(command: Command): Promise<CommandProcessingResponse> {
-  const commandDefinition = CommandRegistry.getRegistry().get(command.key);
-  if (!commandDefinition) return commandDoesNotExistResponse();
-
-  try {
-    return await commandDefinition.processor(command);
-  } catch (e) {
-    Logger.error(e, 'command-executor-service');
-    return makeSingleTextProcessingResponse((e as Error).message, false);
+  private constructor() {
+    this.registry = CommandRegistryService.instance.getRegistry();
   }
+
+  async processCommand(command: Command): Promise<CommandProcessingResponse> {
+    const commandDefinition = this.registry.get(command.key);
+    if (!commandDefinition) return CommandExecutorService.commandDoesNotExistResponse;
+
+    try {
+      return await commandDefinition.processor(command);
+    } catch (e) {
+      CommandExecutorService.logger.error(e);
+      return makeSingleTextProcessingResponse((e as Error).message, false);
+    }
+  }
+
+  async processFromText(textCommand: string): Promise<CommandProcessingResponse> {
+    const command = parseTextToCommand(textCommand);
+    if (!command) return CommandExecutorService.commandDoesNotExistResponse;
+
+    return this.processCommand(command);
+  }
+
+  private static get commandDoesNotExistResponse(): CommandProcessingResponse {
+    return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
+  }
+
+  static readonly instance = new CommandExecutorService();
 }
 
-async function processFromText(textCommand: string): Promise<CommandProcessingResponse> {
-  const command = TextCommandParser.parse(textCommand);
-  if (!command) return commandDoesNotExistResponse();
-
-  return processCommand(command);
-}
-
-export {
-  processCommand,
-  processFromText,
-};
+export default CommandExecutorService;

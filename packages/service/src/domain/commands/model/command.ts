@@ -1,16 +1,18 @@
-interface Command {
-  key: string,
-  rawArgs: string,
-}
+class Command {
+  key: string;
+  rawArgs: string;
 
-function getCommandArgsByDelimiter(command: Command, delimiter: string): string[] {
-  return command.rawArgs
-    .split(delimiter)
-    .map((s) => s.trim())
-    .filter((s) => (s.length > 0));
+  constructor(key: string, rawArgs: string) {
+    this.key = key;
+    this.rawArgs = rawArgs;
+  }
+
+  getArgsByDelimiter(delimiter: string): string[] {
+    return this.rawArgs
+      .split(delimiter)
+      .map((s) => s.trim())
+      .filter((s) => (s.length > 0));
+  }
 }
 
 export default Command;
-export {
-  getCommandArgsByDelimiter,
-};

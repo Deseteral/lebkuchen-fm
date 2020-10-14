@@ -1,4 +1,4 @@
-import { ChangeVolumeEvent } from '../../../event-stream/events';
+import { ChangeVolumeEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
@@ -16,7 +16,7 @@ async function volumeCommandProcessor(command: Command) : Promise<CommandProcess
     id: 'ChangeVolumeEvent',
     nextVolume: parsedValue,
   };
-  EventStreamService.broadcast(event);
+  EventStreamService.sendToEveryone(event);
 
   return makeSingleTextProcessingResponse(`Ustawiono głośność na "${parsedValue}"`, false);
 }

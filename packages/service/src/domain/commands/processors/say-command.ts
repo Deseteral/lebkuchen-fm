@@ -1,4 +1,4 @@
-import { SayEvent } from '../../../event-stream/events';
+import { SayEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
@@ -11,7 +11,7 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
     text,
   };
 
-  EventStreamService.broadcast(eventMessage);
+  EventStreamService.sendToEveryone(eventMessage);
 
   return makeSingleTextProcessingResponse(`_"${text}"_`, false);
 }
