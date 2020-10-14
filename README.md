@@ -59,7 +59,7 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
 
 #### Event stream
-This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/events.ts).
+This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
 #### REST endpoints
 `POST /commands/slack` \
