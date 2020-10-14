@@ -2,7 +2,9 @@ import Command from './model/command';
 import * as TextCommandParser from './text-command-parser';
 import * as CommandRegistry from './registry/command-registry';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
-import * as Logger from '../../infrastructure/logger';
+import Logger from '../../infrastructure/logger';
+
+const logger = new Logger('command-executor-service');
 
 function commandDoesNotExistResponse(): CommandProcessingResponse {
   return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
@@ -15,7 +17,7 @@ async function processCommand(command: Command): Promise<CommandProcessingRespon
   try {
     return await commandDefinition.processor(command);
   } catch (e) {
-    Logger.error(e, 'command-executor-service');
+    logger.error(e);
     return makeSingleTextProcessingResponse((e as Error).message, false);
   }
 }

@@ -1,6 +1,8 @@
 import fetch from 'node-fetch';
 import Configuration from '../application/configuration';
-import * as Logger from '../infrastructure/logger';
+import Logger from '../infrastructure/logger';
+
+const logger = new Logger('youtube-data-client');
 
 function makeYouTubeUrl(path: string): URL {
   const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
@@ -15,7 +17,7 @@ async function request<T>(url: URL): Promise<T> {
   const data = await res.json();
 
   if (data.error) {
-    Logger.error(data.error.message, 'youtube-data-client');
+    logger.error(data.error.message);
     throw new Error(data.error.message);
   }
 

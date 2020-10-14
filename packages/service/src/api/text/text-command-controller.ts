@@ -1,15 +1,16 @@
 /* eslint-disable prefer-arrow-callback */
 import express from 'express';
 import * as CommandExecutorService from '../../domain/commands/command-executor-service';
-import * as Logger from '../../infrastructure/logger';
+import Logger from '../../infrastructure/logger';
 import { mapCommandProcessingResponseToTextCommandResponseDto } from './model/text-command-response-dto';
 
 const router = express.Router();
+const logger = new Logger('text-command-controller');
 
 router.post('/', async function processTextCommand(req, res) {
   const { text } = req.body;
 
-  Logger.info(`Received ${text} command`, 'text-command-controller');
+  logger.info(`Received ${text} command`);
 
   const commandProcessingResponse = await CommandExecutorService.processFromText(text);
   const response = mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);

@@ -1,15 +1,17 @@
 import http from 'http';
 import socketIo from 'socket.io';
-import * as Logger from '../infrastructure/logger';
+import Logger from '../infrastructure/logger';
 import * as EventStreamService from './event-stream-service';
+
+const logger = new Logger('event-stream');
 
 let io: SocketIO.Server;
 
 function newConnectionHandler(socket: socketIo.Socket): void {
-  Logger.info('New user connected to event stream', 'event-stream');
+  logger.info('New user connected to event stream');
   EventStreamService.onUserConnected(socket);
 
-  socket.on('disconnect', () => Logger.info('User disconnected from event stream', 'event-stream'));
+  socket.on('disconnect', () => logger.info('User disconnected from event stream'));
 }
 
 function initialize(server: http.Server): void {

@@ -1,6 +1,8 @@
 import { Collection, MongoClient } from 'mongodb';
 import Configuration from '../application/configuration';
-import * as Logger from '../infrastructure/logger';
+import Logger from '../infrastructure/logger';
+
+const logger = new Logger('mongo-client');
 
 const client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
 
@@ -10,7 +12,7 @@ async function connect(): Promise<void> {
   const databaseName = Configuration.DATABASE_NAME;
   await client.db(databaseName).command({ ping: 1 });
 
-  Logger.info('Connected to MongoDB server', 'mongo-client');
+  logger.info('Connected to MongoDB server');
 }
 
 function collection<T>(collectionName: string): Collection<T> {
