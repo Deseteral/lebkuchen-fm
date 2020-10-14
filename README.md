@@ -112,7 +112,7 @@ Running `npm run dev` runs the application in development mode with hot reload o
 
 Running `npm run build` builds the application in production mode.
 
-### Devops scripts (`/packages/service`)
+### Devops scripts (`/packages/devops`)
 Scripts related to maintenance of the service.
 
 ## License
