@@ -26,6 +26,10 @@ function addToQueue(song: Song) {
   }
 }
 
+function dropFromQueueFront(amount: number) {
+  playerState.queue.splice(0, amount);
+}
+
 function changeVolume(nextVolume: number, isRelative: boolean) {
   if (isRelative) {
     playerState.volume += nextVolume;
@@ -49,6 +53,7 @@ export {
   getState,
   setState,
   popFromQueueFront,
+  dropFromQueueFront,
   addToQueue,
   changeVolume,
   on,
