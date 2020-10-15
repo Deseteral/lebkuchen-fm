@@ -39,6 +39,7 @@ interface SkipEvent {
 
 interface ChangeVolumeEvent {
   id: 'ChangeVolumeEvent',
+  isRelative: boolean,
   nextVolume: number,
 }
 

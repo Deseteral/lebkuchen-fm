@@ -26,9 +26,13 @@ function addToQueue(song: Song) {
   }
 }
 
-function changeVolume(nextVolume: number) {
-  playerState.volume = nextVolume;
-  YouTubePlayerService.setVolume(nextVolume);
+function changeVolume(nextVolume: number, isRelative: boolean) {
+  if (isRelative) {
+    playerState.volume += nextVolume;
+  } else {
+    playerState.volume = nextVolume;
+  }
+  YouTubePlayerService.setVolume(playerState.volume);
 }
 
 type PlayerStateEvent = void;
