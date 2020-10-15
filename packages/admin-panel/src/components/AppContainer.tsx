@@ -13,6 +13,7 @@ const Conatiner = styled.div`
 const Heading = styled.h1`
   margin: 0;
   padding: 16px 8px;
+  margin-bottom: 32px;
 `;
 
 const Banner = styled.img`

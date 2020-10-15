@@ -2,7 +2,7 @@ import { Log } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
 import LogLine from './LogLine';
-import SectionHeading from './SectionHeading';
+import Section from './Section';
 
 const Container = styled.div`
   border: 2px solid;
@@ -19,8 +19,7 @@ interface LogsProps {
 }
 
 const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
-  <section>
-    <SectionHeading>Logs</SectionHeading>
+  <Section header="Logs">
     <Container>
       <table>
         <tbody>
@@ -29,7 +28,7 @@ const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
         </tbody>
       </table>
     </Container>
-  </section>
+  </Section>
 );
 
 export default Logs;
