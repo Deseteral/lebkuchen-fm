@@ -2,7 +2,6 @@
   "name": "lebkuchen-fm-player",
   "version": "2.0.0",
   "description": "Lebkuchen FM player frontend",
-  "main": "src/index.js",
   "repository": "https://github.com/Deseteral/lebkuchen-fm.git",
   "author": "Deseteral <deseteral@gmail.com>",
   "license": "MIT",
@@ -36,7 +35,7 @@
     "@types/styled-components": "5.1.4",
     "@types/yt-player": "3.4.2",
     "eslint": "7.10.0",
-    "parcel-bundler": "1.12.4",
+    "parcel": "2.0.0-beta.1",
     "typescript": "4.0.3"
   },
   "browserslist": [
