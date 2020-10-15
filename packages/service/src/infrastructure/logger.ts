@@ -5,8 +5,12 @@ interface Log {
   message: string,
 }
 
+const MAX_LOGGER_HISTORY_LENGTH = 1000;
+
 class Logger {
   private assignedGroup: string;
+
+  static loggerHistory: Log[] = [];
 
   constructor(assignedGroup: string) {
     this.assignedGroup = assignedGroup;
@@ -21,6 +25,11 @@ class Logger {
     };
 
     Logger.printToConsole(l);
+
+    Logger.loggerHistory.push(l);
+    if (Logger.loggerHistory.length > MAX_LOGGER_HISTORY_LENGTH) {
+      Logger.loggerHistory.shift();
+    }
   }
 
   private static printToConsole(l: Log): void {
