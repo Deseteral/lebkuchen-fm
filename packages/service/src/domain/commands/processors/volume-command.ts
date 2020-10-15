@@ -13,7 +13,7 @@ async function volumeCommandProcessor(command: Command) : Promise<CommandProcess
   if (Number.isNaN(parsedVolume)) {
     throw new Error(`Nieprawidłowa głośność "${value}". Aby zmienić głośność podaj liczbę ze znakiem z przedziału [-100,+100] lub bez znaku z przedziału [0,100]`);
   }
-  if (isRelativeChange && (parsedVolume < 100 || parsedVolume > 100)) {
+  if (isRelativeChange && (parsedVolume < -100 || parsedVolume > 100)) {
     throw new Error(`Nieprawidłowa głośność względna "${value}", podaj liczbę (ze znakiem) z przedziału [-100,+100]`);
   }
   if (!isRelativeChange && (parsedVolume < 0 || parsedVolume > 100)) {
