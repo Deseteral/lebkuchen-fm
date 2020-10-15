@@ -15,7 +15,7 @@
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
     "test:type-check:watch": "npm run test:type-check -- --watch",
-    "test:lint": "eslint scripts --ext js"
+    "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
     "lebkuchen-fm-service": "*",
