@@ -31,7 +31,7 @@
     "@types/socket.io-client": "1.4.34",
     "@types/styled-components": "5.1.4",
     "eslint": "7.11.0",
-    "parcel-bundler": "1.12.4",
+    "parcel": "2.0.0-beta.1",
     "typescript": "4.0.3"
   },
   "browserslist": [
