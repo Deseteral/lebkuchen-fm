@@ -16,11 +16,6 @@ interface AddSongToQueueEvent {
   beginning: boolean
 }
 
-interface AddNextSongEvent {
-  id: 'AddNextSongEvent',
-  song: Song,
-}
-
 interface PlayXSoundEvent {
   id: 'PlayXSoundEvent',
   soundUrl: string,
@@ -54,7 +49,6 @@ type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
   | AddSongToQueueEvent
-  | AddNextSongEvent
   | PlayXSoundEvent
   | SayEvent
   | PauseEvent
@@ -67,7 +61,6 @@ export {
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
   AddSongToQueueEvent,
-  AddNextSongEvent,
   PlayXSoundEvent,
   SayEvent,
   PauseEvent,
