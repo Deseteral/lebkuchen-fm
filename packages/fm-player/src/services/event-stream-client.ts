@@ -42,9 +42,11 @@ function connect() {
         YouTubePlayerService.resume();
         break;
 
-      case 'SkipEvent':
+      case 'SkipEvent': {
+        const amountToDrop = eventData.skipAll ? Infinity : (eventData.amount - 1);
+        PlayerStateService.dropFromQueueFront(amountToDrop);
         YouTubePlayerService.playNextSong();
-        break;
+      } break;
 
       case 'ChangeVolumeEvent':
         PlayerStateService.changeVolume(eventData.nextVolume);
