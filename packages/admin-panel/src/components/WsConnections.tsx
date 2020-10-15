@@ -1,4 +1,5 @@
 import * as React from 'react';
+import SectionHeading from './SectionHeading';
 
 interface WsConnectionsProps {
   sockets: string[],
@@ -6,7 +7,7 @@ interface WsConnectionsProps {
 
 const WsConnections: React.FunctionComponent<WsConnectionsProps> = ({ sockets }) => (
   <section>
-    <h2>WS connections</h2>
+    <SectionHeading>WS connections</SectionHeading>
     <div>Current connections: {sockets.length}</div>
     <ul>
       {sockets.map((socketId) => (<li><code>{socketId}</code></li>))}
