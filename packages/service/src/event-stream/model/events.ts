@@ -15,8 +15,8 @@ interface AddSongToQueueEvent {
   song: Song,
 }
 
-interface AddSongNow {
-  id: 'AddSongNow',
+interface AddNextSongEvent {
+  id: 'AddNextSongEvent',
   song: Song,
 }
 
@@ -51,7 +51,7 @@ type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
   | AddSongToQueueEvent
-  | AddSongNow
+  | AddNextSongEvent
   | PlayXSoundEvent
   | SayEvent
   | PauseEvent
@@ -64,7 +64,7 @@ export {
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
   AddSongToQueueEvent,
-  AddSongNow,
+  AddNextSongEvent,
   PlayXSoundEvent,
   SayEvent,
   PauseEvent,

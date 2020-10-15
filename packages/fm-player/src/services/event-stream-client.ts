@@ -26,8 +26,8 @@ function connect() {
         PlayerStateService.addToQueue(eventData.song);
         break;
 
-      case 'AddSongNow':
-        PlayerStateService.addNow(eventData.song);
+      case 'AddNextSongEvent':
+        PlayerStateService.addNextSong(eventData.song);
         break;
 
       case 'PlayXSoundEvent':

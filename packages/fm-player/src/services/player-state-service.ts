@@ -26,7 +26,7 @@ function addToQueue(song: Song) {
   }
 }
 
-function addNow(song: Song) {
+function addNextSong(song: Song) {
   playerState.queue.unshift(song);
 }
 
@@ -50,7 +50,7 @@ export {
   setState,
   popFromQueueFront,
   addToQueue,
-  addNow,
+  addNextSong,
   changeVolume,
   on,
 };
