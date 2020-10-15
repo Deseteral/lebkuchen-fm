@@ -26,6 +26,10 @@ function addToQueue(song: Song) {
   }
 }
 
+function addNow(song: Song) {
+  playerState.queue.unshift(song);
+}
+
 function changeVolume(nextVolume: number) {
   playerState.volume = nextVolume;
   YouTubePlayerService.setVolume(nextVolume);
@@ -46,6 +50,7 @@ export {
   setState,
   popFromQueueFront,
   addToQueue,
+  addNow,
   changeVolume,
   on,
 };
