@@ -43,7 +43,7 @@ function connect() {
         break;
 
       case 'SkipEvent': {
-        const amountToDrop = eventData.all ? Infinity : (eventData.amount - 1);
+        const amountToDrop = eventData.skipAll ? Infinity : (eventData.amount - 1);
         PlayerStateService.dropFromQueueFront(amountToDrop);
         YouTubePlayerService.playNextSong();
       } break;

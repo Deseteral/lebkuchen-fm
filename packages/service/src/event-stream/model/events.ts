@@ -35,7 +35,7 @@ interface ResumeEvent {
 
 interface SkipEvent {
   id: 'SkipEvent',
-  all: boolean,
+  skipAll: boolean,
   amount: number,
 }
 

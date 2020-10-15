@@ -5,16 +5,16 @@ import { SkipEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 
 async function skipCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
-  const all = command.rawArgs === 'all';
-  let amount = parseInt(command.rawArgs, 10);
+  const skipAll = command.rawArgs === 'all';
+  const amount = (command.rawArgs === '')
+    ? 1
+    : parseInt(command.rawArgs, 10);
 
-  if ((Number.isNaN(amount) || amount < 1) && !all) {
+  if ((Number.isNaN(amount) || amount < 1) && !skipAll) {
     throw new Error('Skip akceptuje liczby naturalne lub argument "all"');
   }
 
-  amount = amount || 1;
-
-  const event: SkipEvent = { id: 'SkipEvent', all, amount };
+  const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
   EventStreamService.sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
