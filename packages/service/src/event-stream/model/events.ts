@@ -39,8 +39,15 @@ interface SkipEvent {
   amount: number,
 }
 
+type SpeedControl = (-1 | 0 | 1);
+interface ChangeSpeedEvent {
+  id: 'ChangeSpeedEvent',
+  nextSpeed: SpeedControl,
+}
+
 interface ChangeVolumeEvent {
   id: 'ChangeVolumeEvent',
+  isRelative: boolean,
   nextVolume: number,
 }
 
@@ -53,9 +60,11 @@ type EventData =
   | PauseEvent
   | ResumeEvent
   | SkipEvent
+  | ChangeSpeedEvent
   | ChangeVolumeEvent;
 
 export {
+  SpeedControl,
   EventData,
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
@@ -65,5 +74,6 @@ export {
   PauseEvent,
   ResumeEvent,
   SkipEvent,
+  ChangeSpeedEvent,
   ChangeVolumeEvent,
 };

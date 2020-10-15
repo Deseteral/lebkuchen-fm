@@ -10,6 +10,7 @@ import ResumeCommand from '../processors/resume-command';
 import SayCommand from '../processors/say-command';
 import SearchCommand from '../processors/search-command';
 import SkipCommand from '../processors/skip-command';
+import SpeedCommand from '../processors/speed-command';
 import StockCommand from '../processors/stock-command';
 import VolumeCommand from '../processors/volume-command';
 import XCommand from '../processors/x-command';
@@ -28,6 +29,7 @@ function initialize(): void {
     SearchCommand,
     SkipCommand,
     StockCommand,
+    SpeedCommand,
     VolumeCommand,
     XCommand,
   ].forEach((command) => CommandRegistryService.instance.register(command));
