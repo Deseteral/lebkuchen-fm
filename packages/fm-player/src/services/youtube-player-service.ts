@@ -1,4 +1,4 @@
-import { Song } from 'lebkuchen-fm-service';
+import { Song, SpeedControl } from 'lebkuchen-fm-service';
 import YTPlayer from 'yt-player';
 import * as PlayerStateService from './player-state-service';
 
@@ -46,6 +46,27 @@ function resume() {
 
 function setVolume(nextVolume: number) {
   player.setVolume(nextVolume);
+}
+
+function setSpeed(nextSpeed: SpeedControl) {
+  switch (nextSpeed) {
+    case 0:
+      player.setPlaybackRate(1);
+      return;
+    case -1:
+    case 1: {
+      const available = player.getAvailablePlaybackRates();
+      const current = player.getPlaybackRate();
+      const indexOfCurrent = available.indexOf(current);
+
+      const newSpeed = available[indexOfCurrent + nextSpeed];
+      if (!Number.isNaN(newSpeed)) {
+        player.setPlaybackRate(newSpeed);
+      }
+    } break;
+    default:
+      break;
+  }
 }
 
 function initialize(playerContainerDomId: string) {
@@ -106,4 +127,5 @@ export {
   resume,
   playNextSong,
   setVolume,
+  setSpeed,
 };

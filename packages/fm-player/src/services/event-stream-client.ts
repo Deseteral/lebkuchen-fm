@@ -48,6 +48,10 @@ function connect() {
         YouTubePlayerService.playNextSong();
       } break;
 
+      case 'ChangeSpeedEvent':
+        YouTubePlayerService.setSpeed(eventData.nextSpeed);
+        break;
+
       case 'ChangeVolumeEvent':
         PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
         break;
