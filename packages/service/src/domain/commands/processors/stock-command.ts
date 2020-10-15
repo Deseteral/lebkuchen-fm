@@ -3,7 +3,7 @@ import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 
-async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
+async function stockCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   if (command.rawArgs === '') {
     throw new Error('Podaj nazwę spółki');
   }
@@ -30,9 +30,9 @@ async function xCommandProcessor(command: Command): Promise<CommandProcessingRes
   return makeSingleTextProcessingResponse(`Cena: ${price}, zmiana: ${change} ${emoji}`, false);
 }
 
-const xCommandDefinition: CommandDefinition = {
+const stockCommandDefinition: CommandDefinition = {
   key: 'stock',
-  processor: xCommandProcessor,
+  processor: stockCommandProcessor,
   helpMessage: 'Sprawdza kurs akcji firmy notowanej na GPW (z 15 minutowym opóźnieniem)',
   helpUsages: [
     '<company name>',
@@ -42,4 +42,4 @@ const xCommandDefinition: CommandDefinition = {
   ],
 };
 
-export default xCommandDefinition;
+export default stockCommandDefinition;
