@@ -49,7 +49,7 @@ function connect() {
       } break;
 
       case 'ChangeVolumeEvent':
-        PlayerStateService.changeVolume(eventData.nextVolume);
+        PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
         break;
 
       default:
