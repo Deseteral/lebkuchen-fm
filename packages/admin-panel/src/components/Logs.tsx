@@ -1,3 +1,4 @@
+import { Log } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
 import Section from './Section';
@@ -8,12 +9,12 @@ const LogsSection = styled(Section)`
 `;
 
 interface LogsProps {
-  logs: string[],
+  logs: Log[],
 }
 
 const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
   <LogsSection>
-    {logs.map((s) => (<code>{s}</code>))}
+    {logs.map((log) => (<code>{log.message}</code>))}
   </LogsSection>
 );
 

@@ -1,6 +1,8 @@
 import http from 'http';
 import socketIo from 'socket.io';
 import Logger from '../infrastructure/logger';
+import AdminEventStream from './admin-event-stream';
+import { AdminEventData } from './model/admin-events';
 import { EventData } from './model/events';
 import PlayerEventStream from './player-event-stream';
 
@@ -25,7 +27,9 @@ class EventStream {
     });
 
     this.adminNamespace = this.io.of('/admin');
-    this.adminNamespace.on('connection', () => console.log('admin io connected'));
+    this.adminNamespace.on('connection', () => {
+      AdminEventStream.onUserConnected();
+    });
   }
 
   getPrimaryPlayerSocket(): SocketIO.Socket {
@@ -38,6 +42,11 @@ class EventStream {
   playerBroadcast(eventData: EventData): void {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
     this.playerNamespace.emit('events', eventData);
+  }
+
+  adminBroadcast(eventData: AdminEventData): void {
+    if (!this.adminNamespace) throw EventStream.notInitializedError;
+    this.adminNamespace.emit('admin', eventData);
   }
 
   getConnectedPlayerCount(): number {
