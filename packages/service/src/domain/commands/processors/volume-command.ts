@@ -7,16 +7,16 @@ import * as EventStreamService from '../../../event-stream/event-stream-service'
 async function volumeCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const value = command.rawArgs;
 
-  const isRelativeChange = (value.startsWith("+") || value.startsWith("-"));
+  const isRelativeChange = (value.startsWith('+') || value.startsWith('-'));
   const parsedVolume = parseInt(value, 10);
 
   if (Number.isNaN(parsedVolume)) {
     throw new Error(`Nieprawidłowa głośność "${value}". Aby zmienić głośność podaj liczbę ze znakiem z przedziału [-100,+100] lub bez znaku z przedziału [0,100]`);
   }
-  if (isRelativeChange && (parsedVolume < 100 || parsedVolume > 100 )) {
+  if (isRelativeChange && (parsedVolume < 100 || parsedVolume > 100)) {
     throw new Error(`Nieprawidłowa głośność względna "${value}", podaj liczbę (ze znakiem) z przedziału [-100,+100]`);
   }
-  if (!isRelativeChange && (parsedVolume < 0 || parsedVolume > 100 )) {
+  if (!isRelativeChange && (parsedVolume < 0 || parsedVolume > 100)) {
     throw new Error(`Nieprawidłowa głośność bezwzględna "${value}", podaj liczbę (bez znaku) z przedziału [0,100]`);
   }
 
