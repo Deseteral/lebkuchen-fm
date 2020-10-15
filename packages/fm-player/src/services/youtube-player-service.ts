@@ -1,4 +1,4 @@
-import { Song } from 'lebkuchen-fm-service';
+import { Song, SpeedControl } from 'lebkuchen-fm-service';
 import YTPlayer from 'yt-player';
 import * as PlayerStateService from './player-state-service';
 
@@ -7,8 +7,6 @@ let player: YTPlayer;
 interface YTPlayerStateUpdateQueue {
   time: (number | null),
 }
-
-type SpeedControl = (-1 | 0 | 1);
 
 // Queued updates to the YouTube player state that can only be applied when the video is loaded and
 // already playing. This is a workaround for YouTube player API lacking proper callback support for
@@ -124,7 +122,6 @@ function initialize(playerContainerDomId: string) {
 }
 
 export {
-  SpeedControl,
   initialize,
   pause,
   resume,

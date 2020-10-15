@@ -37,9 +37,10 @@ interface SkipEvent {
   id: 'SkipEvent',
 }
 
-interface SpeedEvent {
-  id: 'SpeedEvent',
-  nextSpeed: number,
+type SpeedControl = (-1 | 0 | 1);
+interface ChangeSpeedEvent {
+  id: 'ChangeSpeedEvent',
+  nextSpeed: SpeedControl,
 }
 
 interface ChangeVolumeEvent {
@@ -56,10 +57,11 @@ type EventData =
   | PauseEvent
   | ResumeEvent
   | SkipEvent
-  | SpeedEvent
+  | ChangeSpeedEvent
   | ChangeVolumeEvent;
 
 export {
+  SpeedControl,
   EventData,
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
@@ -69,6 +71,6 @@ export {
   PauseEvent,
   ResumeEvent,
   SkipEvent,
-  SpeedEvent,
+  ChangeSpeedEvent as SpeedEvent,
   ChangeVolumeEvent,
 };

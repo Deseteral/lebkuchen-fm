@@ -47,10 +47,9 @@ function connect() {
         YouTubePlayerService.playNextSong();
         break;
 
-      case 'SpeedEvent': {
-        const nextSpeed = eventData.nextSpeed as SpeedControl;
-        YouTubePlayerService.setSpeed(nextSpeed);
-      } break;
+      case 'ChangeSpeedEvent':
+        YouTubePlayerService.setSpeed(eventData.nextSpeed);
+        break;
 
       case 'ChangeVolumeEvent':
         PlayerStateService.changeVolume(eventData.nextVolume);
