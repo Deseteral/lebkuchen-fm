@@ -17,8 +17,8 @@ const Heading = styled.h1`
 
 const Banner = styled.img`
   position: absolute;
-  right: 0;
-  top: 0;
+  right: 8px;
+  top: 8px;
 `;
 
 const MainContainer = styled.main`
