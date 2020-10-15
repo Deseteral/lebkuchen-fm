@@ -6,8 +6,8 @@ import Command from '../model/command';
 
 async function skipCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const all = command.rawArgs === 'all';
-  const count = parseInt(command.rawArgs, 10);
-  const event: SkipEvent = { id: 'SkipEvent', all, count };
+  const amount = parseInt(command.rawArgs, 10) ?? 1;
+  const event: SkipEvent = { id: 'SkipEvent', all, amount };
   EventStreamService.sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
@@ -15,11 +15,11 @@ async function skipCommandProcessor(command: Command) : Promise<CommandProcessin
 const skipCommandDefinition: CommandDefinition = {
   key: 'skip',
   processor: skipCommandProcessor,
-  helpMessage: 'Pomija aktualnie odtwarzany utwór',
+  helpMessage: 'Pomija utwory',
   helpUsages: [
-    'skip',
-    'skip 3',
-    'skip all',
+    '[amount; defaults to 1]',
+    '3',
+    'all',
   ],
 };
 

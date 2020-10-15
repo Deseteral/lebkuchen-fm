@@ -26,8 +26,8 @@ function addToQueue(song: Song) {
   }
 }
 
-function dropFromQueueFront(count: number) {
-  playerState.queue.slice(0, count);
+function dropFromQueueFront(amount: number) {
+  playerState.queue.splice(0, amount);
 }
 
 function changeVolume(nextVolume: number) {
