@@ -39,6 +39,8 @@ const volumeCommandDefinition: CommandDefinition = {
   processor: volumeCommandProcessor,
   helpMessage: 'Ustawia głośność na zadaną z zakresu [0,100] lub zmienia głośność o zadaną wartość z zakresu [-100,+100]',
   helpUsages: [
+    '<volume from 1 to 100>',
+    '<relative volume change from -100 to 100>',
     '55',
     '0',
     '+10',
