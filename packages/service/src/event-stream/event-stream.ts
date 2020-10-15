@@ -27,6 +27,7 @@ class EventStream {
     });
 
     this.adminNamespace = this.io.of('/admin');
+    AdminEventStream.initialize();
     this.adminNamespace.on('connection', () => {
       AdminEventStream.onUserConnected();
     });

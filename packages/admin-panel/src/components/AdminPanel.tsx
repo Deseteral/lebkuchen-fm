@@ -17,7 +17,6 @@ const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => {
       switch (eventData.id) {
         case 'LogEvent':
           setLoggerHistory(eventData.loggerHistory);
-          console.log(eventData.loggerHistory);
           break;
 
         default:
