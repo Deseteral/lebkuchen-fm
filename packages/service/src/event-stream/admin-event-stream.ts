@@ -3,12 +3,6 @@ import { AdminEventData, LogEvent } from './model/admin-events';
 import Logger from '../infrastructure/logger';
 
 class AdminEventStream {
-  // private eventStream: EventStream;
-
-  // private constructor() {
-  //   this.eventStream = EventStream.instance;
-  // }
-
   static onUserConnected(): void {
     const eventData: LogEvent = {
       id: 'LogEvent',
@@ -20,8 +14,6 @@ class AdminEventStream {
   static sendToEveryone(event: AdminEventData): void {
     EventStream.instance.adminBroadcast(event);
   }
-
-  static readonly instance = new AdminEventStream();
 }
 
 export default AdminEventStream;
