@@ -18,9 +18,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const selectedSongs = [...songList]
-    .randomShuffle()
-    .slice(0, amount);
+  const selectedSongs = songList.randomShuffle().slice(0, amount);
 
   const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
@@ -31,15 +29,21 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
 
   const titleMessages = videoTitles
     .slice(0, MAX_TITLES_IN_MESSAGE)
-    .map((title) => `- ${title}`);
+    .map((title) => `- _${title}_`);
 
-  const message = [
+  const text = [
     'Dodano do kojeki:',
     ...titleMessages,
     ((videoTitles.length > MAX_TITLES_IN_MESSAGE) ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
   ].filter(Boolean).join('\n');
 
-  return makeSingleTextProcessingResponse(message, false);
+  return {
+    messages: [{
+      text,
+      type: 'MARKDOWN',
+    }],
+    isVisibleToIssuerOnly: false,
+  };
 }
 
 const randomCommandDefinition: CommandDefinition = {
