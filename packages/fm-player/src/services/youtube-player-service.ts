@@ -8,6 +8,8 @@ interface YTPlayerStateUpdateQueue {
   time: (number | null),
 }
 
+type SpeedControl = (-1 | 0 | 1);
+
 // Queued updates to the YouTube player state that can only be applied when the video is loaded and
 // already playing. This is a workaround for YouTube player API lacking proper callback support for
 // state changes.
@@ -46,6 +48,27 @@ function resume() {
 
 function setVolume(nextVolume: number) {
   player.setVolume(nextVolume);
+}
+
+function setSpeed(nextSpeed: SpeedControl) {
+  switch (nextSpeed) {
+    case 0:
+      player.setPlaybackRate(1);
+      return;
+    case -1:
+    case 1: {
+      const available = player.getAvailablePlaybackRates();
+      const current = player.getPlaybackRate();
+      const indexOfCurrent = available.indexOf(current);
+
+      const newSpeed = available[indexOfCurrent + nextSpeed];
+      if (!Number.isNaN(newSpeed)) {
+        player.setPlaybackRate(newSpeed);
+      }
+    } break;
+    default:
+      break;
+  }
 }
 
 function initialize(playerContainerDomId: string) {
@@ -101,9 +124,11 @@ function initialize(playerContainerDomId: string) {
 }
 
 export {
+  SpeedControl,
   initialize,
   pause,
   resume,
   playNextSong,
   setVolume,
+  setSpeed,
 };

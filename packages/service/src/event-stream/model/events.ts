@@ -37,6 +37,11 @@ interface SkipEvent {
   id: 'SkipEvent',
 }
 
+interface SpeedEvent {
+  id: 'SpeedEvent',
+  nextSpeed: number,
+}
+
 interface ChangeVolumeEvent {
   id: 'ChangeVolumeEvent',
   nextVolume: number,
@@ -51,6 +56,7 @@ type EventData =
   | PauseEvent
   | ResumeEvent
   | SkipEvent
+  | SpeedEvent
   | ChangeVolumeEvent;
 
 export {
@@ -63,5 +69,6 @@ export {
   PauseEvent,
   ResumeEvent,
   SkipEvent,
+  SpeedEvent,
   ChangeVolumeEvent,
 };

@@ -4,6 +4,7 @@ import * as PlayerStateService from './player-state-service';
 import * as SoundPlayerService from '../services/sound-player-service';
 import * as SpeechService from '../services/speech-service';
 import * as YouTubePlayerService from '../services/youtube-player-service';
+import { SpeedControl } from '../services/youtube-player-service';
 
 function connect() {
   const client = io('/');
@@ -45,6 +46,11 @@ function connect() {
       case 'SkipEvent':
         YouTubePlayerService.playNextSong();
         break;
+
+      case 'SpeedEvent': {
+        const nextSpeed = eventData.nextSpeed as SpeedControl;
+        YouTubePlayerService.setSpeed(nextSpeed);
+      } break;
 
       case 'ChangeVolumeEvent':
         PlayerStateService.changeVolume(eventData.nextVolume);
