@@ -71,6 +71,6 @@ export {
   PauseEvent,
   ResumeEvent,
   SkipEvent,
-  ChangeSpeedEvent as SpeedEvent,
+  ChangeSpeedEvent,
   ChangeVolumeEvent,
 };

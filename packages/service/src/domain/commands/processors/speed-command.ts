@@ -1,13 +1,13 @@
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
-import { SpeedEvent } from '../../../event-stream/model/events';
+import { ChangeSpeedEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 
 async function speedCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const arg = command.rawArgs;
   let message: String;
-  let event: SpeedEvent;
+  let event: ChangeSpeedEvent;
 
   switch (arg) {
     case '--':
