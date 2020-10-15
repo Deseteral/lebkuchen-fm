@@ -40,6 +40,8 @@ interface ResumeEvent {
 
 interface SkipEvent {
   id: 'SkipEvent',
+  skipAll: boolean,
+  amount: number,
 }
 
 interface ChangeVolumeEvent {
