@@ -24,7 +24,6 @@ const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
       <table>
         <tbody>
           {logs.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
-          {logs.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
         </tbody>
       </table>
     </Container>
