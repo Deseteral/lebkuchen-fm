@@ -1,6 +1,6 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import CommandProcessingResponse from '../model/command-processing-response';
 import SongService from '../../songs/song-service';
 import QueueCommand from './queue-command';
 

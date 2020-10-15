@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true,
+    "noImplicitAny": true,
+    "declarationDir": "build/types",
+    "declaration": true,
+    "strict": true,
+    "jsx": "react",
+    "target": "es2018",
+    "moduleResolution": "node",
+    "lib": [
+      "DOM",
+      "es2018"
+    ],
+    "types": ["react"]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
+}

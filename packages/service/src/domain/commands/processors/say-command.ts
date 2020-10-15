@@ -2,7 +2,7 @@ import { SayEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 
 async function sayCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const text = command.rawArgs;
@@ -11,7 +11,7 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
     text,
   };
 
-  EventStreamService.sendToEveryone(eventMessage);
+  PlayerEventStream.instance.sendToEveryone(eventMessage);
 
   return makeSingleTextProcessingResponse(`_"${text}"_`, false);
 }

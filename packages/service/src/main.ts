@@ -7,7 +7,7 @@ import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
-import * as EventStream from './event-stream/event-stream';
+import EventStream from './event-stream/event-stream';
 
 import SlackCommandController from './api/slack/slack-command-controller';
 import TextCommandController from './api/text/text-command-controller';
@@ -40,7 +40,7 @@ function runApplication(): void {
 Promise.resolve()
   .then(() => Storage.instance.connect())
   .then(() => CommandInitializer.initialize())
-  .then(() => EventStream.initialize(server))
+  .then(() => EventStream.instance.initialize(server))
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)
