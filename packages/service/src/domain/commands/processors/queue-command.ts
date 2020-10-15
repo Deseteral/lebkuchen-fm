@@ -6,10 +6,18 @@ import CommandDefinition from '../model/command-definition';
 import { AddSongToQueueEvent } from '../../../event-stream/model/events';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const songName = command.rawArgs;
-  const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
+  const commandArgs = command.getArgsByDelimiter(' ');
+  let songNameIndex = 0;
+  let beginning = false;
 
-  const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
+  if (commandArgs.length > 1 && commandArgs[0] === 'next') {
+    songNameIndex = 1;
+    beginning = true;
+  }
+
+  const songName = commandArgs[songNameIndex];
+  const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
+  const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song, beginning };
   EventStreamService.sendToEveryone(eventData);
 
   SongService.instance.incrementPlayCount(song.youtubeId, song.name);
