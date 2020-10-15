@@ -4,7 +4,6 @@ import * as PlayerStateService from './player-state-service';
 import * as SoundPlayerService from '../services/sound-player-service';
 import * as SpeechService from '../services/speech-service';
 import * as YouTubePlayerService from '../services/youtube-player-service';
-import { SpeedControl } from '../services/youtube-player-service';
 
 function connect() {
   const client = io('/');
