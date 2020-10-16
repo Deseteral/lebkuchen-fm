@@ -4,7 +4,7 @@ import CommandProcessingResponse from '../model/command-processing-response';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import QueueCommand from './queue-command';
 
-async function searchCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function searchCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const phrase = command.rawArgs;
   const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
 

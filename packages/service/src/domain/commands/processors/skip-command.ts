@@ -1,6 +1,6 @@
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 import { SkipEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 
@@ -15,7 +15,7 @@ async function skipCommandProcessor(command: Command) : Promise<CommandProcessin
   }
 
   const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
-  EventStreamService.sendToEveryone(event);
+  PlayerEventStream.instance.sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
 

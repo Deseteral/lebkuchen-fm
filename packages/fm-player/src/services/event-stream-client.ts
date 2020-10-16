@@ -6,7 +6,7 @@ import * as SpeechService from '../services/speech-service';
 import * as YouTubePlayerService from '../services/youtube-player-service';
 
 function connect() {
-  const client = io('/');
+  const client = io('/player');
   client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
   client.on('events', (eventData: EventData, sendResponse: Function) => {
@@ -47,6 +47,10 @@ function connect() {
         PlayerStateService.dropFromQueueFront(amountToDrop);
         YouTubePlayerService.playNextSong();
       } break;
+
+      case 'ChangeSpeedEvent':
+        YouTubePlayerService.setSpeed(eventData.nextSpeed);
+        break;
 
       case 'ChangeVolumeEvent':
         PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
