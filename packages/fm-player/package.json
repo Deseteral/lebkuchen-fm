@@ -10,8 +10,8 @@
     "node": "14.x"
   },
   "scripts": {
-    "build": "parcel build src/index.html",
-    "dev": "parcel src/index.html",
+    "build": "parcel build src/fm-player.html",
+    "dev": "parcel src/fm-player.html",
     "clean": "rm -rf dist",
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",

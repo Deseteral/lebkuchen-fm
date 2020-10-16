@@ -10,8 +10,8 @@
     "node": "14.x"
   },
   "scripts": {
-    "build": "rm -rf dist && parcel build src/index.html",
-    "dev": "parcel src/index.html",
+    "build": "rm -rf dist && parcel build src/admin-panel.html",
+    "dev": "parcel src/admin-panel.html",
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
     "test:type-check:watch": "npm run test:type-check -- --watch",
