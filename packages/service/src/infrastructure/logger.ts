@@ -1,3 +1,5 @@
+import mitt, { Emitter, Handler } from 'mitt';
+
 interface Log {
   datetime: Date,
   group: string,
@@ -5,8 +7,18 @@ interface Log {
   message: string,
 }
 
+type LoggerEvent = void;
+type LoggerEventType = (
+  | 'printedLog'
+);
+
+const MAX_LOGGER_HISTORY_LENGTH = 1000;
+
 class Logger {
   private assignedGroup: string;
+
+  static loggerHistory: Log[] = [];
+  private static readonly emitter: Emitter = mitt();
 
   constructor(assignedGroup: string) {
     this.assignedGroup = assignedGroup;
@@ -21,6 +33,13 @@ class Logger {
     };
 
     Logger.printToConsole(l);
+
+    Logger.loggerHistory.push(l);
+    if (Logger.loggerHistory.length > MAX_LOGGER_HISTORY_LENGTH) {
+      Logger.loggerHistory.shift();
+    }
+
+    Logger.emitter.emit('printedLog');
   }
 
   private static printToConsole(l: Log): void {
@@ -44,6 +63,10 @@ class Logger {
   withError(error: Error, group?: string): void {
     console.error(error); // eslint-disable-line no-console
     this.log('error', error.message, group);
+  }
+
+  static on(eventType: LoggerEventType, callback: Handler<LoggerEvent>): void {
+    Logger.emitter.on<LoggerEvent>(eventType, callback);
   }
 }
 

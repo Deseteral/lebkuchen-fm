@@ -12,4 +12,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
+  "files.associations": {
+    ".proxyrc": "json"
+  }
 }

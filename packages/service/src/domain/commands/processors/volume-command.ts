@@ -2,9 +2,9 @@ import { ChangeVolumeEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 
-async function volumeCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function volumeCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const value = command.rawArgs;
 
   const isRelativeChange = (value.startsWith('+') || value.startsWith('-'));
@@ -25,7 +25,7 @@ async function volumeCommandProcessor(command: Command) : Promise<CommandProcess
     isRelative: isRelativeChange,
     nextVolume: parsedVolume,
   };
-  EventStreamService.sendToEveryone(event);
+  PlayerEventStream.instance.sendToEveryone(event);
 
   if (isRelativeChange) {
     return makeSingleTextProcessingResponse(`Zmieniono głośność o "${value}"`, false);

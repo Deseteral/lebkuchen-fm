@@ -1,5 +1,5 @@
 import SongService from '../../songs/song-service';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
@@ -10,7 +10,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
 
   const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
-  EventStreamService.sendToEveryone(eventData);
+  PlayerEventStream.instance.sendToEveryone(eventData);
 
   SongService.instance.incrementPlayCount(song.youtubeId, song.name);
 
