@@ -11,14 +11,14 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
     ? 1
     : parseInt(command.rawArgs, 10);
 
-  const songList = await SongsService.instance.getAll();
-  const maxAllowedValue = songList.length;
+  const songsList = await SongsService.instance.getAll();
+  const maxAllowedValue = songsList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const selectedSongs = songList.randomShuffle().slice(0, amount);
+  const selectedSongs = songsList.randomShuffle().slice(0, amount);
 
   const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
