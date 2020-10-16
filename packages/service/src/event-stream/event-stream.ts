@@ -36,7 +36,7 @@ class EventStream {
   getPrimaryPlayerSocket(): SocketIO.Socket {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
 
-    const primaryClientId = Object.keys(this.playerNamespace.sockets.sockets)[0];
+    const primaryClientId = Object.keys(this.playerNamespace.sockets)[0];
     return this.playerNamespace.sockets[primaryClientId];
   }
 
