@@ -1,12 +1,12 @@
-import SongRepository from './song-repository';
+import SongsRepository from './songs-repository';
 import YouTubeDataClient from '../../youtube/youtube-data-client';
 import Song from './song';
 
-class SongService {
-  private repository: SongRepository;
+class SongsService {
+  private repository: SongsRepository;
 
   private constructor() {
-    this.repository = SongRepository.instance;
+    this.repository = SongsRepository.instance;
   }
 
   async getByName(name: string): Promise<Song | null> {
@@ -57,7 +57,7 @@ class SongService {
     return song;
   }
 
-  static readonly instance = new SongService();
+  static readonly instance = new SongsService();
 }
 
-export default SongService;
+export default SongsService;
