@@ -1,4 +1,4 @@
-import SongService from '../../songs/song-service';
+import SongsService from '../../songs/songs-service';
 import * as EventStreamService from '../../../event-stream/event-stream-service';
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
@@ -7,12 +7,12 @@ import { AddSongToQueueEvent } from '../../../event-stream/model/events';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
-  const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
+  const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
 
   const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
   EventStreamService.sendToEveryone(eventData);
 
-  SongService.instance.incrementPlayCount(song.youtubeId, song.name);
+  SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
 
   return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
 }

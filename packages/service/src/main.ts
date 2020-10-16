@@ -12,7 +12,7 @@ import * as EventStream from './event-stream/event-stream';
 import SlackCommandController from './api/slack/slack-command-controller';
 import TextCommandController from './api/text/text-command-controller';
 import XSoundsController from './domain/x-sounds/x-sounds-controller';
-import SongController from './domain/songs/song-controller';
+import SongsController from './domain/songs/songs-controller';
 
 import './polyfills';
 
@@ -31,7 +31,7 @@ function setupRouting(): void {
   app.use('/commands/slack', SlackCommandController);
   app.use('/commands/text', TextCommandController);
   app.use('/x-sounds', XSoundsController);
-  app.use('/songs', SongController);
+  app.use('/songs', SongsController);
 }
 
 function runApplication(): void {
