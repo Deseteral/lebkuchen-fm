@@ -1,26 +1,24 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import SongService from '../../songs/song-service';
+import CommandProcessingResponse from '../model/command-processing-response';
+import SongsService from '../../songs/songs-service';
 import QueueCommand from './queue-command';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
-async function randomCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function randomCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const amount = (command.rawArgs === '')
     ? 1
     : parseInt(command.rawArgs, 10);
 
-  const songList = await SongService.instance.getAll();
-  const maxAllowedValue = songList.length;
+  const songsList = await SongsService.instance.getAll();
+  const maxAllowedValue = songsList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const selectedSongs = [...songList]
-    .randomShuffle()
-    .slice(0, amount);
+  const selectedSongs = songsList.randomShuffle().slice(0, amount);
 
   const videoTitles: string[] = [];
   selectedSongs.forEach(async (song) => {
@@ -31,15 +29,21 @@ async function randomCommandProcessor(command: Command) : Promise<CommandProcess
 
   const titleMessages = videoTitles
     .slice(0, MAX_TITLES_IN_MESSAGE)
-    .map((title) => `- ${title}`);
+    .map((title) => `- _${title}_`);
 
-  const message = [
+  const text = [
     'Dodano do kojeki:',
     ...titleMessages,
     ((videoTitles.length > MAX_TITLES_IN_MESSAGE) ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
   ].filter(Boolean).join('\n');
 
-  return makeSingleTextProcessingResponse(message, false);
+  return {
+    messages: [{
+      text,
+      type: 'MARKDOWN',
+    }],
+    isVisibleToIssuerOnly: false,
+  };
 }
 
 const randomCommandDefinition: CommandDefinition = {

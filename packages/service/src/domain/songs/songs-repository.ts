@@ -1,7 +1,7 @@
 import Repository from '../../infrastructure/repository';
 import Song from './song';
 
-class SongRepository extends Repository<Song> {
+class SongsRepository extends Repository<Song> {
   private constructor() {
     super('songs');
   }
@@ -26,7 +26,7 @@ class SongRepository extends Repository<Song> {
     await this.collection.replaceOne({ _id: song._id }, song);
   }
 
-  static readonly instance = new SongRepository();
+  static readonly instance = new SongsRepository();
 }
 
-export default SongRepository;
+export default SongsRepository;

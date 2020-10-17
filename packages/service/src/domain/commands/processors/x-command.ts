@@ -3,7 +3,7 @@ import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import XSoundService from '../../x-sounds/x-sounds-service';
 import { PlayXSoundEvent } from '../../../event-stream/model/events';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 
 async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const soundName = command.rawArgs;
@@ -14,7 +14,7 @@ async function xCommandProcessor(command: Command): Promise<CommandProcessingRes
     soundUrl: xSound.url,
   };
 
-  EventStreamService.sendToEveryone(playXSoundEvent);
+  PlayerEventStream.instance.sendToEveryone(playXSoundEvent);
   XSoundService.instance.incrementPlayCount(xSound.name);
 
   return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
