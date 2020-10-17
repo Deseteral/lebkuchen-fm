@@ -30,7 +30,7 @@ class PlayerEventStream {
     });
   }
 
-  onUserConnected(): void {
+  onPlayerConnected(): void {
     const connectedSocketCount = this.eventStream.getConnectedPlayerCount();
 
     if (connectedSocketCount <= 1) {

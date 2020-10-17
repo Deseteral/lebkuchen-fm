@@ -21,15 +21,19 @@ class EventStream {
     this.playerNamespace = this.io.of('/player');
     this.playerNamespace.on('connection', (socket) => {
       EventStream.logger.info('New user connected to event stream on /player namespace');
-      PlayerEventStream.instance.onUserConnected();
+      PlayerEventStream.instance.onPlayerConnected();
+      AdminEventStream.onPlayerConnectionChange();
 
-      socket.on('disconnect', () => EventStream.logger.info('User disconnected from event stream on /player namespace'));
+      socket.on('disconnect', () => {
+        EventStream.logger.info('User disconnected from event stream on /player namespace');
+        AdminEventStream.onPlayerConnectionChange();
+      });
     });
 
     this.adminNamespace = this.io.of('/admin');
     AdminEventStream.initialize();
     this.adminNamespace.on('connection', () => {
-      AdminEventStream.onUserConnected();
+      AdminEventStream.onAdminConnected();
     });
   }
 
@@ -51,8 +55,12 @@ class EventStream {
   }
 
   getConnectedPlayerCount(): number {
+    return this.getConnectedPlayerIds().length;
+  }
+
+  getConnectedPlayerIds(): string[] {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
-    return Object.keys(this.playerNamespace.sockets).length;
+    return Object.keys(this.playerNamespace.sockets);
   }
 
   private static get notInitializedError(): Error {
