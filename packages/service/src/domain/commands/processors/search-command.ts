@@ -29,10 +29,13 @@ const searchCommandDefinition: CommandDefinition = {
   key: 'search',
   shortKey: 's',
   processor: searchCommandProcessor,
-  helpMessage: 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube',
+  helpMessage:
+  'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube' +
+  '-n\t(next) dodaje utwór na początek kolejki',
   helpUsages: [
-    '<phrase>',
+    '<option> <phrase>',
     'krawczyk parostatek',
+    '-n krawczyk parostatek',
   ],
 };
 
