@@ -5,10 +5,23 @@ import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import QueueCommand from './queue-command';
 
 async function searchCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const phrase = command.rawArgs;
-  const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
+  const commandArgs = command.getArgsByDelimiter(' ');
+  let phrase: string;
+  let options: string;
 
-  const queueCommand = new Command('queue', youtubeId);
+  if (commandArgs.length > 1 && commandArgs[0] === '-n') {
+    commandArgs.shift();
+    phrase = commandArgs.join(' ');
+    options = '-n';
+  } else {
+    phrase = command.rawArgs;
+    options = '';
+  }
+
+  const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
+  const args = (options === '') ? youtubeId : `${options} ${youtubeId}`;
+  const queueCommand = new Command('queue', args);
+
   return QueueCommand.processor(queueCommand);
 }
 
