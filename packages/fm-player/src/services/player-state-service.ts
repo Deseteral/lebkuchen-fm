@@ -19,8 +19,8 @@ function popFromQueueFront(): (Song | null) {
   return popped || null;
 }
 
-function addToQueue(song: Song, beginning: boolean) {
-  if (beginning) {
+function addToQueue(song: Song, atTheBeginning: boolean) {
+  if (atTheBeginning) {
     playerState.queue.unshift(song);
   } else {
     playerState.queue.push(song);
