@@ -10,7 +10,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   let songNameIndex = 0;
   let atTheBeginning = false;
 
-  if (commandArgs.length > 1 && commandArgs[0] === 'next') {
+  if (commandArgs.length > 1 && commandArgs[0] === '-n') {
     songNameIndex = 1;
     atTheBeginning = true;
   }
@@ -29,11 +29,14 @@ const queueCommandDefinition: CommandDefinition = {
   key: 'queue',
   shortKey: 'q',
   processor: queueCommandProcessor,
-  helpMessage: 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID',
+  helpMessage:
+  'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.\n' +
+  '-n\t(next) dodaje utwór na początek kolejki',
   helpUsages: [
     '<video name or youtube-id>',
     'transatlantik',
     'p28K7Fz0KrQ',
+    '-n p28K7Fz0KrQ',
   ],
 };
 
