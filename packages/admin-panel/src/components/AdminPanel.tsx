@@ -34,8 +34,8 @@ const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => {
 
   return (
     <AppContainer>
-      <WsConnections playerIds={playerIds} />
       <Logs logs={loggerHistory} />
+      <WsConnections playerIds={playerIds} />
     </AppContainer>
   );
 };
