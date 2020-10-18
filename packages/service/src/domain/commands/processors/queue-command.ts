@@ -29,7 +29,10 @@ const queueCommandDefinition: CommandDefinition = {
   key: 'queue',
   shortKey: 'q',
   processor: queueCommandProcessor,
-  helpMessage:
+  helpMessage: [
+    'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.',
+    '-n\t(next) dodaje utwór na początek kolejki',
+  ].join('\n')
   'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.\n' +
   '-n\t(next) dodaje utwór na początek kolejki',
   helpUsages: [
