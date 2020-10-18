@@ -7,15 +7,9 @@ import { AddSongToQueueEvent } from '../../../event-stream/model/events';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const commandArgs = command.getArgsByDelimiter(' ');
-  let songNameIndex = 0;
-  let atTheBeginning = false;
+  const atTheBeginning = (commandArgs.length > 1 && commandArgs[0] === '-n');
+  const songName = atTheBeginning ? commandArgs[1] : commandArgs[0];
 
-  if (commandArgs.length > 1 && commandArgs[0] === '-n') {
-    songNameIndex = 1;
-    atTheBeginning = true;
-  }
-
-  const songName = commandArgs[songNameIndex];
   const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
   const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song, atTheBeginning };
 
@@ -32,9 +26,7 @@ const queueCommandDefinition: CommandDefinition = {
   helpMessage: [
     'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.',
     '-n\t(next) dodaje utwór na początek kolejki',
-  ].join('\n')
-  'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.\n' +
-  '-n\t(next) dodaje utwór na początek kolejki',
+  ].join('\n'),
   helpUsages: [
     '[option] <video name or youtube-id>',
     'transatlantik',
