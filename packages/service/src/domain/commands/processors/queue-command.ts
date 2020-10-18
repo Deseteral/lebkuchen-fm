@@ -36,7 +36,7 @@ const queueCommandDefinition: CommandDefinition = {
   'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID.\n' +
   '-n\t(next) dodaje utwór na początek kolejki',
   helpUsages: [
-    '<option> <video name or youtube-id>',
+    '[option] <video name or youtube-id>',
     'transatlantik',
     'p28K7Fz0KrQ',
     '-n p28K7Fz0KrQ',
