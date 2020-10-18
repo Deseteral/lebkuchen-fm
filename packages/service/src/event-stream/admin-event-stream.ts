@@ -9,6 +9,15 @@ class AdminEventStream {
     });
   }
 
+  static onAdminConnected(): void {
+    AdminEventStream.sendLogsToEveryone();
+    AdminEventStream.sendWsConnections();
+  }
+
+  static onPlayerConnectionChange(): void {
+    AdminEventStream.sendWsConnections();
+  }
+
   private static sendLogsToEveryone(): void {
     const eventData: LogEvent = {
       id: 'LogEvent',
@@ -17,11 +26,7 @@ class AdminEventStream {
     AdminEventStream.sendToEveryone(eventData);
   }
 
-  static onAdminConnected(): void {
-    AdminEventStream.sendLogsToEveryone();
-  }
-
-  static onPlayerConnectionChange(): void {
+  private static sendWsConnections(): void {
     const playerIds = EventStream.instance.getConnectedPlayerIds();
     const eventData: WsConnectionsEvent = {
       id: 'WsConnectionsEvent',
@@ -30,7 +35,7 @@ class AdminEventStream {
     AdminEventStream.sendToEveryone(eventData);
   }
 
-  static sendToEveryone(event: AdminEventData): void {
+  private static sendToEveryone(event: AdminEventData): void {
     EventStream.instance.adminBroadcast(event);
   }
 }
