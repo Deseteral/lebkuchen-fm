@@ -1,5 +1,5 @@
 import EventStream from './event-stream';
-import { AdminEventData, LogEvent } from './model/admin-events';
+import { AdminEventData, LogEvent, WsConnectionsEvent } from './model/admin-events';
 import Logger from '../infrastructure/logger';
 
 class AdminEventStream {
@@ -17,8 +17,17 @@ class AdminEventStream {
     AdminEventStream.sendToEveryone(eventData);
   }
 
-  static onUserConnected(): void {
+  static onAdminConnected(): void {
     AdminEventStream.sendLogsToEveryone();
+  }
+
+  static onPlayerConnectionChange(): void {
+    const playerIds = EventStream.instance.getConnectedPlayerIds();
+    const eventData: WsConnectionsEvent = {
+      id: 'WsConnectionsEvent',
+      playerIds,
+    };
+    AdminEventStream.sendToEveryone(eventData);
   }
 
   static sendToEveryone(event: AdminEventData): void {
