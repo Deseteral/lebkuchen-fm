@@ -9,15 +9,29 @@ class PlayerEventStream {
     this.eventStream = EventStream.instance;
   }
 
-  private sendDefaultPlayerState(): void {
+  onPlayerConnected(connectedPlayerSocket: SocketIO.Socket): void {
+    const connectedSocketCount = this.eventStream.getConnectedPlayerCount();
+
+    if (connectedSocketCount <= 1) {
+      this.sendDefaultPlayerState(connectedPlayerSocket);
+    } else {
+      this.requestAndSendPlayerState(connectedPlayerSocket);
+    }
+  }
+
+  sendToEveryone(event: EventData): void {
+    this.eventStream.playerBroadcast(event);
+  }
+
+  private sendDefaultPlayerState(receiver: SocketIO.Socket): void { // eslint-disable-line class-methods-use-this
     const eventData: PlayerStateUpdateEvent = {
       id: 'PlayerStateUpdateEvent',
       state: makeDefaultPlayerState(),
     };
-    this.sendToEveryone(eventData);
+    receiver.emit('events', eventData);
   }
 
-  private requestAndSendPlayerState(): void {
+  private requestAndSendPlayerState(receiver: SocketIO.Socket): void {
     const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
     const primaryClient = this.eventStream.getPrimaryPlayerSocket();
 
@@ -26,22 +40,8 @@ class PlayerEventStream {
         id: 'PlayerStateUpdateEvent',
         state: primaryClientState,
       };
-      this.sendToEveryone(updateEventData);
+      receiver.emit('events', updateEventData);
     });
-  }
-
-  onPlayerConnected(): void {
-    const connectedSocketCount = this.eventStream.getConnectedPlayerCount();
-
-    if (connectedSocketCount <= 1) {
-      this.sendDefaultPlayerState();
-    } else {
-      this.requestAndSendPlayerState();
-    }
-  }
-
-  sendToEveryone(event: EventData): void {
-    this.eventStream.playerBroadcast(event);
   }
 
   static readonly instance = new PlayerEventStream();

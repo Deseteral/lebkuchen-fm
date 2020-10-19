@@ -21,7 +21,7 @@ class EventStream {
     this.playerNamespace = this.io.of('/player');
     this.playerNamespace.on('connection', (socket) => {
       EventStream.logger.info('New user connected to event stream on /player namespace');
-      PlayerEventStream.instance.onPlayerConnected();
+      PlayerEventStream.instance.onPlayerConnected(socket);
       AdminEventStream.onPlayerConnectionChange();
 
       socket.on('disconnect', () => {
