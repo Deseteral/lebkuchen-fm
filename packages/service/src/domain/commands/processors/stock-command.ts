@@ -9,25 +9,19 @@ async function stockCommandProcessor(command: Command): Promise<CommandProcessin
   }
   const res = await fetch(`https://www.bankier.pl/inwestowanie/profile/quote.html?symbol=${command.rawArgs}`);
   const data = await res.text();
-  const divVithPrice = '<div class="profilLast">';
-  const indexOfDivVithPrice = data.indexOf(divVithPrice);
 
-  if (indexOfDivVithPrice < 0) {
+  const matchResulet = data.match('<div class="profilLast">(.*)</div>\\s*<div class="change (up|down)">\\s*<span class="value">(.*)</span>\\s*<span class="value">(.*)</span>');
+  if (!matchResulet) {
     throw new Error(`Nie znaleziono ceny dla spółki ${command.rawArgs}`);
   }
-  const priceBeginningIndex = indexOfDivVithPrice + divVithPrice.length;
-  const priceLength = data.indexOf('</div>', priceBeginningIndex) - priceBeginningIndex;
+  const price = matchResulet[1];
+  const change = matchResulet[2];
+  const changePercentage = matchResulet[3];
+  const changeValue = matchResulet[4];
 
-  const price = data.substr(priceBeginningIndex, priceLength);
+  const emoji = change === 'down' ? ':chart_with_downwards_trend:' : ':chart_with_upwards_trend:';
 
-  const spanWithChange = '<span class="value">';
-  const changeDivBeginningIndex = data.indexOf(spanWithChange, priceBeginningIndex) + spanWithChange.length;
-  const changeLength = data.indexOf('</span>', changeDivBeginningIndex) - changeDivBeginningIndex;
-  const change = data.substr(changeDivBeginningIndex, changeLength);
-
-  const emoji = change.startsWith('-') ? ':chart_with_downwards_trend:' : ':chart_with_upwards_trend:';
-
-  return makeSingleTextProcessingResponse(`Cena: ${price}, zmiana: ${change} ${emoji}`, false);
+  return makeSingleTextProcessingResponse(`Cena: ${price}, zmiana: ${changePercentage} (${changeValue}) ${emoji}`, false);
 }
 
 const stockCommandDefinition: CommandDefinition = {
