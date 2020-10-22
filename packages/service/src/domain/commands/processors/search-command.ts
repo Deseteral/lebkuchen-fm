@@ -1,7 +1,7 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
-import YouTubeDataClient from '../../../youtube/youtube-data-client';
+import YouTubeDataClient from '../../../infrastructure/youtube-data-client';
 import QueueCommand from './queue-command';
 
 async function searchCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {

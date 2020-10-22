@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
-import Configuration from '../infrastructure/configuration';
-import Logger from '../infrastructure/logger';
+import Configuration from './configuration';
+import Logger from './logger';
 
 interface SearchResults {
   items: [
