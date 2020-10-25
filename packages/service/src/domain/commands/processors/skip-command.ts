@@ -19,15 +19,14 @@ async function skipCommandProcessor(command: Command) : Promise<CommandProcessin
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
 
-const skipCommandDefinition: CommandDefinition = {
-  key: 'skip',
-  processor: skipCommandProcessor,
-  helpMessage: 'Pomija utwory',
-  helpUsages: [
+@CommandDefinition.register
+export default class SkipCommand implements CommandDefinition {
+  helpMessage = 'Pomija utwory';
+  helpUsages = [
     '[amount; defaults to 1]',
     '3',
     'all',
-  ],
-};
-
-export default skipCommandDefinition;
+  ];
+  key = 'skip';
+  processor = skipCommandProcessor
+}

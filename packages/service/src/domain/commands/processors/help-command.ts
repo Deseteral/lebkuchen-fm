@@ -57,10 +57,9 @@ async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
   };
 }
 
-const helpCommandDefinition: CommandDefinition = {
-  key: 'help',
-  processor: helpCommandProcessor,
-  helpMessage: 'Pokazuje tę wiadomość',
-};
-
-export default helpCommandDefinition;
+@CommandDefinition.register
+export default class HelpCommand implements CommandDefinition {
+  key = 'help';
+  processor = helpCommandProcessor;
+  helpMessage = 'Pokazuje tę wiadomość';
+}

@@ -41,15 +41,14 @@ async function addCommandProcessor(command: Command): Promise<CommandProcessingR
   return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`, false);
 }
 
-const addCommandDefinition: CommandDefinition = {
-  key: 'add',
-  processor: addCommandProcessor,
-  helpMessage: 'Dodaje przebój do bazy utworów',
-  helpUsages: [
+@CommandDefinition.register
+export default class AddCommand implements CommandDefinition {
+  key = 'add';
+  processor = addCommandProcessor;
+  helpMessage = 'Dodaje przebój do bazy utworów';
+  helpUsages = [
     '<youtube-id>|<video name>|[start time]|[end time]',
     'jK4ICUBdsuc|aldonka slowmo',
     'p28K7Fz0KrQ|transatlantik|0:00|1:53',
-  ],
-};
-
-export default addCommandDefinition;
+  ];
+}
