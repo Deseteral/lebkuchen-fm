@@ -10,10 +10,9 @@ async function resumeCommandProcessor(): Promise<CommandProcessingResponse> {
   return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
 }
 
-const resumeCommandDefinition: CommandDefinition = {
-  key: 'resume',
-  processor: resumeCommandProcessor,
-  helpMessage: 'Wznawia odtwarzanie aktualnego utworu',
-};
-
-export default resumeCommandDefinition;
+@CommandDefinition.register
+export default class ResumeCommand implements CommandDefinition {
+  key = 'resume';
+  processor = resumeCommandProcessor;
+  helpMessage = 'Wznawia odtwarzanie aktualnego utworu';
+}

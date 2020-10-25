@@ -20,14 +20,13 @@ async function xCommandProcessor(command: Command): Promise<CommandProcessingRes
   return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
 }
 
-const xCommandDefinition: CommandDefinition = {
-  key: 'x',
-  processor: xCommandProcessor,
-  helpMessage: 'Puszcza szalony dźwięk!',
-  helpUsages: [
+@CommandDefinition.register
+export default class XCommand implements CommandDefinition {
+  key = 'x';
+  processor = xCommandProcessor;
+  helpMessage = 'Puszcza szalony dźwięk!';
+  helpUsages = [
     '<sound name>',
     'airhorn',
-  ],
-};
-
-export default xCommandDefinition;
+  ];
+}

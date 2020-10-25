@@ -2,7 +2,7 @@ import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
-import QueueCommand from './queue-command';
+import { queueCommandInstance } from './queue-command';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
@@ -24,7 +24,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
   selectedSongs.forEach(async (song) => {
     const queueCommand = new Command('queue', song.youtubeId);
     videoTitles.push(song.name);
-    await QueueCommand.processor(queueCommand);
+    await queueCommandInstance.processor(queueCommand);
   });
 
   const titleMessages = videoTitles
@@ -46,14 +46,13 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
   };
 }
 
-const randomCommandDefinition: CommandDefinition = {
-  key: 'random',
-  processor: randomCommandProcessor,
-  helpMessage: 'Losuje utwory z historii',
-  helpUsages: [
+@CommandDefinition.register
+export default class RandomCommand implements CommandDefinition {
+  key = 'random';
+  processor = randomCommandProcessor;
+  helpMessage = 'Losuje utwory z historii';
+  helpUsages = [
     '[amount; defaults to 1]',
     '3',
-  ],
-};
-
-export default randomCommandDefinition;
+  ];
+}

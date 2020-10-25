@@ -17,16 +17,17 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
 }
 
-const queueCommandDefinition: CommandDefinition = {
-  key: 'queue',
-  shortKey: 'q',
-  processor: queueCommandProcessor,
-  helpMessage: 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID',
-  helpUsages: [
+@CommandDefinition.register
+export default class QueueCommand implements CommandDefinition {
+  key = 'queue';
+  shortKey = 'q';
+  processor = queueCommandProcessor;
+  helpMessage = 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID';
+  helpUsages = [
     '<video name or youtube-id>',
     'transatlantik',
     'p28K7Fz0KrQ',
-  ],
-};
+  ];
+}
 
-export default queueCommandDefinition;
+export const queueCommandInstance = new QueueCommand();

@@ -30,15 +30,14 @@ async function speedCommandProcessor(command: Command) : Promise<CommandProcessi
   return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`, false);
 }
 
-const speedCommandDefinition: CommandDefinition = {
-  key: 'speed',
-  processor: speedCommandProcessor,
-  helpMessage: 'Zmienia prędkość odtwarzania',
-  helpUsages: [
+@CommandDefinition.register
+export default class SpeedCommand implements CommandDefinition {
+  key = 'speed';
+  processor = speedCommandProcessor;
+  helpMessage = 'Zmienia prędkość odtwarzania';
+  helpUsages = [
     '--',
     '++',
     '1 (resetuje)',
-  ],
-};
-
-export default speedCommandDefinition;
+  ];
+}

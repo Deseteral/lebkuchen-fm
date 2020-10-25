@@ -10,10 +10,9 @@ async function pauseCommandProcessor(): Promise<CommandProcessingResponse> {
   return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
 }
 
-const pauseCommandDefinition: CommandDefinition = {
-  key: 'pause',
-  processor: pauseCommandProcessor,
-  helpMessage: 'Zatrzymuje odtwarzanie bieżącego filmu',
-};
-
-export default pauseCommandDefinition;
+@CommandDefinition.register
+export default class PauseCommand implements CommandDefinition {
+  key = 'pause';
+  processor = pauseCommandProcessor;
+  helpMessage = 'Zatrzymuje odtwarzanie bieżącego filmu';
+}

@@ -21,14 +21,13 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
   };
 }
 
-const sayCommandDefinition: CommandDefinition = {
-  key: 'say',
-  processor: sayCommandProcessor,
-  helpMessage: 'Prosi spikera o odczytanie wiadomości',
-  helpUsages: [
+@CommandDefinition.register
+export default class SayCommand implements CommandDefinition {
+  key = 'say';
+  processor = sayCommandProcessor;
+  helpMessage = 'Prosi spikera o odczytanie wiadomości';
+  helpUsages = [
     '<message>',
     'to jest moja fantastyczna wiadomość',
-  ],
-};
-
-export default sayCommandDefinition;
+  ];
+}
