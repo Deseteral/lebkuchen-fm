@@ -1,6 +1,5 @@
 import fs from 'fs';
 import CommandRegistryService from './command-registry-service';
-import XCommand from '../processors/x-command';
 import CommandDefinition from '../model/command-definition';
 
 function requireAllCommands() : void {
@@ -15,10 +14,6 @@ function requireAllCommands() : void {
 
 function initialize(): void {
   requireAllCommands();
-
-  [
-    XCommand, // do you dare to comment me out?
-  ].forEach((command) => CommandRegistryService.instance.register(command));
 
   const instances = CommandDefinition.GetImplementations().map((constructor) => new constructor());
   instances.forEach((command) => CommandRegistryService.instance.register(command));

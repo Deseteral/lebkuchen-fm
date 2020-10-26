@@ -5,8 +5,8 @@ import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './mo
 class PlayerEventStream {
   private eventStream: EventStream;
 
-  private constructor() {
-    this.eventStream = EventStream.instance;
+  private constructor(eventStream: EventStream) {
+    this.eventStream = eventStream;
   }
 
   onPlayerConnected(connectedPlayerSocket: SocketIO.Socket): void {
@@ -44,7 +44,14 @@ class PlayerEventStream {
     });
   }
 
-  static readonly instance = new PlayerEventStream();
+  private static lazyInstance: PlayerEventStream | null = null;
+
+  static get instance() : PlayerEventStream {
+    if (PlayerEventStream.lazyInstance === null) {
+      PlayerEventStream.lazyInstance = new PlayerEventStream(EventStream.instance);
+    }
+    return PlayerEventStream.lazyInstance;
+  }
 }
 
 export default PlayerEventStream;
