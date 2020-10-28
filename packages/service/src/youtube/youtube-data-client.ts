@@ -47,6 +47,9 @@ class YouTubeDataClient {
     url.searchParams.set('q', phrase);
     url.searchParams.set('maxResults', maxResults.toString());
     url.searchParams.set('part', 'snippet');
+    url.searchParams.set('type', 'video');
+    url.searchParams.set('safeSearch', 'none');
+    url.searchParams.set('videoEmbeddable', 'true');
 
     const data = await YouTubeDataClient.request<SearchResults>(url);
     return data;
