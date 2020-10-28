@@ -28,19 +28,19 @@ class PlayerEventStream {
       id: 'PlayerStateUpdateEvent',
       state: makeDefaultPlayerState(),
     };
-    receiver.emit('events', eventData);
+    receiver.send(eventData);
   }
 
   private requestAndSendPlayerState(receiver: SocketIO.Socket): void {
     const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
     const primaryClient = this.eventStream.getPrimaryPlayerSocket();
 
-    primaryClient.emit('events', reqEventData, (primaryClientState: PlayerState) => {
+    primaryClient.send(reqEventData, (primaryClientState: PlayerState) => {
       const updateEventData: PlayerStateUpdateEvent = {
         id: 'PlayerStateUpdateEvent',
         state: primaryClientState,
       };
-      receiver.emit('events', updateEventData);
+      receiver.send(updateEventData);
     });
   }
 

@@ -9,7 +9,7 @@ function connect() {
   const client = io('/player');
   client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
-  client.on('events', (eventData: EventData, sendResponse: Function) => {
+  client.on('message', (eventData: EventData, sendResponse: Function) => {
     console.log('Received event from event stream', eventData);
 
     switch (eventData.id) {
