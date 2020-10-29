@@ -13,7 +13,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
 
   if (!videoStatus.items?.last().status.embeddable) {
-    throw new Error('Plik nie może zostać odtworzony w osadzonym odtwarzaczu');
+    throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
   }
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
