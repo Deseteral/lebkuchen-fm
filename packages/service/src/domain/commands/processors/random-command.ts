@@ -9,6 +9,28 @@ import Song from '../../songs/song';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
+function buildMessage(songsToQueue: Song[]): string {
+  const titleMessages = songsToQueue
+    .map((s) => s.name)
+    .slice(0, MAX_TITLES_IN_MESSAGE)
+    .map((title) => `- _${title}_`);
+
+  const text = [
+    'Dodano do kojeki:',
+    ...titleMessages,
+    ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? `...i ${songsToQueue.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+  ].filter(Boolean).join('\n');
+  return text;
+}
+
+async function getEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+  const youtubeIds: string[] = songs.map((song) => song.youtubeId);
+  const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
+  const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
+
+  return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
+}
+
 async function randomCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const amount = (command.rawArgs === '')
     ? 1
@@ -23,23 +45,18 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
 
   const randomlyOrderedSongs = songsList.randomShuffle();
 
-  const embeddableSelectedSongs : Song[] = [];
+  const selectedSongs : Song[] = [];
   let index = 0;
 
-  while (embeddableSelectedSongs.length < amount && index < maxAllowedValue) {
+  while (selectedSongs.length < amount && index < maxAllowedValue) {
     const candidateSongs = randomlyOrderedSongs.slice(index, index + amount);
     index += amount;
-
-    const youtubeIds: string[] = candidateSongs.map((song) => song.youtubeId);
     // eslint-disable-next-line no-await-in-loop
-    const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
-    const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
-
-    candidateSongs.filter((song) => idToEmbeddable.get(song.youtubeId))
-      .forEach((song) => embeddableSelectedSongs.push(song));
+    const embeddableSongs = await getEmbeddableSongs(candidateSongs);
+    embeddableSongs.forEach((song) => selectedSongs.push(song));
   }
 
-  const songsToQueue = embeddableSelectedSongs.slice(0, amount);
+  const songsToQueue = selectedSongs.slice(0, amount);
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
   PlayerEventStream.instance.sendToEveryone(eventData);
@@ -47,17 +64,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
   songsToQueue.forEach((song) => {
     SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
   });
-
-  const titleMessages = songsToQueue
-    .map((s) => s.name)
-    .slice(0, MAX_TITLES_IN_MESSAGE)
-    .map((title) => `- _${title}_`);
-
-  const text = [
-    'Dodano do kojeki:',
-    ...titleMessages,
-    ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? `...i ${songsToQueue.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
-  ].filter(Boolean).join('\n');
+  const text = buildMessage(songsToQueue);
 
   return {
     messages: [{
