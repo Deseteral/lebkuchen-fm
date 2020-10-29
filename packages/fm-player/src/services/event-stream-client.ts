@@ -5,6 +5,8 @@ import * as SoundPlayerService from '../services/sound-player-service';
 import * as SpeechService from '../services/speech-service';
 import * as YouTubePlayerService from '../services/youtube-player-service';
 
+let ignoreVolumeChange = false;
+
 function connect() {
   const client = io('/player');
   client.on('connect', () => console.log('Connected to event stream WebSocket'));
@@ -53,7 +55,9 @@ function connect() {
         break;
 
       case 'ChangeVolumeEvent':
-        PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
+        if (!ignoreVolumeChange) {
+          PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
+        }
         break;
 
       default:
@@ -62,6 +66,11 @@ function connect() {
   });
 }
 
+function setIgnoringVolumeChange(ignored: boolean) {
+  ignoreVolumeChange = ignored;
+}
+
 export {
   connect,
+  setIgnoringVolumeChange,
 };
