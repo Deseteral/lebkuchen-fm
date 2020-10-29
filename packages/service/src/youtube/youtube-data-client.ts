@@ -14,7 +14,9 @@ interface SearchResults {
 interface VideoDetails {
   items: [
     {
+      id: string,
       snippet: { title: string },
+      status: {embeddable: boolean},
     }
   ]
 }
@@ -55,22 +57,27 @@ class YouTubeDataClient {
     return data;
   }
 
-  private static async getVideoDetails(youtubeId: string): Promise<VideoDetails> {
+  private static async getVideoDetails(youtubeIds: string[], part: string): Promise<VideoDetails> {
     const url = YouTubeDataClient.makeYouTubeUrl('/videos');
-    url.searchParams.set('id', youtubeId);
-    url.searchParams.set('part', 'id,snippet');
+    url.searchParams.set('id', youtubeIds.join(','));
+    url.searchParams.set('part', part);
 
     return YouTubeDataClient.request<VideoDetails>(url);
   }
 
   static async fetchVideoTitleForId(youtubeId: string): Promise<string> {
-    const videoDetails = await YouTubeDataClient.getVideoDetails(youtubeId);
+    const videoDetails = await YouTubeDataClient.getVideoDetails([youtubeId], 'snippet');
     return videoDetails.items[0].snippet.title;
   }
 
   static async fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
     const data = await YouTubeDataClient.getSearchResultsForPhrase(phrase, 1);
     return data.items[0].id.videoId;
+  }
+
+  static async fetchVideosStatuses(youtubeIds: string[]): Promise<VideoDetails> {
+    const videoDetails = await YouTubeDataClient.getVideoDetails(youtubeIds, 'status');
+    return videoDetails;
   }
 }
 
