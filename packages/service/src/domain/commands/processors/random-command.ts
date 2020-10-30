@@ -21,7 +21,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
 
   const selectedSongs = songsList.randomShuffle().slice(0, amount);
 
-  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: selectedSongs };
+  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: selectedSongs, atTheBeginning: false };
   PlayerEventStream.instance.sendToEveryone(eventData);
 
   selectedSongs.forEach((song) => {
