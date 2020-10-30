@@ -9,39 +9,39 @@ class PlayerEventStream {
     this.eventStream = EventStream.instance;
   }
 
-  private sendDefaultPlayerState(): void {
-    const eventData: PlayerStateUpdateEvent = {
-      id: 'PlayerStateUpdateEvent',
-      state: makeDefaultPlayerState(),
-    };
-    this.sendToEveryone(eventData);
-  }
-
-  private requestAndSendPlayerState(): void {
-    const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
-    const primaryClient = this.eventStream.getPrimaryPlayerSocket();
-
-    primaryClient.emit('events', reqEventData, (primaryClientState: PlayerState) => {
-      const updateEventData: PlayerStateUpdateEvent = {
-        id: 'PlayerStateUpdateEvent',
-        state: primaryClientState,
-      };
-      this.sendToEveryone(updateEventData);
-    });
-  }
-
-  onUserConnected(): void {
+  onPlayerConnected(connectedPlayerSocket: SocketIO.Socket): void {
     const connectedSocketCount = this.eventStream.getConnectedPlayerCount();
 
     if (connectedSocketCount <= 1) {
-      this.sendDefaultPlayerState();
+      this.sendDefaultPlayerState(connectedPlayerSocket);
     } else {
-      this.requestAndSendPlayerState();
+      this.requestAndSendPlayerState(connectedPlayerSocket);
     }
   }
 
   sendToEveryone(event: EventData): void {
     this.eventStream.playerBroadcast(event);
+  }
+
+  private sendDefaultPlayerState(receiver: SocketIO.Socket): void { // eslint-disable-line class-methods-use-this
+    const eventData: PlayerStateUpdateEvent = {
+      id: 'PlayerStateUpdateEvent',
+      state: makeDefaultPlayerState(),
+    };
+    receiver.send(eventData);
+  }
+
+  private requestAndSendPlayerState(receiver: SocketIO.Socket): void {
+    const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
+    const primaryClient = this.eventStream.getPrimaryPlayerSocket();
+
+    primaryClient.send(reqEventData, (primaryClientState: PlayerState) => {
+      const updateEventData: PlayerStateUpdateEvent = {
+        id: 'PlayerStateUpdateEvent',
+        state: primaryClientState,
+      };
+      receiver.send(updateEventData);
+    });
   }
 
   static readonly instance = new PlayerEventStream();

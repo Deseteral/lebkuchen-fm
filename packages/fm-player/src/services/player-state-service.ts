@@ -19,14 +19,16 @@ function popFromQueueFront(): (Song | null) {
   return popped || null;
 }
 
-function addToQueue(song: Song, atTheBeginning: boolean) {
+function addToQueue(songs: Song[], atTheBeginning: boolean) {
+  const prevLength = playerState.queue.length;
+
   if (atTheBeginning) {
-    playerState.queue.unshift(song);
+    playerState.queue.unshift(...songs);
   } else {
-    playerState.queue.push(song);
+    playerState.queue.push(...songs);
   }
 
-  if (playerState.queue.length === 1) {
+  if (prevLength === 0 && playerState.queue.length > 0) {
     emitter.emit('songAddedToQueueFront');
   }
 }

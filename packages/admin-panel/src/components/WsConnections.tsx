@@ -2,14 +2,14 @@ import * as React from 'react';
 import Section from './Section';
 
 interface WsConnectionsProps {
-  sockets: string[],
+  playerIds: string[],
 }
 
-const WsConnections: React.FunctionComponent<WsConnectionsProps> = ({ sockets }) => (
+const WsConnections: React.FunctionComponent<WsConnectionsProps> = ({ playerIds }) => (
   <Section header="WS connections">
-    <div>Current connections: {sockets.length}</div>
+    <div>Current connections: {playerIds.length}</div>
     <ul>
-      {sockets.map((socketId) => (<li><code>{socketId}</code></li>))}
+      {playerIds.map((pid) => (<li><code>{pid}</code></li>))}
     </ul>
   </Section>
 );

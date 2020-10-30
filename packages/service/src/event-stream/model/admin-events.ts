@@ -5,10 +5,17 @@ interface LogEvent {
   loggerHistory: Log[],
 }
 
+interface WsConnectionsEvent {
+  id: 'WsConnectionsEvent',
+  playerIds: string[],
+}
+
 type AdminEventData =
-  | LogEvent;
+  | LogEvent
+  | WsConnectionsEvent;
 
 export {
   AdminEventData,
   LogEvent,
+  WsConnectionsEvent,
 };

@@ -12,7 +12,7 @@ const Container = styled.section`
 
 const Header = styled.h2`
   margin: 0;
-  margin-top: -22px;
+  margin-top: -23px;
   padding-bottom: 8px;
   background: #c0c0c0;
   width: fit-content;

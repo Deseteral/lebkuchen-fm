@@ -1,7 +1,7 @@
 import { SayEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import CommandProcessingResponse from '../model/command-processing-response';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 
 async function sayCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
@@ -13,7 +13,12 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
 
   PlayerEventStream.instance.sendToEveryone(eventMessage);
 
-  return makeSingleTextProcessingResponse(`_"${text}"_`, false);
+  return {
+    messages: [
+      { text: `_"${text}"_`, type: 'MARKDOWN' },
+    ],
+    isVisibleToIssuerOnly: false,
+  };
 }
 
 const sayCommandDefinition: CommandDefinition = {

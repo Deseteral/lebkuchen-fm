@@ -2,7 +2,8 @@ import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
-import QueueCommand from './queue-command';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
+import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
@@ -20,21 +21,22 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
 
   const selectedSongs = songsList.randomShuffle().slice(0, amount);
 
-  const videoTitles: string[] = [];
-  selectedSongs.forEach(async (song) => {
-    const queueCommand = new Command('queue', song.youtubeId);
-    videoTitles.push(song.name);
-    await QueueCommand.processor(queueCommand);
+  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: selectedSongs };
+  PlayerEventStream.instance.sendToEveryone(eventData);
+
+  selectedSongs.forEach((song) => {
+    SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
   });
 
-  const titleMessages = videoTitles
+  const titleMessages = selectedSongs
+    .map((s) => s.name)
     .slice(0, MAX_TITLES_IN_MESSAGE)
     .map((title) => `- _${title}_`);
 
   const text = [
     'Dodano do kojeki:',
     ...titleMessages,
-    ((videoTitles.length > MAX_TITLES_IN_MESSAGE) ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+    ((selectedSongs.length > MAX_TITLES_IN_MESSAGE) ? `...i ${selectedSongs.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
   ].filter(Boolean).join('\n');
 
   return {
