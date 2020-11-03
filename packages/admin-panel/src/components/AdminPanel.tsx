@@ -14,7 +14,7 @@ const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => {
     const client = io('/admin');
     client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
-    client.on('admin', (eventData: AdminEventData) => {
+    client.on('message', (eventData: AdminEventData) => {
       console.log('Received event from event stream', eventData);
 
       switch (eventData.id) {

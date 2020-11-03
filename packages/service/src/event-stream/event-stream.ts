@@ -46,12 +46,12 @@ class EventStream {
 
   playerBroadcast(eventData: EventData): void {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
-    this.playerNamespace.emit('events', eventData);
+    this.playerNamespace.send(eventData);
   }
 
   adminBroadcast(eventData: AdminEventData): void {
     if (!this.adminNamespace) throw EventStream.notInitializedError;
-    this.adminNamespace.emit('admin', eventData);
+    this.adminNamespace.send(eventData);
   }
 
   getConnectedPlayerCount(): number {
