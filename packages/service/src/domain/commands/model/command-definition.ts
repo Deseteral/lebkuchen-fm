@@ -16,10 +16,6 @@ namespace CommandDefinition {
     implementations.push(constructor);
     return constructor;
   }
-  export function format(): number {
-    return 1;
-  }
-
 }
 
 // eslint-disable-next-line no-redeclare
