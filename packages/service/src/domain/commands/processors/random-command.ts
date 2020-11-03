@@ -3,7 +3,7 @@ import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
-import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
+import {AddSongsToQueueEvent} from '../../../event-stream/model/events';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import Song from '../../songs/song';
 
@@ -23,8 +23,8 @@ function buildMessage(songsToQueue: Song[]): string {
   return text;
 }
 
-async function getEmbeddableSongs(songs: Song[]): Promise<Song[]> {
-  const youtubeIds: string[] = songs.map((song) => song.youtubeId);
+async function filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+  const youtubeIds = songs.map((song) => song.youtubeId);
   const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
   const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
 
@@ -43,20 +43,9 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const randomlyOrderedSongs = songsList.randomShuffle();
+  const songs = songsList.randomShuffle().slice(0, amount);
 
-  const selectedSongs : Song[] = [];
-  let index = 0;
-
-  while (selectedSongs.length < amount && index < maxAllowedValue) {
-    const candidateSongs = randomlyOrderedSongs.slice(index, index + amount);
-    index += amount;
-    // eslint-disable-next-line no-await-in-loop
-    const embeddableSongs = await getEmbeddableSongs(candidateSongs);
-    embeddableSongs.forEach((song) => selectedSongs.push(song));
-  }
-
-  const songsToQueue = selectedSongs.slice(0, amount);
+  const songsToQueue = await filterEmbeddableSongs(songs);
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
   PlayerEventStream.instance.sendToEveryone(eventData);
