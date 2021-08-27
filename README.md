@@ -86,6 +86,26 @@ Plain text interface for slash commands.
 
 ---
 
+`GET /songs` \
+Returns list of all songs in the database sorted by play count (descending).
+
+**Response**
+```jsonc
+{
+  "songs": [
+    {
+      "_id": "storage_id",
+      "name": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "timesPlayed": 1337
+    },
+    // ...
+  ]
+}
+```
+
+---
+
 `GET /x-sounds` \
 Returns list of all XSounds in the database.
 
