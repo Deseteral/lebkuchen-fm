@@ -4,10 +4,17 @@ import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
+import YouTubeDataClient from '../../../youtube/youtube-data-client';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
   const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
+
+  const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
+
+  if (!videoStatus.items?.last().status.embeddable) {
+    throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+  }
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
   PlayerEventStream.instance.sendToEveryone(eventData);

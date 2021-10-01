@@ -4,8 +4,32 @@ import CommandProcessingResponse from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
+import YouTubeDataClient from '../../../youtube/youtube-data-client';
+import Song from '../../songs/song';
 
 const MAX_TITLES_IN_MESSAGE = 10;
+
+function buildMessage(songsToQueue: Song[]): string {
+  const titleMessages = songsToQueue
+    .map((s) => s.name)
+    .slice(0, MAX_TITLES_IN_MESSAGE)
+    .map((title) => `- _${title}_`);
+
+  const text = [
+    'Dodano do kojeki:',
+    ...titleMessages,
+    ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? `...i ${songsToQueue.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+  ].filter(Boolean).join('\n');
+  return text;
+}
+
+async function filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+  const youtubeIds = songs.map((song) => song.youtubeId);
+  const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
+  const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
+
+  return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
+}
 
 async function randomCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const amount = (command.rawArgs === '')
@@ -19,25 +43,17 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const selectedSongs = songsList.randomShuffle().slice(0, amount);
+  const songs = songsList.randomShuffle().slice(0, amount);
 
-  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: selectedSongs };
+  const songsToQueue = await filterEmbeddableSongs(songs);
+
+  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
   PlayerEventStream.instance.sendToEveryone(eventData);
 
-  selectedSongs.forEach((song) => {
+  songsToQueue.forEach((song) => {
     SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
   });
-
-  const titleMessages = selectedSongs
-    .map((s) => s.name)
-    .slice(0, MAX_TITLES_IN_MESSAGE)
-    .map((title) => `- _${title}_`);
-
-  const text = [
-    'Dodano do kojeki:',
-    ...titleMessages,
-    ((selectedSongs.length > MAX_TITLES_IN_MESSAGE) ? `...i ${selectedSongs.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
-  ].filter(Boolean).join('\n');
+  const text = buildMessage(songsToQueue);
 
   return {
     messages: [{
