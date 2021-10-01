@@ -7,11 +7,12 @@ import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
 import * as CommandInitializer from './domain/commands/registry/command-initializer';
-import * as EventStream from './event-stream/event-stream';
+import EventStream from './event-stream/event-stream';
 
 import SlackCommandController from './api/slack/slack-command-controller';
 import TextCommandController from './api/text/text-command-controller';
 import XSoundsController from './domain/x-sounds/x-sounds-controller';
+import SongsController from './domain/songs/songs-controller';
 
 import './polyfills';
 
@@ -23,13 +24,14 @@ function configureExpress(): void {
   app.use(compression());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 }
 
 function setupRouting(): void {
   app.use('/commands/slack', SlackCommandController);
   app.use('/commands/text', TextCommandController);
   app.use('/x-sounds', XSoundsController);
+  app.use('/songs', SongsController);
 }
 
 function runApplication(): void {
@@ -40,7 +42,7 @@ function runApplication(): void {
 Promise.resolve()
   .then(() => Storage.instance.connect())
   .then(() => CommandInitializer.initialize())
-  .then(() => EventStream.initialize(server))
+  .then(() => EventStream.instance.initialize(server))
   .then(configureExpress)
   .then(setupRouting)
   .then(runApplication)

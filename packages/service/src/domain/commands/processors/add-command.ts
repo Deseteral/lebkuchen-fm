@@ -1,7 +1,8 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import SongService from '../../songs/song-service';
+import SongsService from '../../songs/songs-service';
+import YouTubeDataClient from '../../../youtube/youtube-data-client';
 
 function parseTimeStringToSeconds(text: string) : (number | undefined) {
   const [minutes, seconds] = text.split(':');
@@ -29,14 +30,20 @@ async function addCommandProcessor(command: Command): Promise<CommandProcessingR
 
   const [youtubeId, name, trimStart, trimEnd] = songDetails;
 
-  const foundSong = await SongService.instance.getByName(name);
+  const foundSong = await SongsService.instance.getByName(name);
   if (foundSong !== null) {
     throw new Error(`Utwór o tytule "${name}" już jest w bazie`);
   }
 
+  const videoStatus = await YouTubeDataClient.fetchVideosStatuses([youtubeId]);
+
+  if (!videoStatus.items?.last().status.embeddable) {
+    throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+  }
+
   const trimStartSeconds = trimStart ? parseTimeStringToSeconds(trimStart) : undefined;
   const trimEndSeconds = trimEnd ? parseTimeStringToSeconds(trimEnd) : undefined;
-  SongService.instance.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
+  SongsService.instance.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
   return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`, false);
 }

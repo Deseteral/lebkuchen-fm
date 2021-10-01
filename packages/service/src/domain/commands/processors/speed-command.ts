@@ -1,8 +1,8 @@
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
 import { ChangeSpeedEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 
 async function speedCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
   const arg = command.rawArgs;
@@ -26,7 +26,7 @@ async function speedCommandProcessor(command: Command) : Promise<CommandProcessi
       throw new Error('Speed przyjmuje argumenty "--", "++" oraz "1"');
   }
 
-  EventStreamService.sendToEveryone(event);
+  PlayerEventStream.instance.sendToEveryone(event);
   return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`, false);
 }
 

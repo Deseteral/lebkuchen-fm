@@ -1,45 +1,67 @@
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import SongService from '../../songs/song-service';
-import QueueCommand from './queue-command';
+import CommandProcessingResponse from '../model/command-processing-response';
+import SongsService from '../../songs/songs-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
+import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
+import YouTubeDataClient from '../../../youtube/youtube-data-client';
+import Song from '../../songs/song';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 
-async function randomCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+function buildMessage(songsToQueue: Song[]): string {
+  const titleMessages = songsToQueue
+    .map((s) => s.name)
+    .slice(0, MAX_TITLES_IN_MESSAGE)
+    .map((title) => `- _${title}_`);
+
+  const text = [
+    'Dodano do kojeki:',
+    ...titleMessages,
+    ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? `...i ${songsToQueue.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
+  ].filter(Boolean).join('\n');
+  return text;
+}
+
+async function filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+  const youtubeIds = songs.map((song) => song.youtubeId);
+  const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
+  const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
+
+  return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
+}
+
+async function randomCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const amount = (command.rawArgs === '')
     ? 1
     : parseInt(command.rawArgs, 10);
 
-  const songList = await SongService.instance.getAll();
-  const maxAllowedValue = songList.length;
+  const songsList = await SongsService.instance.getAll();
+  const maxAllowedValue = songsList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
     throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
   }
 
-  const selectedSongs = [...songList]
-    .randomShuffle()
-    .slice(0, amount);
+  const songs = songsList.randomShuffle().slice(0, amount);
 
-  const videoTitles: string[] = [];
-  selectedSongs.forEach(async (song) => {
-    const queueCommand = new Command('queue', song.youtubeId);
-    videoTitles.push(song.name);
-    await QueueCommand.processor(queueCommand);
+  const songsToQueue = await filterEmbeddableSongs(songs);
+
+  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
+  PlayerEventStream.instance.sendToEveryone(eventData);
+
+  songsToQueue.forEach((song) => {
+    SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
   });
+  const text = buildMessage(songsToQueue);
 
-  const titleMessages = videoTitles
-    .slice(0, MAX_TITLES_IN_MESSAGE)
-    .map((title) => `- ${title}`);
-
-  const message = [
-    'Dodano do kojeki:',
-    ...titleMessages,
-    ((videoTitles.length > MAX_TITLES_IN_MESSAGE) ? `...i ${videoTitles.length - MAX_TITLES_IN_MESSAGE} więcej` : ''),
-  ].filter(Boolean).join('\n');
-
-  return makeSingleTextProcessingResponse(message, false);
+  return {
+    messages: [{
+      text,
+      type: 'MARKDOWN',
+    }],
+    isVisibleToIssuerOnly: false,
+  };
 }
 
 const randomCommandDefinition: CommandDefinition = {

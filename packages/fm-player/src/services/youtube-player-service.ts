@@ -76,6 +76,7 @@ function initialize(playerContainerDomId: string) {
     const state = PlayerStateService.getState();
 
     player.setVolume(state.volume);
+    player.setPlaybackQuality('highres');
 
     if (state.currentlyPlaying) {
       const { song, time } = state.currentlyPlaying;

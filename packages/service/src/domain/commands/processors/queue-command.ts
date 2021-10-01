@@ -1,18 +1,25 @@
-import SongService from '../../songs/song-service';
-import * as EventStreamService from '../../../event-stream/event-stream-service';
+import SongsService from '../../songs/songs-service';
+import PlayerEventStream from '../../../event-stream/player-event-stream';
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
-import { AddSongToQueueEvent } from '../../../event-stream/model/events';
+import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
+import YouTubeDataClient from '../../../youtube/youtube-data-client';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
-  const song = await SongService.instance.getSongByNameWithYouTubeIdFallback(songName);
+  const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
 
-  const eventData: AddSongToQueueEvent = { id: 'AddSongToQueueEvent', song };
-  EventStreamService.sendToEveryone(eventData);
+  const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
 
-  SongService.instance.incrementPlayCount(song.youtubeId, song.name);
+  if (!videoStatus.items?.last().status.embeddable) {
+    throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+  }
+
+  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
+  PlayerEventStream.instance.sendToEveryone(eventData);
+
+  SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
 
   return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
 }

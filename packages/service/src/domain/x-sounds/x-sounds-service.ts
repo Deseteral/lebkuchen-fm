@@ -22,6 +22,11 @@ class XSoundsService {
     return xSound;
   }
 
+  async soundExists(soundName: string): Promise<boolean> {
+    const xSound = await this.repository.findByName(soundName);
+    return !!xSound;
+  }
+
   async incrementPlayCount(soundName: string): Promise<void> {
     const xSound = await this.repository.findByName(soundName);
 
@@ -36,8 +41,8 @@ class XSoundsService {
   }
 
   async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
-    const foundSound = await this.getByName(name);
-    if (foundSound !== null) {
+    const exists = await this.soundExists(name);
+    if (exists) {
       throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
     }
 
