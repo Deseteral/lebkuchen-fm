@@ -3,7 +3,7 @@ import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
-import {AddSongsToQueueEvent} from '../../../event-stream/model/events';
+import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import Song from '../../songs/song';
 
