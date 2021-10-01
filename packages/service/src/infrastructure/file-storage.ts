@@ -1,13 +1,13 @@
 import { Dropbox, sharing } from 'dropbox';
 import Configuration from './configuration';
-import Logger from './logger';
+// import Logger from './logger';
 
 interface FileUploadResult {
   url: string,
 }
 
 class FileStorage {
-  private static logger = new Logger('dropbox-file-storage');
+  // private static logger = new Logger('dropbox-file-storage');
   private client: Dropbox;
 
   private constructor() {
