@@ -48,7 +48,6 @@ class XSoundsService {
       throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
     }
 
-    // TODO: Error handling
     const fileExtension = path.extname(fileDescriptor.fileName);
     const { url } = await FileStorage.instance.uploadFile({
       path: `/xsounds/${name}${fileExtension}`,

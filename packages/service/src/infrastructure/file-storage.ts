@@ -1,13 +1,13 @@
 import { Dropbox, sharing } from 'dropbox';
 import Configuration from './configuration';
-// import Logger from './logger';
+import Logger from './logger';
 
 interface FileUploadResult {
   url: string,
 }
 
 class FileStorage {
-  // private static logger = new Logger('dropbox-file-storage');
+  private static logger = new Logger('dropbox-file-storage');
   private client: Dropbox;
 
   private constructor() {
@@ -15,21 +15,26 @@ class FileStorage {
   }
 
   async uploadFile({ path, contents }: { path: string, contents: Buffer }): Promise<FileUploadResult> {
-    // TODO: Error handling
+    FileStorage.logger.info(`Uploading file "${path}" to Dropbox`);
+
     await this.client.filesUpload({ path, contents });
 
-    const shareSettings: sharing.SharedLinkSettings = {
-      require_password: false,
-      audience: { '.tag': 'public' },
-      access: { '.tag': 'viewer' },
-      allow_download: true,
-    };
+    FileStorage.logger.info('Setting file permissions');
 
-    const shareResponse = await this.client.sharingCreateSharedLinkWithSettings({ path, settings: shareSettings });
-    const { url } = shareResponse.result;
-    const directUrl = url.replace('https://www.dropbox.com', 'http://dl.dropboxusercontent.com');
+    const shareResponse = await this.client.sharingCreateSharedLinkWithSettings({
+      path,
+      settings: {
+        require_password: false,
+        audience: { '.tag': 'public' },
+        access: { '.tag': 'viewer' },
+        allow_download: true,
+      },
+    });
 
-    return { url: directUrl };
+    FileStorage.logger.info(`Uploaded file "${path}" to Dropbox`);
+
+    const url = shareResponse.result.url.replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com');
+    return { url };
   }
 
   static readonly instance: FileStorage = new FileStorage();
