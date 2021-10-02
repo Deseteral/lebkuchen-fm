@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "scripts": {
     "build": "rm -rf dist && parcel build src/admin-panel.html",

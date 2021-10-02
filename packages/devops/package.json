@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "scripts": {
     "test": "npm run test:lint",
