@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lebkuchen FM</title>
+  <meta charset="UTF-8">
+  <style>
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid grey;
+      padding: 8px;
+      max-width: 250px;
+    }
+
+    .sound-input {
+      margin-bottom: 8px;
+    }
+
+    .sound-submit-button {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <form action="/x-sounds" enctype="multipart/form-data" method="post">
+    <div class="input-group">
+      <h2>Add new sound</h2>
+      <input type="file" name="soundFile" class="sound-input">
+      <input type="text"  placeholder="Sound name" name="soundName" class="sound-input">
+      <input type="submit" value="Submit" class="sound-submit-button">
+    </div>
+  </form>
+</body>
+</html>
