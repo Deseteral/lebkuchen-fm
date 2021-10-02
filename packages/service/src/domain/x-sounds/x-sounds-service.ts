@@ -42,7 +42,7 @@ class XSoundsService {
     }
   }
 
-  async createNewSound(name: string, fileDescriptor: { buffer: Buffer, fileName: string }, timesPlayed = 0): Promise<{ url: string}> {
+  async createNewSound(name: string, fileDescriptor: { buffer: Buffer, fileName: string }, timesPlayed = 0): Promise<XSound> {
     const exists = await this.soundExists(name);
     if (exists) {
       throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
@@ -63,7 +63,7 @@ class XSoundsService {
 
     await this.repository.insert(xSound);
 
-    return { url };
+    return xSound;
   }
 
   static readonly instance = new XSoundsService();

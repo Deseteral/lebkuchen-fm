@@ -25,9 +25,8 @@ router.post('/', upload.single('soundFile'), async function addXSound(req, res) 
 
   logger.info(`Uploading x-sound ${soundName}`);
 
-  const url = await XSoundsService.instance.createNewSound(soundName, { buffer, fileName: originalname });
-
-  res.send({ url });
+  const xSound = await XSoundsService.instance.createNewSound(soundName, { buffer, fileName: originalname });
+  res.send(xSound);
 });
 
 export default router;
