@@ -1,5 +1,5 @@
 {
   "scripts": {
-    "build": "mkdir -p ./dist && cp index.html ./dist"
+    "build": "mkdir -p ./dist && cp main-page.html ./dist"
   }
 }
