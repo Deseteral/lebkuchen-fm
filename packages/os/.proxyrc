@@ -1,0 +1,7 @@
+{
+  "/socket.io": {
+    "target": "http://localhost:9000/socket.io",
+    "ws": true,
+    "changeOrigin": true
+  }
+}
