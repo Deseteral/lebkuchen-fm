@@ -1,4 +1,4 @@
-import { Dropbox, sharing } from 'dropbox';
+import { Dropbox } from 'dropbox';
 import Configuration from './configuration';
 import Logger from './logger';
 
