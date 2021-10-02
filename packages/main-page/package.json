@@ -1,4 +1,5 @@
 {
+  "name": "lebkuchen-fm-main-page",
   "scripts": {
     "build": "mkdir -p ./dist && cp main-page.html ./dist"
   }
