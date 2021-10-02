@@ -33,7 +33,10 @@ class FileStorage {
 
     FileStorage.logger.info(`Uploaded file "${path}" to Dropbox`);
 
-    const url = shareResponse.result.url.replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com');
+    const url = shareResponse.result.url
+      .replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com')
+      .replace('?dl=0', '');
+
     return { url };
   }
 
