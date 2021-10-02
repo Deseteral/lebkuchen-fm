@@ -15,11 +15,21 @@ class FileStorage {
   }
 
   async uploadFile({ path, contents }: { path: string, contents: Buffer }): Promise<FileUploadResult> {
+    await this.uploadFileToDropbox(path, contents);
+    const url = await this.getPublicUrlToDropboxFile(path);
+
+    FileStorage.logger.info(`Uploaded file "${path}" to Dropbox`);
+
+    return { url };
+  }
+
+  private async uploadFileToDropbox(path: string, contents: Buffer): Promise<void> {
     FileStorage.logger.info(`Uploading file "${path}" to Dropbox`);
-
     await this.client.filesUpload({ path, contents });
+  }
 
-    FileStorage.logger.info('Setting file permissions');
+  private async getPublicUrlToDropboxFile(path: string): Promise<string> {
+    FileStorage.logger.info(`Setting public permissions for file "${path}"`);
 
     const shareResponse = await this.client.sharingCreateSharedLinkWithSettings({
       path,
@@ -31,13 +41,11 @@ class FileStorage {
       },
     });
 
-    FileStorage.logger.info(`Uploaded file "${path}" to Dropbox`);
-
     const url = shareResponse.result.url
       .replace('https://www.dropbox.com', 'https://dl.dropboxusercontent.com')
       .replace('?dl=0', '');
 
-    return { url };
+    return url;
   }
 
   static readonly instance: FileStorage = new FileStorage();
