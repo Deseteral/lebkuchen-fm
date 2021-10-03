@@ -4,7 +4,7 @@ import PlayerEventStream from '../../../event-stream/player-event-stream';
 import { SkipEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 
-async function skipCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function skipCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const skipAll = command.rawArgs === 'all';
   const amount = (command.rawArgs === '')
     ? 1

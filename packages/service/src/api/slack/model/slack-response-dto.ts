@@ -13,16 +13,14 @@ interface SlackSimpleResponseDto {
   text: string,
 }
 
-function makeSlackSimpleResponse(text: string, visibleToSenderOnly: boolean)
-: SlackSimpleResponseDto {
+function makeSlackSimpleResponse(text: string, visibleToSenderOnly: boolean): SlackSimpleResponseDto {
   return {
     response_type: visibleToSenderOnly ? 'ephemeral' : 'in_channel',
     text,
   };
 }
 
-function mapCommandProcessingResponseToSlackResponse(processingResponse: CommandProcessingResponse)
-: SlackBlockResponseDto {
+function mapCommandProcessingResponseToSlackResponse(processingResponse: CommandProcessingResponse): SlackBlockResponseDto {
   return {
     response_type: processingResponse.isVisibleToIssuerOnly ? 'ephemeral' : 'in_channel',
     blocks: mapMessagesToSlackBlocks(processingResponse.messages),
