@@ -41,10 +41,8 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     setTimeout(() => setMessage(null), 5000);
   };
 
-  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const formData = new FormData();
 
     const files = inputFile.current?.files;
     const soundName = inputSoundName.current?.value;
@@ -56,19 +54,23 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
 
     setIsWaitingForResponse(true);
 
+    const formData = new FormData();
     formData.append('soundFile', files[0]);
     formData.append('soundName', soundName);
 
-    fetch('/x-sounds', { method: 'POST', body: formData })
-      .then((res) => (res.status === 200 ? Promise.resolve(res) : Promise.reject(res)))
-      .then((res) => res.json())
-      .then((data) => displayMessage(`Added new sound ${JSON.stringify(data)}`))
-      .catch((res) => res.json().then((err: ErrorResponse) => displayMessage(`Could not add new sound: ${err.error.message}`)))
-      .finally(() => {
-        setIsWaitingForResponse(false);
-        if (inputFile.current) inputFile.current.value = '';
-        if (inputSoundName.current) inputSoundName.current.value = '';
-      });
+    const response = await fetch('/x-sounds', { method: 'POST', body: formData });
+    const data = await response.json();
+
+    if (response.status === 200) {
+      displayMessage(`Added new sound ${JSON.stringify(data)}`);
+    } else {
+      const errorData: ErrorResponse = data;
+      displayMessage(`Could not add new sound: ${errorData.error.message}`);
+    }
+
+    setIsWaitingForResponse(false);
+    if (inputFile.current) inputFile.current.value = '';
+    if (inputSoundName.current) inputSoundName.current.value = '';
   };
 
   return (
