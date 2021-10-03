@@ -24,7 +24,7 @@ function configureExpress(): void {
   app.use(compression());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(express.static(path.join(__dirname, 'public'), { index: 'main-page.html', extensions: ['html'] }));
+  app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 }
 
 function setupRouting(): void {
