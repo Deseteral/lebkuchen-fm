@@ -4,7 +4,7 @@ import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../
 import SongsService from '../../songs/songs-service';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 
-function parseTimeStringToSeconds(text: string) : (number | undefined) {
+function parseTimeStringToSeconds(text: string): (number | undefined) {
   const [minutes, seconds] = text.split(':');
 
   if (!minutes || !seconds) {
