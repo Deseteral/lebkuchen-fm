@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import ErrorResponse from 'lebkuchen-fm-service/src/api/error-response';
+import { ErrorResponse } from 'lebkuchen-fm-service';
 
 const InputGroup = styled.div`
   display: flex;
