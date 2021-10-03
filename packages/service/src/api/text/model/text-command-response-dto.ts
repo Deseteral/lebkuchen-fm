@@ -4,8 +4,7 @@ interface TextCommandResponseDto {
   textResponse: string,
 }
 
-function mapCommandProcessingResponseToTextCommandResponseDto(processingResponse: CommandProcessingResponse) // eslint-disable-line max-len
-: TextCommandResponseDto {
+function mapCommandProcessingResponseToTextCommandResponseDto(processingResponse: CommandProcessingResponse): TextCommandResponseDto {
   const textResponse = processingResponse.messages
     .map((message) => (('text' in message) ? message.text : null))
     .filter((s) => (s !== null))

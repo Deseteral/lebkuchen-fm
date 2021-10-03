@@ -4,7 +4,7 @@ import { ChangeSpeedEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 
-async function speedCommandProcessor(command: Command) : Promise<CommandProcessingResponse> {
+async function speedCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const arg = command.rawArgs;
   let message: String;
   let event: ChangeSpeedEvent;

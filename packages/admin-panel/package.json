@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "14.x"
+    "node": "16.x"
   },
   "scripts": {
     "build": "rm -rf dist && parcel build src/admin-panel.html",
@@ -19,19 +19,19 @@
   },
   "dependencies": {
     "lebkuchen-fm-service": "*",
-    "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
     "socket.io-client": "2.3.1",
     "styled-components": "5.2.0"
   },
   "devDependencies": {
-    "@deseteral/eslint-config": "3.0.2",
-    "@types/react": "16.9.50",
-    "@types/react-dom": "16.9.8",
+    "@deseteral/eslint-config": "5.0.0",
+    "@types/react": "17.0.27",
+    "@types/react-dom": "17.0.9",
     "@types/socket.io-client": "1.4.34",
     "@types/styled-components": "5.1.4",
-    "eslint": "7.11.0",
-    "parcel": "2.0.0-beta.1",
+    "eslint": "7.32.0",
+    "parcel": "2.0.0-rc.0",
     "typescript": "4.0.3"
   },
   "browserslist": [
