@@ -56,6 +56,28 @@ class XSoundsService {
     await this.repository.replace(updatedSound);
   }
 
+  async removeTag(soundName: string, tag: string): Promise<void> {
+    const xSound = await this.repository.findByName(soundName);
+
+    if (!xSound) {
+      throw new Error(`Dźwięk "${soundName}" nie istnieje`);
+    }
+
+    const tags = (xSound.tags || []);
+
+    const searchIndex = tags.indexOf(tag);
+    if (searchIndex > -1) {
+      tags.splice(searchIndex, 1);
+    }
+
+    const updatedSound = {
+      ...xSound,
+      tags,
+    };
+
+    await this.repository.replace(updatedSound);
+  }
+
   async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
     const exists = await this.soundExists(name);
     if (exists) {
