@@ -18,6 +18,7 @@ async function tagListCommandProcessor(_: Command): Promise<CommandProcessingRes
 
 const tagListCommandDefinition: CommandDefinition = {
   key: 'tag-list',
+  shortKey: 'tl',
   processor: tagListCommandProcessor,
   helpMessage: 'Wyświetla wszystkie unikatowe tagi',
 };
