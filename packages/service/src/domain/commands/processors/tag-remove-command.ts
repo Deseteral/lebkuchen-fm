@@ -21,7 +21,8 @@ const tagRemoveCommandDefinition: CommandDefinition = {
   processor: tagRemoveCommandProcessor,
   helpMessage: 'Usuwa tag z podanego dźwięku',
   helpUsages: [
-    '<tag-name> <sound name>',
+    '<tag-name>|<sound name>',
+    'fun stuff|airhorn',
   ],
 };
 

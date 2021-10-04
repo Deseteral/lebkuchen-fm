@@ -22,7 +22,8 @@ const tagAddCommandDefinition: CommandDefinition = {
   processor: tagAddCommandProcessor,
   helpMessage: 'Dodaje tag do podanego dźwięku',
   helpUsages: [
-    '<tag-name> <sound name>',
+    '<tag-name>|<sound name>',
+    'fun stuff|airhorn',
   ],
 };
 
