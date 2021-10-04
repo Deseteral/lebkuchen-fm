@@ -22,6 +22,10 @@ class XSoundsService {
     return xSound;
   }
 
+  async getAllByTag(tag: string): Promise<XSound[]> {
+    return this.repository.findAllByTagOrderByNameAsc(tag);
+  }
+
   async soundExists(soundName: string): Promise<boolean> {
     const xSound = await this.repository.findByName(soundName);
     return !!xSound;
