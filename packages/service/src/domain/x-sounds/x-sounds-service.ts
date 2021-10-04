@@ -78,6 +78,16 @@ class XSoundsService {
     await this.repository.replace(updatedSound);
   }
 
+  async getSoundTags(soundName: string): Promise<string[]> {
+    const xSound = await this.repository.findByName(soundName);
+
+    if (!xSound) {
+      throw new Error(`Dźwięk "${soundName}" nie istnieje`);
+    }
+
+    return (xSound.tags || []);
+  }
+
   async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
     const exists = await this.soundExists(name);
     if (exists) {

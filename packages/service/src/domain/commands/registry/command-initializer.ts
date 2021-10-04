@@ -15,6 +15,7 @@ import VolumeCommand from '../processors/volume-command';
 import XCommand from '../processors/x-command';
 import TagAddCommand from '../processors/tag-add-command';
 import TagRemove from '../processors/tag-remove-command';
+import TagShow from '../processors/tag-show-command';
 
 function initialize(): void {
   [
@@ -34,6 +35,7 @@ function initialize(): void {
     TagAddCommand,
     TagRemove,
     XCommand,
+    TagShow,
   ].forEach((command) => CommandRegistryService.instance.register(command));
 }
 
