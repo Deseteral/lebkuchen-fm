@@ -88,6 +88,15 @@ class XSoundsService {
     return (xSound.tags || []);
   }
 
+  async getAllUniqueTags(): Promise<string[]> {
+    const sounds = await this.getAll();
+    const tags = sounds.flatMap((sound) => (sound.tags || []));
+    const uniqueTags = Array.from(new Set(tags));
+    const sortedTags = uniqueTags.sort();
+
+    return sortedTags;
+  }
+
   async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
     const exists = await this.soundExists(name);
     if (exists) {

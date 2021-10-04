@@ -16,6 +16,7 @@ import XCommand from '../processors/x-command';
 import TagAddCommand from '../processors/tag-add-command';
 import TagRemove from '../processors/tag-remove-command';
 import TagShow from '../processors/tag-show-command';
+import TagList from '../processors/tag-list-command';
 
 function initialize(): void {
   [
@@ -33,6 +34,7 @@ function initialize(): void {
     SpeedCommand,
     VolumeCommand,
     TagAddCommand,
+    TagList,
     TagRemove,
     XCommand,
     TagShow,
