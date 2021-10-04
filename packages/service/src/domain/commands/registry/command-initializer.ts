@@ -13,6 +13,7 @@ import SkipCommand from '../processors/skip-command';
 import SpeedCommand from '../processors/speed-command';
 import VolumeCommand from '../processors/volume-command';
 import XCommand from '../processors/x-command';
+import TagAddCommand from '../processors/tag-add-command';
 
 function initialize(): void {
   [
@@ -29,6 +30,7 @@ function initialize(): void {
     SkipCommand,
     SpeedCommand,
     VolumeCommand,
+    TagAddCommand,
     XCommand,
   ].forEach((command) => CommandRegistryService.instance.register(command));
 }
