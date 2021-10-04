@@ -107,6 +107,7 @@ class XSoundsService {
       name,
       url,
       timesPlayed,
+      tags: [],
     };
 
     await this.repository.insert(xSound);
