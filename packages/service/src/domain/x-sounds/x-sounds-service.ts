@@ -50,7 +50,7 @@ class XSoundsService {
     const tags = (xSound.tags || []);
     const updatedSound = {
       ...xSound,
-      tags: [...tags, tag],
+      tags: Array.from(new Set([...tags, tag])),
     };
 
     await this.repository.replace(updatedSound);
