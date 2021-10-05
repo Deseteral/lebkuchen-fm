@@ -48,7 +48,7 @@ async function helpCommandProcessor(): Promise<CommandProcessingResponse> {
       messages.push({ type: 'CONTEXT', text });
     }
 
-    messages.push({ type: 'DIVIDER' });
+    // messages.push({ type: 'DIVIDER' });
   });
 
   return {
