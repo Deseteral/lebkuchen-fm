@@ -47,15 +47,4 @@ router.post('/', upload.single('soundFile'), async function addXSound(req, res) 
   }
 });
 
-// TODO: To be removed after migration
-router.post('/migration', async function xSoundsMigration(_, res) {
-  try {
-    await XSoundsService.instance.migration();
-    res.status(StatusCodes.OK);
-  } catch {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR);
-  }
-  res.send();
-});
-
 export default router;
