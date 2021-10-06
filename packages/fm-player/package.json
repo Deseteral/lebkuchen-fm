@@ -16,7 +16,10 @@
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
     "test:type-check:watch": "npm run test:type-check -- --watch",
-    "test:lint": "eslint src --ext js,jsx,ts,tsx"
+    "test:lint": "eslint src --ext js,jsx,ts,tsx",
+    "watch-css": "parcel watch resources/css/style.css --dist-dir public/css --public-url /css",
+    "build-css": "parcel build resources/css/style.css --dist-dir public/css --public-url /css --no-hmr",
+    "production-css": "NODE_ENV=production parcel build resources/css/style.css --dist-dir public/css --public-url /css --no-content-hash --no-source-maps"
   },
   "dependencies": {
     "lebkuchen-fm-service": "*",
@@ -34,8 +37,13 @@
     "@types/socket.io-client": "1.4.34",
     "@types/styled-components": "5.1.4",
     "@types/yt-player": "3.4.2",
+    "autoprefixer": "10.3.6",
+    "cssnano": "5.0.8",
     "eslint": "7.32.0",
     "parcel": "2.0.0-rc.0",
+    "postcss": "8.3.8",
+    "postcss-import": "14.0.2",
+    "tailwindcss": "2.2.16",
     "typescript": "4.0.3"
   },
   "browserslist": [

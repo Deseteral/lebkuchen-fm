@@ -9,7 +9,9 @@ function YouTubePlayer() {
   }, []);
 
   return (
-    <div id={YOUTUBE_PLAYER_DOM_ID} />
+    <div>
+      <div id={YOUTUBE_PLAYER_DOM_ID} />
+    </div>
   );
 }
 

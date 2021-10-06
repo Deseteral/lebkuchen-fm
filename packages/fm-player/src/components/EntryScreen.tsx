@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import App from './App';
+import Init from './Init';
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -26,13 +27,7 @@ function EntryScreen() {
   return (
     <div>
       {activated && <App />}
-      {!activated && (
-        <ButtonContainer>
-          <EntryButton onClick={() => setActivated(true)} type="button">
-            Obudź Aldonkę!
-          </EntryButton>
-        </ButtonContainer>
-      )}
+      {!activated && <Init action={() => setActivated(true)} />}
     </div>
   );
 }
