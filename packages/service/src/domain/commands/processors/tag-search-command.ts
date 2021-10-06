@@ -10,7 +10,15 @@ async function tagSearchCommandProcessor(command: Command): Promise<CommandProce
   }
 
   const sounds = await XSoundsService.instance.getAllByTag(tagName);
-  const tagListText = sounds.map((sound) => sound.name).join('\n');
+
+  if (sounds.length === 0) {
+    throw new Error(`Nie ma dźwięków z tagiem "${tagName}"`);
+  }
+
+  const tagListText = sounds
+    .map((sound) => sound.name)
+    .map((soundName) => `- ${soundName}`)
+    .join('\n');
 
   return {
     messages: [

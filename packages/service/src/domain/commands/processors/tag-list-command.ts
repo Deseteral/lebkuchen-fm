@@ -5,7 +5,14 @@ import XSoundsService from '../../x-sounds/x-sounds-service';
 
 async function tagListCommandProcessor(_: Command): Promise<CommandProcessingResponse> {
   const tags = await XSoundsService.instance.getAllUniqueTags();
-  const tagListText = tags.join('\n');
+
+  if (tags.length === 0) {
+    throw new Error('Aktualnie nie ma żadnych tagów');
+  }
+
+  const tagListText = tags
+    .map((tagName) => `- ${tagName}`)
+    .join('\n');
 
   return {
     messages: [

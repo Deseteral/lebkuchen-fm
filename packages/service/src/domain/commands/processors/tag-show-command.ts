@@ -10,7 +10,14 @@ async function tagShowCommandProcessor(command: Command): Promise<CommandProcess
   }
 
   const tags = await XSoundsService.instance.getSoundTags(soundName);
-  const tagListText = tags.join('\n');
+
+  if (tags.length === 0) {
+    throw new Error(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`);
+  }
+
+  const tagListText = tags
+    .map((tagName) => `- ${tagName}`)
+    .join('\n');
 
   return {
     messages: [
