@@ -1,24 +1,23 @@
 import * as React from 'react';
 import App from './App';
-import Init from './Init';
+import SplashScreen from './SplashScreen';
 import XSoundUploadForm from './XSoundUploadForm';
 
-const screens = {
-  ENTRY: 'ENTRY',
-  PLAYER: 'PLAYER',
-  UPLOAD: 'UPLOAD',
-};
+export enum Screens {
+  Splash,
+  Player,
+  Upload
+}
 
 function EntryScreen() {
-  const [screen, setScreen] = React.useState<String>(screens.ENTRY);
+  const [screen, setScreen] = React.useState<Screens>(Screens.Splash);
 
   return (
     <div>
-      {screen === 'PLAYER' && <App />}
-      {screen === 'ENTRY' && <Init action={setScreen} />}
-      {screen === 'UPLOAD' && <XSoundUploadForm />}
+      {screen === Screens.Player && <App />}
+      {screen === Screens.Splash && <SplashScreen setScreen={setScreen} />}
+      {screen === Screens.Upload && <XSoundUploadForm />}
     </div>
   );
 }
-
 export default EntryScreen;

@@ -14,19 +14,20 @@ function App() {
     SpeechService.initialize();
 
     PlayerStateService.onStateChange((nextState?: PlayerState) => {
-      setPlayerState(nextState ? {
+      if (!nextState) return;
+      setPlayerState({
         currentlyPlaying: nextState.currentlyPlaying,
         queue: nextState.queue,
         isPlaying: nextState.isPlaying,
-      } as PlayerState : null);
+      } as PlayerState);
     });
   }, []);
 
+  if (playerState === null) return (<div />);
+
   return (
     <div className="relative">
-      <NowPlaying
-        playerState={playerState}
-      />
+      {playerState && (<NowPlaying playerState={playerState} />)}
       <YouTubePlayer />
     </div>
   );

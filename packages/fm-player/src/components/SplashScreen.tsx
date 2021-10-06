@@ -1,10 +1,11 @@
 import * as React from 'react';
+import { Screens } from './EntryScreen';
 
-interface InitProps {
-  action: (screen: String) => void,
+interface SplashScreenProps {
+  setScreen: (screen: Screens) => void,
 }
 
-function Init({ action }: InitProps) {
+function SplashScreen({ setScreen }: SplashScreenProps) {
   return (
     <div className="bg-gray-900 bg-opacity-75 m-8 rounded-xl">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
@@ -16,7 +17,7 @@ function Init({ action }: InitProps) {
           <div className="inline-flex rounded-md shadow mr-8">
             <button
               type="button"
-              onClick={() => action('PLAYER')}
+              onClick={() => setScreen(Screens.Player)}
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-200 text-4xl bg-indigo-600 hover:bg-indigo-700"
             >
               🏎️ Eeee...
@@ -25,7 +26,7 @@ function Init({ action }: InitProps) {
           <div className="inline-flex rounded-md shadow">
             <button
               type="button"
-              onClick={() => action('UPLOAD')}
+              onClick={() => action(Screens.Upload)}
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Dodaj dźwięk
@@ -38,4 +39,4 @@ function Init({ action }: InitProps) {
   );
 }
 
-export default Init;
+export default SplashScreen;

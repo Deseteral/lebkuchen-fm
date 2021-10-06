@@ -16,10 +16,7 @@
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
     "test:type-check:watch": "npm run test:type-check -- --watch",
-    "test:lint": "eslint src --ext js,jsx,ts,tsx",
-    "watch-css": "parcel watch resources/css/style.css --dist-dir public/css --public-url /css",
-    "build-css": "parcel build resources/css/style.css --dist-dir public/css --public-url /css --no-hmr",
-    "production-css": "NODE_ENV=production parcel build resources/css/style.css --dist-dir public/css --public-url /css --no-content-hash --no-source-maps"
+    "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
     "lebkuchen-fm-service": "*",
