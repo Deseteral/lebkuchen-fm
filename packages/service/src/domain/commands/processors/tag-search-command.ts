@@ -22,7 +22,7 @@ async function tagSearchCommandProcessor(command: Command): Promise<CommandProce
 
   return {
     messages: [
-      { type: 'HEADER', text: `Dźwięki z tagiem ${tagName}` },
+      { type: 'HEADER', text: `Dźwięki z tagiem "${tagName}"` },
       { type: 'MARKDOWN', text: tagListText },
     ],
     isVisibleToIssuerOnly: false,

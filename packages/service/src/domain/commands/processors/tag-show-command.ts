@@ -21,7 +21,7 @@ async function tagShowCommandProcessor(command: Command): Promise<CommandProcess
 
   return {
     messages: [
-      { type: 'HEADER', text: `${soundName} tags` },
+      { type: 'HEADER', text: `Tagi dla "${soundName}"` },
       { type: 'MARKDOWN', text: tagListText },
     ],
     isVisibleToIssuerOnly: false,
