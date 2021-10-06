@@ -1,5 +1,5 @@
 import http from 'http';
-import socketIo from 'socket.io';
+import SocketIO from 'socket.io';
 import Logger from '../infrastructure/logger';
 import AdminEventStream from './admin-event-stream';
 import { AdminEventData } from './model/admin-events';
@@ -16,7 +16,7 @@ class EventStream {
   private constructor() { } // eslint-disable-line no-empty-function
 
   initialize(server: http.Server): void {
-    this.io = socketIo(server, { serveClient: false });
+    this.io = new SocketIO.Server(server, { serveClient: false });
 
     this.playerNamespace = this.io.of('/player');
     this.playerNamespace.on('connection', (socket) => {
@@ -37,11 +37,11 @@ class EventStream {
     });
   }
 
-  getPrimaryPlayerSocket(): SocketIO.Socket {
+  getPrimaryPlayerSocket(): (SocketIO.Socket | null) {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
 
-    const primaryClientId = Object.keys(this.playerNamespace.sockets)[0];
-    return this.playerNamespace.sockets[primaryClientId];
+    const primaryClientId = this.playerNamespace.sockets.keys().next().value;
+    return this.playerNamespace.sockets.get(primaryClientId) || null;
   }
 
   playerBroadcast(eventData: EventData): void {
@@ -60,7 +60,7 @@ class EventStream {
 
   getConnectedPlayerIds(): string[] {
     if (!this.playerNamespace) throw EventStream.notInitializedError;
-    return Object.keys(this.playerNamespace.sockets);
+    return Array.from(this.playerNamespace.sockets.keys());
   }
 
   private static get notInitializedError(): Error {

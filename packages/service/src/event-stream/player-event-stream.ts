@@ -1,3 +1,4 @@
+import SocketIO from 'socket.io';
 import PlayerState, { makeDefaultPlayerState } from '../domain/player-state/player-state';
 import EventStream from './event-stream';
 import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './model/events';
@@ -35,7 +36,7 @@ class PlayerEventStream {
     const reqEventData: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
     const primaryClient = this.eventStream.getPrimaryPlayerSocket();
 
-    primaryClient.send(reqEventData, (primaryClientState: PlayerState) => {
+    primaryClient?.send(reqEventData, (primaryClientState: PlayerState) => {
       const updateEventData: PlayerStateUpdateEvent = {
         id: 'PlayerStateUpdateEvent',
         state: primaryClientState,
