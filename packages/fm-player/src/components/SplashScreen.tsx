@@ -26,7 +26,7 @@ function SplashScreen({ setScreen }: SplashScreenProps) {
           <div className="inline-flex rounded-md shadow">
             <button
               type="button"
-              onClick={() => action(Screens.Upload)}
+              onClick={() => setScreen(Screens.Upload)}
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Dodaj dźwięk
