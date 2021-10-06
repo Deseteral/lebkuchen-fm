@@ -1,5 +1,5 @@
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import Command from '../model/command';
 import XSoundsService from '../../x-sounds/x-sounds-service';
 
@@ -7,7 +7,7 @@ async function tagListCommandProcessor(_: Command): Promise<CommandProcessingRes
   const tags = await XSoundsService.instance.getAllUniqueTags();
 
   if (tags.length === 0) {
-    throw new Error('Aktualnie nie ma żadnych tagów');
+    return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów', false);
   }
 
   const tagListText = tags

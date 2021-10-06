@@ -1,7 +1,7 @@
 import XSoundsService from '../../x-sounds/x-sounds-service';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse from '../model/command-processing-response';
+import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 
 async function tagShowCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const soundName = command.rawArgs.trim();
@@ -12,7 +12,7 @@ async function tagShowCommandProcessor(command: Command): Promise<CommandProcess
   const tags = await XSoundsService.instance.getSoundTags(soundName);
 
   if (tags.length === 0) {
-    throw new Error(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`);
+    return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`, false);
   }
 
   const tagListText = tags
