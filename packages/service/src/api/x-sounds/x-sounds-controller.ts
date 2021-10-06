@@ -2,6 +2,7 @@
 import express from 'express';
 import multer from 'multer';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Container } from 'typedi';
 import XSoundsService from '../../domain/x-sounds/x-sounds-service';
 import Logger from '../../infrastructure/logger';
 import ErrorResponse from '../error-response';
@@ -11,7 +12,7 @@ const logger = new Logger('x-sound-upload-controller');
 const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/', async function getXSounds(_, res) {
-  const sounds = await XSoundsService.instance.getAll();
+  const sounds = await Container.get(XSoundsService).getAll();
   res.send({ sounds });
 });
 
@@ -32,7 +33,7 @@ router.post('/', upload.single('soundFile'), async function addXSound(req, res) 
   logger.info(`Uploading x-sound ${soundName}`);
 
   try {
-    const xSound = await XSoundsService.instance.createNewSound(soundName, { buffer, fileName: originalname });
+    const xSound = await Container.get(XSoundsService).createNewSound(soundName, { buffer, fileName: originalname });
     res.send(xSound);
   } catch (e) {
     const errorMessage = (e as Error).message;

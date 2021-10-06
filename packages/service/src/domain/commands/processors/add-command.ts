@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
@@ -30,7 +31,7 @@ async function addCommandProcessor(command: Command): Promise<CommandProcessingR
 
   const [youtubeId, name, trimStart, trimEnd] = songDetails;
 
-  const foundSong = await SongsService.instance.getByName(name);
+  const foundSong = await Container.get(SongsService).getByName(name);
   if (foundSong !== null) {
     throw new Error(`Utwór o tytule "${name}" już jest w bazie`);
   }
@@ -43,7 +44,7 @@ async function addCommandProcessor(command: Command): Promise<CommandProcessingR
 
   const trimStartSeconds = trimStart ? parseTimeStringToSeconds(trimStart) : undefined;
   const trimEndSeconds = trimEnd ? parseTimeStringToSeconds(trimEnd) : undefined;
-  SongsService.instance.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
+  Container.get(SongsService).createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
   return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`, false);
 }

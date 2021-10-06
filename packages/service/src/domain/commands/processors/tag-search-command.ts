@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import XSoundsService from '../../x-sounds/x-sounds-service';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
@@ -9,7 +10,7 @@ async function tagSearchCommandProcessor(command: Command): Promise<CommandProce
     throw new Error('Podaj nazwę tagu');
   }
 
-  const sounds = await XSoundsService.instance.getAllByTag(tagName);
+  const sounds = await Container.get(XSoundsService).getAllByTag(tagName);
 
   if (sounds.length === 0) {
     return makeSingleTextProcessingResponse(`Nie ma dźwięków z tagiem "${tagName}"`, false);

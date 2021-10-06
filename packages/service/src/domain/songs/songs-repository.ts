@@ -1,9 +1,12 @@
-import Repository from '../../infrastructure/repository';
+import { Service } from 'typedi';
 import Song from './song';
+import Storage from '../../infrastructure/storage';
+import Repository from '../../infrastructure/repository';
 
+@Service()
 class SongsRepository extends Repository<Song> {
-  private constructor() {
-    super('songs');
+  private constructor(storage: Storage) {
+    super('songs', storage);
   }
 
   findAllOrderByTimesPlayedDesc(): Promise<Song[]> {
@@ -25,8 +28,6 @@ class SongsRepository extends Repository<Song> {
   async replace(song: Song): Promise<void> {
     await this.collection.replaceOne({ _id: song._id }, song);
   }
-
-  static readonly instance = new SongsRepository();
 }
 
 export default SongsRepository;

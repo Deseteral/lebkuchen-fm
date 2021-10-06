@@ -1,10 +1,11 @@
+import { Container } from 'typedi';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import Command from '../model/command';
 import XSoundsService from '../../x-sounds/x-sounds-service';
 
 async function tagListCommandProcessor(_: Command): Promise<CommandProcessingResponse> {
-  const tags = await XSoundsService.instance.getAllUniqueTags();
+  const tags = await Container.get(XSoundsService).getAllUniqueTags();
 
   if (tags.length === 0) {
     return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów', false);

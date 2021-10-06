@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import Command from '../model/command';
@@ -8,7 +9,7 @@ import YouTubeDataClient from '../../../youtube/youtube-data-client';
 
 async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
   const songName = command.rawArgs;
-  const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
+  const song = await Container.get(SongsService).getSongByNameWithYouTubeIdFallback(songName);
 
   const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
 
@@ -19,7 +20,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
   PlayerEventStream.instance.sendToEveryone(eventData);
 
-  SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
+  Container.get(SongsService).incrementPlayCount(song.youtubeId, song.name);
 
   return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
 }

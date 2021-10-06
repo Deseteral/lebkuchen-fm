@@ -1,8 +1,10 @@
+import 'reflect-metadata';
 import http from 'http';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
+import Container from 'typedi';
 import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
@@ -40,7 +42,7 @@ function runApplication(): void {
 }
 
 Promise.resolve()
-  .then(() => Storage.instance.connect())
+  .then(() => Container.get(Storage).connect())
   .then(() => CommandInitializer.initialize())
   .then(() => EventStream.instance.initialize(server))
   .then(configureExpress)

@@ -3,13 +3,15 @@ import Storage from './storage';
 
 abstract class Repository<T> {
   private collectionName: string;
+  private storage: Storage;
 
-  constructor(collectionName: string) {
+  constructor(collectionName: string, storage: Storage) {
     this.collectionName = collectionName;
+    this.storage = storage;
   }
 
   protected get collection(): Collection<T> {
-    return Storage.instance.collection<T>(this.collectionName);
+    return this.storage.collection<T>(this.collectionName);
   }
 }
 

@@ -1,13 +1,15 @@
 import { Collection, Db, MongoClient } from 'mongodb';
+import { Service } from 'typedi';
 import Configuration from '../infrastructure/configuration';
 import Logger from '../infrastructure/logger';
 
+@Service()
 class Storage {
   private static logger = new Logger('mongo-client');
   private client: MongoClient;
   private db?: Db;
 
-  private constructor() {
+  constructor() {
     this.client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
   }
 
@@ -26,8 +28,6 @@ class Storage {
     }
     return this.db.collection(collectionName);
   }
-
-  static readonly instance: Storage = new Storage();
 }
 
 export default Storage;

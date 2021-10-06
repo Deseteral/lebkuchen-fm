@@ -1,9 +1,10 @@
+import { Container } from 'typedi';
 import CommandProcessingResponse from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
 import XSoundsService from '../../x-sounds/x-sounds-service';
 
 async function listXCommandProcessor(): Promise<CommandProcessingResponse> {
-  const sounds = await XSoundsService.instance.getAll();
+  const sounds = await Container.get(XSoundsService).getAll();
 
   if (sounds.length === 0) {
     throw new Error('Brak dźwięków w bazie');

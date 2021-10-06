@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
@@ -12,7 +13,7 @@ async function tagAddCommandProcessor(command: Command): Promise<CommandProcessi
 
   const [tagName, soundName] = commandArgs;
 
-  await XSoundsService.instance.addTag(soundName, tagName);
+  await Container.get(XSoundsService).addTag(soundName, tagName);
   return makeSingleTextProcessingResponse(`Dodano tag "${tagName}" do dźwięku ${soundName}`, false);
 }
 

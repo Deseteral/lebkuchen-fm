@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
@@ -36,7 +37,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
     ? 1
     : parseInt(command.rawArgs, 10);
 
-  const songsList = await SongsService.instance.getAll();
+  const songsList = await Container.get(SongsService).getAll();
   const maxAllowedValue = songsList.length;
 
   if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
@@ -51,7 +52,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
   PlayerEventStream.instance.sendToEveryone(eventData);
 
   songsToQueue.forEach((song) => {
-    SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
+    Container.get(SongsService).incrementPlayCount(song.youtubeId, song.name);
   });
   const text = buildMessage(songsToQueue);
 

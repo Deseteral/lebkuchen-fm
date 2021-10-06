@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import Command from '../model/command';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import CommandDefinition from '../model/command-definition';
@@ -12,7 +13,7 @@ async function tagRemoveCommandProcessor(command: Command): Promise<CommandProce
 
   const [tagName, soundName] = commandArgs;
 
-  await XSoundsService.instance.removeTag(soundName, tagName);
+  await Container.get(XSoundsService).removeTag(soundName, tagName);
   return makeSingleTextProcessingResponse(`Usunięto tag "${tagName}" z dźwięku ${soundName}`, false);
 }
 

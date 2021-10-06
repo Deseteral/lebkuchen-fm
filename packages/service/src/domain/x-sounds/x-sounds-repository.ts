@@ -1,9 +1,12 @@
-import Repository from '../../infrastructure/repository';
+import { Service } from 'typedi';
 import XSound from './x-sound';
+import Storage from '../../infrastructure/storage';
+import Repository from '../../infrastructure/repository';
 
+@Service()
 class XSoundsRepository extends Repository<XSound> {
-  private constructor() {
-    super('x');
+  private constructor(storage: Storage) {
+    super('x', storage);
   }
 
   findAllOrderByNameAsc(): Promise<XSound[]> {
@@ -25,8 +28,6 @@ class XSoundsRepository extends Repository<XSound> {
   async replace(sound: XSound): Promise<void> {
     await this.collection.replaceOne({ _id: sound._id }, sound);
   }
-
-  static readonly instance = new XSoundsRepository();
 }
 
 export default XSoundsRepository;

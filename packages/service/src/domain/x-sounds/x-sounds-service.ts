@@ -1,14 +1,12 @@
 import path from 'path';
+import { Service } from 'typedi';
 import XSoundsRepository from './x-sounds-repository';
 import XSound from './x-sound';
 import FileStorage from '../../infrastructure/file-storage';
 
+@Service()
 class XSoundsService {
-  private repository: XSoundsRepository;
-
-  private constructor() {
-    this.repository = XSoundsRepository.instance;
-  }
+  constructor(private repository: XSoundsRepository) { }
 
   getAll(): Promise<XSound[]> {
     return this.repository.findAllOrderByNameAsc();
@@ -126,8 +124,6 @@ class XSoundsService {
 
     return xSound;
   }
-
-  static readonly instance = new XSoundsService();
 }
 
 export default XSoundsService;

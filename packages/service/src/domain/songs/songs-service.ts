@@ -1,13 +1,11 @@
+import { Service } from 'typedi';
 import SongsRepository from './songs-repository';
 import YouTubeDataClient from '../../youtube/youtube-data-client';
 import Song from './song';
 
+@Service()
 class SongsService {
-  private repository: SongsRepository;
-
-  private constructor() {
-    this.repository = SongsRepository.instance;
-  }
+  constructor(private repository: SongsRepository) { }
 
   async getByName(name: string): Promise<Song | null> {
     return this.repository.findByName(name);
@@ -56,8 +54,6 @@ class SongsService {
     const song = await this.createNewSong(youTubeId);
     return song;
   }
-
-  static readonly instance = new SongsService();
 }
 
 export default SongsService;

@@ -31,11 +31,14 @@
     "mongodb": "3.6.2",
     "multer": "1.4.3",
     "node-fetch": "2.6.1",
-    "socket.io": "2.3.0"
+    "reflect-metadata": "0.1.13",
+    "socket.io": "2.3.0",
+    "typedi": "0.10.0"
   },
   "devDependencies": {
     "@babel/cli": "7.11.6",
     "@babel/core": "7.11.6",
+    "@babel/plugin-proposal-decorators": "7.15.4",
     "@babel/preset-env": "7.11.5",
     "@babel/preset-typescript": "7.10.4",
     "@deseteral/eslint-config": "5.0.0",
@@ -46,6 +49,7 @@
     "@types/multer": "1.4.7",
     "@types/node-fetch": "2.5.7",
     "@types/socket.io": "2.1.11",
+    "babel-plugin-transform-typescript-metadata": "0.3.2",
     "eslint": "7.32.0",
     "typescript": "4.0.3"
   },
@@ -60,13 +64,23 @@
         }
       ],
       "@babel/typescript"
+    ],
+    "plugins": [
+      "babel-plugin-transform-typescript-metadata",
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ]
     ]
   },
   "eslintConfig": {
     "extends": "@deseteral/eslint-config/typescript",
     "rules": {
       "@typescript-eslint/explicit-function-return-type": "error",
-      "max-len": "off"
+      "max-len": "off",
+      "no-empty-function": "off"
     }
   }
 }
