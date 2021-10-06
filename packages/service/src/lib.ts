@@ -3,6 +3,7 @@ import PlayerState, { makeDefaultPlayerState } from './domain/player-state/playe
 import Song from './domain/songs/song';
 import { Log } from './infrastructure/logger';
 import { AdminEventData } from './event-stream/model/admin-events';
+import ErrorResponse from './api/error-response';
 
 export {
   SpeedControl,
@@ -12,4 +13,5 @@ export {
   Song,
   Log,
   AdminEventData,
+  ErrorResponse,
 };

@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import express from 'express';
-import SongsService from './songs-service';
+import SongsService from '../../domain/songs/songs-service';
 
 const router = express.Router();
 

@@ -1,5 +1,4 @@
 import AddCommand from '../processors/add-command';
-import AddXCommand from '../processors/add-x-command';
 import CommandRegistryService from './command-registry-service';
 import HelpCommand from '../processors/help-command';
 import ListXCommand from '../processors/list-x-command';
@@ -22,7 +21,6 @@ import XCommand from '../processors/x-command';
 function initialize(): void {
   [
     AddCommand,
-    AddXCommand,
     HelpCommand,
     ListXCommand,
     PauseCommand,
