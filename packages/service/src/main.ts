@@ -11,8 +11,8 @@ import EventStream from './event-stream/event-stream';
 
 import SlackCommandController from './api/slack/slack-command-controller';
 import TextCommandController from './api/text/text-command-controller';
-import XSoundsController from './domain/x-sounds/x-sounds-controller';
-import SongsController from './domain/songs/songs-controller';
+import XSoundsController from './api/x-sounds/x-sounds-controller';
+import SongsController from './api/songs/songs-controller';
 
 import './polyfills';
 

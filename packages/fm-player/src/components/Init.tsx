@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface InitProps {
-  action: (init: boolean) => boolean,
+  action: (screen: String) => void,
 }
 
 function Init({ action }: InitProps) {
@@ -13,13 +13,22 @@ function Init({ action }: InitProps) {
           <span className="block">No to jedziemy?</span>
         </h2>
         <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
-          <div className="inline-flex rounded-md shadow">
+          <div className="inline-flex rounded-md shadow mr-8">
             <button
               type="button"
-              onClick={() => action(true)}
+              onClick={() => action('PLAYER')}
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-200 text-4xl bg-indigo-600 hover:bg-indigo-700"
             >
               🏎️ Eeee...
+            </button>
+          </div>
+          <div className="inline-flex rounded-md shadow">
+            <button
+              type="button"
+              onClick={() => action('UPLOAD')}
+              className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
+            >
+              Dodaj dźwięk
             </button>
           </div>
           <div className="ml-3 inline-flex rounded-md shadow" />

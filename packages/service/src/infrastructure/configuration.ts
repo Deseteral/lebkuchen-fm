@@ -7,6 +7,7 @@ interface ConfigurationT {
   YOUTUBE_API_KEY: string,
   SLACK_CHANNEL_ID: string,
   COMMAND_PROMPT: string,
+  DROPBOX_TOKEN: string,
 }
 
 const Configuration: ConfigurationT = {
@@ -16,6 +17,7 @@ const Configuration: ConfigurationT = {
   YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || '',
   SLACK_CHANNEL_ID: process.env.SLACK_CHANNEL_ID || '',
   COMMAND_PROMPT: process.env.COMMAND_PROMPT || '/fm',
+  DROPBOX_TOKEN: process.env.DROPBOX_TOKEN || '',
 };
 
 export default Configuration;

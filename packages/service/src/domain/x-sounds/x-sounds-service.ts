@@ -1,5 +1,7 @@
+import path from 'path';
 import XSoundsRepository from './x-sounds-repository';
 import XSound from './x-sound';
+import FileStorage from '../../infrastructure/file-storage';
 
 class XSoundsService {
   private repository: XSoundsRepository;
@@ -40,11 +42,17 @@ class XSoundsService {
     }
   }
 
-  async createNewSound(name: string, url: string, timesPlayed = 0): Promise<void> {
+  async createNewSound(name: string, fileDescriptor: { buffer: Buffer, fileName: string }, timesPlayed = 0): Promise<XSound> {
     const exists = await this.soundExists(name);
     if (exists) {
       throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
     }
+
+    const fileExtension = path.extname(fileDescriptor.fileName);
+    const { url } = await FileStorage.instance.uploadFile({
+      path: `/xsounds/${name}${fileExtension}`,
+      contents: fileDescriptor.buffer,
+    });
 
     const xSound: XSound = {
       name,
@@ -53,6 +61,8 @@ class XSoundsService {
     };
 
     await this.repository.insert(xSound);
+
+    return xSound;
   }
 
   static readonly instance = new XSoundsService();

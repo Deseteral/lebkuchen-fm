@@ -20,10 +20,7 @@ npm run build
 ```
 
 To run the application locally you have to have MongoDB installed and running on localhost. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).\
-Then create `.env` file in the root of this project and put YouTube Data API key in it (required if you want to use YouTube features):
-```
-YOUTUBE_API_KEY=<your-youtube-data-api-key>
-```
+Then create `.env` file in the root of this project and put desired configuration variables in it (refer to [Service > Configuration](#Configuration) section of this document for available options).
 
 When that's done you can just start the application:
 ```sh
@@ -121,6 +118,26 @@ Returns list of all XSounds in the database.
     },
     // ...
   ]
+}
+```
+
+---
+
+`POST /x-sounds` \
+Adds new sound file to X Sounds database.
+
+**Request** \
+Requires content type to be `multipart/form-data` with fields:
+- `soundName`: name of the sound to be added (like _"bruh"_)
+- `soundFile`: sound [File](https://developer.mozilla.org/en-US/docs/Web/API/File) ideally in mp3 or wav format
+
+**Response**
+```jsonc
+{
+  "_id": "storage_id",
+  "name": "my new sound",
+  "url": "https://example.com/example_sound.wav",
+  "timesPlayed": 0
 }
 ```
 

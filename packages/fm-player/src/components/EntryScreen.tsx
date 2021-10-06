@@ -1,33 +1,22 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import App from './App';
 import Init from './Init';
+import XSoundUploadForm from './XSoundUploadForm';
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-`;
-
-const EntryButton = styled.button`
-  color: white;
-  background: palevioletred;
-  font-size: 32px;
-  padding: 13px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
+const screens = {
+  ENTRY: 'ENTRY',
+  PLAYER: 'PLAYER',
+  UPLOAD: 'UPLOAD',
+};
 
 function EntryScreen() {
-  const [activated, setActivated] = React.useState<boolean>(false);
+  const [screen, setScreen] = React.useState<String>(screens.ENTRY);
 
   return (
     <div>
-      {activated && <App />}
-      {!activated && <Init action={() => setActivated(true)} />}
+      {screen === 'PLAYER' && <App />}
+      {screen === 'ENTRY' && <Init action={setScreen} />}
+      {screen === 'UPLOAD' && <XSoundUploadForm />}
     </div>
   );
 }
