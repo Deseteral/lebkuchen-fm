@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import { ChangeSpeedEvent } from '../../../event-stream/model/events';
@@ -26,7 +27,7 @@ async function speedCommandProcessor(command: Command): Promise<CommandProcessin
       throw new Error('Speed przyjmuje argumenty "--", "++" oraz "1"');
   }
 
-  PlayerEventStream.instance.sendToEveryone(event);
+  Container.get(PlayerEventStream).sendToEveryone(event);
   return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`, false);
 }
 

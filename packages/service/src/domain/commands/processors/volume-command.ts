@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { ChangeVolumeEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
@@ -25,7 +26,7 @@ async function volumeCommandProcessor(command: Command): Promise<CommandProcessi
     isRelative: isRelativeChange,
     nextVolume: parsedVolume,
   };
-  PlayerEventStream.instance.sendToEveryone(event);
+  Container.get(PlayerEventStream).sendToEveryone(event);
 
   if (isRelativeChange) {
     return makeSingleTextProcessingResponse(`Zmieniono głośność o "${value}"`, false);

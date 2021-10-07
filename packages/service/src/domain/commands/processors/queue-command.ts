@@ -18,7 +18,7 @@ async function queueCommandProcessor(command: Command): Promise<CommandProcessin
   }
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
-  PlayerEventStream.instance.sendToEveryone(eventData);
+  Container.get(PlayerEventStream).sendToEveryone(eventData);
 
   Container.get(SongsService).incrementPlayCount(song.youtubeId, song.name);
 

@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import { SayEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
 import CommandDefinition from '../model/command-definition';
@@ -11,7 +12,7 @@ async function sayCommandProcessor(command: Command): Promise<CommandProcessingR
     text,
   };
 
-  PlayerEventStream.instance.sendToEveryone(eventMessage);
+  Container.get(PlayerEventStream).sendToEveryone(eventMessage);
 
   return {
     messages: [

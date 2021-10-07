@@ -49,7 +49,7 @@ async function randomCommandProcessor(command: Command): Promise<CommandProcessi
   const songsToQueue = await filterEmbeddableSongs(songs);
 
   const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
-  PlayerEventStream.instance.sendToEveryone(eventData);
+  Container.get(PlayerEventStream).sendToEveryone(eventData);
 
   songsToQueue.forEach((song) => {
     Container.get(SongsService).incrementPlayCount(song.youtubeId, song.name);

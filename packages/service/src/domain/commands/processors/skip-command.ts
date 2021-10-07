@@ -1,3 +1,4 @@
+import { Container } from 'typedi';
 import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
@@ -15,7 +16,7 @@ async function skipCommandProcessor(command: Command): Promise<CommandProcessing
   }
 
   const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
-  PlayerEventStream.instance.sendToEveryone(event);
+  Container.get(PlayerEventStream).sendToEveryone(event);
   return makeSingleTextProcessingResponse('Lecimy dalej!', false);
 }
 
