@@ -1,40 +1,23 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import App from './App';
+import SplashScreen from './SplashScreen';
+import XSoundUploadForm from './XSoundUploadForm';
 
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100vw;
-  height: 100vh;
-`;
-
-const EntryButton = styled.button`
-  color: white;
-  background: palevioletred;
-  font-size: 32px;
-  padding: 13px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
+export enum Screens {
+  Splash,
+  Player,
+  Upload
+}
 
 function EntryScreen() {
-  const [activated, setActivated] = React.useState<boolean>(false);
+  const [screen, setScreen] = React.useState<Screens>(Screens.Splash);
 
   return (
     <div>
-      {activated && <App />}
-      {!activated && (
-        <ButtonContainer>
-          <EntryButton onClick={() => setActivated(true)} type="button">
-            Obudź Aldonkę!
-          </EntryButton>
-        </ButtonContainer>
-      )}
+      {screen === Screens.Player && <App />}
+      {screen === Screens.Splash && <SplashScreen setScreen={setScreen} />}
+      {screen === Screens.Upload && <XSoundUploadForm />}
     </div>
   );
 }
-
 export default EntryScreen;
