@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import { Service } from 'typedi';
 import glob from 'glob';
