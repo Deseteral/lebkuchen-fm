@@ -3,30 +3,32 @@ import http from 'http';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
-import bodyParser from 'body-parser';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
+import * as RoutingControllers from 'routing-controllers';
 import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
-
-import SlackCommandController from './api/slack/slack-command-controller';
-import TextCommandController from './api/text/text-command-controller';
-import XSoundsController from './api/x-sounds/x-sounds-controller';
-import SongsController from './api/songs/songs-controller';
-
-import './polyfills';
 import PlayerEventStream from './event-stream/player-event-stream';
 import AdminEventStream from './event-stream/admin-event-stream';
 import CommandRegistryService from './domain/commands/registry/command-registry-service';
+import './polyfills';
 
 (async function main(): Promise<void> {
   const logger = new Logger('app-init');
 
   try {
     // Create server
-    const app: express.Express = express();
+    RoutingControllers.useContainer(Container);
+    const app = RoutingControllers.createExpressServer({
+      controllers: [path.join(__dirname, 'api/**/*-controller.js')],
+      classTransformer: false,
+    });
     const server: http.Server = new http.Server(app);
+
+    // Configure express
+    app.use(compression());
+    app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 
     // Connect to database
     const storage = new Storage();
@@ -41,18 +43,6 @@ import CommandRegistryService from './domain/commands/registry/command-registry-
 
     // Initialize commands
     CommandRegistryService.detectProcessorModules();
-
-    // Configure express
-    app.use(compression());
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
-
-    // Setup routing
-    app.use('/commands/slack', SlackCommandController);
-    app.use('/commands/text', TextCommandController);
-    app.use('/x-sounds', XSoundsController);
-    app.use('/songs', SongsController);
 
     // Start server
     const port = Configuration.PORT;
