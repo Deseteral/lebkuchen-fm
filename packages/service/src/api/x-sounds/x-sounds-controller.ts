@@ -9,7 +9,7 @@ import Logger from '../../infrastructure/logger';
 @Service()
 @Controller('/x-sounds')
 class XSoundsController {
-  private readonly logger = new Logger('x-sound-upload-controller');
+  private static logger = new Logger('x-sound-upload-controller');
 
   constructor(private xSoundsService: XSoundsService) { }
 
@@ -28,14 +28,14 @@ class XSoundsController {
 
     const { buffer, originalname } = soundFile;
 
-    this.logger.info(`Uploading x-sound ${soundName}`);
+    XSoundsController.logger.info(`Uploading x-sound ${soundName}`);
 
     try {
       const xSound = await this.xSoundsService.createNewSound(soundName, { buffer, fileName: originalname });
       return xSound;
     } catch (err) {
       const errorMessage = (err as Error).message;
-      this.logger.error(`An error occured ${errorMessage}`);
+      XSoundsController.logger.error(`An error occured ${errorMessage}`);
       throw new InternalServerError(err as Error);
     }
   }

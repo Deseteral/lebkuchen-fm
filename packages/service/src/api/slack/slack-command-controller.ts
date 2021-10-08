@@ -8,7 +8,7 @@ import { makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse, S
 @Service()
 @Controller('/commands/slack')
 class SlackCommandController {
-  private readonly logger = new Logger('slack-command-controller');
+  private static logger = new Logger('slack-command-controller');
 
   constructor(private commandExecutorService: CommandExecutorService) { }
 
@@ -20,13 +20,13 @@ class SlackCommandController {
   ): Promise<(SlackBlockResponseDto | SlackSimpleResponseDto)> {
     const isValidChannelId = (channelId === Configuration.SLACK_CHANNEL_ID);
     if (!isValidChannelId) {
-      this.logger.warn('Received Slack slash command with invalid channel ID');
+      SlackCommandController.logger.warn('Received Slack slash command with invalid channel ID');
       return makeSlackSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true);
     }
 
     const messageContent = `${command} ${text}`;
 
-    this.logger.info(`Received ${messageContent} command from Slack`);
+    SlackCommandController.logger.info(`Received ${messageContent} command from Slack`);
 
     const commandProcessingResponse = await this.commandExecutorService.processFromText(messageContent);
     return mapCommandProcessingResponseToSlackResponse(commandProcessingResponse);
