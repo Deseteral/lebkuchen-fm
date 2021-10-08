@@ -15,7 +15,7 @@ class ListXCommand extends CommandProcessor {
   async execute(_: Command): Promise<CommandProcessingResponse> {
     const sounds = await this.xSoundService.getAll();
 
-    if (sounds.length === 0) {
+    if (sounds.isEmpty()) {
       throw new Error('Brak dźwięków w bazie');
     }
 

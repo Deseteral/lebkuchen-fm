@@ -20,7 +20,7 @@ class TagShowCommand extends CommandProcessor {
 
     const tags = await this.xSoundsService.getSoundTags(soundName);
 
-    if (tags.length === 0) {
+    if (tags.isEmpty()) {
       return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`, false);
     }
 

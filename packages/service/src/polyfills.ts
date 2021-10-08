@@ -7,10 +7,15 @@ Array.prototype.randomShuffle = function randomShuffle<T>(): T[] { // eslint-dis
   return this;
 };
 
+Array.prototype.isEmpty = function isEmpty(): boolean { // eslint-disable-line no-extend-native
+  return this.length === 0;
+};
+
 declare global {
   interface Array<T> {
     last(): T,
     randomShuffle(): T[],
+    isEmpty(): boolean,
   }
 }
 

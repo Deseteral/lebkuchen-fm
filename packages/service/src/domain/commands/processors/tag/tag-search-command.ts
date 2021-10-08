@@ -20,7 +20,7 @@ class TagSearchCommand extends CommandProcessor {
 
     const sounds = await this.xSoundsService.getAllByTag(tagName);
 
-    if (sounds.length === 0) {
+    if (sounds.isEmpty()) {
       return makeSingleTextProcessingResponse(`Nie ma dźwięków z tagiem "${tagName}"`, false);
     }
 
