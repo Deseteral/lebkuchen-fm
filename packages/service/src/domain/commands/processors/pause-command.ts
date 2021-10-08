@@ -1,20 +1,40 @@
-import { Container } from 'typedi';
-import CommandDefinition from '../model/command-definition';
+import { Service } from 'typedi';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import { PauseEvent } from '../../../event-stream/model/events';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
+import CommandProcessor from '../model/command-processor';
+import Command from '../model/command';
+import RegisterCommand from '../registry/register-command';
 
-async function pauseCommandProcessor(): Promise<CommandProcessingResponse> {
-  const event: PauseEvent = { id: 'PauseEvent' };
-  Container.get(PlayerEventStream).sendToEveryone(event);
+@RegisterCommand
+@Service()
+class PauseCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-  return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
+  async execute(_: Command): Promise<CommandProcessingResponse> {
+    const event: PauseEvent = { id: 'PauseEvent' };
+    this.playerEventStream.sendToEveryone(event);
+
+    return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
+  }
+
+  get key(): string {
+    return 'pause';
+  }
+
+  get shortKey(): string | null {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Zatrzymuje odtwarzanie bieżącego filmu';
+  }
+
+  get helpUsages(): string[] | null {
+    return null;
+  }
 }
 
-const pauseCommandDefinition: CommandDefinition = {
-  key: 'pause',
-  processor: pauseCommandProcessor,
-  helpMessage: 'Zatrzymuje odtwarzanie bieżącego filmu',
-};
-
-export default pauseCommandDefinition;
+export default PauseCommand;

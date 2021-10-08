@@ -1,25 +1,24 @@
+import { Service } from 'typedi';
 import Command from './model/command';
 import { parseTextToCommand } from './text-command-parser';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
 import Logger from '../../infrastructure/logger';
-import CommandRegistryService, { CommandRegistry } from './registry/command-registry-service';
+import CommandRegistryService from './registry/command-registry-service';
 
+@Service()
 class CommandExecutorService {
   private static logger = new Logger('command-executor-service');
-  private registry: CommandRegistry;
 
-  private constructor() {
-    this.registry = CommandRegistryService.instance.getRegistry();
-  }
+  constructor(private commandRegistryService: CommandRegistryService) { }
 
   async processCommand(command: Command): Promise<CommandProcessingResponse> {
-    const commandDefinition = this.registry.get(command.key);
+    const commandDefinition = this.commandRegistryService.getRegistry().get(command.key);
     if (!commandDefinition) return CommandExecutorService.commandDoesNotExistResponse;
 
     try {
-      return await commandDefinition.processor(command);
+      return await commandDefinition.execute(command);
     } catch (e) {
-      CommandExecutorService.logger.error(e);
+      CommandExecutorService.logger.error((e as Error).message);
       return makeSingleTextProcessingResponse((e as Error).message, false);
     }
   }
@@ -34,8 +33,6 @@ class CommandExecutorService {
   private static get commandDoesNotExistResponse(): CommandProcessingResponse {
     return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
   }
-
-  static readonly instance = new CommandExecutorService();
 }
 
 export default CommandExecutorService;

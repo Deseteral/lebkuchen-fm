@@ -1,26 +1,44 @@
+import { Service } from 'typedi';
 import Command from '../model/command';
-import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse from '../model/command-processing-response';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import QueueCommand from './queue-command';
+import CommandProcessor from '../model/command-processor';
+import RegisterCommand from '../registry/register-command';
 
-async function searchCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const phrase = command.rawArgs;
-  const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
+@RegisterCommand
+@Service()
+class SearchCommand extends CommandProcessor {
+  constructor(private queueProcessor: QueueCommand) {
+    super();
+  }
 
-  const queueCommand = new Command('queue', youtubeId);
-  return QueueCommand.processor(queueCommand);
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const phrase = command.rawArgs;
+    const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
+
+    const queueCommand = new Command('queue', youtubeId);
+    return this.queueProcessor.execute(queueCommand);
+  }
+
+  get key(): string {
+    return 'search';
+  }
+
+  get shortKey(): string | null {
+    return 's';
+  }
+
+  get helpMessage(): string {
+    return 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube';
+  }
+
+  get helpUsages(): string[] | null {
+    return [
+      '<phrase>',
+      'krawczyk parostatek',
+    ];
+  }
 }
 
-const searchCommandDefinition: CommandDefinition = {
-  key: 'search',
-  shortKey: 's',
-  processor: searchCommandProcessor,
-  helpMessage: 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube',
-  helpUsages: [
-    '<phrase>',
-    'krawczyk parostatek',
-  ],
-};
-
-export default searchCommandDefinition;
+export default SearchCommand;

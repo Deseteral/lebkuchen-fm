@@ -9,7 +9,6 @@ import SocketIO from 'socket.io';
 import Configuration from './infrastructure/configuration';
 import Logger from './infrastructure/logger';
 import Storage from './infrastructure/storage';
-import * as CommandInitializer from './domain/commands/registry/command-initializer';
 
 import SlackCommandController from './api/slack/slack-command-controller';
 import TextCommandController from './api/text/text-command-controller';
@@ -19,6 +18,7 @@ import SongsController from './api/songs/songs-controller';
 import './polyfills';
 import PlayerEventStream from './event-stream/player-event-stream';
 import AdminEventStream from './event-stream/admin-event-stream';
+import CommandRegistryService from './domain/commands/registry/command-registry-service';
 
 (async function main(): Promise<void> {
   const logger = new Logger('app-init');
@@ -33,14 +33,14 @@ import AdminEventStream from './event-stream/admin-event-stream';
     await storage.connect();
     Container.set(Storage, storage);
 
-    // Initialize commands
-    CommandInitializer.initialize();
-
     // Create WebSocket server
     const io = new SocketIO.Server(server, { serveClient: false });
     Container.set(SocketIO.Server, io);
     Container.get(PlayerEventStream);
     Container.get(AdminEventStream);
+
+    // Initialize commands
+    CommandRegistryService.detectProcessorModules();
 
     // Configure express
     app.use(compression());

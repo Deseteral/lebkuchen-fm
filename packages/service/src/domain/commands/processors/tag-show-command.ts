@@ -1,42 +1,60 @@
-import { Container } from 'typedi';
+import { Service } from 'typedi';
 import XSoundsService from '../../x-sounds/x-sounds-service';
 import Command from '../model/command';
-import CommandDefinition from '../model/command-definition';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import CommandProcessor from '../model/command-processor';
+import RegisterCommand from '../registry/register-command';
 
-async function tagShowCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const soundName = command.rawArgs.trim();
-  if (!soundName) {
-    throw new Error('Podaj nazwę dźwięku');
+@RegisterCommand
+@Service()
+class TagShowCommand extends CommandProcessor {
+  constructor(private xSoundsService: XSoundsService) {
+    super();
   }
 
-  const tags = await Container.get(XSoundsService).getSoundTags(soundName);
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const soundName = command.rawArgs.trim();
+    if (!soundName) {
+      throw new Error('Podaj nazwę dźwięku');
+    }
 
-  if (tags.length === 0) {
-    return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`, false);
+    const tags = await this.xSoundsService.getSoundTags(soundName);
+
+    if (tags.length === 0) {
+      return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`, false);
+    }
+
+    const tagListText = tags
+      .map((tagName) => `- ${tagName}`)
+      .join('\n');
+
+    return {
+      messages: [
+        { type: 'HEADER', text: `Tagi dla "${soundName}"` },
+        { type: 'MARKDOWN', text: tagListText },
+      ],
+      isVisibleToIssuerOnly: false,
+    };
   }
 
-  const tagListText = tags
-    .map((tagName) => `- ${tagName}`)
-    .join('\n');
+  get key(): string {
+    return 'tag-show';
+  }
 
-  return {
-    messages: [
-      { type: 'HEADER', text: `Tagi dla "${soundName}"` },
-      { type: 'MARKDOWN', text: tagListText },
-    ],
-    isVisibleToIssuerOnly: false,
-  };
+  get shortKey(): string | null {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Wyświetla wszystkie tagi przypisane do dźwięku';
+  }
+
+  get helpUsages(): string[] | null {
+    return [
+      '<sound name>',
+      'airhorn',
+    ];
+  }
 }
 
-const tagShowCommandDefinition: CommandDefinition = {
-  key: 'tag-show',
-  processor: tagShowCommandProcessor,
-  helpMessage: 'Wyświetla wszystkie tagi przypisane do dźwięku',
-  helpUsages: [
-    '<sound name>',
-    'airhorn',
-  ],
-};
-
-export default tagShowCommandDefinition;
+export default TagShowCommand;

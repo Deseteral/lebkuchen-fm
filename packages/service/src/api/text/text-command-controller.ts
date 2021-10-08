@@ -1,5 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import express from 'express';
+import Container from 'typedi';
 import CommandExecutorService from '../../domain/commands/command-executor-service';
 import Logger from '../../infrastructure/logger';
 import { mapCommandProcessingResponseToTextCommandResponseDto } from './model/text-command-response-dto';
@@ -12,7 +13,7 @@ router.post('/', async function processTextCommand(req, res) {
 
   logger.info(`Received ${text} command`);
 
-  const commandProcessingResponse = await CommandExecutorService.instance.processFromText(text);
+  const commandProcessingResponse = await Container.get(CommandExecutorService).processFromText(text);
   const response = mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
   res.send(response);
 });

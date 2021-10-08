@@ -79,7 +79,8 @@
     "rules": {
       "@typescript-eslint/explicit-function-return-type": "error",
       "max-len": "off",
-      "no-empty-function": "off"
+      "no-empty-function": "off",
+      "class-methods-use-this": "off"
     }
   }
 }

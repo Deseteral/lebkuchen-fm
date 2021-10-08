@@ -1,20 +1,40 @@
-import { Container } from 'typedi';
-import CommandDefinition from '../model/command-definition';
+import { Service } from 'typedi';
 import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import { ResumeEvent } from '../../../event-stream/model/events';
+import CommandProcessor from '../model/command-processor';
+import Command from '../model/command';
+import RegisterCommand from '../registry/register-command';
 
-async function resumeCommandProcessor(): Promise<CommandProcessingResponse> {
-  const event: ResumeEvent = { id: 'ResumeEvent' };
-  Container.get(PlayerEventStream).sendToEveryone(event);
+@RegisterCommand
+@Service()
+class ResumeCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-  return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
+  async execute(_: Command): Promise<CommandProcessingResponse> {
+    const event: ResumeEvent = { id: 'ResumeEvent' };
+    this.playerEventStream.sendToEveryone(event);
+
+    return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
+  }
+
+  get key(): string {
+    return 'resume';
+  }
+
+  get shortKey(): string | null {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Wznawia odtwarzanie aktualnego utworu';
+  }
+
+  get helpUsages(): string[] | null {
+    return null;
+  }
 }
 
-const resumeCommandDefinition: CommandDefinition = {
-  key: 'resume',
-  processor: resumeCommandProcessor,
-  helpMessage: 'Wznawia odtwarzanie aktualnego utworu',
-};
-
-export default resumeCommandDefinition;
+export default ResumeCommand;
