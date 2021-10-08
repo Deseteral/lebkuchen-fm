@@ -6,7 +6,7 @@ import FileStorage from '../../infrastructure/file-storage';
 
 @Service()
 class XSoundsService {
-  constructor(private repository: XSoundsRepository) { }
+  constructor(private repository: XSoundsRepository, private fileStorage: FileStorage) { }
 
   getAll(): Promise<XSound[]> {
     return this.repository.findAllOrderByNameAsc();
@@ -108,7 +108,7 @@ class XSoundsService {
     }
 
     const fileExtension = path.extname(fileDescriptor.fileName);
-    const { url } = await FileStorage.instance.uploadFile({
+    const { url } = await this.fileStorage.uploadFile({
       path: `/xsounds/${name}${fileExtension}`,
       contents: fileDescriptor.buffer,
     });

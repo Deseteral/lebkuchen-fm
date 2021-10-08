@@ -1,4 +1,5 @@
 import { Dropbox } from 'dropbox';
+import { Service } from 'typedi';
 import Configuration from './configuration';
 import Logger from './logger';
 
@@ -6,11 +7,12 @@ interface FileUploadResult {
   url: string,
 }
 
+@Service()
 class FileStorage {
   private static logger = new Logger('dropbox-file-storage');
   private client: Dropbox;
 
-  private constructor() {
+  constructor() {
     this.client = new Dropbox({ accessToken: Configuration.DROPBOX_TOKEN });
   }
 
@@ -47,8 +49,6 @@ class FileStorage {
 
     return url;
   }
-
-  static readonly instance: FileStorage = new FileStorage();
 }
 
 export default FileStorage;
