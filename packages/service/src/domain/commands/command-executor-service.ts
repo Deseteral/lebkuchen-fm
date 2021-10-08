@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import Command from './model/command';
 import { parseTextToCommand } from './text-command-parser';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from './model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from './model/command-processing-response';
 import Logger from '../../infrastructure/logger';
 import CommandRegistryService from './registry/command-registry-service';
 

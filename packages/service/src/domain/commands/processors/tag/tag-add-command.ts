@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from '../../model/command';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../../model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../../model/command-processing-response';
 import XSoundsService from '../../../x-sounds/x-sounds-service';
 import CommandProcessor from '../../model/command-processor';
 import RegisterCommand from '../../registry/register-command';

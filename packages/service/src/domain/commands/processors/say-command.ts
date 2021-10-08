@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { SayEvent } from '../../../event-stream/model/events';
 import Command from '../model/command';
-import CommandProcessingResponse from '../model/command-processing-response';
+import { CommandProcessingResponse } from '../model/command-processing-response';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import CommandProcessor from '../model/command-processor';
 import RegisterCommand from '../registry/register-command';

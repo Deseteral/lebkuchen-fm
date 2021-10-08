@@ -1,5 +1,5 @@
 import Command from './command';
-import CommandProcessingResponse from './command-processing-response';
+import { CommandProcessingResponse } from './command-processing-response';
 
 abstract class CommandProcessor {
   abstract execute(command: Command): Promise<CommandProcessingResponse>

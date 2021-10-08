@@ -1,44 +1,44 @@
 import { MessageBlock } from '../../../domain/commands/model/command-processing-response';
 
-interface SlackPlainText {
+export interface SlackPlainText {
   type: 'plain_text',
   text: string,
   emoji: boolean,
 }
 
-interface SlackMarkdownText {
+export interface SlackMarkdownText {
   type: 'mrkdwn',
   text: string,
 }
 
-type SlackText = (SlackPlainText | SlackMarkdownText);
+export type SlackText = (SlackPlainText | SlackMarkdownText);
 
-interface DividerSlackBlock {
+export interface DividerSlackBlock {
   type: 'divider',
 }
 
-interface SectionSlackBlock {
+export interface SectionSlackBlock {
   type: 'section',
   text: SlackText,
 }
 
-interface HeaderSlackBlock {
+export interface HeaderSlackBlock {
   type: 'header',
   text: SlackText,
 }
 
-interface ContextSlackBlock {
+export interface ContextSlackBlock {
   type: 'context',
   elements: SlackPlainText[],
 }
 
-type SlackBlock =
+export type SlackBlock =
   | DividerSlackBlock
   | SectionSlackBlock
   | ContextSlackBlock
   | HeaderSlackBlock;
 
-function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
+export function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
   const blocks: SlackBlock[] = [];
 
   messages.forEach((message) => {
@@ -81,12 +81,3 @@ function mapMessagesToSlackBlocks(messages: MessageBlock[]): SlackBlock[] {
 
   return blocks;
 }
-
-export default SlackBlock;
-export {
-  DividerSlackBlock,
-  SectionSlackBlock,
-  SlackPlainText,
-  SlackMarkdownText,
-  mapMessagesToSlackBlocks,
-};

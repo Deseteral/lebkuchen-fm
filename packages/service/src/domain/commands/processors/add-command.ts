@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import CommandProcessor from '../model/command-processor';

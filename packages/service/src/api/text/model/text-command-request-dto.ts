@@ -1,5 +1,3 @@
-interface TextCommandRequestDto {
+export interface TextCommandRequestDto {
   text: string,
 }
-
-export default TextCommandRequestDto;

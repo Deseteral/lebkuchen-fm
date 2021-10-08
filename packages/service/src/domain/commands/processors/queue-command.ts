@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import CommandProcessor from '../model/command-processor';

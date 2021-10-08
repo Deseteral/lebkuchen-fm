@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
 import { JsonController, Body, Post } from 'routing-controllers';
 import CommandExecutorService from '../../domain/commands/command-executor-service';
-import TextCommandResponseDto, { mapCommandProcessingResponseToTextCommandResponseDto } from './model/text-command-response-dto';
+import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from './model/text-command-response-dto';
+import { TextCommandRequestDto } from './model/text-command-request-dto';
 import Logger from '../../infrastructure/logger';
-import TextCommandRequestDto from './model/text-command-request-dto';
 
 @Service()
 @JsonController('/commands/text')

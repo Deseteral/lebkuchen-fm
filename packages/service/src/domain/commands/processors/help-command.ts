@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import CommandRegistryService from '../registry/command-registry-service';
-import CommandProcessingResponse, { MessageBlock } from '../model/command-processing-response';
+import { CommandProcessingResponse, MessageBlock } from '../model/command-processing-response';
 import Configuration from '../../../infrastructure/configuration';
 import CommandProcessor from '../model/command-processor';
 import Command from '../model/command';

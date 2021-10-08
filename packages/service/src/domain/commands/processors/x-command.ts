@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import { PlayXSoundEvent } from '../../../event-stream/model/events';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import CommandProcessor from '../model/command-processor';

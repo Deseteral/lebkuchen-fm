@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from '../model/command';
-import CommandProcessingResponse from '../model/command-processing-response';
+import { CommandProcessingResponse } from '../model/command-processing-response';
 import YouTubeDataClient from '../../../youtube/youtube-data-client';
 import QueueCommand from './queue-command';
 import CommandProcessor from '../model/command-processor';

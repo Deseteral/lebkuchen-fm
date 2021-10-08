@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from '../model/command';
-import CommandProcessingResponse from '../model/command-processing-response';
+import { CommandProcessingResponse } from '../model/command-processing-response';
 import SongsService from '../../songs/songs-service';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import { AddSongsToQueueEvent } from '../../../event-stream/model/events';

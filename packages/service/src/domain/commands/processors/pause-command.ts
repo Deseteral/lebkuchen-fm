@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
 import { PauseEvent } from '../../../event-stream/model/events';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 import CommandProcessor from '../model/command-processor';
