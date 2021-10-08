@@ -4,12 +4,10 @@ import { Service } from 'typedi';
 import Logger from '../../../infrastructure/logger';
 import CommandProcessor from '../model/command-processor';
 
-type CommandRegistry = Map<string, CommandProcessor>;
-
 @Service()
 class CommandRegistryService {
   private static logger = new Logger('command-registry');
-  private commands: CommandRegistry;
+  private commands: Map<string, CommandProcessor>;
 
   constructor() {
     this.commands = new Map();
@@ -30,14 +28,21 @@ class CommandRegistryService {
   }
 
   static detectProcessorModules(): void {
+    function requireInsideDirectory(dirPath: string): void {
+      fs.readdirSync(dirPath)
+        .map((fileName) => path.join(dirPath, fileName))
+        .forEach((modulePath) => {
+          if (fs.lstatSync(modulePath).isDirectory()) {
+            requireInsideDirectory(modulePath);
+          } else if (path.extname(modulePath) === '.js') {
+            require(modulePath); // eslint-disable-line global-require, import/no-dynamic-require
+          }
+        });
+    }
+
     const pathToProcessorModules = path.resolve(__dirname, '..', 'processors');
-    fs.readdirSync(`${__dirname}/../processors/`)
-      .map((fileName) => path.join(pathToProcessorModules, path.parse(fileName).name))
-      .forEach((modulePath) => require(modulePath)); // eslint-disable-line global-require, import/no-dynamic-require
+    requireInsideDirectory(pathToProcessorModules);
   }
 }
 
 export default CommandRegistryService;
-export {
-  CommandRegistry,
-};
