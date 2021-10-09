@@ -19,3 +19,5 @@ jobs:
     - run: npm test
     - name: Upload code coverage
       uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
