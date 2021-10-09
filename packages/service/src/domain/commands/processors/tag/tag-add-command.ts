@@ -37,7 +37,7 @@ class TagAddCommand extends CommandProcessor {
     return 'Dodaje tag do podanego dźwięku';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<tag-name>|<sound name>',
       'fun stuff|airhorn',

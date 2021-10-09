@@ -45,7 +45,7 @@ class QueueCommand extends CommandProcessor {
     return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<video name or youtube-id>',
       'transatlantik',

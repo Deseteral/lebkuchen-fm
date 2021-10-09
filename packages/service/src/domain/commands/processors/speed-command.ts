@@ -51,7 +51,7 @@ class SpeedCommand extends CommandProcessor {
     return 'Zmienia prędkość odtwarzania';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '--',
       '++',

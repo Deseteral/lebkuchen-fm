@@ -32,7 +32,7 @@ class ResumeCommand extends CommandProcessor {
     return 'Wznawia odtwarzanie aktualnego utworu';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return null;
   }
 }

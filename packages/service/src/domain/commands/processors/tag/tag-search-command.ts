@@ -50,7 +50,7 @@ class TagSearchCommand extends CommandProcessor {
     return 'Wyszukuje dźwięki z danym tagiem';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<tag name>',
       'fun stuff',

@@ -32,7 +32,7 @@ class PauseCommand extends CommandProcessor {
     return 'Zatrzymuje odtwarzanie bieżącego filmu';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return null;
   }
 }

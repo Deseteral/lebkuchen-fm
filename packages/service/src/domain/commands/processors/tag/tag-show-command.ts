@@ -49,7 +49,7 @@ class TagShowCommand extends CommandProcessor {
     return 'Wyświetla wszystkie tagi przypisane do dźwięku';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<sound name>',
       'airhorn',

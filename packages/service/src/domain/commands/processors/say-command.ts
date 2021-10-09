@@ -42,7 +42,7 @@ class SayCommand extends CommandProcessor {
     return 'Prosi spikera o odczytanie wiadomości';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<message>',
       'to jest moja fantastyczna wiadomość',

@@ -69,7 +69,7 @@ class AddCommand extends CommandProcessor {
     return 'Dodaje przebój do bazy utworów';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<youtube-id>|<video name>|[start time]|[end time]',
       'jK4ICUBdsuc|aldonka slowmo',

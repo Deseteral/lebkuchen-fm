@@ -79,7 +79,7 @@ class HelpCommand extends CommandProcessor {
     return 'Pokazuje tę wiadomość';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return null;
   }
 }

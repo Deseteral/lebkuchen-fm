@@ -33,7 +33,7 @@ class SearchCommand extends CommandProcessor {
     return 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '<phrase>',
       'krawczyk parostatek',

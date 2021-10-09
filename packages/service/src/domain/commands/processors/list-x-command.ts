@@ -44,7 +44,7 @@ class ListXCommand extends CommandProcessor {
     return 'Wypisuje listę czaderskich dźwięków w bazie';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return null;
   }
 }

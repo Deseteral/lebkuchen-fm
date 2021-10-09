@@ -85,7 +85,7 @@ class RandomCommand extends CommandProcessor {
     return 'Losuje utwory z historii';
   }
 
-  get helpUsages(): string[] | null {
+  get helpUsages(): (string[] | null) {
     return [
       '[amount; defaults to 1]',
       '3',
