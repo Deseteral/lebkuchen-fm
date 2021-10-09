@@ -5,7 +5,7 @@ import Song from './song';
 
 @Service()
 class SongsService {
-  constructor(private repository: SongsRepository) { }
+  constructor(private repository: SongsRepository, private youTubeDataClient: YouTubeDataClient) { }
 
   async getByName(name: string): Promise<Song | null> {
     return this.repository.findByName(name);
@@ -18,7 +18,7 @@ class SongsService {
   async createNewSong(
     youtubeId: string, songName?: string, timesPlayed = 0, trimStartSeconds?: number, trimEndSeconds?: number,
   ): Promise<Song> {
-    const name = songName || (await YouTubeDataClient.fetchVideoTitleForId(youtubeId));
+    const name = songName || (await this.youTubeDataClient.fetchVideoTitleForId(youtubeId));
 
     const song: Song = {
       name,

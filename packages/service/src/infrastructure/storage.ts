@@ -9,14 +9,14 @@ class Storage {
   private client: MongoClient;
   private db?: Db;
 
-  constructor() {
-    this.client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
+  constructor(private configuration: Configuration) {
+    this.client = new MongoClient(this.configuration.MONGODB_URI, { useUnifiedTopology: true });
   }
 
   async connect(): Promise<void> {
     await this.client.connect();
 
-    this.db = this.client.db(Configuration.DATABASE_NAME);
+    this.db = this.client.db(this.configuration.DATABASE_NAME);
     await this.db.command({ ping: 1 });
 
     Storage.logger.info('Connected to MongoDB server');

@@ -14,7 +14,7 @@ const MAX_TITLES_IN_MESSAGE = 10;
 @RegisterCommand
 @Service()
 class RandomCommand extends CommandProcessor {
-  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
 
@@ -53,7 +53,7 @@ class RandomCommand extends CommandProcessor {
 
   private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
     const youtubeIds = songs.map((song) => song.youtubeId);
-    const statuses = await YouTubeDataClient.fetchVideosStatuses(youtubeIds);
+    const statuses = await this.youTubeDataClient.fetchVideosStatuses(youtubeIds);
     const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
 
     return songs.filter((song) => idToEmbeddable.get(song.youtubeId));

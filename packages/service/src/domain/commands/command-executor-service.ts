@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import Command from './model/command';
-import { parseTextToCommand } from './text-command-parser';
+import TextCommandParser from './text-command-parser';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from './model/command-processing-response';
 import Logger from '../../infrastructure/logger';
 import CommandRegistryService from './registry/command-registry-service';
@@ -9,7 +9,7 @@ import CommandRegistryService from './registry/command-registry-service';
 class CommandExecutorService {
   private static logger = new Logger('command-executor-service');
 
-  constructor(private commandRegistryService: CommandRegistryService) { }
+  constructor(private commandRegistryService: CommandRegistryService, private textCommandParser: TextCommandParser) { }
 
   async processCommand(command: Command): Promise<CommandProcessingResponse> {
     const commandDefinition = this.commandRegistryService.getRegistry().get(command.key);
@@ -24,7 +24,7 @@ class CommandExecutorService {
   }
 
   async processFromText(textCommand: string): Promise<CommandProcessingResponse> {
-    const command = parseTextToCommand(textCommand);
+    const command = this.textCommandParser.parseTextToCommand(textCommand);
     if (!command) return CommandExecutorService.commandDoesNotExistResponse;
 
     return this.processCommand(command);

@@ -11,7 +11,7 @@ import { makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse, S
 class SlackCommandController {
   private static logger = new Logger('slack-command-controller');
 
-  constructor(private commandExecutorService: CommandExecutorService) { }
+  constructor(private commandExecutorService: CommandExecutorService, private configuration: Configuration) { }
 
   @Post('/')
   @UseBefore(express.urlencoded({ extended: true }))
@@ -20,7 +20,7 @@ class SlackCommandController {
     @BodyParam('command') command: string,
     @BodyParam('text') text: string,
   ): Promise<(SlackBlockResponseDto | SlackSimpleResponseDto)> {
-    const isValidChannelId = (channelId === Configuration.SLACK_CHANNEL_ID);
+    const isValidChannelId = (channelId === this.configuration.SLACK_CHANNEL_ID);
     if (!isValidChannelId) {
       SlackCommandController.logger.warn('Received Slack slash command with invalid channel ID');
       return makeSlackSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true);

@@ -1,4 +1,9 @@
+/* eslint-disable import/first */
 import 'reflect-metadata';
+import './polyfills';
+
+require('dotenv').config();
+
 import http from 'http';
 import path from 'path';
 import express from 'express';
@@ -12,42 +17,46 @@ import Storage from './infrastructure/storage';
 import PlayerEventStream from './event-stream/player-event-stream';
 import AdminEventStream from './event-stream/admin-event-stream';
 import CommandRegistryService from './domain/commands/registry/command-registry-service';
-import './polyfills';
 
-(async function main(): Promise<void> {
-  const logger = new Logger('app-init');
+const logger = new Logger('app-init');
 
-  try {
-    // Create server
-    RoutingControllers.useContainer(Container);
-    const app = RoutingControllers.createExpressServer({
-      controllers: [path.join(__dirname, 'api/**/*-controller.js')],
-      classTransformer: false,
-    });
-    const server: http.Server = new http.Server(app);
+async function main(): Promise<void> {
+  // Read configuration
+  const config = Configuration.readFromEnv();
+  Container.set(Configuration, config);
 
-    // Configure express
-    app.use(compression());
-    app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
+  // Create server
+  RoutingControllers.useContainer(Container);
+  const app = RoutingControllers.createExpressServer({
+    controllers: [path.join(__dirname, 'api/**/*-controller.js')],
+    classTransformer: false,
+  });
+  const server: http.Server = new http.Server(app);
 
-    // Connect to database
-    const storage = new Storage();
-    await storage.connect();
-    Container.set(Storage, storage);
+  // Configure express
+  app.use(compression());
+  app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 
-    // Create WebSocket server
-    const io = new SocketIO.Server(server, { serveClient: false });
-    Container.set(SocketIO.Server, io);
-    Container.get(PlayerEventStream);
-    Container.get(AdminEventStream);
+  // Connect to database
+  const storage = new Storage(config);
+  await storage.connect();
+  Container.set(Storage, storage);
 
-    // Initialize commands
-    CommandRegistryService.detectProcessorModules();
+  // Create WebSocket server
+  const io = new SocketIO.Server(server, { serveClient: false });
+  Container.set(SocketIO.Server, io);
+  Container.get(PlayerEventStream);
+  Container.get(AdminEventStream);
 
-    // Start server
-    const port = Configuration.PORT;
-    server.listen(port, () => logger.info(`LebkuchenFM service started on port ${port}`));
-  } catch (err) {
-    logger.withError(err as Error);
-  }
-}());
+  // Initialize commands
+  CommandRegistryService.detectProcessorModules();
+
+  // Start server
+  server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
+}
+
+try {
+  main();
+} catch (err) {
+  logger.withError(err as Error);
+}

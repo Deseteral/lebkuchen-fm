@@ -14,7 +14,7 @@ function notNull<T>(value: T | null | undefined): value is T {
 @RegisterCommand
 @Service()
 class HelpCommand extends CommandProcessor {
-  constructor(private commandRegistryService: CommandRegistryService) {
+  constructor(private commandRegistryService: CommandRegistryService, private configuration: Configuration) {
     super();
   }
 
@@ -31,7 +31,7 @@ class HelpCommand extends CommandProcessor {
       });
 
       if (definition.helpUsages) {
-        const prompt = Configuration.COMMAND_PROMPT;
+        const prompt = this.configuration.COMMAND_PROMPT;
         const text = definition.helpUsages
           .map((usage) => `${prompt} ${definition.key} ${usage}`)
           .join(', ');

@@ -9,13 +9,13 @@ import RegisterCommand from '../registry/register-command';
 @RegisterCommand
 @Service()
 class SearchCommand extends CommandProcessor {
-  constructor(private queueProcessor: QueueCommand) {
+  constructor(private queueProcessor: QueueCommand, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const phrase = command.rawArgs;
-    const youtubeId = await YouTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
+    const youtubeId = await this.youTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
 
     const queueCommand = new Command('queue', youtubeId);
     return this.queueProcessor.execute(queueCommand);

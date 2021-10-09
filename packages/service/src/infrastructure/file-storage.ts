@@ -12,8 +12,8 @@ class FileStorage {
   private static logger = new Logger('dropbox-file-storage');
   private client: Dropbox;
 
-  constructor() {
-    this.client = new Dropbox({ accessToken: Configuration.DROPBOX_TOKEN });
+  constructor(private configuration: Configuration) {
+    this.client = new Dropbox({ accessToken: this.configuration.DROPBOX_TOKEN });
   }
 
   async uploadFile({ path, contents }: { path: string, contents: Buffer }): Promise<FileUploadResult> {

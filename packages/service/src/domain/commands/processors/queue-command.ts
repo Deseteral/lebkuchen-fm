@@ -11,7 +11,7 @@ import RegisterCommand from '../registry/register-command';
 @RegisterCommand
 @Service()
 class QueueCommand extends CommandProcessor {
-  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
 
@@ -19,7 +19,7 @@ class QueueCommand extends CommandProcessor {
     const songName = command.rawArgs;
     const song = await this.songService.getSongByNameWithYouTubeIdFallback(songName);
 
-    const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
+    const videoStatus = await this.youTubeDataClient.fetchVideosStatuses([song.youtubeId]);
 
     if (!videoStatus.items?.last().status.embeddable) {
       throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');

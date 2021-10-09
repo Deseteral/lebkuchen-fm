@@ -9,7 +9,7 @@ import RegisterCommand from '../registry/register-command';
 @RegisterCommand
 @Service()
 class AddCommand extends CommandProcessor {
-  constructor(private songService: SongsService) {
+  constructor(private songService: SongsService, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
 
@@ -27,7 +27,7 @@ class AddCommand extends CommandProcessor {
       throw new Error(`Utwór o tytule "${name}" już jest w bazie`);
     }
 
-    const videoStatus = await YouTubeDataClient.fetchVideosStatuses([youtubeId]);
+    const videoStatus = await this.youTubeDataClient.fetchVideosStatuses([youtubeId]);
 
     if (!videoStatus.items?.last().status.embeddable) {
       throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
