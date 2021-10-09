@@ -20,7 +20,7 @@ describe('Skip command', () => {
     const command = new Command('skip', '');
 
     // when
-    await commandProcessor.execute(command);
+    const response = await commandProcessor.execute(command);
 
     // then
     expect(playerEventStream.sendToEveryone).toHaveBeenCalledTimes(1);
@@ -28,6 +28,11 @@ describe('Skip command', () => {
       id: 'SkipEvent',
       skipAll: false,
       amount: 1,
+    });
+
+    expect(response).toEqual({
+      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
+      isVisibleToIssuerOnly: false,
     });
   });
 
@@ -36,7 +41,7 @@ describe('Skip command', () => {
     const command = new Command('skip', 'all');
 
     // when
-    await commandProcessor.execute(command);
+    const response = await commandProcessor.execute(command);
 
     // then
     expect(playerEventStream.sendToEveryone).toHaveBeenCalledTimes(1);
@@ -45,6 +50,11 @@ describe('Skip command', () => {
       skipAll: true,
       amount: 1,
     });
+
+    expect(response).toEqual({
+      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
+      isVisibleToIssuerOnly: false,
+    });
   });
 
   it('should skip specified amount of songs', async () => {
@@ -52,7 +62,7 @@ describe('Skip command', () => {
     const command = new Command('skip', '123');
 
     // when
-    await commandProcessor.execute(command);
+    const response = await commandProcessor.execute(command);
 
     // then
     expect(playerEventStream.sendToEveryone).toHaveBeenCalledTimes(1);
@@ -60,6 +70,11 @@ describe('Skip command', () => {
       id: 'SkipEvent',
       skipAll: false,
       amount: 123,
+    });
+
+    expect(response).toEqual({
+      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
+      isVisibleToIssuerOnly: false,
     });
   });
 
