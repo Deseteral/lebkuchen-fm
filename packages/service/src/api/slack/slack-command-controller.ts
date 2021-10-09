@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Controller, QueryParam, Post } from 'routing-controllers';
+import { Controller, BodyParam, Post } from 'routing-controllers';
 import CommandExecutorService from '../../domain/commands/command-executor-service';
 import Configuration from '../../infrastructure/configuration';
 import Logger from '../../infrastructure/logger';
@@ -14,9 +14,9 @@ class SlackCommandController {
 
   @Post('/')
   async processSlackCommand(
-    @QueryParam('channel_id') channelId: string,
-    @QueryParam('command') command: string,
-    @QueryParam('text') text: string,
+    @BodyParam('channel_id') channelId: string,
+    @BodyParam('command') command: string,
+    @BodyParam('text') text: string,
   ): Promise<(SlackBlockResponseDto | SlackSimpleResponseDto)> {
     const isValidChannelId = (channelId === Configuration.SLACK_CHANNEL_ID);
     if (!isValidChannelId) {
