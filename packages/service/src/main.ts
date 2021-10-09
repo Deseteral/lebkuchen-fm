@@ -25,24 +25,22 @@ async function main(): Promise<void> {
   const config = Configuration.readFromEnv();
   Container.set(Configuration, config);
 
-  // Create server
+  // Create HTTP server
   RoutingControllers.useContainer(Container);
   const app = RoutingControllers.createExpressServer({
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
     classTransformer: false,
   });
-  const server: http.Server = new http.Server(app);
 
-  // Configure express
   app.use(compression());
   app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 
   // Connect to database
-  const storage = new Storage(config);
+  const storage = Container.get(Storage);
   await storage.connect();
-  Container.set(Storage, storage);
 
   // Create WebSocket server
+  const server: http.Server = new http.Server(app);
   const io = new SocketIO.Server(server, { serveClient: false });
   Container.set(SocketIO.Server, io);
   Container.get(PlayerEventStream);
