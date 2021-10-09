@@ -1,5 +1,6 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post } from 'routing-controllers';
+import { Controller, BodyParam, Post, UseBefore } from 'routing-controllers';
+import express from 'express';
 import CommandExecutorService from '../../domain/commands/command-executor-service';
 import Configuration from '../../infrastructure/configuration';
 import Logger from '../../infrastructure/logger';
@@ -13,6 +14,7 @@ class SlackCommandController {
   constructor(private commandExecutorService: CommandExecutorService) { }
 
   @Post('/')
+  @UseBefore(express.urlencoded({ extended: true }))
   async processSlackCommand(
     @BodyParam('channel_id') channelId: string,
     @BodyParam('command') command: string,

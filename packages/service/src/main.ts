@@ -28,7 +28,6 @@ import './polyfills';
 
     // Configure express
     app.use(compression());
-    app.use(express.urlencoded({ extended: true }));
     app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 
     // Connect to database
