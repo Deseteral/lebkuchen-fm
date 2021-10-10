@@ -25,7 +25,7 @@ class SkipCommand extends CommandProcessor {
 
     const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
     this.playerEventStream.sendToEveryone(event);
-    return makeSingleTextProcessingResponse('Lecimy dalej!', false);
+    return makeSingleTextProcessingResponse('Lecimy dalej!');
   }
 
   get key(): string {

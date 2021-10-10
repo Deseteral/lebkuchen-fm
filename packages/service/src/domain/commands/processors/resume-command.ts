@@ -17,7 +17,7 @@ class ResumeCommand extends CommandProcessor {
     const event: ResumeEvent = { id: 'ResumeEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return makeSingleTextProcessingResponse('Wznowiono odtwarzanie', false);
+    return makeSingleTextProcessingResponse('Wznowiono odtwarzanie');
   }
 
   get key(): string {

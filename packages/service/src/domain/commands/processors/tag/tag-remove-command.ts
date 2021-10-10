@@ -22,7 +22,7 @@ class TagRemoveCommand extends CommandProcessor {
     const [tagName, soundName] = commandArgs;
 
     await this.xSoundsService.removeTag(soundName, tagName);
-    return makeSingleTextProcessingResponse(`Usunięto tag "${tagName}" z dźwięku ${soundName}`, false);
+    return makeSingleTextProcessingResponse(`Usunięto tag "${tagName}" z dźwięku ${soundName}`);
   }
 
   get key(): string {

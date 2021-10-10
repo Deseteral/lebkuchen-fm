@@ -30,7 +30,7 @@ class XCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(playXSoundEvent);
     this.xSoundService.incrementPlayCount(xSound.name);
 
-    return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
+    return makeSingleTextProcessingResponse(':ultrafastparrot:');
   }
 
   get key(): string {

@@ -37,7 +37,7 @@ class AddCommand extends CommandProcessor {
     const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : undefined;
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
-    return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`, false);
+    return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`);
   }
 
   private parseTimeStringToSeconds(text: string): number {

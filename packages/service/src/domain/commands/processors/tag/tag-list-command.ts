@@ -16,7 +16,7 @@ class TagListCommand extends CommandProcessor {
     const tags = await this.xSoundService.getAllUniqueTags();
 
     if (tags.isEmpty()) {
-      return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów', false);
+      return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów');
     }
 
     const tagListText = tags

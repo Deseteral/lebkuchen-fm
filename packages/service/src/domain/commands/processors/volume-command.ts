@@ -37,9 +37,9 @@ class VolumeCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(event);
 
     if (isRelativeChange) {
-      return makeSingleTextProcessingResponse(`Zmieniono głośność o "${value}"`, false);
+      return makeSingleTextProcessingResponse(`Zmieniono głośność o "${value}"`);
     }
-    return makeSingleTextProcessingResponse(`Ustawiono głośność na "${value}"`, false);
+    return makeSingleTextProcessingResponse(`Ustawiono głośność na "${value}"`);
   }
 
   get key(): string {

@@ -36,7 +36,7 @@ class SpeedCommand extends CommandProcessor {
     }
 
     this.playerEventStream.sendToEveryone(event);
-    return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`, false);
+    return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`);
   }
 
   get key(): string {

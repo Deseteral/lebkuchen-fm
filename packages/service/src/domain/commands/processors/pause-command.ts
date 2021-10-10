@@ -17,7 +17,7 @@ class PauseCommand extends CommandProcessor {
     const event: PauseEvent = { id: 'PauseEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
+    return makeSingleTextProcessingResponse('Spauzowano muzykę');
   }
 
   get key(): string {

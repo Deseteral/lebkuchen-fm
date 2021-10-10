@@ -34,9 +34,9 @@ export interface CommandProcessingResponse {
   isVisibleToIssuerOnly: boolean,
 }
 
-export function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly: boolean): CommandProcessingResponse {
+export function makeSingleTextProcessingResponse(text: string): CommandProcessingResponse {
   return {
     messages: [{ text, type: 'PLAIN_TEXT' }],
-    isVisibleToIssuerOnly,
+    isVisibleToIssuerOnly: false,
   };
 }

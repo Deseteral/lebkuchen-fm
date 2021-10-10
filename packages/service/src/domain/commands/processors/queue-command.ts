@@ -30,7 +30,7 @@ class QueueCommand extends CommandProcessor {
 
     this.songService.incrementPlayCount(song.youtubeId, song.name);
 
-    return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
+    return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`);
   }
 
   get key(): string {
