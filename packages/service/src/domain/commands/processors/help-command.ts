@@ -4,12 +4,8 @@ import CommandProcessor from '@service/domain/commands/model/command-processor';
 import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
 import RegisterCommand from '@service/domain/commands/registry/register-command';
 import Configuration from '@service/infrastructure/configuration';
+import { notNull } from '@service/utils';
 import { Service } from 'typedi';
-
-// TODO: Extract to some utilities module
-function notNull<T>(value: T | null | undefined): value is T {
-  return ((value !== null) && (value !== undefined));
-}
 
 @RegisterCommand
 @Service()
