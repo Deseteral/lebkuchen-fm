@@ -27,7 +27,7 @@ When that's done you can just start the application:
 npm start
 ```
 
-This project is separated into independent modules with main ones being `service`, `main-page` and `fm-player`.
+This project is separated into independent modules with main ones being `service` and `fm-player`.
 For development information specific to modules refer to their _Development_ sections in this document.
 
 It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for development.
@@ -54,6 +54,8 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 
 #### Development
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
+
+You can use `./devops/local-command.sh` script to issue `/fm` commands to localhost instance of the service.
 
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
@@ -140,9 +142,6 @@ Requires content type to be `multipart/form-data` with fields:
   "timesPlayed": 0
 }
 ```
-
-### Main page (`/packages/main-page`)
-Index page for this service. Provides user facing features different from ones being available on FM player (like uploading new X Sounds).
 
 ### FM player (`/packages/fm-player`)
 Web client for the player. Communicates with the service via WebSocket event stream.

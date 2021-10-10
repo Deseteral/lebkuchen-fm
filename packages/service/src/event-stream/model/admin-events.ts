@@ -1,21 +1,15 @@
-import { Log } from '../../infrastructure/logger';
+import { Log } from '@service/infrastructure/logger';
 
-interface LogEvent {
+export interface LogEvent {
   id: 'LogEvent',
   loggerHistory: Log[],
 }
 
-interface WsConnectionsEvent {
+export interface WsConnectionsEvent {
   id: 'WsConnectionsEvent',
   playerIds: string[],
 }
 
-type AdminEventData =
+export type AdminEventData =
   | LogEvent
   | WsConnectionsEvent;
-
-export {
-  AdminEventData,
-  LogEvent,
-  WsConnectionsEvent,
-};

@@ -3,6 +3,8 @@ build/
 dist/
 .cache/
 .parcel-cache/
+backups/
+coverage/
 
 .env
 *.log

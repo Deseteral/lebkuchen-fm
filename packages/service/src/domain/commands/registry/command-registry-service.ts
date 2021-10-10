@@ -1,17 +1,19 @@
-import CommandDefinition from '../model/command-definition';
-import Logger from '../../../infrastructure/logger';
+import path from 'path';
+import { Service } from 'typedi';
+import glob from 'glob';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import Logger from '@service/infrastructure/logger';
 
-type CommandRegistry = Map<string, CommandDefinition>;
-
+@Service()
 class CommandRegistryService {
   private static logger = new Logger('command-registry');
-  private commands: CommandRegistry;
+  private commands: Map<string, CommandProcessor>;
 
-  private constructor() {
+  constructor() {
     this.commands = new Map();
   }
 
-  register(definition: CommandDefinition): void {
+  register(definition: CommandProcessor): void {
     this.commands.set(definition.key, definition);
 
     if (definition.shortKey) {
@@ -21,14 +23,15 @@ class CommandRegistryService {
     CommandRegistryService.logger.info(`Initialized ${definition.key} command`);
   }
 
-  getRegistry(): Map<string, CommandDefinition> {
+  getRegistry(): Map<string, CommandProcessor> {
     return this.commands;
   }
 
-  static readonly instance = new CommandRegistryService();
+  static detectProcessorModules(): void {
+    const pathToProcessorModules = path.resolve(__dirname, '..', 'processors');
+    glob.sync(path.join(pathToProcessorModules, '**/*-command.js'))
+      .forEach((modulePath) => require(modulePath)); // eslint-disable-line global-require, import/no-dynamic-require
+  }
 }
 
 export default CommandRegistryService;
-export {
-  CommandRegistry,
-};

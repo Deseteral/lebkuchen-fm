@@ -1,53 +1,42 @@
-interface HeaderMessageBlock {
+export interface HeaderMessageBlock {
   type: 'HEADER',
   text: string,
 }
 
-interface PlainTextMessageBlock {
+export interface PlainTextMessageBlock {
   type: 'PLAIN_TEXT',
   text: string,
 }
 
-interface MarkdownMessageBlock {
+export interface MarkdownMessageBlock {
   type: 'MARKDOWN',
   text: string,
 }
 
-interface ContextMessageBlock {
+export interface ContextMessageBlock {
   type: 'CONTEXT',
   text: string,
 }
 
-interface DividerMessageBlock {
+export interface DividerMessageBlock {
   type: 'DIVIDER',
 }
 
-type MessageBlock =
+export type MessageBlock =
   | HeaderMessageBlock
   | PlainTextMessageBlock
   | MarkdownMessageBlock
   | ContextMessageBlock
   | DividerMessageBlock;
 
-interface CommandProcessingResponse {
+export interface CommandProcessingResponse {
   messages: MessageBlock[],
   isVisibleToIssuerOnly: boolean,
 }
 
-function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly: boolean): CommandProcessingResponse {
+export function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly: boolean): CommandProcessingResponse {
   return {
     messages: [{ text, type: 'PLAIN_TEXT' }],
     isVisibleToIssuerOnly,
   };
 }
-
-export default CommandProcessingResponse;
-export {
-  MessageBlock,
-  HeaderMessageBlock,
-  PlainTextMessageBlock,
-  MarkdownMessageBlock,
-  ContextMessageBlock,
-  DividerMessageBlock,
-  makeSingleTextProcessingResponse,
-};

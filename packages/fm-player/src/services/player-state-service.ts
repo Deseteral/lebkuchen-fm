@@ -12,10 +12,12 @@ function getState(): PlayerState {
 function setState(nextState: PlayerState): void {
   playerState = nextState;
   emitter.emit('playerStateReplaced');
+  emitter.emit('change', playerState);
 }
 
 function popFromQueueFront(): (Song | null) {
   const popped = playerState.queue.shift();
+  emitter.emit('change', playerState);
   return popped || null;
 }
 
@@ -26,10 +28,12 @@ function addToQueue(songs: Song[]) {
   if (prevLength === 0 && playerState.queue.length > 0) {
     emitter.emit('songAddedToQueueFront');
   }
+  emitter.emit('change', playerState);
 }
 
 function dropFromQueueFront(amount: number) {
   playerState.queue.splice(0, amount);
+  emitter.emit('change', playerState);
 }
 
 function changeVolume(nextVolume: number, isRelative: boolean) {
@@ -51,6 +55,14 @@ function on(eventType: PlayerStateEventType, callback: Handler<PlayerStateEvent>
   emitter.on<PlayerStateEvent>(eventType, callback);
 }
 
+function onStateChange(callback: Handler<PlayerState>) {
+  emitter.on<PlayerState>('change', callback);
+}
+
+function done() {
+  emitter.emit('change', playerState);
+}
+
 export {
   getState,
   setState,
@@ -59,4 +71,6 @@ export {
   addToQueue,
   changeVolume,
   on,
+  onStateChange,
+  done,
 };

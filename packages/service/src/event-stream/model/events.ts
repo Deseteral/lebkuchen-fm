@@ -1,57 +1,57 @@
-import PlayerState from '../../domain/player-state/player-state';
-import Song from '../../domain/songs/song';
+import PlayerState from '@service/domain/player-state/player-state';
+import Song from '@service/domain/songs/song';
 
-interface PlayerStateUpdateEvent {
+export interface PlayerStateUpdateEvent {
   id: 'PlayerStateUpdateEvent',
   state: PlayerState,
 }
 
-interface PlayerStateRequestEvent {
+export interface PlayerStateRequestEvent {
   id: 'PlayerStateRequestEvent',
 }
 
-interface AddSongsToQueueEvent {
+export interface AddSongsToQueueEvent {
   id: 'AddSongsToQueueEvent',
   songs: Song[],
 }
 
-interface PlayXSoundEvent {
+export interface PlayXSoundEvent {
   id: 'PlayXSoundEvent',
   soundUrl: string,
 }
 
-interface SayEvent {
+export interface SayEvent {
   id: 'SayEvent',
   text: string,
 }
 
-interface PauseEvent {
+export interface PauseEvent {
   id: 'PauseEvent',
 }
 
-interface ResumeEvent {
+export interface ResumeEvent {
   id: 'ResumeEvent',
 }
 
-interface SkipEvent {
+export interface SkipEvent {
   id: 'SkipEvent',
   skipAll: boolean,
   amount: number,
 }
 
-type SpeedControl = (-1 | 0 | 1);
-interface ChangeSpeedEvent {
+export type SpeedControl = (-1 | 0 | 1);
+export interface ChangeSpeedEvent {
   id: 'ChangeSpeedEvent',
   nextSpeed: SpeedControl,
 }
 
-interface ChangeVolumeEvent {
+export interface ChangeVolumeEvent {
   id: 'ChangeVolumeEvent',
   isRelative: boolean,
   nextVolume: number,
 }
 
-type EventData =
+export type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
   | AddSongsToQueueEvent
@@ -62,18 +62,3 @@ type EventData =
   | SkipEvent
   | ChangeSpeedEvent
   | ChangeVolumeEvent;
-
-export {
-  SpeedControl,
-  EventData,
-  PlayerStateRequestEvent,
-  PlayerStateUpdateEvent,
-  AddSongsToQueueEvent,
-  PlayXSoundEvent,
-  SayEvent,
-  PauseEvent,
-  ResumeEvent,
-  SkipEvent,
-  ChangeSpeedEvent,
-  ChangeVolumeEvent,
-};

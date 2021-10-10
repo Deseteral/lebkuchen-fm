@@ -9,7 +9,8 @@
     "build": "lerna run clean && lerna run build && npm run build:static",
     "build:static": "mkdir -p packages/service/build/public && cp packages/**/dist/* packages/service/build/public/",
     "test": "lerna run test",
-    "postinstall": "lerna bootstrap"
+    "bootstrap": "lerna bootstrap",
+    "postinstall": "npm run bootstrap"
   },
   "devDependencies": {
     "lerna": "3.22.1"

@@ -1,20 +1,22 @@
+import Configuration from '@service/infrastructure/configuration';
+import Logger from '@service/infrastructure/logger';
 import { Collection, Db, MongoClient } from 'mongodb';
-import Configuration from '../infrastructure/configuration';
-import Logger from '../infrastructure/logger';
+import { Service } from 'typedi';
 
-class Storage {
+@Service()
+class Storage { // TODO: change name because it's confusing imports
   private static logger = new Logger('mongo-client');
   private client: MongoClient;
   private db?: Db;
 
-  private constructor() {
-    this.client = new MongoClient(Configuration.MONGODB_URI, { useUnifiedTopology: true });
+  constructor(private configuration: Configuration) {
+    this.client = new MongoClient(this.configuration.MONGODB_URI, { useUnifiedTopology: true });
   }
 
   async connect(): Promise<void> {
     await this.client.connect();
 
-    this.db = this.client.db(Configuration.DATABASE_NAME);
+    this.db = this.client.db(this.configuration.DATABASE_NAME);
     await this.db.command({ ping: 1 });
 
     Storage.logger.info('Connected to MongoDB server');
@@ -26,8 +28,6 @@ class Storage {
     }
     return this.db.collection(collectionName);
   }
-
-  static readonly instance: Storage = new Storage();
 }
 
 export default Storage;

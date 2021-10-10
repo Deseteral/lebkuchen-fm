@@ -3,6 +3,7 @@ import YTPlayer from 'yt-player';
 import * as PlayerStateService from './player-state-service';
 
 let player: YTPlayer;
+const { done } = PlayerStateService;
 
 interface YTPlayerStateUpdateQueue {
   time: (number | null),
@@ -27,31 +28,37 @@ function playSong(song: (Song | null), time = 0) {
   } else {
     player.stop();
   }
+  done();
 }
 
 function playNextSong() {
   const song = PlayerStateService.popFromQueueFront();
   playSong(song);
+  done();
 }
 
 function pause() {
   player.pause();
   PlayerStateService.getState().isPlaying = false;
+  done();
 }
 
 function resume() {
   player.play();
   PlayerStateService.getState().isPlaying = true;
+  done();
 }
 
 function setVolume(nextVolume: number) {
   player.setVolume(nextVolume);
+  done();
 }
 
 function setSpeed(nextSpeed: SpeedControl) {
   switch (nextSpeed) {
     case 0:
       player.setPlaybackRate(1);
+      done();
       return;
     case -1:
     case 1: {
@@ -63,6 +70,7 @@ function setSpeed(nextSpeed: SpeedControl) {
       if (!Number.isNaN(newSpeed)) {
         player.setPlaybackRate(newSpeed);
       }
+      done();
     } break;
     default:
       break;
@@ -83,6 +91,7 @@ function initialize(playerContainerDomId: string) {
       playSong(song, time);
       ytPlayerStateUpdateQueue.time = time;
     }
+    done();
   });
 
   player.on('playing', () => {
@@ -97,6 +106,7 @@ function initialize(playerContainerDomId: string) {
     if (seconds > 0 && state.currentlyPlaying) {
       state.currentlyPlaying.time = seconds;
     }
+    done();
   });
 
   PlayerStateService.on('songAddedToQueueFront', async () => {

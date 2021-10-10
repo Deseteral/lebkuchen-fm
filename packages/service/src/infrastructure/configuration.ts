@@ -1,23 +1,44 @@
-require('dotenv').config();
+import { Service } from 'typedi';
 
-interface ConfigurationT {
-  PORT: string,
-  DATABASE_NAME: string,
-  MONGODB_URI: string,
-  YOUTUBE_API_KEY: string,
-  SLACK_CHANNEL_ID: string,
-  COMMAND_PROMPT: string,
-  DROPBOX_TOKEN: string,
+@Service()
+class Configuration {
+  public readonly PORT: string;
+  public readonly DATABASE_NAME: string;
+  public readonly MONGODB_URI: string;
+  public readonly YOUTUBE_API_KEY: string;
+  public readonly SLACK_CHANNEL_ID: string;
+  public readonly COMMAND_PROMPT: string;
+  public readonly DROPBOX_TOKEN: string;
+
+  private constructor(
+    PORT: string,
+    DATABASE_NAME: string,
+    MONGODB_URI: string,
+    YOUTUBE_API_KEY: string,
+    SLACK_CHANNEL_ID: string,
+    COMMAND_PROMPT: string,
+    DROPBOX_TOKEN: string,
+  ) {
+    this.PORT = PORT;
+    this.DATABASE_NAME = DATABASE_NAME;
+    this.MONGODB_URI = MONGODB_URI;
+    this.YOUTUBE_API_KEY = YOUTUBE_API_KEY;
+    this.SLACK_CHANNEL_ID = SLACK_CHANNEL_ID;
+    this.COMMAND_PROMPT = COMMAND_PROMPT;
+    this.DROPBOX_TOKEN = DROPBOX_TOKEN;
+  }
+
+  public static readFromEnv(): Configuration {
+    return new Configuration(
+      (process.env.PORT || '9000'),
+      'lebkuchen-fm',
+      process.env.MONGODB_URI || 'mongodb://localhost:27017',
+      process.env.YOUTUBE_API_KEY || '',
+      process.env.SLACK_CHANNEL_ID || '',
+      process.env.COMMAND_PROMPT || '/fm',
+      process.env.DROPBOX_TOKEN || '',
+    );
+  }
 }
-
-const Configuration: ConfigurationT = {
-  PORT: (process.env.PORT || '9000'),
-  DATABASE_NAME: 'lebkuchen-fm',
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017',
-  YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY || '',
-  SLACK_CHANNEL_ID: process.env.SLACK_CHANNEL_ID || '',
-  COMMAND_PROMPT: process.env.COMMAND_PROMPT || '/fm',
-  DROPBOX_TOKEN: process.env.DROPBOX_TOKEN || '',
-};
 
 export default Configuration;
