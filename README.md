@@ -55,6 +55,8 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 #### Development
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
 
+You can use `./devops/local-command.sh` script to issue `/fm` commands to localhost instance of the service.
+
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
