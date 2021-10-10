@@ -5,6 +5,7 @@ import XSound from '@service/domain/x-sounds/x-sound';
 import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
 import Logger from '@service/infrastructure/logger';
 import InternalServerError from '@service/api/internal-server-error';
+import XSoundsResponseDto from '@service/api/x-sounds/model/xsounds-response-dto';
 
 @Service()
 @Controller('/x-sounds')
@@ -15,9 +16,9 @@ class XSoundsController {
 
   @Get('/')
   @ContentType('application/json')
-  async getXSounds(): Promise<XSound[]> {
+  async getXSounds(): Promise<XSoundsResponseDto> {
     const sounds = await this.xSoundsService.getAll();
-    return sounds;
+    return { sounds };
   }
 
   @Post('/')
