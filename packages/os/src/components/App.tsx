@@ -1,13 +1,35 @@
 import * as React from 'react';
-import PlayerApp from 'lebkuchen-fm-player/src/components/App';
+import Window from './Window';
+import Desktop from './Desktop';
 
 function App() {
+  const [windows, setWindows] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    setWindows(['1', '2', '3']);
+  }, []);
+
+  function onWindowFocus(windowIndex: number): void {
+    const w = [...windows];
+    const [focusedWindow] = w.splice(windowIndex, 1);
+    w.unshift(focusedWindow);
+    setWindows(w);
+  }
+
   return (
-    <PlayerApp />
-    // // <>
-    //   {/* <PlayerApp /> */}
-    //   <div>test</div>
-    // // </>
+    <>
+      <Desktop />
+      {windows.reverse().map((content, index) => (
+        <Window
+          title="Window"
+          onClose={() => {}}
+          onFocus={() => onWindowFocus(index)}
+          key={content}
+        >
+          {content}
+        </Window>
+      ))}
+    </>
   );
 }
 

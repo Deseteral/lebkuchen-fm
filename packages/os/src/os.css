@@ -6,4 +6,6 @@ body {
   margin: 0;
   background-color: black;
   color: white;
+  font-family: 'Arial', serif;
+  user-select: none;
 }
