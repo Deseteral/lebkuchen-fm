@@ -1,15 +1,17 @@
 import { Collection } from 'mongodb';
-import Storage from './storage';
+import DatabaseClient from '@service/infrastructure/storage';
 
 abstract class Repository<T> {
   private collectionName: string;
+  private storage: DatabaseClient;
 
-  constructor(collectionName: string) {
+  constructor(collectionName: string, storage: DatabaseClient) {
     this.collectionName = collectionName;
+    this.storage = storage;
   }
 
   protected get collection(): Collection<T> {
-    return Storage.instance.collection<T>(this.collectionName);
+    return this.storage.collection<T>(this.collectionName);
   }
 }
 

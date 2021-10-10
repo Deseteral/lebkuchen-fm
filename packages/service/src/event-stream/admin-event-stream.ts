@@ -1,42 +1,49 @@
-import EventStream from './event-stream';
-import { AdminEventData, LogEvent, WsConnectionsEvent } from './model/admin-events';
-import Logger from '../infrastructure/logger';
+import { Service } from 'typedi';
+import SocketIO from 'socket.io';
+import { AdminEventData, LogEvent, WsConnectionsEvent } from '@service/event-stream/model/admin-events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import Logger from '@service/infrastructure/logger';
 
+@Service()
 class AdminEventStream {
-  static initialize(): void {
-    Logger.on('printedLog', () => {
-      AdminEventStream.sendLogsToEveryone();
-    });
+  private adminNamespace: SocketIO.Namespace;
+
+  constructor(private io: SocketIO.Server, private playerEventStream: PlayerEventStream) {
+    this.adminNamespace = this.io.of('/admin');
+
+    this.adminNamespace.on('connection', () => this.adminConnected());
+    this.playerEventStream.onPlayerConnection(() => this.playerConnectionChange());
+    Logger.on('printedLog', () => this.sendLogsToEveryone());
   }
 
-  static onAdminConnected(): void {
-    AdminEventStream.sendLogsToEveryone();
-    AdminEventStream.sendWsConnections();
+  public sendToEveryone(event: AdminEventData): void {
+    this.adminNamespace.send(event);
   }
 
-  static onPlayerConnectionChange(): void {
-    AdminEventStream.sendWsConnections();
+  private adminConnected(): void {
+    this.sendLogsToEveryone();
+    this.sendWsConnections();
   }
 
-  private static sendLogsToEveryone(): void {
+  private playerConnectionChange(): void {
+    this.sendWsConnections();
+  }
+
+  private sendLogsToEveryone(): void {
     const eventData: LogEvent = {
       id: 'LogEvent',
       loggerHistory: Logger.loggerHistory,
     };
-    AdminEventStream.sendToEveryone(eventData);
+    this.sendToEveryone(eventData);
   }
 
-  private static sendWsConnections(): void {
-    const playerIds = EventStream.instance.getConnectedPlayerIds();
+  private sendWsConnections(): void {
+    const playerIds = this.playerEventStream.getConnectedPlayerIds();
     const eventData: WsConnectionsEvent = {
       id: 'WsConnectionsEvent',
       playerIds,
     };
-    AdminEventStream.sendToEveryone(eventData);
-  }
-
-  private static sendToEveryone(event: AdminEventData): void {
-    EventStream.instance.adminBroadcast(event);
+    this.sendToEveryone(eventData);
   }
 }
 

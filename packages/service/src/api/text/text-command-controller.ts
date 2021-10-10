@@ -1,20 +1,25 @@
-/* eslint-disable prefer-arrow-callback */
-import express from 'express';
-import CommandExecutorService from '../../domain/commands/command-executor-service';
-import Logger from '../../infrastructure/logger';
-import { mapCommandProcessingResponseToTextCommandResponseDto } from './model/text-command-response-dto';
+import { Service } from 'typedi';
+import { JsonController, Body, Post } from 'routing-controllers';
+import { TextCommandRequestDto } from '@service/api/text/model/text-command-request-dto';
+import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
+import CommandExecutorService from '@service/domain/commands/command-executor-service';
+import Logger from '@service/infrastructure/logger';
 
-const router = express.Router();
-const logger = new Logger('text-command-controller');
+@Service()
+@JsonController('/commands/text')
+class TextCommandController {
+  private static logger = new Logger('text-command-controller');
 
-router.post('/', async function processTextCommand(req, res) {
-  const { text } = req.body;
+  constructor(private commandExecutorService: CommandExecutorService) { }
 
-  logger.info(`Received ${text} command`);
+  @Post('/')
+  async processTextCommand(@Body() body: TextCommandRequestDto): Promise<TextCommandResponseDto> {
+    const { text } = body;
+    TextCommandController.logger.info(`Received ${text} command`);
 
-  const commandProcessingResponse = await CommandExecutorService.instance.processFromText(text);
-  const response = mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
-  res.send(response);
-});
+    const commandProcessingResponse = await this.commandExecutorService.processFromText(text);
+    return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
+  }
+}
 
-export default router;
+export default TextCommandController;

@@ -1,34 +1,53 @@
-import { SayEvent } from '../../../event-stream/model/events';
-import Command from '../model/command';
-import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse from '../model/command-processing-response';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import { SayEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { Service } from 'typedi';
 
-async function sayCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const text = command.rawArgs;
-  const eventMessage: SayEvent = {
-    id: 'SayEvent',
-    text,
-  };
+@RegisterCommand
+@Service()
+class SayCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-  PlayerEventStream.instance.sendToEveryone(eventMessage);
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const text = command.rawArgs;
+    const eventMessage: SayEvent = {
+      id: 'SayEvent',
+      text,
+    };
 
-  return {
-    messages: [
-      { text: `_"${text}"_`, type: 'MARKDOWN' },
-    ],
-    isVisibleToIssuerOnly: false,
-  };
+    this.playerEventStream.sendToEveryone(eventMessage);
+
+    return {
+      messages: [
+        { text: `_"${text}"_`, type: 'MARKDOWN' },
+      ],
+      isVisibleToIssuerOnly: false,
+    };
+  }
+
+  get key(): string {
+    return 'say';
+  }
+
+  get shortKey(): (string | null) {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Prosi spikera o odczytanie wiadomości';
+  }
+
+  get helpUsages(): (string[] | null) {
+    return [
+      '<message>',
+      'to jest moja fantastyczna wiadomość',
+    ];
+  }
 }
 
-const sayCommandDefinition: CommandDefinition = {
-  key: 'say',
-  processor: sayCommandProcessor,
-  helpMessage: 'Prosi spikera o odczytanie wiadomości',
-  helpUsages: [
-    '<message>',
-    'to jest moja fantastyczna wiadomość',
-  ],
-};
-
-export default sayCommandDefinition;
+export default SayCommand;

@@ -1,14 +1,12 @@
+import XSound from '@service/domain/x-sounds/x-sound';
+import XSoundsRepository from '@service/domain/x-sounds/x-sounds-repository';
+import FileStorage from '@service/infrastructure/file-storage';
 import path from 'path';
-import XSoundsRepository from './x-sounds-repository';
-import XSound from './x-sound';
-import FileStorage from '../../infrastructure/file-storage';
+import { Service } from 'typedi';
 
+@Service()
 class XSoundsService {
-  private repository: XSoundsRepository;
-
-  private constructor() {
-    this.repository = XSoundsRepository.instance;
-  }
+  constructor(private repository: XSoundsRepository, private fileStorage: FileStorage) { }
 
   getAll(): Promise<XSound[]> {
     return this.repository.findAllOrderByNameAsc();
@@ -110,7 +108,7 @@ class XSoundsService {
     }
 
     const fileExtension = path.extname(fileDescriptor.fileName);
-    const { url } = await FileStorage.instance.uploadFile({
+    const { url } = await this.fileStorage.uploadFile({
       path: `/xsounds/${name}${fileExtension}`,
       contents: fileDescriptor.buffer,
     });
@@ -126,8 +124,6 @@ class XSoundsService {
 
     return xSound;
   }
-
-  static readonly instance = new XSoundsService();
 }
 
 export default XSoundsService;

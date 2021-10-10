@@ -1,6 +1,7 @@
+import Configuration from '@service/infrastructure/configuration';
+import Logger from '@service/infrastructure/logger';
 import fetch from 'node-fetch';
-import Configuration from '../infrastructure/configuration';
-import Logger from '../infrastructure/logger';
+import { Service } from 'typedi';
 
 interface SearchResults {
   items: [
@@ -21,16 +22,34 @@ interface VideoDetails {
   ]
 }
 
+@Service()
 class YouTubeDataClient {
   private static logger: Logger = new Logger('youtube-data-client');
 
-  private static makeYouTubeUrl(path: string): URL {
+  constructor(private configuration: Configuration) { }
+
+  async fetchVideoTitleForId(youtubeId: string): Promise<string> {
+    const videoDetails = await this.getVideoDetails([youtubeId], 'snippet');
+    return videoDetails.items[0].snippet.title;
+  }
+
+  async fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
+    const data = await this.getSearchResultsForPhrase(phrase, 1);
+    return data.items[0].id.videoId;
+  }
+
+  async fetchVideosStatuses(youtubeIds: string[]): Promise<VideoDetails> {
+    const videoDetails = await this.getVideoDetails(youtubeIds, 'status');
+    return videoDetails;
+  }
+
+  private makeYouTubeUrl(path: string): URL {
     const url = new URL(`/youtube/v3${path}`, 'https://www.googleapis.com');
-    url.searchParams.set('key', Configuration.YOUTUBE_API_KEY);
+    url.searchParams.set('key', this.configuration.YOUTUBE_API_KEY);
     return url;
   }
 
-  private static async request<T>(url: URL): Promise<T> {
+  private async request<T>(url: URL): Promise<T> {
     const res = await fetch(url, {
       headers: { 'Content-Type': 'application/json' },
     });
@@ -44,8 +63,8 @@ class YouTubeDataClient {
     return data;
   }
 
-  private static async getSearchResultsForPhrase(phrase: string, maxResults: number): Promise<SearchResults> {
-    const url = YouTubeDataClient.makeYouTubeUrl('/search');
+  private async getSearchResultsForPhrase(phrase: string, maxResults: number): Promise<SearchResults> {
+    const url = this.makeYouTubeUrl('/search');
     url.searchParams.set('q', phrase);
     url.searchParams.set('maxResults', maxResults.toString());
     url.searchParams.set('part', 'snippet');
@@ -53,31 +72,16 @@ class YouTubeDataClient {
     url.searchParams.set('safeSearch', 'none');
     url.searchParams.set('videoEmbeddable', 'true');
 
-    const data = await YouTubeDataClient.request<SearchResults>(url);
+    const data = await this.request<SearchResults>(url);
     return data;
   }
 
-  private static async getVideoDetails(youtubeIds: string[], part: string): Promise<VideoDetails> {
-    const url = YouTubeDataClient.makeYouTubeUrl('/videos');
+  private async getVideoDetails(youtubeIds: string[], part: string): Promise<VideoDetails> {
+    const url = this.makeYouTubeUrl('/videos');
     url.searchParams.set('id', youtubeIds.join(','));
     url.searchParams.set('part', part);
 
-    return YouTubeDataClient.request<VideoDetails>(url);
-  }
-
-  static async fetchVideoTitleForId(youtubeId: string): Promise<string> {
-    const videoDetails = await YouTubeDataClient.getVideoDetails([youtubeId], 'snippet');
-    return videoDetails.items[0].snippet.title;
-  }
-
-  static async fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
-    const data = await YouTubeDataClient.getSearchResultsForPhrase(phrase, 1);
-    return data.items[0].id.videoId;
-  }
-
-  static async fetchVideosStatuses(youtubeIds: string[]): Promise<VideoDetails> {
-    const videoDetails = await YouTubeDataClient.getVideoDetails(youtubeIds, 'status');
-    return videoDetails;
+    return this.request<VideoDetails>(url);
   }
 }
 

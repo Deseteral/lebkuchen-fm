@@ -1,12 +1,18 @@
-/* eslint-disable prefer-arrow-callback */
-import express from 'express';
-import SongsService from '../../domain/songs/songs-service';
+import { Service } from 'typedi';
+import { JsonController, Get } from 'routing-controllers';
+import SongsService from '@service/domain/songs/songs-service';
+import Song from '@service/domain/songs/song';
 
-const router = express.Router();
+@Service()
+@JsonController('/songs')
+class SongsController {
+  constructor(private songsService: SongsService) { }
 
-router.get('/', async function getSongs(_, res) {
-  const songs = await SongsService.instance.getAll();
-  res.send({ songs });
-});
+  @Get('/')
+  async getSongs(): Promise<Song[]> {
+    const songs = await this.songsService.getAll();
+    return songs;
+  }
+}
 
-export default router;
+export default SongsController;

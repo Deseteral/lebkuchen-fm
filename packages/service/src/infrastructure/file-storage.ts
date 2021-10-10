@@ -1,17 +1,19 @@
+import Configuration from '@service/infrastructure/configuration';
+import Logger from '@service/infrastructure/logger';
 import { Dropbox } from 'dropbox';
-import Configuration from './configuration';
-import Logger from './logger';
+import { Service } from 'typedi';
 
 interface FileUploadResult {
   url: string,
 }
 
+@Service()
 class FileStorage {
   private static logger = new Logger('dropbox-file-storage');
   private client: Dropbox;
 
-  private constructor() {
-    this.client = new Dropbox({ accessToken: Configuration.DROPBOX_TOKEN });
+  constructor(private configuration: Configuration) {
+    this.client = new Dropbox({ accessToken: this.configuration.DROPBOX_TOKEN });
   }
 
   async uploadFile({ path, contents }: { path: string, contents: Buffer }): Promise<FileUploadResult> {
@@ -47,8 +49,6 @@ class FileStorage {
 
     return url;
   }
-
-  static readonly instance: FileStorage = new FileStorage();
 }
 
 export default FileStorage;

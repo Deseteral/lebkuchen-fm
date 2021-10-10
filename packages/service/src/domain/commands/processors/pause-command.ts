@@ -1,19 +1,40 @@
-import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import { PauseEvent } from '../../../event-stream/model/events';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import { PauseEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { Service } from 'typedi';
 
-async function pauseCommandProcessor(): Promise<CommandProcessingResponse> {
-  const event: PauseEvent = { id: 'PauseEvent' };
-  PlayerEventStream.instance.sendToEveryone(event);
+@RegisterCommand
+@Service()
+class PauseCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-  return makeSingleTextProcessingResponse('Spauzowano muzykę', false);
+  async execute(_: Command): Promise<CommandProcessingResponse> {
+    const event: PauseEvent = { id: 'PauseEvent' };
+    this.playerEventStream.sendToEveryone(event);
+
+    return makeSingleTextProcessingResponse('Spauzowano muzykę');
+  }
+
+  get key(): string {
+    return 'pause';
+  }
+
+  get shortKey(): (string | null) {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Zatrzymuje odtwarzanie bieżącego filmu';
+  }
+
+  get helpUsages(): (string[] | null) {
+    return null;
+  }
 }
 
-const pauseCommandDefinition: CommandDefinition = {
-  key: 'pause',
-  processor: pauseCommandProcessor,
-  helpMessage: 'Zatrzymuje odtwarzanie bieżącego filmu',
-};
-
-export default pauseCommandDefinition;
+export default PauseCommand;

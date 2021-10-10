@@ -3,14 +3,12 @@ import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@se
 import CommandProcessor from '@service/domain/commands/model/command-processor';
 import RegisterCommand from '@service/domain/commands/registry/register-command';
 import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
-import { PlayXSoundEvent } from '@service/event-stream/model/events';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class XCommand extends CommandProcessor {
-  constructor(private xSoundService: XSoundsService, private playerEventStream: PlayerEventStream) {
+class TagShowCommand extends CommandProcessor {
+  constructor(private xSoundsService: XSoundsService) {
     super();
   }
 
@@ -20,21 +18,27 @@ class XCommand extends CommandProcessor {
       throw new Error('Podaj nazwę dźwięku');
     }
 
-    const xSound = await this.xSoundService.getByName(soundName);
+    const tags = await this.xSoundsService.getSoundTags(soundName);
 
-    const playXSoundEvent: PlayXSoundEvent = {
-      id: 'PlayXSoundEvent',
-      soundUrl: xSound.url,
+    if (tags.isEmpty()) {
+      return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`);
+    }
+
+    const tagListText = tags
+      .map((tagName) => `- ${tagName}`)
+      .join('\n');
+
+    return {
+      messages: [
+        { type: 'HEADER', text: `Tagi dla "${soundName}"` },
+        { type: 'MARKDOWN', text: tagListText },
+      ],
+      isVisibleToIssuerOnly: false,
     };
-
-    this.playerEventStream.sendToEveryone(playXSoundEvent);
-    this.xSoundService.incrementPlayCount(xSound.name);
-
-    return makeSingleTextProcessingResponse(':ultrafastparrot:');
   }
 
   get key(): string {
-    return 'x';
+    return 'tag-show';
   }
 
   get shortKey(): (string | null) {
@@ -42,7 +46,7 @@ class XCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Puszcza szalony dźwięk!';
+    return 'Wyświetla wszystkie tagi przypisane do dźwięku';
   }
 
   get helpUsages(): (string[] | null) {
@@ -53,4 +57,4 @@ class XCommand extends CommandProcessor {
   }
 }
 
-export default XCommand;
+export default TagShowCommand;
