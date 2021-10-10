@@ -75,12 +75,17 @@
           "legacy": true
         }
       ],
-      ["module-resolver", {
-        "root": ["."],
-        "alias": {
-          "@service": "./src"
+      [
+        "module-resolver",
+        {
+          "root": [
+            "."
+          ],
+          "alias": {
+            "@service": "./src"
+          }
         }
-      }]
+      ]
     ]
   },
   "eslintConfig": {
@@ -94,6 +99,11 @@
     }
   },
   "jest": {
-    "testMatch": ["**/__tests__/**/*.spec.ts"]
+    "testMatch": [
+      "**/__tests__/**/*.spec.ts"
+    ],
+    "setupFilesAfterEnv": [
+      "<rootDir>/config/jest.setup.js"
+    ]
   }
 }

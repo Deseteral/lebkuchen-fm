@@ -1,4 +1,3 @@
-import 'reflect-metadata'; // TODO: extract to jest test setup
 import Command from '@service/domain/commands/model/command';
 import SkipCommand from '@service/domain/commands/processors/skip-command';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
