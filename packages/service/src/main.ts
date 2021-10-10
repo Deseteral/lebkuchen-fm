@@ -16,7 +16,7 @@ import CommandRegistryService from '@service/domain/commands/registry/command-re
 import AdminEventStream from '@service/event-stream/admin-event-stream';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
 import Configuration from '@service/infrastructure/configuration';
-import Storage from '@service/infrastructure/storage';
+import DatabaseClient from '@service/infrastructure/storage';
 
 const logger = new Logger('app-init');
 
@@ -36,7 +36,7 @@ async function main(): Promise<void> {
   app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
 
   // Connect to database
-  const storage = Container.get(Storage);
+  const storage = Container.get(DatabaseClient);
   await storage.connect();
 
   // Create WebSocket server
