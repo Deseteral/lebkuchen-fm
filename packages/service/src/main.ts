@@ -16,6 +16,7 @@ import CommandRegistryService from '@service/domain/commands/registry/command-re
 import AdminEventStream from '@service/event-stream/admin-event-stream';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
 import Configuration from '@service/infrastructure/configuration';
+import Storage from '@service/infrastructure/storage';
 
 const logger = new Logger('app-init');
 
