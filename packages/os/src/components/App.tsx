@@ -2,12 +2,21 @@ import * as React from 'react';
 import MenuBar from './MenuBar';
 import Window from './Window';
 import Desktop from './Desktop';
+import TestApp from './TestApp';
+
+interface WindowDescriptor {
+  id: string,
+  title: string,
+}
 
 function App() {
-  const [windows, setWindows] = React.useState<string[]>([]);
+  const [windows, setWindows] = React.useState<WindowDescriptor[]>([]);
 
   React.useEffect(() => {
-    setWindows(['1', '2', '3']);
+    setWindows([{
+      id: 'test-app',
+      title: 'Test window',
+    }]);
   }, []);
 
   function onWindowFocus(windowIndex: number): void {
@@ -21,16 +30,17 @@ function App() {
     <>
       <MenuBar />
       <Desktop />
-      {windows.reverse().map((content, index) => (
+      {windows.reverse().map((windowDescriptor, index) => (
         <Window
-          title="Window"
+          title={windowDescriptor.title}
           onClose={() => {}}
           onFocus={() => onWindowFocus(index)}
-          key={content}
+          key={windowDescriptor.id}
         >
-          {content}
+          <div data-os-window-id={windowDescriptor.id} />
         </Window>
       ))}
+      <TestApp />
     </>
   );
 }
