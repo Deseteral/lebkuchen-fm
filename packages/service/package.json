@@ -103,7 +103,7 @@
       "**/__tests__/**/*.spec.ts"
     ],
     "setupFilesAfterEnv": [
-      "<rootDir>/config/jest.setup.js"
+      "<rootDir>/config/jest.setup.ts"
     ]
   }
 }

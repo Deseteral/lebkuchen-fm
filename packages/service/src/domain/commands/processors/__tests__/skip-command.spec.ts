@@ -29,10 +29,7 @@ describe('Skip command', () => {
       amount: 1,
     });
 
-    expect(response).toEqual({
-      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
-      isVisibleToIssuerOnly: false,
-    });
+    expect(response).toBeSingleTextCommandResponse('Lecimy dalej!');
   });
 
   it('should skip all songs', async () => {
@@ -50,10 +47,7 @@ describe('Skip command', () => {
       amount: 1,
     });
 
-    expect(response).toEqual({
-      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
-      isVisibleToIssuerOnly: false,
-    });
+    expect(response).toBeSingleTextCommandResponse('Lecimy dalej!');
   });
 
   it('should skip specified amount of songs', async () => {
@@ -71,10 +65,7 @@ describe('Skip command', () => {
       amount: 123,
     });
 
-    expect(response).toEqual({
-      messages: [{ text: 'Lecimy dalej!', type: 'PLAIN_TEXT' }],
-      isVisibleToIssuerOnly: false,
-    });
+    expect(response).toBeSingleTextCommandResponse('Lecimy dalej!');
   });
 
   describe('error handling', () => {
