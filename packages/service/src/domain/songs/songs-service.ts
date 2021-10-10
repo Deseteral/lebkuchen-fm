@@ -1,5 +1,5 @@
+import Song from '@service/domain/songs/song';
 import SongsRepository from '@service/domain/songs/songs-repository';
-import { Song } from '@service/lib';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 

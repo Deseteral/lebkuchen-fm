@@ -1,5 +1,5 @@
+import Song from '@service/domain/songs/song';
 import Repository from '@service/infrastructure/repository';
-import { Song } from '@service/lib';
 import Storage from '@service/infrastructure/storage';
 import { Service } from 'typedi';
 

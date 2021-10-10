@@ -2,10 +2,10 @@ import Command from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 import CommandProcessor from '@service/domain/commands/model/command-processor';
 import RegisterCommand from '@service/domain/commands/registry/register-command';
+import Song from '@service/domain/songs/song';
 import SongsService from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
-import { Song } from '@service/lib';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 

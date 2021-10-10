@@ -1,5 +1,6 @@
 import Configuration from '@service/infrastructure/configuration';
-import { Collection, Db, Logger, MongoClient } from 'mongodb';
+import Logger from '@service/infrastructure/logger';
+import { Collection, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
 @Service()

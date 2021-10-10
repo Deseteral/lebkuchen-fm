@@ -92,5 +92,8 @@
       "class-methods-use-this": "off",
       "react-hooks/rules-of-hooks": "off"
     }
+  },
+  "jest": {
+    "testMatch": ["**/__tests__/**/*.spec.ts"]
   }
 }
