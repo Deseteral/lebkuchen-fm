@@ -1,7 +1,7 @@
+import Repository from '@service/infrastructure/repository';
+import { Song } from '@service/lib';
+import Storage from '@service/infrastructure/storage';
 import { Service } from 'typedi';
-import Song from './song';
-import Storage from '../../infrastructure/storage';
-import Repository from '../../infrastructure/repository';
 
 @Service()
 class SongsRepository extends Repository<Song> {

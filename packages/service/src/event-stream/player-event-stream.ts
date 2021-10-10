@@ -1,9 +1,9 @@
 import SocketIO from 'socket.io';
 import { Service } from 'typedi';
 import mitt, { Emitter } from 'mitt';
-import PlayerState, { makeDefaultPlayerState } from '../domain/player-state/player-state';
-import Logger from '../infrastructure/logger';
-import { EventData, PlayerStateRequestEvent, PlayerStateUpdateEvent } from './model/events';
+import { PlayerStateUpdateEvent, PlayerStateRequestEvent } from '@service/event-stream/model/events';
+import Logger from '@service/infrastructure/logger';
+import { EventData, makeDefaultPlayerState, PlayerState } from '@service/lib';
 
 @Service()
 class PlayerEventStream {

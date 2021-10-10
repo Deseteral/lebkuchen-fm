@@ -1,7 +1,7 @@
+import XSound from '@service/domain/x-sounds/x-sound';
+import Repository from '@service/infrastructure/repository';
 import { Service } from 'typedi';
-import XSound from './x-sound';
-import Storage from '../../infrastructure/storage';
-import Repository from '../../infrastructure/repository';
+import Storage from '@service/infrastructure/storage';
 
 @Service()
 class XSoundsRepository extends Repository<XSound> {

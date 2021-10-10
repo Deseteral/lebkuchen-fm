@@ -1,5 +1,5 @@
+import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
 import { Container } from 'typedi';
-import CommandRegistryService from './command-registry-service';
 
 function RegisterCommand(constructor: Function): void {
   const commandRegistryService = Container.get(CommandRegistryService);

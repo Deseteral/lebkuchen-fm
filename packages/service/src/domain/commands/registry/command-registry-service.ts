@@ -1,8 +1,8 @@
 import path from 'path';
 import { Service } from 'typedi';
 import glob from 'glob';
-import Logger from '../../../infrastructure/logger';
-import CommandProcessor from '../model/command-processor';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import Logger from '@service/infrastructure/logger';
 
 @Service()
 class CommandRegistryService {
@@ -29,7 +29,7 @@ class CommandRegistryService {
 
   static detectProcessorModules(): void {
     const pathToProcessorModules = path.resolve(__dirname, '..', 'processors');
-    glob.sync(path.join(pathToProcessorModules, '**/*.js'))
+    glob.sync(path.join(pathToProcessorModules, '**/*-command.js'))
       .forEach((modulePath) => require(modulePath)); // eslint-disable-line global-require, import/no-dynamic-require
   }
 }

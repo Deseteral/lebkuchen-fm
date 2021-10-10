@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import Storage from './storage';
+import Storage from '@service/infrastructure/storage';
 
 abstract class Repository<T> {
   private collectionName: string;

@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
-import './polyfills';
+import '@service/polyfills';
 
 require('dotenv').config();
 
@@ -11,12 +11,11 @@ import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
 import * as RoutingControllers from 'routing-controllers';
-import Configuration from './infrastructure/configuration';
-import Logger from './infrastructure/logger';
-import Storage from './infrastructure/storage';
-import PlayerEventStream from './event-stream/player-event-stream';
-import AdminEventStream from './event-stream/admin-event-stream';
-import CommandRegistryService from './domain/commands/registry/command-registry-service';
+import Logger from '@service/infrastructure/logger';
+import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
+import AdminEventStream from '@service/event-stream/admin-event-stream';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import Configuration from '@service/infrastructure/configuration';
 
 const logger = new Logger('app-init');
 

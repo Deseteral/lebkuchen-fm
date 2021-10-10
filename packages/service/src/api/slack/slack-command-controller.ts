@@ -1,10 +1,10 @@
 import { Service } from 'typedi';
 import { Controller, BodyParam, Post, UseBefore } from 'routing-controllers';
 import express from 'express';
-import CommandExecutorService from '../../domain/commands/command-executor-service';
-import Configuration from '../../infrastructure/configuration';
-import Logger from '../../infrastructure/logger';
-import { makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse, SlackBlockResponseDto, SlackSimpleResponseDto } from './model/slack-response-dto';
+import { SlackBlockResponseDto, SlackSimpleResponseDto, makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse } from '@service/api/slack/model/slack-response-dto';
+import CommandExecutorService from '@service/domain/commands/command-executor-service';
+import Configuration from '@service/infrastructure/configuration';
+import Logger from '@service/infrastructure/logger';
 
 @Service()
 @Controller('/commands/slack')

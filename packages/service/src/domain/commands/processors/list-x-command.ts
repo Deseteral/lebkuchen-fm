@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
-import { CommandProcessingResponse } from '../model/command-processing-response';
-import XSoundsService from '../../x-sounds/x-sounds-service';
-import CommandProcessor from '../model/command-processor';
-import Command from '../model/command';
-import RegisterCommand from '../registry/register-command';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
 
 @RegisterCommand
 @Service()

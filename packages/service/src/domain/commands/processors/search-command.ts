@@ -1,10 +1,10 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import QueueCommand from '@service/domain/commands/processors/queue-command';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
-import Command from '../model/command';
-import { CommandProcessingResponse } from '../model/command-processing-response';
-import YouTubeDataClient from '../../../youtube/youtube-data-client';
-import QueueCommand from './queue-command';
-import CommandProcessor from '../model/command-processor';
-import RegisterCommand from '../registry/register-command';
 
 @RegisterCommand
 @Service()

@@ -1,6 +1,6 @@
+import Command from '@service/domain/commands/model/command';
+import Configuration from '@service/infrastructure/configuration';
 import { Service } from 'typedi';
-import Configuration from '../../infrastructure/configuration';
-import Command from './model/command';
 
 @Service()
 class TextCommandParser {

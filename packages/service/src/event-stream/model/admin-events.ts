@@ -1,4 +1,4 @@
-import { Log } from '../../infrastructure/logger';
+import { Log } from '@service/infrastructure/logger';
 
 export interface LogEvent {
   id: 'LogEvent',

@@ -1,6 +1,6 @@
 import { HttpError } from 'routing-controllers';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import ErrorResponse from '../../error-response';
+import ErrorResponse from '@service/api/error-response';
 
 class MissingRequriedFieldsError extends HttpError {
   constructor() {

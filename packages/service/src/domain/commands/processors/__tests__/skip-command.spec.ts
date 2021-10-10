@@ -1,10 +1,10 @@
-import 'reflect-metadata';
-import PlayerEventStream from '../../../../event-stream/player-event-stream';
-import Command from '../../model/command';
-import SkipCommand from '../skip-command';
+import 'reflect-metadata'; // TODO: extract to jest test setup
+import Command from '@service/domain/commands/model/command';
+import SkipCommand from '@service/domain/commands/processors/skip-command';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
 
-jest.mock('../../../../event-stream/player-event-stream');
-jest.mock('../../registry/register-command');
+jest.mock('@service/domain/commands/registry/register-command');
+jest.mock('@service/event-stream/player-event-stream');
 
 describe('Skip command', () => {
   const PlayerEventStreamMock = PlayerEventStream as unknown as jest.Mock<PlayerEventStream>;

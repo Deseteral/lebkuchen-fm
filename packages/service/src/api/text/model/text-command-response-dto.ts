@@ -1,4 +1,4 @@
-import { CommandProcessingResponse } from '../../../domain/commands/model/command-processing-response';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 
 export interface TextCommandResponseDto {
   textResponse: string,

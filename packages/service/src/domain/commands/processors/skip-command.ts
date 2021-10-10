@@ -1,10 +1,10 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import { SkipEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
-import { SkipEvent } from '../../../event-stream/model/events';
-import Command from '../model/command';
-import CommandProcessor from '../model/command-processor';
-import RegisterCommand from '../registry/register-command';
 
 @RegisterCommand
 @Service()

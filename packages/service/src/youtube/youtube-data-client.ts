@@ -1,7 +1,7 @@
+import Configuration from '@service/infrastructure/configuration';
+import Logger from '@service/infrastructure/logger';
 import fetch from 'node-fetch';
 import { Service } from 'typedi';
-import Configuration from '../infrastructure/configuration';
-import Logger from '../infrastructure/logger';
 
 interface SearchResults {
   items: [

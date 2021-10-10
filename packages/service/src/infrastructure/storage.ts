@@ -1,10 +1,9 @@
-import { Collection, Db, MongoClient } from 'mongodb';
+import Configuration from '@service/infrastructure/configuration';
+import { Collection, Db, Logger, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
-import Configuration from '../infrastructure/configuration';
-import Logger from '../infrastructure/logger';
 
 @Service()
-class Storage {
+class Storage { // TODO: change name because it's confusing imports
   private static logger = new Logger('mongo-client');
   private client: MongoClient;
   private db?: Db;

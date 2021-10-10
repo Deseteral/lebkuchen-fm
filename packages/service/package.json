@@ -49,6 +49,7 @@
     "@types/jest": "27.0.2",
     "@types/mongodb": "3.5.27",
     "@types/node-fetch": "2.5.7",
+    "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-typescript-metadata": "0.3.2",
     "eslint": "7.32.0",
     "jest": "27.2.5",
@@ -73,7 +74,13 @@
         {
           "legacy": true
         }
-      ]
+      ],
+      ["module-resolver", {
+        "root": ["."],
+        "alias": {
+          "@service": "./src"
+        }
+      }]
     ]
   },
   "eslintConfig": {

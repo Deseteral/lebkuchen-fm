@@ -1,13 +1,13 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import SongsService from '@service/domain/songs/songs-service';
+import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { Song } from '@service/lib';
+import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
-import Command from '../model/command';
-import { CommandProcessingResponse } from '../model/command-processing-response';
-import SongsService from '../../songs/songs-service';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
-import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
-import YouTubeDataClient from '../../../youtube/youtube-data-client';
-import Song from '../../songs/song';
-import CommandProcessor from '../model/command-processor';
-import RegisterCommand from '../registry/register-command';
 
 const MAX_TITLES_IN_MESSAGE = 10;
 

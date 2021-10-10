@@ -1,10 +1,10 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, MessageBlock } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import Configuration from '@service/infrastructure/configuration';
 import { Service } from 'typedi';
-import CommandRegistryService from '../registry/command-registry-service';
-import { CommandProcessingResponse, MessageBlock } from '../model/command-processing-response';
-import Configuration from '../../../infrastructure/configuration';
-import CommandProcessor from '../model/command-processor';
-import Command from '../model/command';
-import RegisterCommand from '../registry/register-command';
 
 // TODO: Extract to some utilities module
 function notNull<T>(value: T | null | undefined): value is T {

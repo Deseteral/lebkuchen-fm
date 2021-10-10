@@ -1,10 +1,9 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post, Get, UploadedFile, ContentType } from 'routing-controllers';
-import XSoundsService from '../../domain/x-sounds/x-sounds-service';
-import InternalServerError from '../internal-server-error';
-import XSound from '../../domain/x-sounds/x-sound';
-import MissingRequriedFieldsError from './model/missing-required-fields-error';
-import Logger from '../../infrastructure/logger';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, InternalServerError } from 'routing-controllers';
+import MissingRequriedFieldsError from '@service/api/x-sounds/model/missing-required-fields-error';
+import XSound from '@service/domain/x-sounds/x-sound';
+import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import Logger from '@service/infrastructure/logger';
 
 @Service()
 @Controller('/x-sounds')

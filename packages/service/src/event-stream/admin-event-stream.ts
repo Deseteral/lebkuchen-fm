@@ -1,8 +1,9 @@
 import { Service } from 'typedi';
 import SocketIO from 'socket.io';
-import { AdminEventData, LogEvent, WsConnectionsEvent } from './model/admin-events';
-import Logger from '../infrastructure/logger';
-import PlayerEventStream from './player-event-stream';
+import { LogEvent, WsConnectionsEvent } from '@service/event-stream/model/admin-events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import Logger from '@service/infrastructure/logger';
+import { AdminEventData } from '@service/lib';
 
 @Service()
 class AdminEventStream {

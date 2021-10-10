@@ -1,7 +1,7 @@
+import SongsRepository from '@service/domain/songs/songs-repository';
+import { Song } from '@service/lib';
+import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
-import SongsRepository from './songs-repository';
-import YouTubeDataClient from '../../youtube/youtube-data-client';
-import Song from './song';
 
 @Service()
 class SongsService {

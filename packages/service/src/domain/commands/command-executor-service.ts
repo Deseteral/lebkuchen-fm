@@ -1,9 +1,9 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
+import TextCommandParser from '@service/domain/commands/text-command-parser';
+import Logger from '@service/infrastructure/logger';
 import { Service } from 'typedi';
-import Command from './model/command';
-import TextCommandParser from './text-command-parser';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from './model/command-processing-response';
-import Logger from '../../infrastructure/logger';
-import CommandRegistryService from './registry/command-registry-service';
 
 @Service()
 class CommandExecutorService {

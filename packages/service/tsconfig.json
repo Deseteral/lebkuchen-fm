@@ -18,7 +18,12 @@
     "lib": [
       "DOM",
       "es2018"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@service/*": ["src/*"],
+      "*": ["node_modules/*"],
+    },
   },
   "include": [
     "src/**/*"

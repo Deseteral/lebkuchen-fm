@@ -1,11 +1,11 @@
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import { PlayXSoundEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
-import Command from '../model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import { PlayXSoundEvent } from '../../../event-stream/model/events';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
-import CommandProcessor from '../model/command-processor';
-import XSoundsService from '../../x-sounds/x-sounds-service';
-import RegisterCommand from '../registry/register-command';
 
 @RegisterCommand
 @Service()
