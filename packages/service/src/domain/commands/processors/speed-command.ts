@@ -36,14 +36,14 @@ class SpeedCommand extends CommandProcessor {
     }
 
     this.playerEventStream.sendToEveryone(event);
-    return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`, false);
+    return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`);
   }
 
   get key(): string {
     return 'speed';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

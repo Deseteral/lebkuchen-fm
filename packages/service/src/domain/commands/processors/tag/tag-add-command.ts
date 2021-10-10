@@ -22,14 +22,14 @@ class TagAddCommand extends CommandProcessor {
     const [tagName, soundName] = commandArgs;
 
     await this.xSoundsService.addTag(soundName, tagName);
-    return makeSingleTextProcessingResponse(`Dodano tag "${tagName}" do dźwięku ${soundName}`, false);
+    return makeSingleTextProcessingResponse(`Dodano tag "${tagName}" do dźwięku ${soundName}`);
   }
 
   get key(): string {
     return 'tag-add';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'ta';
   }
 

@@ -1,11 +1,11 @@
 import XSound from '@service/domain/x-sounds/x-sound';
 import Repository from '@service/infrastructure/repository';
 import { Service } from 'typedi';
-import Storage from '@service/infrastructure/storage';
+import DatabaseClient from '@service/infrastructure/storage';
 
 @Service()
 class XSoundsRepository extends Repository<XSound> {
-  private constructor(storage: Storage) {
+  private constructor(storage: DatabaseClient) {
     super('x', storage);
   }
 

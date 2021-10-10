@@ -16,7 +16,7 @@ class TagListCommand extends CommandProcessor {
     const tags = await this.xSoundService.getAllUniqueTags();
 
     if (tags.isEmpty()) {
-      return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów', false);
+      return makeSingleTextProcessingResponse('Aktualnie nie ma żadnych tagów');
     }
 
     const tagListText = tags
@@ -36,7 +36,7 @@ class TagListCommand extends CommandProcessor {
     return 'tag-list';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'tl';
   }
 

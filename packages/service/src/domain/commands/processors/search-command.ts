@@ -25,7 +25,7 @@ class SearchCommand extends CommandProcessor {
     return 'search';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 's';
   }
 

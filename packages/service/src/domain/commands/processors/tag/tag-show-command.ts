@@ -21,7 +21,7 @@ class TagShowCommand extends CommandProcessor {
     const tags = await this.xSoundsService.getSoundTags(soundName);
 
     if (tags.isEmpty()) {
-      return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`, false);
+      return makeSingleTextProcessingResponse(`Do dźwięku "${soundName}" nie ma przyspisanych żadnych tagów`);
     }
 
     const tagListText = tags
@@ -41,7 +41,7 @@ class TagShowCommand extends CommandProcessor {
     return 'tag-show';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

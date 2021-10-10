@@ -19,7 +19,7 @@ class CommandExecutorService {
       return await commandDefinition.execute(command);
     } catch (e) {
       CommandExecutorService.logger.error((e as Error).message);
-      return makeSingleTextProcessingResponse((e as Error).message, false);
+      return makeSingleTextProcessingResponse((e as Error).message);
     }
   }
 
@@ -31,7 +31,7 @@ class CommandExecutorService {
   }
 
   private static get commandDoesNotExistResponse(): CommandProcessingResponse {
-    return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
+    return makeSingleTextProcessingResponse('Komenda nie istnieje');
   }
 }
 

@@ -21,7 +21,7 @@ class TagSearchCommand extends CommandProcessor {
     const sounds = await this.xSoundsService.getAllByTag(tagName);
 
     if (sounds.isEmpty()) {
-      return makeSingleTextProcessingResponse(`Nie ma dźwięków z tagiem "${tagName}"`, false);
+      return makeSingleTextProcessingResponse(`Nie ma dźwięków z tagiem "${tagName}"`);
     }
 
     const tagListText = sounds
@@ -42,7 +42,7 @@ class TagSearchCommand extends CommandProcessor {
     return 'tag-search';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'ts';
   }
 
