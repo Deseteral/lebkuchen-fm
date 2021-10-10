@@ -1,6 +1,6 @@
 /* eslint-disable import/first */
 import 'reflect-metadata';
-import '@service/polyfills';
+import '@service/utils/polyfills';
 
 require('dotenv').config();
 
