@@ -1,4 +1,5 @@
 import * as React from 'react';
+import MenuBar from './MenuBar';
 import Window from './Window';
 import Desktop from './Desktop';
 
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <>
+      <MenuBar />
       <Desktop />
       {windows.reverse().map((content, index) => (
         <Window

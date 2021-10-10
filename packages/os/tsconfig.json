@@ -15,7 +15,7 @@
     "moduleResolution": "node",
     "lib": [
       "DOM",
-      "es2018"
+      "ES2021"
     ],
     "types": ["react"],
     "baseUrl": ".",
