@@ -6,7 +6,11 @@ import { PlayXSoundEvent } from '../../../event-stream/model/events';
 import PlayerEventStream from '../../../event-stream/player-event-stream';
 
 async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const soundName = command.rawArgs;
+  const soundName = command.rawArgs.trim();
+  if (!soundName) {
+    throw new Error('Podaj nazwę dźwięku');
+  }
+
   const xSound = await XSoundService.instance.getByName(soundName);
 
   const playXSoundEvent: PlayXSoundEvent = {
