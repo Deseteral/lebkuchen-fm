@@ -67,7 +67,7 @@ class HelpCommand extends CommandProcessor {
     return 'help';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

@@ -24,7 +24,7 @@ class PauseCommand extends CommandProcessor {
     return 'pause';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

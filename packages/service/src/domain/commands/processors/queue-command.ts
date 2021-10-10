@@ -37,7 +37,7 @@ class QueueCommand extends CommandProcessor {
     return 'queue';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'q';
   }
 

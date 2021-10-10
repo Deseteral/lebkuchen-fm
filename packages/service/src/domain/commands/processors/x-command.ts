@@ -37,7 +37,7 @@ class XCommand extends CommandProcessor {
     return 'x';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

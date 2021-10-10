@@ -61,7 +61,7 @@ class AddCommand extends CommandProcessor {
     return 'add';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

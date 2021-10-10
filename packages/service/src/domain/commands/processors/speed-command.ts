@@ -43,7 +43,7 @@ class SpeedCommand extends CommandProcessor {
     return 'speed';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

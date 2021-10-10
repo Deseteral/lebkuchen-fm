@@ -46,7 +46,7 @@ class VolumeCommand extends CommandProcessor {
     return 'volume';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'vol';
   }
 

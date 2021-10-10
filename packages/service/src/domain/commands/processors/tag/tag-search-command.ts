@@ -42,7 +42,7 @@ class TagSearchCommand extends CommandProcessor {
     return 'tag-search';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'ts';
   }
 

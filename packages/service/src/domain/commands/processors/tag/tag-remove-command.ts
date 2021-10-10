@@ -29,7 +29,7 @@ class TagRemoveCommand extends CommandProcessor {
     return 'tag-remove';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

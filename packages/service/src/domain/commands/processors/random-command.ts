@@ -77,7 +77,7 @@ class RandomCommand extends CommandProcessor {
     return 'random';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

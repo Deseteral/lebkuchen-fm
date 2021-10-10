@@ -29,7 +29,7 @@ class TagAddCommand extends CommandProcessor {
     return 'tag-add';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'ta';
   }
 

@@ -36,7 +36,7 @@ class ListXCommand extends CommandProcessor {
     return 'listx';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

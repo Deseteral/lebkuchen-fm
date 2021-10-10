@@ -36,7 +36,7 @@ class TagListCommand extends CommandProcessor {
     return 'tag-list';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return 'tl';
   }
 

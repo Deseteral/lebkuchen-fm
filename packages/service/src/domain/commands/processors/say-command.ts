@@ -34,7 +34,7 @@ class SayCommand extends CommandProcessor {
     return 'say';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

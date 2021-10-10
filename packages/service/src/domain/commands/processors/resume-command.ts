@@ -24,7 +24,7 @@ class ResumeCommand extends CommandProcessor {
     return 'resume';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 

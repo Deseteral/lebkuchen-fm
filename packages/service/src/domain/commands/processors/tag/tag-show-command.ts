@@ -41,7 +41,7 @@ class TagShowCommand extends CommandProcessor {
     return 'tag-show';
   }
 
-  get shortKey(): string | null {
+  get shortKey(): (string | null) {
     return null;
   }
 
