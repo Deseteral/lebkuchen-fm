@@ -1,39 +1,57 @@
-import SongsService from '../../songs/songs-service';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
-import Command from '../model/command';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import CommandDefinition from '../model/command-definition';
-import { AddSongsToQueueEvent } from '../../../event-stream/model/events';
-import YouTubeDataClient from '../../../youtube/youtube-data-client';
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import SongsService from '@service/domain/songs/songs-service';
+import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import YouTubeDataClient from '@service/youtube/youtube-data-client';
+import { Service } from 'typedi';
 
-async function queueCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const songName = command.rawArgs;
-  const song = await SongsService.instance.getSongByNameWithYouTubeIdFallback(songName);
-
-  const videoStatus = await YouTubeDataClient.fetchVideosStatuses([song.youtubeId]);
-
-  if (!videoStatus.items?.last().status.embeddable) {
-    throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+@RegisterCommand
+@Service()
+class QueueCommand extends CommandProcessor {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
+    super();
   }
 
-  const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
-  PlayerEventStream.instance.sendToEveryone(eventData);
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const songName = command.rawArgs;
+    const song = await this.songService.getSongByNameWithYouTubeIdFallback(songName);
 
-  SongsService.instance.incrementPlayCount(song.youtubeId, song.name);
+    const videoStatus = await this.youTubeDataClient.fetchVideosStatuses([song.youtubeId]);
 
-  return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`, false);
+    if (!videoStatus.items?.last().status.embeddable) {
+      throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+    }
+
+    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
+    this.playerEventStream.sendToEveryone(eventData);
+
+    this.songService.incrementPlayCount(song.youtubeId, song.name);
+
+    return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`);
+  }
+
+  get key(): string {
+    return 'queue';
+  }
+
+  get shortKey(): (string | null) {
+    return 'q';
+  }
+
+  get helpMessage(): string {
+    return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID';
+  }
+
+  get helpUsages(): (string[] | null) {
+    return [
+      '<video name or youtube-id>',
+      'transatlantik',
+      'p28K7Fz0KrQ',
+    ];
+  }
 }
 
-const queueCommandDefinition: CommandDefinition = {
-  key: 'queue',
-  shortKey: 'q',
-  processor: queueCommandProcessor,
-  helpMessage: 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID',
-  helpUsages: [
-    '<video name or youtube-id>',
-    'transatlantik',
-    'p28K7Fz0KrQ',
-  ],
-};
-
-export default queueCommandDefinition;
+export default QueueCommand;

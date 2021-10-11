@@ -1,50 +1,45 @@
-/* eslint-disable prefer-arrow-callback */
-import express from 'express';
-import multer from 'multer';
-import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import XSoundsService from '../../domain/x-sounds/x-sounds-service';
-import Logger from '../../infrastructure/logger';
-import ErrorResponse from '../error-response';
+import { Service } from 'typedi';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType } from 'routing-controllers';
+import MissingRequriedFieldsError from '@service/api/x-sounds/model/missing-required-fields-error';
+import XSound from '@service/domain/x-sounds/x-sound';
+import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import Logger from '@service/infrastructure/logger';
+import InternalServerError from '@service/api/internal-server-error';
+import XSoundsResponseDto from '@service/api/x-sounds/model/xsounds-response-dto';
 
-const router = express.Router();
-const logger = new Logger('x-sound-upload-controller');
-const upload = multer({ storage: multer.memoryStorage() });
+@Service()
+@Controller('/x-sounds')
+class XSoundsController {
+  private static logger = new Logger('x-sound-upload-controller');
 
-router.get('/', async function getXSounds(_, res) {
-  const sounds = await XSoundsService.instance.getAll();
-  res.send({ sounds });
-});
+  constructor(private xSoundsService: XSoundsService) { }
 
-router.post('/', upload.single('soundFile'), async function addXSound(req, res) {
-  if (!req.file || !req.body.soundName) {
-    res.status(StatusCodes.BAD_REQUEST);
-    const response: ErrorResponse = {
-      description: ReasonPhrases.BAD_REQUEST,
-      error: { message: 'Missing required field' },
-    };
-    res.send(response);
-    return;
+  @Get('/')
+  @ContentType('application/json')
+  async getXSounds(): Promise<XSoundsResponseDto> {
+    const sounds = await this.xSoundsService.getAll();
+    return { sounds };
   }
 
-  const { buffer, originalname } = req.file;
-  const { soundName } = req.body;
+  @Post('/')
+  async addXSound(@UploadedFile('soundFile') soundFile: any, @BodyParam('soundName') soundName: string): Promise<XSound> {
+    if (!soundFile || !soundName) {
+      throw new MissingRequriedFieldsError();
+    }
 
-  logger.info(`Uploading x-sound ${soundName}`);
+    const { buffer, originalname } = soundFile;
 
-  try {
-    const xSound = await XSoundsService.instance.createNewSound(soundName, { buffer, fileName: originalname });
-    res.send(xSound);
-  } catch (e) {
-    const errorMessage = (e as Error).message;
-    logger.error(`An error occured ${errorMessage}`);
+    XSoundsController.logger.info(`Uploading x-sound ${soundName}`);
 
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR);
-    const response: ErrorResponse = {
-      description: ReasonPhrases.INTERNAL_SERVER_ERROR,
-      error: { message: errorMessage },
-    };
-    res.send(response);
+    try {
+      const xSound = await this.xSoundsService.createNewSound(soundName, { buffer, fileName: originalname });
+      return xSound;
+    } catch (err) {
+      const errorMessage = (err as Error).message;
+      XSoundsController.logger.error(`An error occured ${errorMessage}`);
+      throw new InternalServerError(err as Error);
+    }
   }
-});
+}
 
-export default router;
+export default XSoundsController;

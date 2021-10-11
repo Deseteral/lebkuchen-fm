@@ -1,4 +1,4 @@
-import Song from '../songs/song';
+import Song from '@service/domain/songs/song';
 
 interface CurrentlyPlaying {
   song: Song,

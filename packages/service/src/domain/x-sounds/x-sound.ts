@@ -5,6 +5,7 @@ interface XSound {
   name: string,
   url: string,
   timesPlayed: number,
+  tags?: string[],
 }
 
 export default XSound;

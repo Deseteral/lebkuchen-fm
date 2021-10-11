@@ -1,24 +1,28 @@
-import Configuration from '../../infrastructure/configuration';
-import Command from './model/command';
+import Command from '@service/domain/commands/model/command';
+import Configuration from '@service/infrastructure/configuration';
+import { Service } from 'typedi';
 
-function parseTextToCommand(text: string): (Command | null) {
-  const tokens = text.split(' ')
-    .map((s) => s.trim())
-    .filter((s) => (s.length > 0));
+@Service()
+class TextCommandParser {
+  constructor(private configuration: Configuration) { }
 
-  if (tokens.length < 2) return null;
+  public parseTextToCommand(text: string): (Command | null) {
+    const tokens = text.split(' ')
+      .map((s) => s.trim())
+      .filter((s) => (s.length > 0));
 
-  const prompt = tokens[0];
-  const key = tokens[1];
+    if (tokens.length < 2) return null;
 
-  if (prompt !== Configuration.COMMAND_PROMPT) return null;
+    const prompt = tokens[0];
+    const key = tokens[1];
 
-  const rawArgsIndex = (text.indexOf(key) + key.length + 1);
-  const rawArgs = text.substring(rawArgsIndex);
+    if (prompt !== this.configuration.COMMAND_PROMPT) return null;
 
-  return new Command(key, rawArgs);
+    const rawArgsIndex = (text.indexOf(key) + key.length + 1);
+    const rawArgs = text.substring(rawArgsIndex);
+
+    return new Command(key, rawArgs);
+  }
 }
 
-export {
-  parseTextToCommand,
-};
+export default TextCommandParser;

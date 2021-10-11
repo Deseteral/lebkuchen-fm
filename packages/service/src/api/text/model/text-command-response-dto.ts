@@ -1,18 +1,13 @@
-import CommandProcessingResponse from '../../../domain/commands/model/command-processing-response';
+import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 
-interface TextCommandResponseDto {
+export interface TextCommandResponseDto {
   textResponse: string,
 }
 
-function mapCommandProcessingResponseToTextCommandResponseDto(processingResponse: CommandProcessingResponse): TextCommandResponseDto {
+export function mapCommandProcessingResponseToTextCommandResponseDto(processingResponse: CommandProcessingResponse): TextCommandResponseDto {
   const textResponse = processingResponse.messages
     .map((message) => (('text' in message) ? message.text : null))
     .filter((s) => (s !== null))
     .join('\n');
   return { textResponse };
 }
-
-export default TextCommandResponseDto;
-export {
-  mapCommandProcessingResponseToTextCommandResponseDto,
-};

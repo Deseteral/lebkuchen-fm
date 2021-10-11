@@ -1,49 +1,60 @@
+/* eslint-disable import/first */
+import 'reflect-metadata';
+import '@service/utils/polyfills';
+
+require('dotenv').config();
+
 import http from 'http';
 import path from 'path';
 import express from 'express';
 import compression from 'compression';
-import bodyParser from 'body-parser';
-import Configuration from './infrastructure/configuration';
-import Logger from './infrastructure/logger';
-import Storage from './infrastructure/storage';
-import * as CommandInitializer from './domain/commands/registry/command-initializer';
-import EventStream from './event-stream/event-stream';
+import Container from 'typedi';
+import SocketIO from 'socket.io';
+import * as RoutingControllers from 'routing-controllers';
+import Logger from '@service/infrastructure/logger';
+import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
+import AdminEventStream from '@service/event-stream/admin-event-stream';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import Configuration from '@service/infrastructure/configuration';
+import DatabaseClient from '@service/infrastructure/storage';
 
-import SlackCommandController from './api/slack/slack-command-controller';
-import TextCommandController from './api/text/text-command-controller';
-import XSoundsController from './api/x-sounds/x-sounds-controller';
-import SongsController from './api/songs/songs-controller';
-
-import './polyfills';
-
-const app: express.Express = express();
-const server: http.Server = new http.Server(app);
 const logger = new Logger('app-init');
 
-function configureExpress(): void {
+async function main(): Promise<void> {
+  // Read configuration
+  const config = Configuration.readFromEnv();
+  Container.set(Configuration, config);
+
+  // Create HTTP server
+  RoutingControllers.useContainer(Container);
+  const app = RoutingControllers.createExpressServer({
+    controllers: [path.join(__dirname, 'api/**/*-controller.js')],
+    classTransformer: false,
+  });
+
   app.use(compression());
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: true }));
   app.use(express.static(path.join(__dirname, 'public'), { index: 'fm-player.html', extensions: ['html'] }));
+
+  // Connect to database
+  const storage = Container.get(DatabaseClient);
+  await storage.connect();
+
+  // Create WebSocket server
+  const server: http.Server = new http.Server(app);
+  const io = new SocketIO.Server(server, { serveClient: false });
+  Container.set(SocketIO.Server, io);
+  Container.get(PlayerEventStream);
+  Container.get(AdminEventStream);
+
+  // Initialize commands
+  CommandRegistryService.detectProcessorModules();
+
+  // Start server
+  server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
 }
 
-function setupRouting(): void {
-  app.use('/commands/slack', SlackCommandController);
-  app.use('/commands/text', TextCommandController);
-  app.use('/x-sounds', XSoundsController);
-  app.use('/songs', SongsController);
+try {
+  main();
+} catch (err) {
+  logger.withError(err as Error);
 }
-
-function runApplication(): void {
-  const port = Configuration.PORT;
-  server.listen(port, () => logger.info(`LebkuchenFM service started on port ${port}`));
-}
-
-Promise.resolve()
-  .then(() => Storage.instance.connect())
-  .then(() => CommandInitializer.initialize())
-  .then(() => EventStream.instance.initialize(server))
-  .then(configureExpress)
-  .then(setupRouting)
-  .then(runApplication)
-  .catch((err) => logger.withError(err));

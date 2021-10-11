@@ -1,33 +1,56 @@
-import Command from '../model/command';
-import CommandDefinition from '../model/command-definition';
-import CommandProcessingResponse, { makeSingleTextProcessingResponse } from '../model/command-processing-response';
-import XSoundService from '../../x-sounds/x-sounds-service';
-import { PlayXSoundEvent } from '../../../event-stream/model/events';
-import PlayerEventStream from '../../../event-stream/player-event-stream';
+import Command from '@service/domain/commands/model/command';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import CommandProcessor from '@service/domain/commands/model/command-processor';
+import RegisterCommand from '@service/domain/commands/registry/register-command';
+import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import { PlayXSoundEvent } from '@service/event-stream/model/events';
+import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { Service } from 'typedi';
 
-async function xCommandProcessor(command: Command): Promise<CommandProcessingResponse> {
-  const soundName = command.rawArgs;
-  const xSound = await XSoundService.instance.getByName(soundName);
+@RegisterCommand
+@Service()
+class XCommand extends CommandProcessor {
+  constructor(private xSoundService: XSoundsService, private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-  const playXSoundEvent: PlayXSoundEvent = {
-    id: 'PlayXSoundEvent',
-    soundUrl: xSound.url,
-  };
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const soundName = command.rawArgs.trim();
+    if (!soundName) {
+      throw new Error('Podaj nazwę dźwięku');
+    }
 
-  PlayerEventStream.instance.sendToEveryone(playXSoundEvent);
-  XSoundService.instance.incrementPlayCount(xSound.name);
+    const xSound = await this.xSoundService.getByName(soundName);
 
-  return makeSingleTextProcessingResponse(':ultrafastparrot:', false);
+    const playXSoundEvent: PlayXSoundEvent = {
+      id: 'PlayXSoundEvent',
+      soundUrl: xSound.url,
+    };
+
+    this.playerEventStream.sendToEveryone(playXSoundEvent);
+    this.xSoundService.incrementPlayCount(xSound.name);
+
+    return makeSingleTextProcessingResponse(':ultrafastparrot:');
+  }
+
+  get key(): string {
+    return 'x';
+  }
+
+  get shortKey(): (string | null) {
+    return null;
+  }
+
+  get helpMessage(): string {
+    return 'Puszcza szalony dźwięk!';
+  }
+
+  get helpUsages(): (string[] | null) {
+    return [
+      '<sound name>',
+      'airhorn',
+    ];
+  }
 }
 
-const xCommandDefinition: CommandDefinition = {
-  key: 'x',
-  processor: xCommandProcessor,
-  helpMessage: 'Puszcza szalony dźwięk!',
-  helpUsages: [
-    '<sound name>',
-    'airhorn',
-  ],
-};
-
-export default xCommandDefinition;
+export default XCommand;
