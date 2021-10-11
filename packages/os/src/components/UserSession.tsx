@@ -11,6 +11,7 @@ function UserSession() {
     setWindows([{
       id: 'test-app',
       title: 'Test window',
+      backgroundColor: '#f98284',
     }]);
   }, []);
 

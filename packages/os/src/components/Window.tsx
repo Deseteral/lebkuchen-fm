@@ -1,12 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
+const Container = styled.div<{ backgroundColor?: string }>`
   position: absolute;
   z-index: 9;
   border: 3px solid #28282e;
   border-radius: 16px;
-  background-color: white;
+  background-color: ${(props) => props.backgroundColor || 'white'};
   color: #28282e;
   box-shadow: 4px 4px 0px 0px #28282e;
 `;
@@ -45,6 +45,7 @@ const ChildrenContainer = styled.div`
 interface WindowDescriptor {
   id: string,
   title: string,
+  backgroundColor?: string,
 }
 
 interface WindowProps {
@@ -83,7 +84,7 @@ function Window({ descriptor, onClose, onFocus }: WindowProps): JSX.Element {
   };
 
   return (
-    <Container style={style} onMouseDown={() => onFocus()}>
+    <Container style={style} onMouseDown={() => onFocus()} backgroundColor={descriptor.backgroundColor}>
       <HeaderContainer>
         <Header onMouseDown={onMouseDown}>
           {descriptor.title}
