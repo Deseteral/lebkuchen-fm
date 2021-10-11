@@ -152,5 +152,23 @@ Running `npm run build` builds the application in production mode.
 ### Devops scripts (`/packages/devops`)
 Scripts related to maintenance of the service.
 
+**FM Dev Helper**
+
+Helper scirpt `packages/service/scripts/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
+
+Example commands:
+```
+> fm.sh "/fm resume"
+> fm.sh "/fm q dQw4w9WgXcQ"
+> fm.sh "/fm x alert"
+```
+
+Alternatively you can run it as an npm command from the root of the project:
+```
+> npm run fm -- "/fm resume"
+> npm run fm -- "/fm q dQw4w9WgXcQ"
+> npm run fm -- "/fm x alert"
+```
+
 ## License
 This project is licensed under the [MIT license](LICENSE).
