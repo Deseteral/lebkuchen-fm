@@ -160,7 +160,7 @@ Example commands:
 ```
 > fm.sh "/fm resume"
 > fm.sh "/fm q dQw4w9WgXcQ"
-> fm.sh "/fm x alert
+> fm.sh "/fm x alert"
 ```
 
 Alternatively you can run it as an npm command from the root of the project:
