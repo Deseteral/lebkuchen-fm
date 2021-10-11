@@ -10,7 +10,7 @@
     "build:static": "mkdir -p packages/service/build/public && cp packages/**/dist/* packages/service/build/public/",
     "test": "lerna run test",
     "postinstall": "lerna bootstrap",
-    "fm": "./packages/service/scripts/fm.sh"
+    "fm": "./packages/devops/fm.sh"
   },
   "devDependencies": {
     "lerna": "3.22.1"

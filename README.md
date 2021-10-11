@@ -148,9 +148,9 @@ Helper scirpt `packages/service/scripts/fm.sh` is available for local developmen
 
 Example commands:
 ```
-> fm.sh resume
-> fm.sh q dQw4w9WgXcQ
-> fm.sh x alert
+> fm.sh "/fm resume"
+> fm.sh "/fm q dQw4w9WgXcQ"
+> fm.sh "/fm x alert"
 ```
 
 Alternatively you can run it as an npm command from the root of the project:
