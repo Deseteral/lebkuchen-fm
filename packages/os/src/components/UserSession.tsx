@@ -1,13 +1,8 @@
 import * as React from 'react';
 import MenuBar from './MenuBar';
-import Window from './Window';
+import Window, { WindowDescriptor } from './Window';
 import Desktop from './Desktop';
-import TestApp from './TestApp';
-
-interface WindowDescriptor {
-  id: string,
-  title: string,
-}
+import AppLibrary from './AppLibrary';
 
 function UserSession() {
   const [windows, setWindows] = React.useState<WindowDescriptor[]>([]);
@@ -30,17 +25,15 @@ function UserSession() {
     <>
       <MenuBar />
       <Desktop />
+      <AppLibrary />
       {windows.reverse().map((windowDescriptor, index) => (
         <Window
-          title={windowDescriptor.title}
+          descriptor={windowDescriptor}
           onClose={() => {}}
           onFocus={() => onWindowFocus(index)}
           key={windowDescriptor.id}
-        >
-          <div data-os-window-id={windowDescriptor.id} />
-        </Window>
+        />
       ))}
-      <TestApp />
     </>
   );
 }

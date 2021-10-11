@@ -42,14 +42,18 @@ const ChildrenContainer = styled.div`
   padding-bottom: 8px;
 `;
 
-interface WindowProps {
+interface WindowDescriptor {
+  id: string,
   title: string,
-  children: (React.ReactNode | React.ReactNode[]),
+}
+
+interface WindowProps {
+  descriptor: WindowDescriptor,
   onClose?: () => void,
   onFocus: () => void,
 }
 
-function Window({ title, children, onClose, onFocus }: WindowProps): JSX.Element {
+function Window({ descriptor, onClose, onFocus }: WindowProps): JSX.Element {
   const [posX, setPosX] = React.useState<number>(100);
   const [posY, setPosY] = React.useState<number>(100);
 
@@ -82,16 +86,16 @@ function Window({ title, children, onClose, onFocus }: WindowProps): JSX.Element
     <Container style={style} onMouseDown={() => onFocus()}>
       <HeaderContainer>
         <Header onMouseDown={onMouseDown}>
-          {title}
+          {descriptor.title}
         </Header>
         {onClose && <CloseButton onClick={(): void => onClose()}>X</CloseButton>}
       </HeaderContainer>
       <ChildrenContainer>
-        {children}
+        <div data-os-window-id={descriptor.id} />
       </ChildrenContainer>
     </Container>
   );
 }
 
 export default Window;
-export { WindowProps };
+export { WindowProps, WindowDescriptor };
