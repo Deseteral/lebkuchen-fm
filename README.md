@@ -167,7 +167,7 @@ Alternatively you can run it as an npm command from the root of the project:
 ```
 > npm run fm -- "/fm resume"
 > npm run fm -- "/fm q dQw4w9WgXcQ"
-> npm run fm -- alert
+> npm run fm -- "/fm x alert"
 ```
 
 ## License
