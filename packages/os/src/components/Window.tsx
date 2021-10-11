@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { WindowDescriptor } from './WindowManager';
 
 const Container = styled.div<{ backgroundColor?: string }>`
   position: absolute;
@@ -41,12 +42,6 @@ const CloseButton = styled.button`
 const ChildrenContainer = styled.div`
   padding-bottom: 8px;
 `;
-
-interface WindowDescriptor {
-  id: string,
-  title: string,
-  backgroundColor?: string,
-}
 
 interface WindowProps {
   descriptor: WindowDescriptor,
@@ -99,4 +94,4 @@ function Window({ descriptor, onClose, onFocus }: WindowProps): JSX.Element {
 }
 
 export default Window;
-export { WindowProps, WindowDescriptor };
+export { WindowProps };
