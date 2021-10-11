@@ -1,5 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import App from './components/App';
+import UserSession from './components/UserSession';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<UserSession />, document.getElementById('app'));

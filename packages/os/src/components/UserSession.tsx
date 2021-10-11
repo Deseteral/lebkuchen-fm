@@ -9,7 +9,7 @@ interface WindowDescriptor {
   title: string,
 }
 
-function App() {
+function UserSession() {
   const [windows, setWindows] = React.useState<WindowDescriptor[]>([]);
 
   React.useEffect(() => {
@@ -45,4 +45,4 @@ function App() {
   );
 }
 
-export default App;
+export default UserSession;
