@@ -22,4 +22,4 @@ fi
 curl -s -S -X POST 'http://localhost:9000/commands/text' \
   -H "Content-Type: application/json" \
   --data "{\"text\": \"$1\"}" \
-  | jq
+  | jq .textResponse
