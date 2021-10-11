@@ -87,7 +87,7 @@ function Window({ descriptor, onClose, onFocus }: WindowProps): JSX.Element {
         {onClose && <CloseButton onClick={(): void => onClose()}>X</CloseButton>}
       </HeaderContainer>
       <ChildrenContainer>
-        <div data-os-window-id={descriptor.id} />
+        <div data-os-window-id={descriptor.handle} />
       </ChildrenContainer>
     </Container>
   );

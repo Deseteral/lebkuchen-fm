@@ -30,14 +30,16 @@ function WindowManagerProvider({ children }: WindowManagerProviderProps) {
       setWindows([...windows, windowDescriptor]);
     },
     focusWindow: (handle: WindowHandle) => {
-      const windowIndex = windows.findIndex((descriptor) => descriptor.handle === handle);
+      const windowIndex = windows.findIndex((descriptor) => (descriptor.handle === handle));
+
       if (windowIndex < 0) {
         throw new Error(`Window with handle "${handle}" does not exist`);
       }
 
       const w = [...windows];
-      const [focusedWindow] = w.splice(windowIndex, windowIndex);
+      const [focusedWindow] = w.splice(windowIndex, 1);
       w.unshift(focusedWindow);
+
       setWindows(w);
     },
   }), [windows]);
