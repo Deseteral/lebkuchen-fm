@@ -1,7 +1,5 @@
 #!/bin/bash
 
-params="text=/fm"
-
 if [ $# -ne 1 ]
   then
     printf "You need to supply a single argument\n\n"
