@@ -27,7 +27,7 @@ function WindowManagerProvider({ children }: WindowManagerProviderProps) {
   const windowManager: WindowManager = React.useMemo(() => ({
     activeWindows: windows,
     addWindow: (windowDescriptor: WindowDescriptor) => {
-      setWindows([...windows, windowDescriptor]);
+      setWindows((prevWindows) => [...prevWindows, windowDescriptor]);
     },
     focusWindow: (handle: WindowHandle) => {
       const windowIndex = windows.findIndex((descriptor) => (descriptor.handle === handle));
@@ -38,9 +38,7 @@ function WindowManagerProvider({ children }: WindowManagerProviderProps) {
 
       const w = [...windows];
       const [focusedWindow] = w.splice(windowIndex, 1);
-      w.unshift(focusedWindow);
-
-      setWindows(w);
+      setWindows([...w, focusedWindow]);
     },
   }), [windows]);
 
@@ -64,7 +62,7 @@ function WindowRenderer(): JSX.Element {
 
   return (
     <>
-      {windowManager.activeWindows.reverse().map((windowDescriptor) => (
+      {windowManager.activeWindows.map((windowDescriptor) => (
         <Window
           descriptor={windowDescriptor}
           onClose={() => {}}

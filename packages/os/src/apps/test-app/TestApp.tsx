@@ -10,7 +10,17 @@ function TestApp(_: TestAppProps): (JSX.Element | null) {
 
   React.useEffect(() => {
     windowManager.addWindow({
-      handle: 'test-app',
+      handle: 'test-app-1',
+      title: 'Test window',
+      backgroundColor: '#f98284',
+    });
+    windowManager.addWindow({
+      handle: 'test-app-2',
+      title: 'Test window',
+      backgroundColor: '#f98284',
+    });
+    windowManager.addWindow({
+      handle: 'test-app-3',
       title: 'Test window',
       backgroundColor: '#f98284',
     });
