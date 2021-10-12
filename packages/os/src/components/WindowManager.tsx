@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { nanoid } from 'nanoid';
 import Window from './Window';
 
 type WindowHandle = string;
@@ -9,9 +10,14 @@ interface WindowDescriptor {
   backgroundColor?: string,
 }
 
+interface OpenWindowOptions {
+  title: string,
+  backgroundColor?: string,
+}
+
 interface WindowManager {
   activeWindows: WindowDescriptor[],
-  addWindow: (windowDescriptor: WindowDescriptor) => void,
+  openWindow: (options: OpenWindowOptions) => Promise<WindowDescriptor>,
   focusWindow: (handle: WindowHandle) => void,
 }
 
@@ -26,8 +32,15 @@ function WindowManagerProvider({ children }: WindowManagerProviderProps) {
 
   const windowManager: WindowManager = React.useMemo(() => ({
     activeWindows: windows,
-    addWindow: (windowDescriptor: WindowDescriptor) => {
-      setWindows((prevWindows) => [...prevWindows, windowDescriptor]);
+    openWindow: async (options: OpenWindowOptions) => {
+      const descriptor: WindowDescriptor = {
+        handle: nanoid(),
+        title: options.title,
+        backgroundColor: options.backgroundColor,
+      };
+
+      setWindows((prevWindows) => [...prevWindows, descriptor]);
+      return descriptor;
     },
     focusWindow: (handle: WindowHandle) => {
       const windowIndex = windows.findIndex((descriptor) => (descriptor.handle === handle));
@@ -74,4 +87,14 @@ function WindowRenderer(): JSX.Element {
   );
 }
 
-export { WindowManagerProvider, useWindowManager, WindowRenderer, WindowDescriptor };
+function getWindowContainer(handle: WindowHandle): (HTMLElement | null) {
+  return document.querySelector(`[data-os-window-id="${handle}"]`);
+}
+
+function useInit(callback: () => void): void {
+  React.useEffect(() => {
+    callback();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+export { WindowManagerProvider, useWindowManager, WindowRenderer, WindowDescriptor, getWindowContainer, useInit };
