@@ -3,7 +3,7 @@ import { PlayerState } from 'lebkuchen-fm-service';
 import YouTubePlayer from './YouTubePlayer';
 import * as EventStreamClient from '../services/event-stream-client';
 import * as SpeechService from '../services/speech-service';
-import NowPlaying from './NowPlaying';
+import NowPlaying from './NowPlaying/NowPlaying';
 import * as PlayerStateService from '../services/player-state-service';
 
 function App() {
