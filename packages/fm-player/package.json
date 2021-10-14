@@ -12,6 +12,7 @@
   "scripts": {
     "build": "parcel build src/fm-player.html",
     "dev": "parcel src/fm-player.html",
+    "start": "npm run dev",
     "clean": "rm -rf dist",
     "test": "npm run test:type-check && npm run test:lint",
     "test:type-check": "tsc --noEmit",
