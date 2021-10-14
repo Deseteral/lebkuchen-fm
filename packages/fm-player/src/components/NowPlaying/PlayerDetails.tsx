@@ -26,8 +26,8 @@ function PlayerDetails({ currentSongTitle, nextSongTitle, isPlaying, onClose }: 
         </div>
       </div>
       <div
-        role="button"
         className="absolute right-1 top-1"
+        role="button"
         onClick={onClose}
         tabIndex={0}
         aria-hidden="true"

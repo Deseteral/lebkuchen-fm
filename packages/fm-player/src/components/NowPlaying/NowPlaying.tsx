@@ -9,14 +9,14 @@ interface NowPlayingProps {
 
 function NowPlaying({ playerState }: NowPlayingProps) {
   const [showDetails, setShowDetails] = React.useState(true);
+  if (!showDetails) {
+    return (<ShowDetailsButton onClick={() => setShowDetails(true)} />);
+  }
 
   const currentSongTitle = playerState.currentlyPlaying?.song?.name || '';
   const nextSongTitle = playerState.queue.length ? playerState?.queue[0].name : '';
   const { isPlaying } = playerState;
 
-  if (!showDetails) {
-    return (<ShowDetailsButton onClick={() => setShowDetails(true)} />);
-  }
   return (
     <PlayerDetails
       onClose={() => setShowDetails(false)}
