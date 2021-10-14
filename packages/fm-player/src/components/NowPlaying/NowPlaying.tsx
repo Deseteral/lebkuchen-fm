@@ -8,12 +8,16 @@ interface NowPlayingProps {
 }
 
 function NowPlaying({ playerState }: NowPlayingProps) {
-  const [showDetails, setShowDetails] = React.useState(true);
+  const [showDetails, setShowDetails] = React.useState<boolean>(true);
+
+  if (!playerState.currentlyPlaying) {
+    return null;
+  }
   if (!showDetails) {
     return (<ShowDetailsButton onClick={() => setShowDetails(true)} />);
   }
 
-  const currentSongTitle = playerState.currentlyPlaying?.song?.name || '';
+  const currentSongTitle = playerState.currentlyPlaying.song?.name || '';
   const nextSongTitle = playerState.queue.length ? playerState?.queue[0].name : '';
   const { isPlaying } = playerState;
 

@@ -4,8 +4,8 @@ import PlayIcon from '../../icons/PlayIcon';
 import PauseIcon from '../../icons/PauseIcon';
 
 interface PlayerDetailsProps {
-  currentSongTitle: String,
-  nextSongTitle: String,
+  currentSongTitle: string,
+  nextSongTitle: string,
   isPlaying: boolean,
   onClose: () => void
 }
