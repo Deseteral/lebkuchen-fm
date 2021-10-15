@@ -19,18 +19,26 @@ class RandomCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const amount = (command.rawArgs === '')
+    const commandArgs = command.getArgsByDelimiter(' ');
+    const firstArg = commandArgs.shift() ?? '';
+    const amount = (firstArg === '')
       ? 1
-      : parseInt(command.rawArgs, 10);
+      : parseInt(firstArg, 10);
 
     const songsList = await this.songService.getAll();
     const maxAllowedValue = songsList.length;
 
-    if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
-      throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
-    }
+    let songs: Song[];
 
-    const songs = songsList.randomShuffle().slice(0, amount);
+    if (Number.isNaN(amount)) {
+      const searchWords = command.getArgsByDelimiter(' ');
+      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle().slice(0, 1);
+    } else if (amount < 1 || amount > maxAllowedValue) {
+      throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
+    } else {
+      const searchWords = commandArgs;
+      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle().slice(0, amount);
+    }
 
     const songsToQueue = await this.filterEmbeddableSongs(songs);
 
