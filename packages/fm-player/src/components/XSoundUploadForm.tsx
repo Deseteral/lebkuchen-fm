@@ -1,32 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { ErrorResponse } from 'lebkuchen-fm-service';
-
-const InputGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid grey;
-  padding: 8px;
-  max-width: 250px;
-`;
-
-const Header = styled.h2`
-  margin: 0;
-  margin: 8px;
-`;
-
-const Input = styled.input`
-  margin-bottom: 8px;
-`;
-
-const SubmitButton = styled.input`
-  margin-top: 8px;
-`;
-
-const MessageContainer = styled.div`
-  background-color: grey;
-  margin-top: 16px;
-`;
 
 interface XSoundUploadFormProps {}
 
@@ -72,17 +45,20 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     if (inputFile.current) inputFile.current.value = '';
     if (inputSoundName.current) inputSoundName.current.value = '';
   };
-
   return (
     <form onSubmit={submit}>
-      <InputGroup>
-        <Header>Add new sound</Header>
-        <Input type="file" name="soundFile" ref={inputFile} />
-        <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
-        <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
+      <div className="fixed flex flex-wrap justify-evently top-2/4 left-2/4 transform -translate-y-2/4 -translate-x-2/4 bg-gray-900 w-3/5 p-8 text-white rounded-xl">
+        <h2 className="w-full text-2xl pb-4">Add new sound</h2>
+        <label className="flex flex-col w-full my-4 ml-1" htmlFor="soundName">
+          <span>Sound name</span>
+          <input className="w-1/2 p-2 mt-3 text-gray-900 rounded" type="text" placeholder="Enter sound name" name="soundName" id="soundName" ref={inputSoundName} />
+        </label>
+        <input className="w-full mt-3 ml-1 rounded" type="file" name="soundFile" ref={inputFile} />
+        <input className="w-full mt-6 mx-2 h-14 w-1/4 bg-red-800 rounded-xl" type="button" value="Cancel" onClick={() => { /* TODO: after merge routing: swap tagName to NavLink with attribute to="/" */ }} />
+        <input className="w-full mt-6 h-14 w-1/2 bg-green-700 rounded-xl" type="submit" value="Submit" disabled={isWaitingForResponse} />
 
-        {message && <MessageContainer>{message}</MessageContainer>}
-      </InputGroup>
+        {message && <div className="w-full mt-6 text-center">{message}</div>}
+      </div>
     </form>
   );
 }
