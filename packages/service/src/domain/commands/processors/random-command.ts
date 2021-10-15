@@ -21,7 +21,7 @@ class RandomCommand extends CommandProcessor {
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
     const firstArg = commandArgs.shift() ?? '';
-    const amount = (firstArg === '')
+    let amount = (firstArg === '')
       ? 1
       : parseInt(firstArg, 10);
 
@@ -32,17 +32,18 @@ class RandomCommand extends CommandProcessor {
 
     if (Number.isNaN(amount)) {
       const searchWords = command.getArgsByDelimiter(' ');
-      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle().slice(0, 1);
+      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle();
+      amount = 1;
     } else if (amount < 1 || amount > maxAllowedValue) {
       throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
     } else {
       const searchWords = commandArgs;
-      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle().slice(0, amount);
+      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle();
     }
 
     const songsToQueue = await this.filterEmbeddableSongs(songs);
 
-    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
+    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue.slice(0, amount) };
     this.playerEventStream.sendToEveryone(eventData);
 
     songsToQueue.forEach((song) => {
@@ -90,13 +91,16 @@ class RandomCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Losuje utwory z historii';
+    return 'Losuje utwory z historii. Parametry są opcjonalne.';
   }
 
   get helpUsages(): (string[] | null) {
     return [
-      '[amount; defaults to 1]',
+      '<amount> <phrase>',
       '3',
+      'britney',
+      '3 britney',
+      '',
     ];
   }
 }
