@@ -21,27 +21,24 @@ class RandomCommand extends CommandProcessor {
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
     const firstArg = commandArgs.shift() ?? '';
-    let amount = (firstArg === '')
-      ? 1
-      : parseInt(firstArg, 10);
-
-    const songsList = await this.songService.getAll();
-    const maxAllowedValue = songsList.length;
-
-    let songs: Song[];
+    let amount = parseInt(firstArg, 10);
 
     if (Number.isNaN(amount)) {
-      const searchWords = command.getArgsByDelimiter(' ');
-      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle();
+      commandArgs.unshift(firstArg);
       amount = 1;
-    } else if (amount < 1 || amount > maxAllowedValue) {
-      throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
-    } else {
-      const searchWords = commandArgs;
-      songs = songsList.filter((song) => searchWords.every.name.includes(song.name)).randomShuffle();
     }
 
-    const songsToQueue = await this.filterEmbeddableSongs(songs);
+    const allSongs = await this.songService.getAll();
+    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.includes(word));
+    const filteredSongs = allSongs.filter(songContainsEverySearchedWord).randomShuffle().slice(0, amount);
+
+    const maxAllowedValue = filteredSongs.length;
+    if (amount < 1 || amount > maxAllowedValue) {
+      const message = `Liczba utworów spełniających kryteria (${maxAllowedValue}) jest niezgodna z oczekiwaniami. Zmień kryteria lub ilość żądanych utworów.`;
+      throw new Error(message);
+    }
+
+    const songsToQueue = await this.filterEmbeddableSongs(filteredSongs);
 
     const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue.slice(0, amount) };
     this.playerEventStream.sendToEveryone(eventData);
