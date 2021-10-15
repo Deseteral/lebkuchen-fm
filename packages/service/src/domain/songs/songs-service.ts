@@ -60,6 +60,14 @@ class SongsService {
     const songs: Promise<Song>[] = videoIds.map((videoId) => this.getSongByNameWithYouTubeIdFallback(videoId));
     return Promise.all(songs);
   }
+
+  async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+    const youtubeIds = songs.map((song) => song.youtubeId);
+    const statuses = await this.youTubeDataClient.fetchVideosStatuses(youtubeIds);
+    const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
+
+    return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
+  }
 }
 
 export default SongsService;

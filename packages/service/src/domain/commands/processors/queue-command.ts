@@ -8,14 +8,13 @@ import RegisterCommand from '@service/domain/commands/registry/register-command'
 import SongsService from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 import Song from '@service/domain/songs/song';
 
 @RegisterCommand
 @Service()
 class QueueCommand extends CommandProcessor {
-  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
 
@@ -34,14 +33,9 @@ class QueueCommand extends CommandProcessor {
       }
     }
 
-    const videoStatuses = await this.youTubeDataClient.fetchVideosStatuses(songs.map((song) => song.youtubeId));
-    const embeddableVideos = videoStatuses.items
-      .filter((item) => item.status.embeddable)
-      .map((item) => item.id);
+    const embeddableSongs = await this.songService.filterEmbeddableSongs(songs);
 
-    const embeddableSongs = songs.filter((song) => embeddableVideos.includes(song.youtubeId));
-
-    if (!embeddableSongs) {
+    if (embeddableSongs.isEmpty()) {
       throw new Error('Brak wideo obsługiwanego przez osadzony odtwarzacz');
     }
 
@@ -63,7 +57,7 @@ class QueueCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID lub ID playlisty YouTube';
+    return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma traktuje frazę jako YouTube ID lub ID playlisty YouTube';
   }
 
   get helpUsages(): (string[] | null) {
