@@ -29,7 +29,7 @@ class RandomCommand extends CommandProcessor {
     }
 
     const allSongs = await this.songService.getAll();
-    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.includes(word));
+    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.toLowerCase().includes(word.toLowerCase()));
     const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
     const maxAllowedValue = songsFollowingCriteria.length;
 
