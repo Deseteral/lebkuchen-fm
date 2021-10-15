@@ -9,3 +9,30 @@ body {
   font-family: 'Arial', serif;
   user-select: none;
 }
+
+.window-container {
+  position: absolute;
+  z-index: 9;
+  border: 3px solid #28282e;
+  border-radius: 16px;
+  background-color: white;
+  color: #28282e;
+  box-shadow: 4px 4px 0px 0px #28282e;
+}
+
+.window-header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 2px solid #28282e;
+}
+
+.window-header {
+  cursor: move;
+  flex: 1;
+  padding: 8px;
+}
+
+.window-children-container {
+  padding-bottom: 8px;
+}
