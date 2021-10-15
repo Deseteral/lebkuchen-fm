@@ -30,17 +30,18 @@ class RandomCommand extends CommandProcessor {
 
     const allSongs = await this.songService.getAll();
     const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.includes(word));
-    const filteredSongs = allSongs.filter(songContainsEverySearchedWord).randomShuffle().slice(0, amount);
+    const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
+    const maxAllowedValue = songsFollowingCriteria.length;
 
-    const maxAllowedValue = filteredSongs.length;
     if (amount < 1 || amount > maxAllowedValue) {
       const message = `Liczba utworów spełniających kryteria (${maxAllowedValue}) jest niezgodna z oczekiwaniami. Zmień kryteria lub ilość żądanych utworów.`;
       throw new Error(message);
     }
 
-    const songsToQueue = await this.filterEmbeddableSongs(filteredSongs);
+    const availableSongs = await this.filterEmbeddableSongs(songsFollowingCriteria);
+    const songsToQueue = availableSongs.randomShuffle().slice(0, Math.min(availableSongs.length, amount));
 
-    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue.slice(0, amount) };
+    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
     this.playerEventStream.sendToEveryone(eventData);
 
     songsToQueue.forEach((song) => {
