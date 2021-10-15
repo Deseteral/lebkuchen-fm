@@ -154,7 +154,7 @@ Scripts related to maintenance of the service.
 
 **FM Dev Helper**
 
-Helper scirpt `packages/devops/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
+Helper script `packages/devops/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
 
 Example commands:
 ```
