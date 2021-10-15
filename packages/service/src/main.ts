@@ -20,7 +20,11 @@ import DatabaseClient from '@service/infrastructure/storage';
 
 const logger = new Logger('app-init');
 
-async function main(): Promise<void> {
+interface MainOptions {
+  startServer: boolean
+}
+
+async function main({ startServer }: MainOptions): Promise<Express.Application> {
   // Read configuration
   const config = Configuration.readFromEnv();
   Container.set(Configuration, config);
@@ -50,11 +54,17 @@ async function main(): Promise<void> {
   CommandRegistryService.detectProcessorModules();
 
   // Start server
-  server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
+  if (startServer) {
+    server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
+  }
+
+  return app;
 }
 
 try {
-  main();
+  main({ startServer: true });
 } catch (err) {
   logger.withError(err as Error);
 }
+
+export default main;

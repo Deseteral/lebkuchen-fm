@@ -16,8 +16,9 @@
     "clean": "rm -rf build",
     "dev": "npm run build && npm run start",
     "test": "npm run test:type-check && npm run test:lint && npm run test:unit",
-    "test:unit": "jest --coverage",
-    "test:unit:watch": "jest --watch",
+    "test:unit": "jest --config=./config/jest.config.js --coverage ",
+    "test:unit:watch": "jest --config=./config/jest.config.js --watch",
+    "test:integration": "jest --config=./config/jest.config.integration.js",
     "test:type-check": "tsc --noEmit",
     "test:type-check:watch": "npm run test:type-check -- --watch",
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
@@ -35,6 +36,7 @@
     "reflect-metadata": "0.1.13",
     "routing-controllers": "0.9.0",
     "socket.io": "4.2.0",
+    "supertest": "^6.1.6",
     "typedi": "0.10.0"
   },
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@types/jest": "27.0.2",
     "@types/mongodb": "3.5.27",
     "@types/node-fetch": "2.5.7",
+    "@types/supertest": "^2.0.11",
     "babel-plugin-module-resolver": "4.1.0",
     "babel-plugin-transform-typescript-metadata": "0.3.2",
     "eslint": "7.32.0",
@@ -97,13 +100,5 @@
       "class-methods-use-this": "off",
       "react-hooks/rules-of-hooks": "off"
     }
-  },
-  "jest": {
-    "testMatch": [
-      "**/__tests__/**/*.spec.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/config/jest.setup.ts"
-    ]
   }
 }
