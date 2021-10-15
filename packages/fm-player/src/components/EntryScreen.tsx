@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FMStateProvider } from '../context/FMStateContext';
 import App from './App';
 import SplashScreen from './SplashScreen';
 import XSoundUploadForm from './XSoundUploadForm';
@@ -14,7 +15,7 @@ function EntryScreen() {
 
   return (
     <div>
-      {screen === Screens.Player && <App />}
+      {screen === Screens.Player && <FMStateProvider><App /></FMStateProvider>}
       {screen === Screens.Splash && <SplashScreen setScreen={setScreen} />}
       {screen === Screens.Upload && <XSoundUploadForm />}
     </div>

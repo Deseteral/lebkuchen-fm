@@ -2,6 +2,7 @@ import * as React from 'react';
 import { PlayerState } from 'lebkuchen-fm-service';
 import ShowDetailsButton from './ShowDetailsButton';
 import PlayerDetails from './PlayerDetails';
+import { useFMStateContext } from '../../context/FMStateContext';
 
 interface NowPlayingProps {
   playerState: PlayerState,
@@ -9,6 +10,9 @@ interface NowPlayingProps {
 
 function NowPlaying({ playerState }: NowPlayingProps) {
   const [showDetails, setShowDetails] = React.useState<boolean>(true);
+  const { state } = useFMStateContext();
+
+  console.log('change context state via dispatch - volume', state.volume);
 
   if (!playerState.currentlyPlaying) {
     return null;
