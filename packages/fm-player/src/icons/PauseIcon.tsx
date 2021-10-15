@@ -4,7 +4,7 @@ function PauseIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      className="w-10 h-10 text-white p-2 bg-red-500 rounded-full"
+      className="w-10 h-10 text-white p-2 bg-purple-800 rounded-full"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"

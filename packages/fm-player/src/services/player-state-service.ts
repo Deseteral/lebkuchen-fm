@@ -11,8 +11,8 @@ function getState(): PlayerState {
 
 function setState(nextState: PlayerState): void {
   playerState = nextState;
-  emitter.emit('playerStateReplaced');
   emitter.emit('change', playerState);
+  setTimeout(() => emitter.emit('playerStateReplaced'), 1000);
 }
 
 function popFromQueueFront(): (Song | null) {
