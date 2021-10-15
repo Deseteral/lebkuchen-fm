@@ -30,7 +30,11 @@ class YouTubeDataClient {
 
   async fetchVideoTitleForId(youtubeId: string): Promise<string> {
     const videoDetails = await this.getVideoDetails([youtubeId], 'snippet');
-    return videoDetails.items[0].snippet.title;
+    const title = videoDetails.items[0]?.snippet?.title;
+    if (title == null) {
+      throw new Error('Wideo o zadanym id nie zostało odnalezione');
+    }
+    return title;
   }
 
   async fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
