@@ -54,6 +54,12 @@ class SongsService {
     const song = await this.createNewSong(youTubeId);
     return song;
   }
+
+  async getSongsFromPlaylist(id: string): Promise<Song[]> {
+    const videoIds = await this.youTubeDataClient.fetchYouTubeIdsForPlaylist(id);
+    const songs: Promise<Song>[] = videoIds.map((videoId) => this.getSongByNameWithYouTubeIdFallback(videoId));
+    return Promise.all(songs);
+  }
 }
 
 export default SongsService;
