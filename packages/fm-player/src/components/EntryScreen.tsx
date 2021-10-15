@@ -1,23 +1,24 @@
 import * as React from 'react';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import App from './App';
 import SplashScreen from './SplashScreen';
 import XSoundUploadForm from './XSoundUploadForm';
 
-export enum Screens {
-  Splash,
-  Player,
-  Upload
-}
-
 function EntryScreen() {
-  const [screen, setScreen] = React.useState<Screens>(Screens.Splash);
-
   return (
-    <div>
-      {screen === Screens.Player && <App />}
-      {screen === Screens.Splash && <SplashScreen setScreen={setScreen} />}
-      {screen === Screens.Upload && <XSoundUploadForm />}
-    </div>
+    <Router>
+      <Switch>
+        <Route path="/" exact>
+          <SplashScreen />
+        </Route>
+        <Route path="/upload">
+          <XSoundUploadForm />
+        </Route>
+        <Route path="/player">
+          <App />
+        </Route>
+      </Switch>
+    </Router>
   );
 }
 export default EntryScreen;
