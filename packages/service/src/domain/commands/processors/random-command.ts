@@ -19,20 +19,27 @@ class RandomCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const amount = (command.rawArgs === '')
-      ? 1
-      : parseInt(command.rawArgs, 10);
+    const commandArgs = command.getArgsByDelimiter(' ');
+    const firstArg = commandArgs.shift() ?? '';
+    let amount = parseInt(firstArg, 10);
 
-    const songsList = await this.songService.getAll();
-    const maxAllowedValue = songsList.length;
-
-    if (Number.isNaN(amount) || (amount < 1 || amount > maxAllowedValue)) {
-      throw new Error(`Nieprawidłowa liczba utworów ${command.rawArgs}, podaj liczbę z zakresu 1-${maxAllowedValue}`);
+    if (Number.isNaN(amount)) {
+      commandArgs.unshift(firstArg);
+      amount = 1;
     }
 
-    const songs = songsList.randomShuffle().slice(0, amount);
+    const allSongs = await this.songService.getAll();
+    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.toLowerCase().includes(word.toLowerCase()));
+    const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
+    const maxAllowedValue = songsFollowingCriteria.length;
 
-    const songsToQueue = await this.filterEmbeddableSongs(songs);
+    if (amount < 1 || amount > maxAllowedValue) {
+      const message = `Liczba utworów spełniających kryteria (${maxAllowedValue}) jest niezgodna z oczekiwaniami. Zmień kryteria lub ilość żądanych utworów.`;
+      throw new Error(message);
+    }
+
+    const availableSongs = await this.filterEmbeddableSongs(songsFollowingCriteria);
+    const songsToQueue = availableSongs.randomShuffle().slice(0, Math.min(availableSongs.length, amount));
 
     const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
     this.playerEventStream.sendToEveryone(eventData);
@@ -82,13 +89,16 @@ class RandomCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Losuje utwory z historii';
+    return 'Losuje utwory z historii. Parametry są opcjonalne.';
   }
 
   get helpUsages(): (string[] | null) {
     return [
-      '[amount; defaults to 1]',
+      '<amount> <phrase>',
       '3',
+      'britney',
+      '3 britney',
+      '',
     ];
   }
 }
