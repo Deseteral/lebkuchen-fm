@@ -1,17 +1,21 @@
 import React from 'react';
-import ListIcon from '../../icons/ListIcon';
+import { MdOutlineQueueMusic } from 'react-icons/md';
 
-function SongsQueueIcon({ onClick }: any) {
+interface SongsQueueIconProps {
+  onClick: () => void
+}
+
+function SongsQueueIcon({ onClick }: SongsQueueIconProps) {
   return (
     <div
-      className="absolute right-2 top-16 bg-green-400 p-4 rounded-full"
+      className="absolute right-2 top-16 bg-green-400 hover:bg-green-600 p-3 rounded-full"
       role="button"
       onClick={onClick}
       tabIndex={0}
       aria-hidden="true"
-      title="Zobacz kolejkę odtwarzania"
+      title="Songs Queue"
     >
-      <ListIcon />
+      <MdOutlineQueueMusic size="24" color="white" />
     </div>
   );
 }

@@ -11,30 +11,32 @@ interface SongsQueueProps {
 
 function SongsQueue({ playerState }: SongsQueueProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
-  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const handleClick = (): void => {
-    setIsExpanded((prevState) => !prevState);
+    setIsExpanded((prevIsExpandedValue) => !prevIsExpandedValue);
   };
   const toggleVisibility = (): void => {
-    setIsVisible((prevState) => !prevState);
+    setIsVisible((prevIsVisibleValue) => !prevIsVisibleValue);
   };
+  if (!playerState.queue.length) {
+    return null;
+  }
 
-  if (!playerState.queue.length || isVisible) {
-    console.log('IKONA');
+  if (!isVisible) {
     return (
       <SongsQueueIcon onClick={toggleVisibility} />
     );
   }
 
   return (
-    <div className="absolute max-w-md w-1/4 bg-gray-900 opacity-90 rounded-lg outline-none right-2 top-16">
-      <div className="sticky bg-gray-900 top-0 leading-none text-white flex rounded-lg items-center justify-between w-full p-4">
-        <button type="button" className="absolute opacity-50 hover:opacity-90 -right-2 -top-2 z-10" onClick={toggleVisibility}>
+    <div className="absolute right-2 top-16 max-w-md w-1/4 bg-gray-900 opacity-75 rounded-lg outline-none">
+      <div className="sticky top-0 bg-gray-900 leading-none text-white flex rounded-lg items-center justify-between w-full p-4">
+        <button type="button" className="absolute hover:text-gray-300 -right-2 -top-2 z-10" onClick={toggleVisibility}>
           <CloseIconSolid />
         </button>
         <button className="hover:text-gray-300" type="button" onClick={handleClick}>
-          Kolejka
+          Queue
         </button>
         <button className="hover:text-gray-300" type="button" onClick={handleClick}>
           <ExpandIcon isRotated={isExpanded} />
