@@ -20,13 +20,7 @@ class RandomCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const firstArg = commandArgs.shift() ?? '';
-    let amount = parseInt(firstArg, 10);
-
-    if (Number.isNaN(amount)) {
-      commandArgs.unshift(firstArg);
-      amount = 1;
-    }
+    const amount = this.extractAmountFromArgs(commandArgs);
 
     const allSongs = await this.songService.getAll();
     const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.toLowerCase().includes(word.toLowerCase()));
@@ -56,6 +50,20 @@ class RandomCommand extends CommandProcessor {
       }],
       isVisibleToIssuerOnly: false,
     };
+  }
+
+  /**
+   * Removes and returns first element from the array if it can be parsed to integer.
+   * Otherwise 1 is returned and the array is not modified.
+   */
+  private extractAmountFromArgs(args: string[]): number {
+    let amount = 1;
+    const amountArgument = Number.parseInt(String(args[0]), 10);
+    if (Number.isInteger(amountArgument)) {
+      args.shift();
+      amount = amountArgument;
+    }
+    return amount;
   }
 
   private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
