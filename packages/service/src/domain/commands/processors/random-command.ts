@@ -20,10 +20,10 @@ class RandomCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const { amount, keyWords } = this.amountAndKeyWordsFromArgs(commandArgs);
+    const { amount, keywords } = this.amountAndKeywordsFromArgs(commandArgs);
 
     const allSongs = await this.songService.getAll();
-    const songContainsEverySearchedWord = (song: Song): boolean => keyWords.every((word) => song.name?.toLowerCase().includes(word.toLowerCase()));
+    const songContainsEverySearchedWord = (song: Song): boolean => keywords.every((word) => song.name?.toLowerCase().includes(word.toLowerCase()));
     const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
     const maxAllowedValue = songsFollowingCriteria.length;
 
@@ -52,7 +52,7 @@ class RandomCommand extends CommandProcessor {
     };
   }
 
-  private amountAndKeyWordsFromArgs(args: string[]): {amount: number, keyWords: string[]} {
+  private amountAndKeywordsFromArgs(args: string[]): {amount: number, keywords: string[]} {
     const amountArgument = Number.parseInt(String(args[0]), 10);
     const argsCopy = Array.from(args);
     let amount = 1;
@@ -60,7 +60,7 @@ class RandomCommand extends CommandProcessor {
       argsCopy.shift();
       amount = amountArgument;
     }
-    return { amount, keyWords: argsCopy };
+    return { amount, keywords: argsCopy };
   }
 
   private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
