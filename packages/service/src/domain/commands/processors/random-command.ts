@@ -20,10 +20,10 @@ class RandomCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const amount = this.extractAmountFromArgs(commandArgs);
+    const { amount, keyWords } = this.amountAndKeyWordsFromArgs(commandArgs);
 
     const allSongs = await this.songService.getAll();
-    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.toLowerCase().includes(word.toLowerCase()));
+    const songContainsEverySearchedWord = (song: Song): boolean => keyWords.every((word) => song.name?.toLowerCase().includes(word.toLowerCase()));
     const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
     const maxAllowedValue = songsFollowingCriteria.length;
 
@@ -52,18 +52,15 @@ class RandomCommand extends CommandProcessor {
     };
   }
 
-  /**
-   * Removes and returns first element from the array if it can be parsed to integer.
-   * Otherwise 1 is returned and the array is not modified.
-   */
-  private extractAmountFromArgs(args: string[]): number {
-    let amount = 1;
+  private amountAndKeyWordsFromArgs(args: string[]): {amount: number, keyWords: string[]} {
     const amountArgument = Number.parseInt(String(args[0]), 10);
+    const argsCopy = Array.from(args);
+    let amount = 1;
     if (Number.isInteger(amountArgument)) {
-      args.shift();
+      argsCopy.shift();
       amount = amountArgument;
     }
-    return amount;
+    return { amount, keyWords: argsCopy };
   }
 
   private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
