@@ -20,16 +20,10 @@ class RandomCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const firstArg = commandArgs.shift() ?? '';
-    let amount = parseInt(firstArg, 10);
-
-    if (Number.isNaN(amount)) {
-      commandArgs.unshift(firstArg);
-      amount = 1;
-    }
+    const { amount, keywords } = this.amountAndKeywordsFromArgs(commandArgs);
 
     const allSongs = await this.songService.getAll();
-    const songContainsEverySearchedWord = (song: Song): boolean => commandArgs.every((word) => song.name.toLowerCase().includes(word.toLowerCase()));
+    const songContainsEverySearchedWord = (song: Song): boolean => keywords.every((word) => song.name?.toLowerCase().includes(word.toLowerCase()));
     const songsFollowingCriteria = allSongs.filter(songContainsEverySearchedWord).randomShuffle();
     const maxAllowedValue = songsFollowingCriteria.length;
 
@@ -56,6 +50,17 @@ class RandomCommand extends CommandProcessor {
       }],
       isVisibleToIssuerOnly: false,
     };
+  }
+
+  private amountAndKeywordsFromArgs(args: string[]): {amount: number, keywords: string[]} {
+    const amountArgument = Number.parseInt(String(args[0]), 10);
+    const argsCopy = Array.from(args);
+    let amount = 1;
+    if (Number.isInteger(amountArgument)) {
+      argsCopy.shift();
+      amount = amountArgument;
+    }
+    return { amount, keywords: argsCopy };
   }
 
   private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
