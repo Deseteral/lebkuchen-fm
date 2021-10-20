@@ -101,7 +101,7 @@ class RandomCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Losuje utwory z historii. Parametry są opcjonalne. Może zwrócić mniej klipów niż żadano.';
+    return 'Losuje utwory z historii. Parametry są opcjonalne. Może zwrócić mniej klipów niż żądano.';
   }
 
   get helpUsages(): (string[] | null) {
