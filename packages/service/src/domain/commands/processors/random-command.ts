@@ -76,16 +76,16 @@ class RandomCommand extends CommandProcessor {
     return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
   }
 
-  private buildMessage(songsToQueue: Song[], requestedNumber: number): string {
+  private buildMessage(songsToQueue: Song[], requestedAmount: number): string {
     const titleMessages = songsToQueue
       .map((s) => s.name)
       .slice(0, MAX_TITLES_IN_MESSAGE)
       .map((title) => `- _${title}_`);
 
-    const reachedRequestedNumber = requestedNumber === songsToQueue.length;
+    const reachedRequestedAmount = requestedAmount === songsToQueue.length;
 
     const text = [
-      `Dodano ${songsToQueue.length}${reachedRequestedNumber ? '' : ` (z ${requestedNumber} żądanych)`} do kojeki:`,
+      `Dodano ${songsToQueue.length}${reachedRequestedAmount ? '' : ` (z ${requestedAmount} żądanych)`} do kojeki:`,
       ...titleMessages,
       ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? '...i inne' : ''),
     ].filter(Boolean).join('\n');
