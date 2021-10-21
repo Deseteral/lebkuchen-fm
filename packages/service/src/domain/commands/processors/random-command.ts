@@ -24,7 +24,7 @@ class RandomCommand extends CommandProcessor {
     const { amount, keywords } = this.amountAndKeywordsFromArgs(commandArgs);
 
     if (amount < 1 || amount > MAX_SONGS_IN_YOUTUBE_REQUEST) {
-      const message = 'Random obsługuje żądania od 1 do 50 utworów.';
+      const message = `Random obsługuje żądania od 1 do ${MAX_SONGS_IN_YOUTUBE_REQUEST} utworów.`;
       throw new Error(message);
     }
 
