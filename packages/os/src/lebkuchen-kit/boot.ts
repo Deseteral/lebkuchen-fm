@@ -5,11 +5,10 @@ import { MenuBarClock } from './menu-bar-clock';
 import { createDesktop } from './desktop';
 import { addMenuBarItem, createMenuBar } from './menu-bar';
 import { menuBarItem } from './controls/LKMenuBarItem';
+import LebkuchenSprache from '../apps/lebkuchen-sprache/main';
+import App from './app';
 
-function boot() {
-  createDesktop();
-  createMenuBar();
-
+function createAppListMenuBarItem(appRegistry: App[]) {
   const appsMenuBarItem = document.createElement('div');
   appsMenuBarItem.innerText = 'Apps';
 
@@ -22,14 +21,27 @@ function boot() {
   appsMenuBarItem.addEventListener('click', () => appList.classList.toggle('hidden'));
   appsMenuBarItem.appendChild(appList);
 
-  for (let i = 0; i < 10; i += 1) {
+  appRegistry.forEach((appDefinition) => {
     const c = document.createElement('div');
-    c.innerText = `${i}`;
+    c.innerText = appDefinition.name;
     c.className = menuBarItem;
+    c.addEventListener('click', () => appDefinition.main());
     appList.appendChild(c);
-  }
+  });
 
   addMenuBarItem(appsMenuBarItem, { position: 'leading' });
+}
+
+function boot() {
+  createDesktop();
+  createMenuBar();
+
+  const appRegistry = [
+    LebkuchenSprache,
+  ];
+
+  createAppListMenuBarItem(appRegistry);
+
   addMenuBarItem(MenuBarClock(), { position: 'trailing' });
 }
 
