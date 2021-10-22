@@ -81,6 +81,14 @@ function openWindow({ title, position }: OpenWindowOptions): WindowDescriptor {
     document.addEventListener('mouseup', onMouseUp);
   });
 
+  const closeButton = document.createElement('div');
+  closeButton.innerText = '✕';
+  closeButton.className = css`
+    margin-right: 12px;
+  `;
+  closeButton.addEventListener('click', () => document.body.removeChild(container));
+  headerContainer.appendChild(closeButton);
+
   container.style.left = `${posX}px`;
   container.style.top = `${posY}px`;
 
