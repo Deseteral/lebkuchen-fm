@@ -31,6 +31,7 @@ const styles = {
   `,
   windowChildrenContainer: css`
     padding-bottom: 8px;
+    overflow: scroll;
   `,
 };
 

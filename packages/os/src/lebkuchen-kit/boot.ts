@@ -5,8 +5,9 @@ import { MenuBarClock } from './menu-bar-clock';
 import { createDesktop } from './desktop';
 import { addMenuBarItem, createMenuBar } from './menu-bar';
 import { menuBarItem } from './controls/LKMenuBarItem';
-import LebkuchenSprache from '../apps/lebkuchen-sprache/main';
 import App from './app';
+import LebkuchenSprache from '../apps/lebkuchen-sprache/main';
+import LogConsole from '../apps/log-console/main';
 
 function createAppListMenuBarItem(appRegistry: App[]) {
   const appsMenuBarItem = document.createElement('div');
@@ -38,6 +39,7 @@ function boot() {
 
   const appRegistry = [
     LebkuchenSprache,
+    LogConsole,
   ];
 
   createAppListMenuBarItem(appRegistry);
