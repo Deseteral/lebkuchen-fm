@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid';
+import clsx from 'clsx';
+import { card } from './controls/LKCard';
 import css from './css';
 
 interface OpenWindowOptions {
@@ -12,15 +14,10 @@ interface WindowDescriptor {
 }
 
 const styles = {
-  windowContainer: css`
+  windowContainer: clsx(card, css`
     position: absolute;
     z-index: 9;
-    border: 3px solid #28282e;
-    border-radius: 16px;
-    background-color: white;
-    color: #28282e;
-    box-shadow: 4px 4px 0px 0px #28282e;
-  `,
+  `),
   windowHeaderContainer: css`
     display: flex;
     flex-direction: row;

@@ -19,6 +19,7 @@
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
+    "clsx": "^1.1.1",
     "lebkuchen-fm-service": "*",
     "nanoid": "3.1.29",
     "react": "17.0.2",
