@@ -9,3 +9,7 @@ body {
   font-family: 'Arial', serif;
   user-select: none;
 }
+
+.hidden {
+  display: none;
+}
