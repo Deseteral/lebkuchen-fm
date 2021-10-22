@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import LKInput from '../../controls/LKInput';
+import LKInput from '../../lebkuchen-kit/controls/LKInput';
 
 const Container = styled.div`
   display: flex;
