@@ -56,10 +56,14 @@ function openWindow({ title, position }: OpenWindowOptions): WindowDescriptor {
     let startX = e.clientX;
     let startY = e.clientY;
 
-    // TODO: Prevent moving outside viewport bounds
     const onMouseMove = (ev: MouseEvent): void => {
-      posX -= (startX - ev.clientX);
-      posY -= (startY - ev.clientY);
+      if (ev.clientX >= 0 && ev.clientX <= window.innerWidth) {
+        posX -= (startX - ev.clientX);
+      }
+
+      if (ev.clientY >= 0 && ev.clientY <= window.innerHeight) {
+        posY -= (startY - ev.clientY);
+      }
 
       startX = ev.clientX;
       startY = ev.clientY;
