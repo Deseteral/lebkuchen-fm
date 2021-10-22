@@ -42,6 +42,10 @@ function openWindow({ title, position }: OpenWindowOptions): WindowDescriptor {
 
   const container = document.createElement('div');
   container.className = styles.windowContainer;
+  container.addEventListener('mousedown', () => {
+    document.body.removeChild(container);
+    document.body.append(container);
+  });
 
   const headerContainer = document.createElement('div');
   container.appendChild(headerContainer);
