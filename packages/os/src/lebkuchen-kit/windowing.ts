@@ -44,14 +44,23 @@ function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescrip
 
   const container = document.createElement('div');
   container.className = styles.windowContainer;
-  container.addEventListener('mousedown', () => {
-    document.body.removeChild(container);
-    document.body.append(container);
-  });
 
   const headerContainer = document.createElement('div');
   container.appendChild(headerContainer);
   headerContainer.className = styles.windowHeaderContainer;
+
+  const titleContainer = document.createElement('div');
+  headerContainer.appendChild(titleContainer);
+  titleContainer.className = css`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1;
+  `;
+  titleContainer.addEventListener('mousedown', () => {
+    document.body.removeChild(container);
+    document.body.append(container);
+  });
 
   if (icon) {
     const headerIcon = document.createElement('div');
@@ -60,11 +69,11 @@ function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescrip
       padding-left: 8px;
       font-size: 12px;
     `;
-    headerContainer.appendChild(headerIcon);
+    titleContainer.appendChild(headerIcon);
   }
 
   const header = document.createElement('div');
-  headerContainer.appendChild(header);
+  titleContainer.appendChild(header);
   header.className = styles.windowHeader;
   header.innerText = title;
   header.addEventListener('mousedown', (e: MouseEvent) => {
@@ -102,7 +111,7 @@ function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescrip
   closeButton.className = css`
     margin-right: 12px;
   `;
-  closeButton.addEventListener('click', () => document.body.removeChild(container));
+  closeButton.addEventListener('click', () => { document.body.removeChild(container); console.log('close'); });
   headerContainer.appendChild(closeButton);
 
   container.style.left = `${posX}px`;
