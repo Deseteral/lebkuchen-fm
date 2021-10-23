@@ -24,9 +24,9 @@ function createAppListMenuBarItem(appRegistry: App[]) {
 
   appRegistry.forEach((appDefinition) => {
     const c = document.createElement('div');
-    c.innerText = appDefinition.name;
+    c.innerText = `${appDefinition.icon} ${appDefinition.name}`;
     c.className = menuBarItem;
-    c.addEventListener('click', () => appDefinition.main());
+    c.addEventListener('click', () => appDefinition.main(appDefinition));
     appList.appendChild(c);
   });
 

@@ -5,6 +5,7 @@ import css from './css';
 
 interface OpenWindowOptions {
   title: string,
+  icon?: string,
   position?: [number, number],
 }
 
@@ -35,7 +36,7 @@ const styles = {
   `,
 };
 
-function openWindow({ title, position }: OpenWindowOptions): WindowDescriptor {
+function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescriptor {
   const handle = nanoid();
 
   let posX = position ? position[0] : 100;
@@ -51,6 +52,16 @@ function openWindow({ title, position }: OpenWindowOptions): WindowDescriptor {
   const headerContainer = document.createElement('div');
   container.appendChild(headerContainer);
   headerContainer.className = styles.windowHeaderContainer;
+
+  if (icon) {
+    const headerIcon = document.createElement('div');
+    headerIcon.innerText = icon;
+    headerIcon.className = css`
+      padding-left: 8px;
+      font-size: 12px;
+    `;
+    headerContainer.appendChild(headerIcon);
+  }
 
   const header = document.createElement('div');
   headerContainer.appendChild(header);

@@ -6,8 +6,9 @@ import LebkuchenSprache from './LebkuchenSprache';
 
 const definition: App = {
   name: 'Lebkuchen Sprache',
-  main: () => {
-    const descriptor = openWindow({ title: 'Lebkuchen Sprache' });
+  icon: '📫',
+  main: (appDefinition: App) => {
+    const descriptor = openWindow({ title: appDefinition.name, icon: appDefinition.icon });
 
     ReactDOM.render(
       <LebkuchenSprache />,

@@ -1,6 +1,7 @@
 interface App {
   name: string,
-  main: () => void,
+  icon: string,
+  main: (appDefinition: App) => void,
 }
 
 export default App;

@@ -6,8 +6,9 @@ import LogConsolePanel from './LogConsolePanel';
 
 const definition: App = {
   name: 'Log console',
-  main: () => {
-    const descriptor = openWindow({ title: 'Log console' });
+  icon: '🛠',
+  main: (appDefinition: App) => {
+    const descriptor = openWindow({ title: appDefinition.name, icon: appDefinition.icon });
 
     ReactDOM.render(
       <LogConsolePanel />,
