@@ -7,6 +7,7 @@ interface OpenWindowOptions {
   title: string,
   icon?: string,
   position?: [number, number],
+  size?: [number, number],
 }
 
 interface WindowDescriptor {
@@ -36,7 +37,7 @@ const styles = {
   `,
 };
 
-function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescriptor {
+function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowDescriptor {
   const handle = nanoid();
 
   let posX = position ? position[0] : 100;
@@ -119,6 +120,11 @@ function openWindow({ title, icon, position }: OpenWindowOptions): WindowDescrip
 
   const childrenContainer = document.createElement('div');
   container.appendChild(childrenContainer);
+  if (size) {
+    const [w, h] = size;
+    childrenContainer.style.width = `${w}px`;
+    childrenContainer.style.height = `${h}px`;
+  }
   childrenContainer.className = styles.windowChildrenContainer;
   childrenContainer.innerHTML = `<div data-os-window-id="${handle}"}></div>`;
 
