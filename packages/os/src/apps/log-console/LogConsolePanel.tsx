@@ -1,7 +1,7 @@
 import * as React from 'react';
 import io from 'socket.io-client';
 import { AdminEventData, Log } from 'lebkuchen-fm-service';
-import Logs from './Logs';
+import LogLine from './LogLine';
 
 interface LogConsolePanelProps {}
 
@@ -26,7 +26,11 @@ function LogConsolePanel(_: LogConsolePanelProps): JSX.Element {
   }, []);
 
   return (
-    <Logs logs={loggerHistory} />
+    <table>
+      <tbody>
+        {loggerHistory.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
+      </tbody>
+    </table>
   );
 }
 

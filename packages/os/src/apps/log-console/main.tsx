@@ -11,7 +11,7 @@ const definition: App = {
     const descriptor = openWindow({
       title: appDefinition.name,
       icon: appDefinition.icon,
-      size: [400, 200],
+      size: [800, 600],
     });
 
     ReactDOM.render(
