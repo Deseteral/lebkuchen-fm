@@ -1,3 +1,5 @@
+import h from 'hyperscript';
+
 const timeFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'full', timeStyle: 'medium' });
 
 function printTime(): string {
@@ -5,8 +7,7 @@ function printTime(): string {
 }
 
 export function MenuBarClock(): HTMLElement {
-  const clock = document.createElement('div');
-  clock.innerText = printTime();
+  const clock = h('div', printTime());
 
   setInterval(() => {
     clock.innerText = printTime();

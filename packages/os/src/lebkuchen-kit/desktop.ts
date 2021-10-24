@@ -1,18 +1,18 @@
+import h from 'hyperscript';
 import css from './css';
 
 export function createDesktop() {
-  const desktop = document.createElement('div');
-  desktop.className = css`
-    background-color: #fff7e4;
-    width: 100vw;
-    height: 100vh;
-  `;
-  desktop.setAttribute('data-os-desktop', '');
-
-  const windowContainer = document.createElement('div');
-  windowContainer.setAttribute('data-os-window-container', '');
-
+  const desktop = h('div', '', {
+    className: css`
+      background-color: #fff7e4;
+      width: 100vw;
+      height: 100vh;
+    `,
+    'data-os-desktop': '',
+  });
   document.body.appendChild(desktop);
+
+  const windowContainer = h('div', '', { 'data-os-window-container': '' });
   document.body.appendChild(windowContainer);
 }
 

@@ -1,13 +1,12 @@
 import { customAlphabet } from 'nanoid';
+import h from 'hyperscript';
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 10);
 
 const cache: Record<string, string> = {};
 
 function createStyle(name: string, content: string) {
-  const style = document.createElement('style');
-  style.innerHTML = `${name} { ${content} }`;
-  document.head.appendChild(style);
+  document.head.appendChild(h('style', `${name} { ${content} }`));
 }
 
 function css(input: TemplateStringsArray): string {

@@ -1,33 +1,27 @@
+import h from 'hyperscript';
 import css from './css';
 
 export function createMenuBar() {
-  const menuBar = document.createElement('div');
-  menuBar.className = css`
-    display: flex;
-    flex-direction: row;
-    background-color: white;
-    color: #28282e;
-    height: 24px;
-    width: 100vw;
-    position: fixed;
-    top: 0;
-    left: 0;
-    border-bottom: 2px solid #28282e;
-    align-items: center;
-    padding: 0 8px;
-    z-index: 99999;
-  `;
-
-  const leadingItems = document.createElement('div');
-  leadingItems.className = css`
-    flex: 1;
-  `;
-  leadingItems.setAttribute('data-os-menu-bar-leading', '');
-  menuBar.appendChild(leadingItems);
-
-  const trailingItems = document.createElement('div');
-  trailingItems.setAttribute('data-os-menu-bar-trailing', '');
-  menuBar.appendChild(trailingItems);
+  const menuBar = h('div',
+    h('div', '', { 'data-os-menu-bar-leading': '', className: css` flex: 1; ` }),
+    h('div', '', { 'data-os-menu-bar-trailing': '' }),
+    {
+      className: css`
+        display: flex;
+        flex-direction: row;
+        background-color: white;
+        color: #28282e;
+        height: 24px;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        border-bottom: 2px solid #28282e;
+        align-items: center;
+        padding: 0 8px;
+        z-index: 99999;
+      `,
+    });
 
   document.body.appendChild(menuBar);
 }
