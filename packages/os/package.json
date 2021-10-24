@@ -46,6 +46,7 @@
     "rules": {
       "max-len": "off",
       "no-console": "off",
+      "function-paren-newline": "off",
       "react/require-default-props": "off"
     }
   }
