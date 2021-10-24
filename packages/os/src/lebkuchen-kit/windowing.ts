@@ -24,7 +24,8 @@ function reorderWindows() {
   openWindows
     .map((handle) => (document.querySelector(`[data-os-window-id="${handle}"]`) as HTMLElement))
     .forEach((windowElement, idx) => {
-      windowElement.style.zIndex = (5000 + idx).toString(); // eslint-disable-line no-param-reassign
+      const windowZIndex = (5000 + idx).toString();
+      windowElement.style.zIndex = windowZIndex; // eslint-disable-line no-param-reassign
     });
 }
 
