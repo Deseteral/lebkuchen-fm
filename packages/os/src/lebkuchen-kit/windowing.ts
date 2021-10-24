@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import clsx from 'clsx';
+import h from 'hyperscript';
 import { card } from './controls/LKCard';
 import css from './css';
 
@@ -26,11 +27,6 @@ const styles = {
     align-items: center;
     border-bottom: 2px solid #28282e;
   `,
-  windowHeader: css`
-    cursor: move;
-    flex: 1;
-    padding: 8px;
-  `,
   windowChildrenContainer: css`
     padding-bottom: 8px;
     overflow: scroll;
@@ -39,44 +35,50 @@ const styles = {
 
 function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowDescriptor {
   const handle = nanoid();
+  const windowContainer = document.querySelector('[data-os-window-container]') as HTMLElement;
 
-  let posX = position ? position[0] : 100;
-  let posY = position ? position[1] : 100;
+  let [posX, posY] = (position || [100, 100]);
+  const [width, height] = (size || [800, 600]);
 
-  const container = document.createElement('div');
-  container.className = styles.windowContainer;
+  const header = h('div',
+    h('div', (icon || ''), {
+      className: css`
+        padding-left: 8px;
+        font-size: 12px;
+      `,
+    }),
+    h('div', title, {
+      className: css`
+        flex: 1;
+        padding: 8px;
+      `,
+    }),
+    {
+      className: css`
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        flex: 1;
+        cursor: move;
+      `,
+    });
 
-  const headerContainer = document.createElement('div');
-  container.appendChild(headerContainer);
-  headerContainer.className = styles.windowHeaderContainer;
-
-  const titleContainer = document.createElement('div');
-  headerContainer.appendChild(titleContainer);
-  titleContainer.className = css`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    flex: 1;
-  `;
-  titleContainer.addEventListener('mousedown', () => {
-    document.body.removeChild(container);
-    document.body.append(container);
+  const closeButton = h('div', '✕', {
+    className: css`
+      margin-right: 12px;
+    `,
   });
 
-  if (icon) {
-    const headerIcon = document.createElement('div');
-    headerIcon.innerText = icon;
-    headerIcon.className = css`
-      padding-left: 8px;
-      font-size: 12px;
-    `;
-    titleContainer.appendChild(headerIcon);
-  }
+  const windowTopBar = h('div', header, closeButton, { className: styles.windowHeaderContainer });
+  const childrenContainer = h('div', h('div', '', { 'data-os-window-id': handle }), { className: styles.windowChildrenContainer, style: { width: `${width}px`, height: `${height}px` } });
+  const container = h('div', windowTopBar, childrenContainer, { className: styles.windowContainer, style: { left: `${posX}px`, top: `${posY}px` } });
 
-  const header = document.createElement('div');
-  titleContainer.appendChild(header);
-  header.className = styles.windowHeader;
-  header.innerText = title;
+  // Events
+  header.addEventListener('mousedown', () => {
+    windowContainer.removeChild(container);
+    windowContainer.append(container);
+  });
+
   header.addEventListener('mousedown', (e: MouseEvent) => {
     e.preventDefault();
     let startX = e.clientX;
@@ -107,29 +109,9 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  const closeButton = document.createElement('div');
-  closeButton.innerText = '✕';
-  closeButton.className = css`
-    margin-right: 12px;
-  `;
-  closeButton.addEventListener('click', () => { document.body.removeChild(container); console.log('close'); });
-  headerContainer.appendChild(closeButton);
+  closeButton.addEventListener('click', () => windowContainer.removeChild(container));
 
-  container.style.left = `${posX}px`;
-  container.style.top = `${posY}px`;
-
-  const childrenContainer = document.createElement('div');
-  container.appendChild(childrenContainer);
-  {
-    const [w, h] = (size || [800, 600]);
-    childrenContainer.style.width = `${w}px`;
-    childrenContainer.style.height = `${h}px`;
-  }
-
-  childrenContainer.className = styles.windowChildrenContainer;
-  childrenContainer.innerHTML = `<div data-os-window-id="${handle}"}></div>`;
-
-  document.body.appendChild(container);
+  windowContainer.appendChild(container);
 
   return {
     handle,

@@ -8,7 +8,12 @@ export function createDesktop() {
     height: 100vh;
   `;
   desktop.setAttribute('data-os-desktop', '');
+
+  const windowContainer = document.createElement('div');
+  windowContainer.setAttribute('data-os-window-container', '');
+
   document.body.appendChild(desktop);
+  document.body.appendChild(windowContainer);
 }
 
 export function changeDesktopColor(color: string) {
