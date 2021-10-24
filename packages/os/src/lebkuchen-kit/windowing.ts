@@ -120,11 +120,12 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
 
   const childrenContainer = document.createElement('div');
   container.appendChild(childrenContainer);
-  if (size) {
-    const [w, h] = size;
+  {
+    const [w, h] = (size || [800, 600]);
     childrenContainer.style.width = `${w}px`;
     childrenContainer.style.height = `${h}px`;
   }
+
   childrenContainer.className = styles.windowChildrenContainer;
   childrenContainer.innerHTML = `<div data-os-window-id="${handle}"}></div>`;
 
