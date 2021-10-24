@@ -4,16 +4,28 @@ import h from 'hyperscript';
 import { card } from './controls/LKCard';
 import css from './css';
 
-interface OpenWindowOptions {
+export type WindowHandle = string;
+
+export interface OpenWindowOptions {
   title: string,
   icon?: string,
   position?: [number, number],
   size?: [number, number],
 }
 
-interface WindowDescriptor {
-  handle: string,
+export interface WindowDescriptor {
+  handle: WindowHandle,
   contentRootElement: HTMLElement,
+}
+
+const openWindows: WindowHandle[] = [];
+
+function reorderWindows() {
+  openWindows
+    .map((handle) => (document.querySelector(`[data-os-window-id="${handle}"]`) as HTMLElement))
+    .forEach((windowElement, idx) => {
+      windowElement.style.zIndex = (5000 + idx).toString(); // eslint-disable-line no-param-reassign
+    });
 }
 
 function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowDescriptor {
@@ -57,7 +69,7 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
     });
 
   const childrenContainer = h('div',
-    h('div', '', { 'data-os-window-id': handle }),
+    h('div', '', { 'data-os-window-content-id': handle }),
     {
       className: css` padding-bottom: 8px; overflow: scroll; `,
       style: { width: `${width}px`, height: `${height}px` },
@@ -69,12 +81,15 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
     {
       className: clsx(card, css` position: absolute; z-index: 9; `),
       style: { left: `${posX}px`, top: `${posY}px` },
+      'data-os-window-id': handle,
     });
 
   // Events
-  header.addEventListener('mousedown', () => {
-    windowContainer.removeChild(container);
-    windowContainer.append(container);
+  container.addEventListener('mousedown', () => {
+    const idx = openWindows.indexOf(handle);
+    openWindows.splice(idx, 1);
+    openWindows.push(handle);
+    reorderWindows();
   });
 
   header.addEventListener('mousedown', (e: MouseEvent) => {
@@ -111,6 +126,8 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
 
   // Render window
   windowContainer.appendChild(container);
+  openWindows.push(handle);
+  reorderWindows();
 
   return {
     handle,
