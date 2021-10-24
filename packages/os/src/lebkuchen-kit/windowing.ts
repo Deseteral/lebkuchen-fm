@@ -16,23 +16,6 @@ interface WindowDescriptor {
   contentRootElement: HTMLElement,
 }
 
-const styles = {
-  windowContainer: clsx(card, css`
-    position: absolute;
-    z-index: 9;
-  `),
-  windowHeaderContainer: css`
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-bottom: 2px solid #28282e;
-  `,
-  windowChildrenContainer: css`
-    padding-bottom: 8px;
-    overflow: scroll;
-  `,
-};
-
 function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowDescriptor {
   const handle = nanoid();
   const windowContainer = document.querySelector('[data-os-window-container]') as HTMLElement;
@@ -42,16 +25,10 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
 
   const header = h('div',
     h('div', (icon || ''), {
-      className: css`
-        padding-left: 8px;
-        font-size: 12px;
-      `,
+      className: css` padding-left: 8px; font-size: 12px; `,
     }),
     h('div', title, {
-      className: css`
-        flex: 1;
-        padding: 8px;
-      `,
+      className: css` flex: 1; padding: 8px; `,
     }),
     {
       className: css`
@@ -64,14 +41,35 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
     });
 
   const closeButton = h('div', '✕', {
-    className: css`
-      margin-right: 12px;
-    `,
+    className: css` margin-right: 12px; `,
   });
 
-  const windowTopBar = h('div', header, closeButton, { className: styles.windowHeaderContainer });
-  const childrenContainer = h('div', h('div', '', { 'data-os-window-id': handle }), { className: styles.windowChildrenContainer, style: { width: `${width}px`, height: `${height}px` } });
-  const container = h('div', windowTopBar, childrenContainer, { className: styles.windowContainer, style: { left: `${posX}px`, top: `${posY}px` } });
+  const windowTopBar = h('div',
+    header,
+    closeButton,
+    {
+      className: css`
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 2px solid #28282e;
+      `,
+    });
+
+  const childrenContainer = h('div',
+    h('div', '', { 'data-os-window-id': handle }),
+    {
+      className: css` padding-bottom: 8px; overflow: scroll; `,
+      style: { width: `${width}px`, height: `${height}px` },
+    });
+
+  const container = h('div',
+    windowTopBar,
+    childrenContainer,
+    {
+      className: clsx(card, css` position: absolute; z-index: 9; `),
+      style: { left: `${posX}px`, top: `${posY}px` },
+    });
 
   // Events
   header.addEventListener('mousedown', () => {
@@ -111,6 +109,7 @@ function openWindow({ title, icon, position, size }: OpenWindowOptions): WindowD
 
   closeButton.addEventListener('click', () => windowContainer.removeChild(container));
 
+  // Render window
   windowContainer.appendChild(container);
 
   return {
