@@ -30,6 +30,8 @@ interface VideoDetails {
   ]
 }
 
+const MAX_SUPPORTED_PLAYLIST_ELEMENTS = '10';
+
 @Service()
 class YouTubeDataClient {
   private static logger: Logger = new Logger('youtube-data-client');
@@ -109,7 +111,7 @@ class YouTubeDataClient {
     const url = this.makeYouTubeUrl('/playlistItems');
     url.searchParams.set('playlistId', playlistId);
     url.searchParams.set('part', part);
-    url.searchParams.set('maxResults', '50');
+    url.searchParams.set('maxResults', MAX_SUPPORTED_PLAYLIST_ELEMENTS);
 
     return this.request<PlaylistDetails>(url);
   }
