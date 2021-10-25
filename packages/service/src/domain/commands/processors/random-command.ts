@@ -6,7 +6,6 @@ import Song from '@service/domain/songs/song';
 import SongsService from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 
 const MAX_TITLES_IN_MESSAGE = 10;
@@ -15,7 +14,7 @@ const MAX_SONGS_IN_YOUTUBE_REQUEST = 50;
 @RegisterCommand
 @Service()
 class RandomCommand extends CommandProcessor {
-  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
 
@@ -37,7 +36,7 @@ class RandomCommand extends CommandProcessor {
       throw new Error(message);
     }
 
-    const availableSongs = await this.filterEmbeddableSongs(songsFollowingCriteria.slice(0, MAX_SONGS_IN_YOUTUBE_REQUEST));
+    const availableSongs = await this.songService.filterEmbeddableSongs(songsFollowingCriteria.slice(0, MAX_SONGS_IN_YOUTUBE_REQUEST));
     const songsToQueue = availableSongs.slice(0, amount);
 
     const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: songsToQueue };
@@ -66,14 +65,6 @@ class RandomCommand extends CommandProcessor {
       amount = amountArgument;
     }
     return { amount, keywords: argsCopy };
-  }
-
-  private async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
-    const youtubeIds = songs.map((song) => song.youtubeId);
-    const statuses = await this.youTubeDataClient.fetchVideosStatuses(youtubeIds);
-    const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
-
-    return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
   }
 
   private buildMessage(songsToQueue: Song[], requestedAmount: number): string {
