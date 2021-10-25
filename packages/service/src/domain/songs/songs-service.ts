@@ -32,6 +32,17 @@ class SongsService {
     return song;
   }
 
+  async fetchAndStoreNewSongs(youtubeIds: string[]): Promise<Song[]> {
+    const videoDetails = await this.youTubeDataClient.fetchVideosDetails(youtubeIds);
+
+    const songs: Song[] = videoDetails.items.map((el) => ({ youtubeId: el.id, name: el.snippet.title, timesPlayed: 0, trimStartSeconds: null, trimEndSeconds: null }));
+    if (songs.isEmpty()) {
+      return Promise.resolve([]);
+    }
+    await this.repository.insertMany(songs);
+    return songs;
+  }
+
   async incrementPlayCount(youtubeId: string, songName?: string): Promise<void> {
     const foundSong = await this.repository.findByYoutubeId(youtubeId);
 
@@ -55,10 +66,25 @@ class SongsService {
     return song;
   }
 
+  async getSongsByYoutubeIds(youTubeIds: string[]): Promise<Song[]> {
+    const songsFromRepo: Song[] = await this.repository.findByYoutubeIds(youTubeIds);
+    const youtubeIdsFromRepo = songsFromRepo.map((song) => song.youtubeId);
+    const youtubeIdsToSongsFromRepo: Map<string, Song> = new Map(songsFromRepo.map((song) => [song.youtubeId, song]));
+
+    const youtubeIdsToRetrieveFromApi = youTubeIds.filter((youTubeId) => !youtubeIdsFromRepo.includes(youTubeId));
+
+    const songsFromApi = await this.fetchAndStoreNewSongs(youtubeIdsToRetrieveFromApi);
+    const youtubeIdsToSongsFromApi: Map<string, Song> = new Map(songsFromApi.map((song) => [song.youtubeId, song]));
+
+    // @ts-ignore
+    const songs: Song[] = youTubeIds.map((youtubeId) => youtubeIdsToSongsFromRepo.get(youtubeId) || youtubeIdsToSongsFromApi.get(youtubeId) || null).filter((song) => song != null);
+    return this.filterEmbeddableSongs(songs);
+  }
+
   async getSongsFromPlaylist(id: string): Promise<Song[]> {
     const videoIds = await this.youTubeDataClient.fetchYouTubeIdsForPlaylist(id);
-    const songs: Promise<Song>[] = videoIds.map((videoId) => this.getSongByNameWithYouTubeIdFallback(videoId));
-    return Promise.all(songs);
+    const songs: Promise<Song[]> = this.getSongsByYoutubeIds(videoIds);
+    return songs;
   }
 
   async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
