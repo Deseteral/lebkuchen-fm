@@ -3,22 +3,11 @@ import YTPlayer from 'yt-player';
 
 let player: YTPlayer;
 
-interface YTPlayerStateUpdateQueue {
-  time: (number | null),
-}
-
-// Queued updates to the YouTube player state that can only be applied when the video is loaded and
-// already playing. This is a workaround for YouTube player API lacking proper callback support for
-// state changes.
-const ytPlayerStateUpdateQueue: YTPlayerStateUpdateQueue = {
-  time: null,
-};
-
 function playSong(song: (Song | null), isPlaying: boolean) {
   if (song) {
     player.load(song.youtubeId, isPlaying);
   } else {
-    console.log('stop');
+    player.pause();
   }
 }
 

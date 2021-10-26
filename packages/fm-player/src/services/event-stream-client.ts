@@ -33,44 +33,6 @@ function connect() {
     //     const state = PlayerStateService.getState();
     //     sendResponse(state);
     //   } break;
-
-    //   case 'AddSongsToQueueEvent':
-    //     PlayerStateService.addToQueue(eventData.songs);
-    //     break;
-
-    //   case 'PlayXSoundEvent':
-    //     SoundPlayerService.playSound(eventData.soundUrl);
-    //     break;
-
-    //   case 'SayEvent':
-    //     SpeechService.say(eventData.text);
-    //     break;
-
-    //   case 'PauseEvent':
-    //     YouTubePlayerService.pause();
-    //     break;
-
-    //   case 'ResumeEvent':
-    //     YouTubePlayerService.resume();
-    //     break;
-
-    //   case 'SkipEvent': {
-    //     const amountToDrop = eventData.skipAll ? Infinity : (eventData.amount - 1);
-    //     PlayerStateService.dropFromQueueFront(amountToDrop);
-    //     YouTubePlayerService.playNextSong();
-    //   } break;
-
-    //   case 'ChangeSpeedEvent':
-    //     YouTubePlayerService.setSpeed(eventData.nextSpeed);
-    //     break;
-
-    //   case 'ChangeVolumeEvent':
-    //     PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
-    //     break;
-
-    //   default:
-    //     break;
-    // }
   });
 }
 

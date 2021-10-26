@@ -13,8 +13,6 @@ function FMStateReducer(state: PlayerState, action: EventData): PlayerState {
         }
         : state.currentlyPlaying;
 
-      console.log(queue);
-
       return {
         ...state,
         queue,
@@ -22,7 +20,7 @@ function FMStateReducer(state: PlayerState, action: EventData): PlayerState {
       };
     }
     case 'ChangeSpeedEvent':
-      // TODO: later
+      // TODO: this state is handled by player, event carries only relative changes
       break;
     case 'ChangeVolumeEvent':
       return {
@@ -37,7 +35,10 @@ function FMStateReducer(state: PlayerState, action: EventData): PlayerState {
     case 'PlayXSoundEvent':
       return {
         ...state,
-        soundUrl: action.soundUrl,
+        sample: {
+          url: action.soundUrl,
+          timestamp: Date.now(),
+        },
       };
     case 'PlayerStateRequestEvent':
       // TODO: later
@@ -55,7 +56,10 @@ function FMStateReducer(state: PlayerState, action: EventData): PlayerState {
     case 'SayEvent':
       return {
         ...state,
-        sayMessage: action.text,
+        spokenMessage: {
+          text: action.text,
+          timestamp: Date.now(),
+        },
       };
     case 'SkipEvent':
     {

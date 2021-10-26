@@ -5,11 +5,23 @@ interface CurrentlyPlaying {
   time: number,
 }
 
+interface SpokenMessage {
+  text: string,
+  timestamp: number,
+}
+
+interface Sample {
+  url: string,
+  timestamp: number,
+}
+
 interface PlayerState {
   currentlyPlaying: (CurrentlyPlaying | null),
   queue: Song[],
   isPlaying: boolean,
   volume: number,
+  spokenMessage?: SpokenMessage,
+  sample?: Sample,
 }
 
 function makeDefaultPlayerState(): PlayerState {

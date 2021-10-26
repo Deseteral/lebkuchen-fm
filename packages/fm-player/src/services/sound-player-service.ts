@@ -1,8 +1,6 @@
-import { getState } from './player-state-service';
-
-function playSound(soundUrl: string) {
+function playSound(soundUrl: string, playerVolume: number) {
   const audio = new Audio(soundUrl);
-  audio.volume = (getState().volume / 100);
+  audio.volume = (playerVolume / 100);
   audio.play();
 }
 
