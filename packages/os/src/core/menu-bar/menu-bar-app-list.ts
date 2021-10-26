@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import h from 'hyperscript';
-import { menuBarItem } from './controls/LKMenuBarItem';
-import { card } from './controls/LKCard';
-import css from './css';
-import App from './app';
+import { menuBarItem } from '../../lebkuchen-kit/controls/LKMenuBarItem';
+import { card } from '../../lebkuchen-kit/controls/LKCard';
+import css from '../../lebkuchen-kit/css';
+import App from '../../lebkuchen-kit/app';
 
 export function MenuBarAppList(appRegistry: App[]) {
   const appList = h('div',

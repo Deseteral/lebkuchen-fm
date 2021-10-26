@@ -1,3 +1,3 @@
-import boot from './lebkuchen-kit/boot';
+import boot from './core/boot';
 
 boot();

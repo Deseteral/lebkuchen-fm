@@ -1,5 +1,5 @@
 import h from 'hyperscript';
-import css from './css';
+import css from '../../lebkuchen-kit/css';
 
 export function createMenuBar() {
   const menuBar = h('div',
