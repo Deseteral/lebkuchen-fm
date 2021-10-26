@@ -1,36 +1,51 @@
 import Command from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import {
+  CommandProcessingResponse,
+  makeSingleTextProcessingResponse,
+} from '@service/domain/commands/model/command-processing-response';
 import CommandProcessor from '@service/domain/commands/model/command-processor';
 import RegisterCommand from '@service/domain/commands/registry/register-command';
 import SongsService from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
+import Song from '@service/domain/songs/song';
 
 @RegisterCommand
 @Service()
 class QueueCommand extends CommandProcessor {
-  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream, private youTubeDataClient: YouTubeDataClient) {
+  constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const songName = command.rawArgs;
-    const song = await this.songService.getSongByNameWithYouTubeIdFallback(songName);
-
-    const videoStatus = await this.youTubeDataClient.fetchVideosStatuses([song.youtubeId]);
-
-    if (!videoStatus.items?.last().status.embeddable) {
-      throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
+    const id = command.rawArgs;
+    const songs: Song[] = [];
+    try {
+      const song = await this.songService.getSongByNameWithYouTubeIdFallback(id);
+      songs.push(song);
+    } catch (_) {
+      try {
+        const playlistSongs = await this.songService.getSongsFromPlaylist(id);
+        songs.push(...playlistSongs);
+      } catch (__) {
+        throw new Error('Podane id nie jest identyfikatorem wideo ani playlisty');
+      }
     }
 
-    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: [song] };
+    const embeddableSongs = await this.songService.filterEmbeddableSongs(songs);
+
+    if (embeddableSongs.isEmpty()) {
+      throw new Error('Brak wideo obsługiwanego przez osadzony odtwarzacz');
+    }
+
+    const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: embeddableSongs };
     this.playerEventStream.sendToEveryone(eventData);
 
-    this.songService.incrementPlayCount(song.youtubeId, song.name);
+    embeddableSongs.forEach((song) => this.songService.incrementPlayCount(song.youtubeId, song.name));
 
-    return makeSingleTextProcessingResponse(`Dodano "${song.name}" do kolejki`);
+    const songNames = embeddableSongs.map((song) => song.name).join(', ');
+    return makeSingleTextProcessingResponse(`Dodano "${songNames}" do kolejki`);
   }
 
   get key(): string {
@@ -42,14 +57,15 @@ class QueueCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma trakuje frazę jako YouTube ID';
+    return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma traktuje frazę jako YouTube ID lub ID playlisty YouTube';
   }
 
   get helpUsages(): (string[] | null) {
     return [
-      '<video name or youtube-id>',
+      '<video name, youtube-id or youtube-playlist-id>',
       'transatlantik',
       'p28K7Fz0KrQ',
+      'PLpdRVFVH_vIMvkMVdJScNK3S2SeOv7k1d',
     ];
   }
 }
