@@ -5,12 +5,11 @@ import SoundButton from './SoundButton';
 function SoundBoard() {
   const [sounds, setSounds] = React.useState([]);
   React.useEffect(() => {
-    async function fetchSounds() {
+    (async function fetchSounds() {
       const response = await fetch('/x-sounds');
       const data = await response.json();
       setSounds(data.sounds);
-    }
-    fetchSounds();
+    }());
   }, []);
 
   return (
