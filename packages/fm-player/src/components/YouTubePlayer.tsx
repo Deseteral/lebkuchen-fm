@@ -1,11 +1,11 @@
 import * as React from 'react';
-import * as YouTubePlayerService from '../services/youtube-player-service';
+import * as Youtube from '../services/youtube-service';
 
 const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 
 function YouTubePlayer() {
   React.useEffect(() => {
-    YouTubePlayerService.initialize(YOUTUBE_PLAYER_DOM_ID);
+    Youtube.initialize(YOUTUBE_PLAYER_DOM_ID);
   }, []);
 
   return (

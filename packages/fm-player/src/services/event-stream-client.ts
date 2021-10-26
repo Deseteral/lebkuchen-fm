@@ -1,64 +1,76 @@
 import io from 'socket.io-client';
 import { EventData } from 'lebkuchen-fm-service';
-import * as PlayerStateService from './player-state-service';
-import * as SoundPlayerService from '../services/sound-player-service';
-import * as SpeechService from '../services/speech-service';
-import * as YouTubePlayerService from '../services/youtube-player-service';
+
+interface FMEventMap {
+  'fm-command': CustomEvent<EventData>;
+}
+
+declare global {
+  interface Window {
+      addEventListener<K extends keyof FMEventMap>(type: K,
+        listener: (this: Window, ev: FMEventMap[K]) => void): void;
+      removeEventListener<K extends keyof FMEventMap>(type: K,
+        listener: (this: Window, ev: FMEventMap[K]) => void): void;
+  }
+}
 
 function connect() {
   const client = io('/player');
-  client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
   client.on('message', (eventData: EventData, sendResponse: Function) => {
-    console.log('Received event from event stream', eventData);
+    console.log('🎉 Received event from event stream!', eventData);
 
-    switch (eventData.id) {
-      case 'PlayerStateUpdateEvent':
-        PlayerStateService.setState(eventData.state);
-        break;
+    const event: CustomEvent<EventData> = new CustomEvent('fm-command', { detail: eventData });
 
-      case 'PlayerStateRequestEvent': {
-        const state = PlayerStateService.getState();
-        sendResponse(state);
-      } break;
+    window.dispatchEvent(event);
 
-      case 'AddSongsToQueueEvent':
-        PlayerStateService.addToQueue(eventData.songs);
-        break;
+    // switch (eventData.id) {
+    //   case 'PlayerStateUpdateEvent':
+    //     PlayerStateService.setState(eventData.state);
+    //     break;
 
-      case 'PlayXSoundEvent':
-        SoundPlayerService.playSound(eventData.soundUrl);
-        break;
+    //   case 'PlayerStateRequestEvent': {
+    //     const state = PlayerStateService.getState();
+    //     sendResponse(state);
+    //   } break;
 
-      case 'SayEvent':
-        SpeechService.say(eventData.text);
-        break;
+    //   case 'AddSongsToQueueEvent':
+    //     PlayerStateService.addToQueue(eventData.songs);
+    //     break;
 
-      case 'PauseEvent':
-        YouTubePlayerService.pause();
-        break;
+    //   case 'PlayXSoundEvent':
+    //     SoundPlayerService.playSound(eventData.soundUrl);
+    //     break;
 
-      case 'ResumeEvent':
-        YouTubePlayerService.resume();
-        break;
+    //   case 'SayEvent':
+    //     SpeechService.say(eventData.text);
+    //     break;
 
-      case 'SkipEvent': {
-        const amountToDrop = eventData.skipAll ? Infinity : (eventData.amount - 1);
-        PlayerStateService.dropFromQueueFront(amountToDrop);
-        YouTubePlayerService.playNextSong();
-      } break;
+    //   case 'PauseEvent':
+    //     YouTubePlayerService.pause();
+    //     break;
 
-      case 'ChangeSpeedEvent':
-        YouTubePlayerService.setSpeed(eventData.nextSpeed);
-        break;
+    //   case 'ResumeEvent':
+    //     YouTubePlayerService.resume();
+    //     break;
 
-      case 'ChangeVolumeEvent':
-        PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
-        break;
+    //   case 'SkipEvent': {
+    //     const amountToDrop = eventData.skipAll ? Infinity : (eventData.amount - 1);
+    //     PlayerStateService.dropFromQueueFront(amountToDrop);
+    //     YouTubePlayerService.playNextSong();
+    //   } break;
 
-      default:
-        break;
-    }
+    //   case 'ChangeSpeedEvent':
+    //     YouTubePlayerService.setSpeed(eventData.nextSpeed);
+    //     break;
+
+    //   case 'ChangeVolumeEvent':
+    //     PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
+    //     break;
+
+    //   default:
+    //     break;
+    // }
   });
 }
 

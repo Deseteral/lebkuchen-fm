@@ -1,41 +1,48 @@
 import * as React from 'react';
-import { PlayerState } from 'lebkuchen-fm-service';
+import { EventData } from 'lebkuchen-fm-service';
+import * as Youtube from '../services/youtube-service';
 import YouTubePlayer from './YouTubePlayer';
 import * as EventStreamClient from '../services/event-stream-client';
 import * as SpeechService from '../services/speech-service';
 import NowPlaying from './NowPlaying/NowPlaying';
-import * as PlayerStateService from '../services/player-state-service';
 import { useFMStateContext } from '../context/FMStateContext';
+import usePrevious from '../hooks/usePrevious';
 
 function App() {
-  const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
-  const { dispatch } = useFMStateContext();
+  const { state, dispatch } = useFMStateContext();
+  const prevState = usePrevious(state);
 
   React.useEffect(() => {
+    const processCommand = (event: CustomEvent<EventData>) => dispatch(event.detail);
+
     EventStreamClient.connect();
     SpeechService.initialize();
+    window.addEventListener('fm-command', processCommand);
 
-    PlayerStateService.onStateChange((nextState?: PlayerState) => {
-      if (!nextState) return;
-      setPlayerState({
-        currentlyPlaying: nextState.currentlyPlaying,
-        queue: nextState.queue,
-        isPlaying: nextState.isPlaying,
-      } as PlayerState);
-    });
-  }, []);
+    return () => {
+      window.removeEventListener('fm-command', processCommand);
+    };
+  }, [dispatch]);
 
-  if (playerState === null) return (<div />);
+  React.useEffect(() => {
+    console.log('newstate', state);
 
-  const onVolumeDown = () => dispatch({ id: 'ChangeVolumeEvent', isRelative: true, nextVolume: -1 });
-  const onVolumeFifty = () => dispatch({ id: 'ChangeVolumeEvent', isRelative: false, nextVolume: 50 });
+    const { currentlyPlaying, isPlaying } = state;
+    if (currentlyPlaying && currentlyPlaying !== prevState?.currentlyPlaying) {
+      Youtube.playSong(currentlyPlaying.song, state.isPlaying);
+    }
+
+    if (isPlaying !== prevState?.isPlaying) {
+      Youtube[isPlaying ? 'resume' : 'pause']();
+    }
+
+    Youtube.setVolume(state.volume);
+  }, [state, prevState]);
 
   return (
     <div className="relative">
-      {playerState && (<NowPlaying playerState={playerState} />)}
+      <NowPlaying playerState={state} />
       <YouTubePlayer />
-      <button type="button" onClick={onVolumeDown}>VOLUME DOWN</button>
-      <button type="button" onClick={onVolumeFifty}>VOLUME 50</button>
     </div>
   );
 }
