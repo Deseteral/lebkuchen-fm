@@ -5,12 +5,14 @@ import DatabaseClient from '@service/infrastructure/storage';
 
 @Service()
 class XSoundsRepository extends Repository<XSound> {
+  private locale: string;
   private constructor(storage: DatabaseClient) {
     super('x', storage);
+    this.locale = storage.locale();
   }
 
   findAllOrderByNameAsc(): Promise<XSound[]> {
-    return this.collection.find({}).collation({ locale: 'pl' }).sort({ name: 1 }).toArray();
+    return this.collection.find({}).collation({ locale: this.locale }).sort({ name: 1 }).toArray();
   }
 
   findAllByTagOrderByNameAsc(tag: string): Promise<XSound[]> {

@@ -28,6 +28,10 @@ class DatabaseClient {
     }
     return this.db.collection(collectionName);
   }
+
+  locale(): string {
+    return this.configuration.LOCALE;
+  }
 }
 
 export default DatabaseClient;
