@@ -2,6 +2,7 @@ import Song from '@service/domain/songs/song';
 import SongsRepository from '@service/domain/songs/songs-repository';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
+import { notNull } from '@service/utils/utils';
 
 @Service()
 class SongsService {
@@ -37,7 +38,7 @@ class SongsService {
 
     const songs: Song[] = videoDetails.items.map((el) => ({ youtubeId: el.id, name: el.snippet.title, timesPlayed: 0, trimStartSeconds: null, trimEndSeconds: null }));
     if (songs.isEmpty()) {
-      return Promise.resolve([]);
+      return [];
     }
     await this.repository.insertMany(songs);
     return songs;
@@ -76,8 +77,7 @@ class SongsService {
     const songsFromApi = await this.fetchAndStoreNewSongs(youtubeIdsToRetrieveFromApi);
     const youtubeIdsToSongsFromApi: Map<string, Song> = new Map(songsFromApi.map((song) => [song.youtubeId, song]));
 
-    // @ts-ignore
-    const songs: Song[] = youTubeIds.map((youtubeId) => youtubeIdsToSongsFromRepo.get(youtubeId) || youtubeIdsToSongsFromApi.get(youtubeId) || null).filter((song) => song != null);
+    const songs: Song[] = youTubeIds.map((youtubeId) => youtubeIdsToSongsFromRepo.get(youtubeId) || youtubeIdsToSongsFromApi.get(youtubeId) || null).filter(notNull);
     return this.filterEmbeddableSongs(songs);
   }
 
