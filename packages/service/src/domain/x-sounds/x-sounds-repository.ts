@@ -10,7 +10,7 @@ class XSoundsRepository extends Repository<XSound> {
   }
 
   findAllOrderByNameAsc(): Promise<XSound[]> {
-    return this.collection.find({}).sort({ name: 1 }).toArray();
+    return this.collection.find({}).collation({ locale: 'pl' }).sort({ name: 1 }).toArray();
   }
 
   findAllByTagOrderByNameAsc(tag: string): Promise<XSound[]> {
