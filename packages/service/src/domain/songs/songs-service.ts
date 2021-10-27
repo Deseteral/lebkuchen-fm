@@ -2,6 +2,7 @@ import Song from '@service/domain/songs/song';
 import SongsRepository from '@service/domain/songs/songs-repository';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
+import { notNull } from '@service/utils/utils';
 
 @Service()
 class SongsService {
@@ -32,6 +33,17 @@ class SongsService {
     return song;
   }
 
+  async fetchAndStoreNewSongs(youtubeIds: string[]): Promise<Song[]> {
+    const videoDetails = await this.youTubeDataClient.fetchVideosDetails(youtubeIds);
+
+    const songs: Song[] = videoDetails.items.map((el) => ({ youtubeId: el.id, name: el.snippet.title, timesPlayed: 0, trimStartSeconds: null, trimEndSeconds: null }));
+    if (songs.isEmpty()) {
+      return [];
+    }
+    await this.repository.insertMany(songs);
+    return songs;
+  }
+
   async incrementPlayCount(youtubeId: string, songName?: string): Promise<void> {
     const foundSong = await this.repository.findByYoutubeId(youtubeId);
 
@@ -53,6 +65,34 @@ class SongsService {
 
     const song = await this.createNewSong(youTubeId);
     return song;
+  }
+
+  async getSongsByYoutubeIds(youTubeIds: string[]): Promise<Song[]> {
+    const songsFromRepo: Song[] = await this.repository.findByYoutubeIds(youTubeIds);
+    const youtubeIdsFromRepo = songsFromRepo.map((song) => song.youtubeId);
+    const youtubeIdsToSongsFromRepo: Map<string, Song> = new Map(songsFromRepo.map((song) => [song.youtubeId, song]));
+
+    const youtubeIdsToRetrieveFromApi = youTubeIds.filter((youTubeId) => !youtubeIdsFromRepo.includes(youTubeId));
+
+    const songsFromApi = await this.fetchAndStoreNewSongs(youtubeIdsToRetrieveFromApi);
+    const youtubeIdsToSongsFromApi: Map<string, Song> = new Map(songsFromApi.map((song) => [song.youtubeId, song]));
+
+    const songs: Song[] = youTubeIds.map((youtubeId) => youtubeIdsToSongsFromRepo.get(youtubeId) || youtubeIdsToSongsFromApi.get(youtubeId) || null).filter(notNull);
+    return this.filterEmbeddableSongs(songs);
+  }
+
+  async getSongsFromPlaylist(id: string): Promise<Song[]> {
+    const videoIds = await this.youTubeDataClient.fetchYouTubeIdsForPlaylist(id);
+    const songs: Promise<Song[]> = this.getSongsByYoutubeIds(videoIds);
+    return songs;
+  }
+
+  async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {
+    const youtubeIds = songs.map((song) => song.youtubeId);
+    const statuses = await this.youTubeDataClient.fetchVideosStatuses(youtubeIds);
+    const idToEmbeddable: Map<string, boolean> = new Map(statuses.items.map((status) => [status.id, status.status.embeddable]));
+
+    return songs.filter((song) => idToEmbeddable.get(song.youtubeId));
   }
 }
 

@@ -19,7 +19,11 @@ To build application run
 npm run build
 ```
 
-To run the application locally you have to have MongoDB installed and running on localhost. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).\
+To run the application you have to have MongoDB running on localhost. If you have docker installed you can use `./packages/devops/docker-db-local.sh` script to run MongoDB in docker.
+For more info you can refer to [Local MongoDB in Docker](#Local MongoDB in Docker) documentation section.
+
+If you don't want to use Docker you can run MongoDB locally. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).
+
 Then create `.env` file in the root of this project and put desired configuration variables in it (refer to [Service > Configuration](#Configuration) section of this document for available options).
 
 When that's done you can just start the application:
@@ -152,9 +156,8 @@ Running `npm run build` builds the application in production mode.
 ### Devops scripts (`/packages/devops`)
 Scripts related to maintenance of the service.
 
-**FM Dev Helper**
-
-Helper scirpt `packages/service/scripts/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
+#### FM Dev Helper
+Helper script `packages/devops/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
 
 Example commands:
 ```
@@ -169,6 +172,10 @@ Alternatively you can run it as an npm command from the root of the project:
 > npm run fm -- "/fm q dQw4w9WgXcQ"
 > npm run fm -- "/fm x alert"
 ```
+
+#### Local MongoDB in Docker
+Helper script `packages/devops/docker-db-local.sh` runs MongoDB and binds ports for local development.\
+To stop container run `packages/devops/docker-db-local.sh stop`.
 
 ## License
 This project is licensed under the [MIT license](LICENSE).

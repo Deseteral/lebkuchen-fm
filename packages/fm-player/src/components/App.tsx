@@ -8,6 +8,7 @@ import NowPlaying from './NowPlaying/NowPlaying';
 import { useFMStateContext } from '../context/FMStateContext';
 import usePrevious from '../hooks/usePrevious';
 import { playSound } from '../services/sound-player-service';
+import SongsQueue from './SongsQueue/SongsQueue';
 
 function App() {
   const { state, dispatch } = useFMStateContext();
@@ -62,7 +63,8 @@ function App() {
 
   return (
     <div className="relative">
-      <NowPlaying playerState={state} />
+      {state && (<NowPlaying playerState={state} />)}
+      {state && (<SongsQueue playerState={state} />)}
       <YouTubePlayer />
     </div>
   );

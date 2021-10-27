@@ -12,6 +12,14 @@ interface SearchResults {
   ]
 }
 
+interface PlaylistDetails {
+  items: [
+    {
+      snippet: { title: string, resourceId: {videoId: string} },
+    }
+  ]
+}
+
 interface VideoDetails {
   items: [
     {
@@ -30,17 +38,35 @@ class YouTubeDataClient {
 
   async fetchVideoTitleForId(youtubeId: string): Promise<string> {
     const videoDetails = await this.getVideoDetails([youtubeId], 'snippet');
-    return videoDetails.items[0].snippet.title;
+    const title = videoDetails.items[0]?.snippet?.title;
+    if (!title) {
+      throw new Error('Wideo o zadanym id nie zostało odnalezione');
+    }
+    return title;
   }
 
   async fetchFirstYouTubeIdForPhrase(phrase: string): Promise<string> {
     const data = await this.getSearchResultsForPhrase(phrase, 1);
-    return data.items[0].id.videoId;
+    const videoId = data.items[0]?.id?.videoId;
+    if (!videoId) {
+      throw new Error('Nie znaleziono żadnego wideo dla podanej frazy');
+    }
+    return videoId;
   }
 
   async fetchVideosStatuses(youtubeIds: string[]): Promise<VideoDetails> {
     const videoDetails = await this.getVideoDetails(youtubeIds, 'status');
     return videoDetails;
+  }
+
+  async fetchVideosDetails(youtubeIds: string[]): Promise<VideoDetails> {
+    const videoDetails = await this.getVideoDetails(youtubeIds, 'snippet');
+    return videoDetails;
+  }
+
+  async fetchYouTubeIdsForPlaylist(id: string): Promise<string[]> {
+    const playlist = await this.getPlaylist(id, 'snippet');
+    return playlist.items.map((item) => item.snippet.resourceId.videoId);
   }
 
   private makeYouTubeUrl(path: string): URL {
@@ -82,6 +108,15 @@ class YouTubeDataClient {
     url.searchParams.set('part', part);
 
     return this.request<VideoDetails>(url);
+  }
+
+  private async getPlaylist(playlistId: string, part: string): Promise<PlaylistDetails> {
+    const url = this.makeYouTubeUrl('/playlistItems');
+    url.searchParams.set('playlistId', playlistId);
+    url.searchParams.set('part', part);
+    url.searchParams.set('maxResults', '50');
+
+    return this.request<PlaylistDetails>(url);
   }
 }
 
