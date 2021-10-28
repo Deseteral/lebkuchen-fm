@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { queueXSound, XSound } from '../services/soundboard-service';
+import { XSound } from 'lebkuchen-fm-service';
+import { queueXSound } from '../services/soundboard-service';
 import SoundButton from './SoundButton';
 
 function SoundBoard() {
@@ -15,7 +16,7 @@ function SoundBoard() {
 
   return (
     <div>
-      <div className="relative p-4">
+      <div className="relative p-4 min-w-full">
         <input
           type="search"
           className="bg-purple-white shadow rounded border-0 p-3 w-6/12"
@@ -34,7 +35,6 @@ function SoundBoard() {
         ))}
       </div>
     </div>
-
   );
 }
 

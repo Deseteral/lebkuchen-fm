@@ -1,8 +1,3 @@
-interface XSound{
-  name: string,
-  timesPlayed: number
-}
-
 async function queueXSound(name: string) {
   console.log('queuing sound ', name);
   fetch('/commands/text', {
@@ -16,5 +11,4 @@ async function queueXSound(name: string) {
 
 export {
   queueXSound,
-  XSound,
 };
