@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-type SearchProps = {
+interface SearchProps {
   onPhraseChange: (phrase: string) => void,
 }
 

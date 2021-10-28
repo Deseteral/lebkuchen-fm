@@ -4,7 +4,7 @@ import { queueXSound } from '../services/soundboard-service';
 import SoundButton from './SoundButton';
 import Search from './Search/Search';
 
-function filterXSound(sound: XSound, phrase: string) {
+function soundMatchesPhrase(sound: XSound, phrase: string) {
   return sound.name.includes(phrase) || (sound.tags || []).some((tag) => tag.includes(phrase));
 }
 
@@ -24,7 +24,7 @@ function SoundBoard() {
     <div>
       <Search onPhraseChange={setFilterPhrase} />
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
-        {sounds.filter((s: XSound) => filterXSound(s, filterPhrase)).map(({ name, timesPlayed }) => (
+        {sounds.filter((sound: XSound) => soundMatchesPhrase(sound, filterPhrase)).map(({ name, timesPlayed }) => (
           <SoundButton
             key={name}
             name={name}
