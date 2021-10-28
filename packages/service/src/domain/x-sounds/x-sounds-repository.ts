@@ -2,17 +2,16 @@ import XSound from '@service/domain/x-sounds/x-sound';
 import Repository from '@service/infrastructure/repository';
 import { Service } from 'typedi';
 import DatabaseClient from '@service/infrastructure/storage';
+import Configuration from '@service/infrastructure/configuration';
 
 @Service()
 class XSoundsRepository extends Repository<XSound> {
-  private locale: string;
-  private constructor(storage: DatabaseClient) {
+  private constructor(storage: DatabaseClient, private configuration: Configuration) {
     super('x', storage);
-    this.locale = storage.locale();
   }
 
   findAllOrderByNameAsc(): Promise<XSound[]> {
-    return this.collection.find({}).collation({ locale: this.locale }).sort({ name: 1 }).toArray();
+    return this.collection.find({}).collation({ locale: this.configuration.LOCALE }).sort({ name: 1 }).toArray();
   }
 
   findAllByTagOrderByNameAsc(tag: string): Promise<XSound[]> {
