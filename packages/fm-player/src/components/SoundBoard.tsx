@@ -5,8 +5,8 @@ import SoundButton from './SoundButton';
 import Search from './Search/Search';
 
 function soundMatchesPhrase(sound: XSound, phrase: string) {
-  const { name, tags } = sound;
-  const tagsAndNameJoinedString = [name, ...tags ?? []].join('').toLowerCase();
+  const { name, tags = [] } = sound;
+  const tagsAndNameJoinedString = [name, ...tags].join(' ').toLowerCase();
   return phrase.toLowerCase().split(' ').every((keyword) => tagsAndNameJoinedString.includes(keyword));
 }
 
