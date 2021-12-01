@@ -9,6 +9,10 @@ class HistoryRepository extends Repository<HistoryEntry> {
     super('history', storage);
   }
 
+  async findAllOrderByDateDesc(): Promise<HistoryEntry[]> {
+    return this.collection.find({}).sort({ date: -1 }).toArray();
+  }
+
   async insert(history: HistoryEntry): Promise<void> {
     await this.collection.insertOne(history);
   }

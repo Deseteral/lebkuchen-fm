@@ -7,6 +7,10 @@ import { HistoryEntry } from '@service/domain/history/history-entry';
 class HistoryService {
   constructor(private repository: HistoryRepository) { }
 
+  async getAll(): Promise<HistoryEntry[]> {
+    return this.repository.findAllOrderByDateDesc();
+  }
+
   async markAsPlayed(song: Song): Promise<void> {
     const entry: HistoryEntry = {
       date: new Date(),
