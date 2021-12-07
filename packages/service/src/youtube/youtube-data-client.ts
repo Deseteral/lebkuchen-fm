@@ -12,6 +12,14 @@ interface SearchResults {
   ]
 }
 
+interface PlaylistDetails {
+  items: [
+    {
+      snippet: { title: string, resourceId: {videoId: string} },
+    }
+  ]
+}
+
 interface VideoDetails {
   items: [
     {
@@ -49,6 +57,16 @@ class YouTubeDataClient {
   async fetchVideosStatuses(youtubeIds: string[]): Promise<VideoDetails> {
     const videoDetails = await this.getVideoDetails(youtubeIds, 'status');
     return videoDetails;
+  }
+
+  async fetchVideosDetails(youtubeIds: string[]): Promise<VideoDetails> {
+    const videoDetails = await this.getVideoDetails(youtubeIds, 'snippet');
+    return videoDetails;
+  }
+
+  async fetchYouTubeIdsForPlaylist(id: string): Promise<string[]> {
+    const playlist = await this.getPlaylist(id, 'snippet');
+    return playlist.items.map((item) => item.snippet.resourceId.videoId);
   }
 
   private makeYouTubeUrl(path: string): URL {
@@ -90,6 +108,15 @@ class YouTubeDataClient {
     url.searchParams.set('part', part);
 
     return this.request<VideoDetails>(url);
+  }
+
+  private async getPlaylist(playlistId: string, part: string): Promise<PlaylistDetails> {
+    const url = this.makeYouTubeUrl('/playlistItems');
+    url.searchParams.set('playlistId', playlistId);
+    url.searchParams.set('part', part);
+    url.searchParams.set('maxResults', '50');
+
+    return this.request<PlaylistDetails>(url);
   }
 }
 
