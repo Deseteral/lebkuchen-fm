@@ -12,7 +12,7 @@ function EntryScreen() {
         <Route path="/" exact>
           <SplashScreen />
         </Route>
-        <Route path="/upload">
+        <Route path="/add-sound">
           <XSoundUploadForm />
         </Route>
         <Route path="/player">
