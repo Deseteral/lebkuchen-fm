@@ -5,6 +5,7 @@ import * as EventStreamClient from '../services/event-stream-client';
 import * as SpeechService from '../services/speech-service';
 import NowPlaying from './NowPlaying/NowPlaying';
 import * as PlayerStateService from '../services/player-state-service';
+import SongsQueue from './SongsQueue/SongsQueue';
 
 function App() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
@@ -28,6 +29,7 @@ function App() {
   return (
     <div className="relative">
       {playerState && (<NowPlaying playerState={playerState} />)}
+      {playerState && (<SongsQueue playerState={playerState} />)}
       <YouTubePlayer />
     </div>
   );
