@@ -47,15 +47,14 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   };
   return (
     <form onSubmit={submit}>
-      <div className="fixed flex flex-wrap justify-evently top-2/4 left-2/4 transform -translate-y-2/4 -translate-x-2/4 bg-gray-900 w-3/5 p-8 text-white rounded-xl">
+      <div className="fixed flex flex-wrap justify-evently top-2/4 left-2/4 transform -translate-y-2/4 -translate-x-2/4 bg-gray-900 xl:w-1/4 lg:w-1/2 sm:1/2 p-8 text-white rounded-xl">
         <h2 className="w-full text-2xl pb-4">Add new sound</h2>
         <label className="flex flex-col w-full my-4 ml-1" htmlFor="soundName">
           <span>Sound name</span>
-          <input className="w-1/2 p-2 mt-3 text-gray-900 rounded" type="text" placeholder="Enter sound name" name="soundName" id="soundName" ref={inputSoundName} />
+          <input className="w-100 p-2 mt-3 text-gray-900 rounded" type="text" placeholder="Enter sound name" name="soundName" id="soundName" ref={inputSoundName} />
         </label>
         <input className="w-full mt-3 ml-1 rounded" type="file" name="soundFile" ref={inputFile} />
-        <input className="w-full mt-6 mx-2 h-14 w-1/4 bg-red-800 rounded-xl" type="button" value="Cancel" onClick={() => { /* TODO: after merge routing: swap tagName to NavLink with attribute to="/" */ }} />
-        <input className="w-full mt-6 h-14 w-1/2 bg-green-700 rounded-xl" type="submit" value="Submit" disabled={isWaitingForResponse} />
+        <input className="w-full mt-6 h-14 bg-green-700 rounded-xl" type="submit" value="Submit" disabled={isWaitingForResponse} />
 
         {message && <div className="w-full mt-6 text-center">{message}</div>}
       </div>
