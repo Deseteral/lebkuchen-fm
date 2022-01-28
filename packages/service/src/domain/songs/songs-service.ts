@@ -3,10 +3,11 @@ import SongsRepository from '@service/domain/songs/songs-repository';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 import { notNull } from '@service/utils/utils';
+import HistoryService from '@service/domain/history/history-service';
 
 @Service()
 class SongsService {
-  constructor(private repository: SongsRepository, private youTubeDataClient: YouTubeDataClient) { }
+  constructor(private repository: SongsRepository, private historyService: HistoryService, private youTubeDataClient: YouTubeDataClient) { }
 
   async getByName(name: string): Promise<Song | null> {
     return this.repository.findByName(name);
@@ -50,8 +51,11 @@ class SongsService {
     if (foundSong) {
       const timesPlayed = (foundSong.timesPlayed + 1);
       await this.repository.replace({ ...foundSong, timesPlayed });
+
+      await this.historyService.markAsPlayed(foundSong);
     } else {
-      await this.createNewSong(youtubeId, songName, 1);
+      const newSong = await this.createNewSong(youtubeId, songName, 1);
+      await this.historyService.markAsPlayed(newSong);
     }
   }
 
