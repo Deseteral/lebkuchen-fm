@@ -11,22 +11,39 @@ function soundMatchesPhrase(sound: XSound, phrase: string) {
 }
 
 function SoundBoard() {
-  const [sounds, setSounds] = React.useState([]);
-  const [filterPhrase, setFilterPhrase] = React.useState('');
+  const [sounds, setSounds] = React.useState<XSound[]>([]);
+  const [filteredSounds, setFilteredSounds] = React.useState<XSound[]>([]);
+  const [filterPhrase, setFilterPhrase] = React.useState<string>('');
 
   React.useEffect(() => {
     (async function fetchSounds() {
       const response = await fetch('/x-sounds');
       const data = await response.json();
       setSounds(data.sounds);
+      setFilteredSounds(data.sounds);
     }());
   }, []);
 
+  const onPhraseChange = (phrase: string) => {
+    setFilterPhrase(phrase);
+    setFilteredSounds(sounds.filter((sound: XSound) => soundMatchesPhrase(sound, phrase)));
+  };
+
+  const handleSubmit = () => {
+    const selectedSound = filteredSounds[0];
+    if (selectedSound) queueXSound(selectedSound.name);
+  };
+
   return (
     <div>
-      <Search onPhraseChange={setFilterPhrase} />
+      <Search
+        value={filterPhrase}
+        onPhraseChange={onPhraseChange}
+        onSubmit={handleSubmit}
+        onEscape={() => onPhraseChange('')}
+      />
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8">
-        {sounds.filter((sound: XSound) => soundMatchesPhrase(sound, filterPhrase)).map(({ name, timesPlayed }) => (
+        {filteredSounds.map(({ name, timesPlayed }) => (
           <SoundButton
             key={name}
             name={name}
