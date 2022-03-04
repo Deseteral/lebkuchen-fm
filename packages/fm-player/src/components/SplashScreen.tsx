@@ -28,7 +28,7 @@ function SplashScreen() {
           </div>
           <div className="inline-flex rounded-md shadow ml-8">
             <NavLink
-              to="/soundbar"
+              to="/soundboard"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Soundboard
