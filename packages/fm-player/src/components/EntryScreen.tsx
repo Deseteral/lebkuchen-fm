@@ -18,7 +18,7 @@ function EntryScreen() {
         <Route path="/player">
           <App />
         </Route>
-        <Route path="/soundbar">
+        <Route path="/soundboard">
           <SoundBoard />
         </Route>
       </Switch>
