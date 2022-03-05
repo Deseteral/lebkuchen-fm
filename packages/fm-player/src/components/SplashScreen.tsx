@@ -1,11 +1,7 @@
 import * as React from 'react';
-import { Screens } from './EntryScreen';
+import { NavLink } from 'react-router-dom';
 
-interface SplashScreenProps {
-  setScreen: (screen: Screens) => void,
-}
-
-function SplashScreen({ setScreen }: SplashScreenProps) {
+function SplashScreen() {
   return (
     <div className="bg-gray-900 bg-opacity-75 m-8 rounded-xl">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
@@ -15,31 +11,28 @@ function SplashScreen({ setScreen }: SplashScreenProps) {
         </h2>
         <div className="mt-8 flex lg:mt-0 lg:flex-shrink-0">
           <div className="inline-flex rounded-md shadow mr-8">
-            <button
-              type="button"
-              onClick={() => setScreen(Screens.Player)}
+            <NavLink
+              to="/player"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-gray-200 text-4xl bg-indigo-600 hover:bg-indigo-700"
             >
               🏎️ Eeee...
-            </button>
+            </NavLink>
           </div>
           <div className="inline-flex rounded-md shadow">
-            <button
-              type="button"
-              onClick={() => setScreen(Screens.Upload)}
+            <NavLink
+              to="/add-sound"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Dodaj dźwięk
-            </button>
+            </NavLink>
           </div>
           <div className="inline-flex rounded-md shadow ml-8">
-            <button
-              type="button"
-              onClick={() => setScreen(Screens.Soundboard)}
+            <NavLink
+              to="/soundboard"
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Soundboard
-            </button>
+            </NavLink>
           </div>
           <div className="ml-3 inline-flex rounded-md shadow" />
         </div>
