@@ -21,8 +21,16 @@ class SongsRepository extends Repository<Song> {
     return this.collection.findOne({ youtubeId });
   }
 
+  findByYoutubeIds(youtubeIds: string[]): Promise<Song[]> {
+    return this.collection.find({ youtubeId: { $in: youtubeIds } }).toArray();
+  }
+
   async insert(song: Song): Promise<void> {
     await this.collection.insertOne(song);
+  }
+
+  async insertMany(songs: Song[]): Promise<void> {
+    await this.collection.insertMany(songs);
   }
 
   async replace(song: Song): Promise<void> {

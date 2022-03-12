@@ -9,6 +9,7 @@ class Configuration {
   public readonly SLACK_CHANNEL_ID: string;
   public readonly COMMAND_PROMPT: string;
   public readonly DROPBOX_TOKEN: string;
+  public readonly LOCALE: string;
 
   private constructor(
     PORT: string,
@@ -18,6 +19,7 @@ class Configuration {
     SLACK_CHANNEL_ID: string,
     COMMAND_PROMPT: string,
     DROPBOX_TOKEN: string,
+    LOCALE: string,
   ) {
     this.PORT = PORT;
     this.DATABASE_NAME = DATABASE_NAME;
@@ -26,6 +28,7 @@ class Configuration {
     this.SLACK_CHANNEL_ID = SLACK_CHANNEL_ID;
     this.COMMAND_PROMPT = COMMAND_PROMPT;
     this.DROPBOX_TOKEN = DROPBOX_TOKEN;
+    this.LOCALE = LOCALE;
   }
 
   public static readFromEnv(): Configuration {
@@ -37,6 +40,7 @@ class Configuration {
       process.env.SLACK_CHANNEL_ID || '',
       process.env.COMMAND_PROMPT || '/fm',
       process.env.DROPBOX_TOKEN || '',
+      process.env.LOCALE || 'pl',
     );
   }
 }

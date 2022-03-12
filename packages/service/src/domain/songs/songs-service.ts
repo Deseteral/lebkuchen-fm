@@ -2,10 +2,12 @@ import Song from '@service/domain/songs/song';
 import SongsRepository from '@service/domain/songs/songs-repository';
 import YouTubeDataClient from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
+import { notNull } from '@service/utils/utils';
+import HistoryService from '@service/domain/history/history-service';
 
 @Service()
 class SongsService {
-  constructor(private repository: SongsRepository, private youTubeDataClient: YouTubeDataClient) { }
+  constructor(private repository: SongsRepository, private historyService: HistoryService, private youTubeDataClient: YouTubeDataClient) { }
 
   async getByName(name: string): Promise<Song | null> {
     return this.repository.findByName(name);
@@ -32,14 +34,28 @@ class SongsService {
     return song;
   }
 
+  async fetchAndStoreNewSongs(youtubeIds: string[]): Promise<Song[]> {
+    const videoDetails = await this.youTubeDataClient.fetchVideosDetails(youtubeIds);
+
+    const songs: Song[] = videoDetails.items.map((el) => ({ youtubeId: el.id, name: el.snippet.title, timesPlayed: 0, trimStartSeconds: null, trimEndSeconds: null }));
+    if (songs.isEmpty()) {
+      return [];
+    }
+    await this.repository.insertMany(songs);
+    return songs;
+  }
+
   async incrementPlayCount(youtubeId: string, songName?: string): Promise<void> {
     const foundSong = await this.repository.findByYoutubeId(youtubeId);
 
     if (foundSong) {
       const timesPlayed = (foundSong.timesPlayed + 1);
       await this.repository.replace({ ...foundSong, timesPlayed });
+
+      await this.historyService.markAsPlayed(foundSong);
     } else {
-      await this.createNewSong(youtubeId, songName, 1);
+      const newSong = await this.createNewSong(youtubeId, songName, 1);
+      await this.historyService.markAsPlayed(newSong);
     }
   }
 
@@ -55,10 +71,24 @@ class SongsService {
     return song;
   }
 
+  async getSongsByYoutubeIds(youTubeIds: string[]): Promise<Song[]> {
+    const songsFromRepo: Song[] = await this.repository.findByYoutubeIds(youTubeIds);
+    const youtubeIdsFromRepo = songsFromRepo.map((song) => song.youtubeId);
+    const youtubeIdsToSongsFromRepo: Map<string, Song> = new Map(songsFromRepo.map((song) => [song.youtubeId, song]));
+
+    const youtubeIdsToRetrieveFromApi = youTubeIds.filter((youTubeId) => !youtubeIdsFromRepo.includes(youTubeId));
+
+    const songsFromApi = await this.fetchAndStoreNewSongs(youtubeIdsToRetrieveFromApi);
+    const youtubeIdsToSongsFromApi: Map<string, Song> = new Map(songsFromApi.map((song) => [song.youtubeId, song]));
+
+    const songs: Song[] = youTubeIds.map((youtubeId) => youtubeIdsToSongsFromRepo.get(youtubeId) || youtubeIdsToSongsFromApi.get(youtubeId) || null).filter(notNull);
+    return this.filterEmbeddableSongs(songs);
+  }
+
   async getSongsFromPlaylist(id: string): Promise<Song[]> {
     const videoIds = await this.youTubeDataClient.fetchYouTubeIdsForPlaylist(id);
-    const songs: Promise<Song>[] = videoIds.map((videoId) => this.getSongByNameWithYouTubeIdFallback(videoId));
-    return Promise.all(songs);
+    const songs: Promise<Song[]> = this.getSongsByYoutubeIds(videoIds);
+    return songs;
   }
 
   async filterEmbeddableSongs(songs: Song[]): Promise<Song[]> {

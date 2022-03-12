@@ -3,5 +3,13 @@
     "target": "http://localhost:9000/socket.io",
     "ws": true,
     "changeOrigin": true
+  },
+  "/x-sounds": {
+    "target": "http://localhost:9000/",
+    "changeOrigin": true
+  },
+  "/commands/text": {
+    "target": "http://localhost:9000/",
+    "changeOrigin": true
   }
 }
