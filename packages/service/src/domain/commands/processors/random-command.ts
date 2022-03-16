@@ -56,7 +56,7 @@ class RandomCommand extends CommandProcessor {
     };
   }
 
-  private amountAndKeywordsFromArgs(args: string[]): {amount: number, keywords: string[]} {
+  private amountAndKeywordsFromArgs(args: string[]): { amount: number, keywords: string[] } {
     const amountArgument = Number.parseInt(String(args[0]), 10);
     const argsCopy = Array.from(args);
     let amount = 1;
@@ -76,7 +76,7 @@ class RandomCommand extends CommandProcessor {
     const reachedRequestedAmount = requestedAmount === songsToQueue.length;
 
     const text = [
-      `Dodano ${songsToQueue.length}${reachedRequestedAmount ? '' : ` (z ${requestedAmount} żądanych)`} do kojeki:`,
+      `Dodano ${songsToQueue.length}${reachedRequestedAmount ? '' : ` (z ${requestedAmount} żądanych)`} do kolejki:`,
       ...titleMessages,
       ((songsToQueue.length > MAX_TITLES_IN_MESSAGE) ? '...i inne' : ''),
     ].filter(Boolean).join('\n');
