@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { XSound } from 'lebkuchen-fm-service';
-import { queueXSound } from '../services/soundboard-service';
+import { queueXSound } from '../service/soundboard-service';
 import SoundButton from './SoundButton';
-import Search from './Search/Search';
+import Search from './Search';
 
 function soundMatchesPhrase(sound: XSound, phrase: string) {
   const { name, tags = [] } = sound;

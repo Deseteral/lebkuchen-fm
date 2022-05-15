@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "engines": {
-    "node": "16.x"
+    "node": "17.x"
   },
   "scripts": {
     "start": "node packages/service/build/main.js",
@@ -10,11 +10,11 @@
     "build:static": "mkdir -p packages/service/build/public && cp packages/**/dist/* packages/service/build/public/",
     "test": "lerna run test",
     "clean-deps": "rm -rf ./node_modules ./packages/**/node_modules",
-    "fm": "./packages/devops/fm.sh",
     "bootstrap": "lerna bootstrap",
-    "postinstall": "npm run bootstrap"
+    "postinstall": "npm run bootstrap",
+    "fm": "./packages/devops/fm.sh"
   },
   "devDependencies": {
-    "lerna": "3.22.1"
+    "lerna": "4.0.0"
   }
 }

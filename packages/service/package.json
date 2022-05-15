@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "16.x"
+    "node": "17.x"
   },
   "scripts": {
     "start": "node build/main.js",

@@ -7,7 +7,7 @@ import NowPlaying from './NowPlaying/NowPlaying';
 import * as PlayerStateService from '../services/player-state-service';
 import SongsQueue from './SongsQueue/SongsQueue';
 
-function App() {
+function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
 
   React.useEffect(() => {
@@ -35,4 +35,4 @@ function App() {
   );
 }
 
-export default App;
+export default FmPlayer;
