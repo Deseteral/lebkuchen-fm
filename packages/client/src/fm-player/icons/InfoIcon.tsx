@@ -8,4 +8,4 @@ function InfoIcon() {
   );
 }
 
-export default InfoIcon;
+export { InfoIcon };

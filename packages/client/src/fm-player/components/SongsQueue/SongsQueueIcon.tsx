@@ -1,5 +1,5 @@
 import React from 'react';
-import CollectionIcon from '../../icons/CollectionIcon';
+import { CollectionIcon } from '../../icons/CollectionIcon';
 
 interface SongsQueueIconProps {
   onClick: () => void
@@ -20,4 +20,4 @@ function SongsQueueIcon({ onClick }: SongsQueueIconProps) {
   );
 }
 
-export default SongsQueueIcon;
+export { SongsQueueIcon };

@@ -20,14 +20,16 @@ const Header = styled.h2`
 
 interface SectionProps {
   header: string,
+  children: React.ReactNode,
 }
 
-const Section: React.FunctionComponent<SectionProps> = ({ header, children }) => (
-  <Container>
-    <Header>{header}</Header>
-    {children}
-  </Container>
-);
+function Section({ header, children }: SectionProps) {
+  return (
+    <Container>
+      <Header>{header}</Header>
+      {children}
+    </Container>
+  );
+}
 
-export default Section;
-export { SectionProps };
+export { Section, SectionProps };

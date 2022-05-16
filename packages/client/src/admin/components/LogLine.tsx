@@ -10,7 +10,7 @@ interface LogLineProps {
   log: Log,
 }
 
-const LogLine: React.FunctionComponent<LogLineProps> = ({ log }) => {
+function LogLine({ log }: LogLineProps) {
   const { datetime, group, level, message } = log;
 
   return (
@@ -21,7 +21,6 @@ const LogLine: React.FunctionComponent<LogLineProps> = ({ log }) => {
       <td>{message}</td>
     </TableRow>
   );
-};
+}
 
-export default LogLine;
-export { LogLineProps };
+export { LogLine, LogLineProps };

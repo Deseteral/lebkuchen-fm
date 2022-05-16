@@ -27,16 +27,20 @@ const MainContainer = styled.main`
   flex-direction: column;
 `;
 
-interface AppContainerProps {}
-const AppContainer: React.FunctionComponent<AppContainerProps> = ({ children }) => (
-  <Conatiner>
-    <Heading>LebkuchenFM admin panel</Heading>
-    <Banner src={BESTVIEWED_BANNER_URL} alt="This page is best viewed with Internet Explorer" />
-    <MainContainer>
-      {children}
-    </MainContainer>
-  </Conatiner>
-);
+interface AppContainerProps {
+  children: React.ReactNode,
+}
 
-export default AppContainer;
-export { AppContainerProps };
+function AppContainer({ children }: AppContainerProps) {
+  return (
+    <Conatiner>
+      <Heading>LebkuchenFM admin panel</Heading>
+      <Banner src={BESTVIEWED_BANNER_URL} alt="This page is best viewed with Internet Explorer" />
+      <MainContainer>
+        {children}
+      </MainContainer>
+    </Conatiner>
+  );
+}
+
+export { AppContainer, AppContainerProps };

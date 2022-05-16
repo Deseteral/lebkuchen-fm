@@ -1,5 +1,5 @@
 import * as React from 'react';
-import InfoIcon from '../../icons/InfoIcon';
+import { InfoIcon } from '../../icons/InfoIcon';
 
 interface ShowDetailsButtonProps {
   onClick: () => void,
@@ -19,4 +19,4 @@ function ShowDetailsButton({ onClick }: ShowDetailsButtonProps) {
   );
 }
 
-export default ShowDetailsButton;
+export { ShowDetailsButton };

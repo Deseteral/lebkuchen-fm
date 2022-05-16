@@ -1,8 +1,8 @@
-import { Log } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
-import LogLine from './LogLine';
-import Section from './Section';
+import { Log } from 'lebkuchen-fm-service';
+import { LogLine } from './LogLine';
+import { Section } from './Section';
 
 const Container = styled.div`
   border: 2px solid;
@@ -18,17 +18,18 @@ interface LogsProps {
   logs: Log[],
 }
 
-const Logs: React.FunctionComponent<LogsProps> = ({ logs }) => (
-  <Section header="Logs">
-    <Container>
-      <table>
-        <tbody>
-          {logs.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
-        </tbody>
-      </table>
-    </Container>
-  </Section>
-);
+function Logs({ logs }: LogsProps) {
+  return (
+    <Section header="Logs">
+      <Container>
+        <table>
+          <tbody>
+            {logs.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
+          </tbody>
+        </table>
+      </Container>
+    </Section>
+  );
+}
 
-export default Logs;
-export { LogsProps };
+export { Logs, LogsProps };

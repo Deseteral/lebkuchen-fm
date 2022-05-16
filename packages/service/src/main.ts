@@ -35,11 +35,11 @@ async function main(): Promise<void> {
   app.use(compression());
 
   const pathToStaticFiles = path.join(__dirname, 'public');
-  app.use(express.static(pathToStaticFiles, { index: 'fm-player.html', extensions: ['html'] }));
+  app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
 
   // For remaining unhandled by the service paths send client app, and let it handle that case
   app.all('*', (_: express.Request, res: express.Response) => {
-    res.sendFile(path.join(pathToStaticFiles, 'fm-player.html'), (err) => res.status(err ? 404 : 200).end());
+    res.sendFile(path.join(pathToStaticFiles, 'index.html'), (err) => res.status(err ? 404 : 200).end());
   });
 
   /* Connect to database */

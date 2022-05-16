@@ -15,4 +15,4 @@ function PlayIcon() {
   );
 }
 
-export default PlayIcon;
+export { PlayIcon };

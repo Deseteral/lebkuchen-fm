@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { XSound } from 'lebkuchen-fm-service';
 import { queueXSound } from '../service/soundboard-service';
-import SoundButton from './SoundButton';
-import Search from './Search';
+import { SoundButton } from './SoundButton';
+import { Search } from './Search';
 
 function soundMatchesPhrase(sound: XSound, phrase: string) {
   const { name, tags = [] } = sound;
@@ -56,4 +56,4 @@ function SoundBoard() {
   );
 }
 
-export default SoundBoard;
+export { SoundBoard };

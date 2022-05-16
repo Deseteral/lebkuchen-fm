@@ -8,4 +8,4 @@ function CloseIcon() {
   );
 }
 
-export default CloseIcon;
+export { CloseIcon };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { PlayerState } from 'lebkuchen-fm-service';
-import ShowDetailsButton from './ShowDetailsButton';
-import PlayerDetails from './PlayerDetails';
+import { ShowDetailsButton } from './ShowDetailsButton';
+import { PlayerDetails } from './PlayerDetails';
 
 interface NowPlayingProps {
   playerState: PlayerState,
@@ -31,4 +31,4 @@ function NowPlaying({ playerState }: NowPlayingProps) {
   );
 }
 
-export default NowPlaying;
+export { NowPlaying };

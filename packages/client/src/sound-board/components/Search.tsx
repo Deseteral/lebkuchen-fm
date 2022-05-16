@@ -29,4 +29,4 @@ function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
   );
 }
 
-export default Search;
+export { Search };

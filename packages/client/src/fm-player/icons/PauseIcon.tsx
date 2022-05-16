@@ -14,4 +14,4 @@ function PauseIcon() {
   );
 }
 
-export default PauseIcon;
+export { PauseIcon };

@@ -10,7 +10,7 @@ class DatabaseClient {
   private db?: Db;
 
   constructor(private configuration: Configuration) {
-    this.client = new MongoClient(this.configuration.MONGODB_URI, { useUnifiedTopology: true });
+    this.client = new MongoClient(this.configuration.MONGODB_URI);
   }
 
   async connect(): Promise<void> {

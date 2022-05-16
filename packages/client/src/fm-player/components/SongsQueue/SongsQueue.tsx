@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import PlayerState from '@service/domain/player-state/player-state';
-import SongsQueueList from './SongsQueueList';
-import ExpandIcon from '../../icons/ExpandIcon';
-import CloseIconSolid from '../../icons/CloseIconSolid';
-import SongsQueueIcon from './SongsQueueIcon';
+import { SongsQueueList } from './SongsQueueList';
+import { ExpandIcon } from '../../icons/ExpandIcon';
+import { CloseIconSolid } from '../../icons/CloseIconSolid';
+import { SongsQueueIcon } from './SongsQueueIcon';
 
 interface SongsQueueProps {
   playerState: PlayerState,
@@ -47,4 +47,4 @@ function SongsQueue({ playerState }: SongsQueueProps) {
   );
 }
 
-export default SongsQueue;
+export { SongsQueue };

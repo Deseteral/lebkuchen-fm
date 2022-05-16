@@ -1,7 +1,7 @@
 import * as React from 'react';
-import CloseIcon from '../../icons/CloseIcon';
-import PlayIcon from '../../icons/PlayIcon';
-import PauseIcon from '../../icons/PauseIcon';
+import { CloseIcon } from '../../icons/CloseIcon';
+import { PlayIcon } from '../../icons/PlayIcon';
+import { PauseIcon } from '../../icons/PauseIcon';
 
 interface PlayerDetailsProps {
   currentSongTitle: string,
@@ -38,4 +38,4 @@ function PlayerDetails({ currentSongTitle, nextSongTitle, isPlaying, onClose }: 
   );
 }
 
-export default PlayerDetails;
+export { PlayerDetails };

@@ -15,4 +15,4 @@ function YouTubePlayer() {
   );
 }
 
-export default YouTubePlayer;
+export { YouTubePlayer };

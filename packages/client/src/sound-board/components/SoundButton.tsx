@@ -26,4 +26,4 @@ function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps) {
   );
 }
 
-export default SoundButton;
+export { SoundButton };

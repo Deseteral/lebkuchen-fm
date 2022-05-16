@@ -8,4 +8,4 @@ function CollectionIcon() {
   );
 }
 
-export default CollectionIcon;
+export { CollectionIcon };

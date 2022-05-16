@@ -1,12 +1,11 @@
 import * as React from 'react';
 import io from 'socket.io-client';
 import { AdminEventData, Log } from 'lebkuchen-fm-service';
-import AppContainer from './AppContainer';
-import WsConnections from './WsConnections';
-import Logs from './Logs';
+import { AppContainer } from './AppContainer';
+import { WsConnections } from './WsConnections';
+import { Logs } from './Logs';
 
-interface AdminPanelProps {}
-const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => {
+function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
   const [playerIds, setPlayerIds] = React.useState<string[]>([]);
 
@@ -38,7 +37,6 @@ const AdminPanel: React.FunctionComponent<AdminPanelProps> = () => {
       <WsConnections playerIds={playerIds} />
     </AppContainer>
   );
-};
+}
 
-export default AdminPanel;
-export { AdminPanelProps };
+export { AdminPanel };

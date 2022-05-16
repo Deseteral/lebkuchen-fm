@@ -87,5 +87,4 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   );
 }
 
-export default XSoundUploadForm;
-export { XSoundUploadFormProps };
+export { XSoundUploadForm, XSoundUploadFormProps };

@@ -17,4 +17,4 @@ function SongsQueueList({ songsQueue }: SongsQueueListProps) {
     </ol>
   );
 }
-export default SongsQueueList;
+export { SongsQueueList };

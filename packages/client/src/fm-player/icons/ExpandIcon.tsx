@@ -8,4 +8,4 @@ function ExpandIcon({ isRotated = false }) {
   );
 }
 
-export default ExpandIcon;
+export { ExpandIcon };

@@ -1,7 +1,7 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 interface XSound {
-  _id?: ObjectID,
+  _id?: ObjectId,
   name: string,
   url: string,
   timesPlayed: number,
