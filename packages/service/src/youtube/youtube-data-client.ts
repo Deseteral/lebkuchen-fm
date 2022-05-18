@@ -1,6 +1,5 @@
 import { Configuration } from '@service/infrastructure/configuration';
 import { Logger } from '@service/infrastructure/logger';
-import fetch from 'node-fetch';
 import { Service } from 'typedi';
 
 interface SearchResults {
@@ -76,7 +75,7 @@ class YouTubeDataClient {
   }
 
   private async request<T>(url: URL): Promise<T> {
-    const res = await fetch(url, {
+    const res = await fetch(url.toString(), {
       headers: { 'Content-Type': 'application/json' },
     });
     const data = await res.json();

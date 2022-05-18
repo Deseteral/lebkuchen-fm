@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "engines": {
-    "node": "17.x"
+    "node": "18.x"
   },
   "scripts": {
     "start": "node packages/service/build/main.js",
