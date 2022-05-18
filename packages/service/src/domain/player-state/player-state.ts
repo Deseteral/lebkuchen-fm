@@ -1,4 +1,4 @@
-import Song from '@service/domain/songs/song';
+import { Song } from '@service/domain/songs/song';
 
 interface CurrentlyPlaying {
   song: Song,
@@ -21,7 +21,7 @@ function makeDefaultPlayerState(): PlayerState {
   };
 }
 
-export default PlayerState;
 export {
+  PlayerState,
   makeDefaultPlayerState,
 };

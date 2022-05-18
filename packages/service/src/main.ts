@@ -11,12 +11,12 @@ import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
 import * as RoutingControllers from 'routing-controllers';
-import Logger from '@service/infrastructure/logger';
-import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
-import AdminEventStream from '@service/event-stream/admin-event-stream';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
-import Configuration from '@service/infrastructure/configuration';
-import DatabaseClient from '@service/infrastructure/storage';
+import { Logger } from '@service/infrastructure/logger';
+import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
+import { AdminEventStream } from '@service/event-stream/admin-event-stream';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
+import { Configuration } from '@service/infrastructure/configuration';
+import { DatabaseClient } from '@service/infrastructure/storage';
 
 const logger = new Logger('app-init');
 

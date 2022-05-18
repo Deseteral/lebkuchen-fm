@@ -1,8 +1,8 @@
-import XSound from '@service/domain/x-sounds/x-sound';
-import Repository from '@service/infrastructure/repository';
+import { XSound } from '@service/domain/x-sounds/x-sound';
+import { Repository } from '@service/infrastructure/repository';
 import { Service } from 'typedi';
-import DatabaseClient from '@service/infrastructure/storage';
-import Configuration from '@service/infrastructure/configuration';
+import { DatabaseClient } from '@service/infrastructure/storage';
+import { Configuration } from '@service/infrastructure/configuration';
 
 @Service()
 class XSoundsRepository extends Repository<XSound> {
@@ -31,4 +31,4 @@ class XSoundsRepository extends Repository<XSound> {
   }
 }
 
-export default XSoundsRepository;
+export { XSoundsRepository };

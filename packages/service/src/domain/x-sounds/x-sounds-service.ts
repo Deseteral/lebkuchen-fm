@@ -1,6 +1,6 @@
-import XSound from '@service/domain/x-sounds/x-sound';
-import XSoundsRepository from '@service/domain/x-sounds/x-sounds-repository';
-import FileStorage from '@service/infrastructure/file-storage';
+import { XSound } from '@service/domain/x-sounds/x-sound';
+import { XSoundsRepository } from '@service/domain/x-sounds/x-sounds-repository';
+import { FileStorage } from '@service/infrastructure/file-storage';
 import path from 'path';
 import { Service } from 'typedi';
 
@@ -126,4 +126,4 @@ class XSoundsService {
   }
 }
 
-export default XSoundsService;
+export { XSoundsService };

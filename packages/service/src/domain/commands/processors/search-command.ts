@@ -1,9 +1,9 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import QueueCommand from '@service/domain/commands/processors/queue-command';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { QueueCommand } from '@service/domain/commands/processors/queue-command';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 
 @RegisterCommand
@@ -41,4 +41,4 @@ class SearchCommand extends CommandProcessor {
   }
 }
 
-export default SearchCommand;
+export { SearchCommand };

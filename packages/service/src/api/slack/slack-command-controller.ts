@@ -2,9 +2,9 @@ import { Service } from 'typedi';
 import { Controller, BodyParam, Post, UseBefore } from 'routing-controllers';
 import express from 'express';
 import { SlackBlockResponseDto, SlackSimpleResponseDto, makeSlackSimpleResponse, mapCommandProcessingResponseToSlackResponse } from '@service/api/slack/model/slack-response-dto';
-import CommandExecutorService from '@service/domain/commands/command-executor-service';
-import Configuration from '@service/infrastructure/configuration';
-import Logger from '@service/infrastructure/logger';
+import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
+import { Configuration } from '@service/infrastructure/configuration';
+import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 @Controller('/commands/slack')
@@ -35,4 +35,4 @@ class SlackCommandController {
   }
 }
 
-export default SlackCommandController;
+export { SlackCommandController };

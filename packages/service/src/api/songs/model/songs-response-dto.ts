@@ -4,4 +4,4 @@ interface SongsResponseDto {
   songs: Song[],
 }
 
-export default SongsResponseDto;
+export { SongsResponseDto };

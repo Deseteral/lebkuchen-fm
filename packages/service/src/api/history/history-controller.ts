@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { JsonController, Get } from 'routing-controllers';
-import HistoryService from '@service/domain/history/history-service';
+import { HistoryService } from '@service/domain/history/history-service';
 import { HistoryResponseDto } from '@service/api/history/model/history-response-dto';
 
 @Service()
@@ -15,4 +15,4 @@ class HistoryController {
   }
 }
 
-export default HistoryController;
+export { HistoryController };

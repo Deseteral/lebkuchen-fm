@@ -1,5 +1,5 @@
-import Configuration from '@service/infrastructure/configuration';
-import Logger from '@service/infrastructure/logger';
+import { Configuration } from '@service/infrastructure/configuration';
+import { Logger } from '@service/infrastructure/logger';
 import { Collection, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
@@ -30,4 +30,4 @@ class DatabaseClient {
   }
 }
 
-export default DatabaseClient;
+export { DatabaseClient };

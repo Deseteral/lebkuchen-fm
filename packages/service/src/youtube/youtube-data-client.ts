@@ -1,5 +1,5 @@
-import Configuration from '@service/infrastructure/configuration';
-import Logger from '@service/infrastructure/logger';
+import { Configuration } from '@service/infrastructure/configuration';
+import { Logger } from '@service/infrastructure/logger';
 import fetch from 'node-fetch';
 import { Service } from 'typedi';
 
@@ -120,4 +120,4 @@ class YouTubeDataClient {
   }
 }
 
-export default YouTubeDataClient;
+export { YouTubeDataClient };

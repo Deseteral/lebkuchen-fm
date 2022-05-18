@@ -1,6 +1,6 @@
-import Song from '@service/domain/songs/song';
-import Repository from '@service/infrastructure/repository';
-import DatabaseClient from '@service/infrastructure/storage';
+import { Song } from '@service/domain/songs/song';
+import { Repository } from '@service/infrastructure/repository';
+import { DatabaseClient } from '@service/infrastructure/storage';
 import { Service } from 'typedi';
 
 @Service()
@@ -38,4 +38,4 @@ class SongsRepository extends Repository<Song> {
   }
 }
 
-export default SongsRepository;
+export { SongsRepository };

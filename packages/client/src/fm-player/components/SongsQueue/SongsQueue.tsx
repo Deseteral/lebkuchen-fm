@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PlayerState from '@service/domain/player-state/player-state';
+import { PlayerState } from 'lebkuchen-fm-service';
 import { SongsQueueList } from './SongsQueueList';
 import { ExpandIcon } from '../../icons/ExpandIcon';
 import { CloseIconSolid } from '../../icons/CloseIconSolid';

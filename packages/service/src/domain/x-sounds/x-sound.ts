@@ -8,4 +8,4 @@ interface XSound {
   tags?: string[],
 }
 
-export default XSound;
+export { XSound };

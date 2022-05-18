@@ -9,4 +9,4 @@ interface Song {
   trimEndSeconds: (number | null),
 }
 
-export default Song;
+export { Song };
