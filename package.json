@@ -10,7 +10,7 @@
     "build:static": "mkdir -p packages/service/build/public && cp packages/**/dist/* packages/service/build/public/",
     "test": "lerna run test",
     "clean": "lerna run clean",
-    "clean-deps": "rm -rf ./node_modules ./packages/**/node_modules",
+    "clean:deps": "rm -rf ./node_modules ./packages/**/node_modules",
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap",
     "fm": "./scripts/fm.sh"
