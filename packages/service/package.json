@@ -87,23 +87,5 @@
         }
       ]
     ]
-  },
-  "eslintConfig": {
-    "extends": "@deseteral/eslint-config/typescript",
-    "rules": {
-      "@typescript-eslint/explicit-function-return-type": "error",
-      "max-len": "off",
-      "no-empty-function": "off",
-      "class-methods-use-this": "off",
-      "react-hooks/rules-of-hooks": "off"
-    }
-  },
-  "jest": {
-    "testMatch": [
-      "**/__tests__/**/*.spec.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/config/jest.setup.ts"
-    ]
   }
 }

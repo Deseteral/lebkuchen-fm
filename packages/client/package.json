@@ -48,12 +48,5 @@
   },
   "browserslist": [
     "last 2 Chrome versions"
-  ],
-  "eslintConfig": {
-    "extends": "@deseteral/eslint-config/typescript",
-    "rules": {
-      "max-len": "off",
-      "no-console": "off"
-    }
-  }
+  ]
 }
