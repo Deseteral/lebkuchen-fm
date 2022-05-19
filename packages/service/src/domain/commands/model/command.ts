@@ -15,4 +15,4 @@ class Command {
   }
 }
 
-export default Command;
+export { Command };

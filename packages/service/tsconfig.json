@@ -9,20 +9,21 @@
     "noImplicitAny": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "declarationDir": "build/types",
     "declaration": true,
     "strict": true,
     "jsx": "react",
     "target": "es2018",
-    "moduleResolution": "node",
+    "module": "CommonJS",
+    "sourceMap": true,
     "lib": [
       "DOM",
       "es2018"
     ],
+    "outDir": "build",
+    "declarationDir": "build/types",
     "baseUrl": ".",
     "paths": {
-      "@service/*": ["src/*"],
-      "*": ["node_modules/*"],
+      "@service/*": ["./src/*"],
     },
   },
   "include": [

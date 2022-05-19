@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { JsonController, Get } from 'routing-controllers';
-import SongsService from '@service/domain/songs/songs-service';
-import SongsResponseDto from '@service/api/songs/model/songs-response-dto';
+import { SongsService } from '@service/domain/songs/songs-service';
+import { SongsResponseDto } from '@service/api/songs/model/songs-response-dto';
 
 @Service()
 @JsonController('/songs')
@@ -15,4 +15,4 @@ class SongsController {
   }
 }
 
-export default SongsController;
+export { SongsController };

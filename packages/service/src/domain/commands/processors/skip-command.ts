@@ -1,9 +1,9 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SkipEvent } from '@service/event-stream/model/events';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
@@ -49,4 +49,4 @@ class SkipCommand extends CommandProcessor {
   }
 }
 
-export default SkipCommand;
+export { SkipCommand };

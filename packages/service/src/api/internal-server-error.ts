@@ -1,9 +1,9 @@
 import { HttpError } from 'routing-controllers';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import ErrorResponse from '@service/api/error-response';
+import { ErrorResponse } from '@service/api/error-response';
 
 class InternalServerError extends HttpError {
-  private errorMessage: string
+  private errorMessage: string;
 
   constructor(error: Error) {
     super(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -18,4 +18,4 @@ class InternalServerError extends HttpError {
   }
 }
 
-export default InternalServerError;
+export { InternalServerError };

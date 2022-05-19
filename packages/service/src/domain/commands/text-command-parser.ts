@@ -1,5 +1,5 @@
-import Command from '@service/domain/commands/model/command';
-import Configuration from '@service/infrastructure/configuration';
+import { Command } from '@service/domain/commands/model/command';
+import { Configuration } from '@service/infrastructure/configuration';
 import { Service } from 'typedi';
 
 @Service()
@@ -25,4 +25,4 @@ class TextCommandParser {
   }
 }
 
-export default TextCommandParser;
+export { TextCommandParser };

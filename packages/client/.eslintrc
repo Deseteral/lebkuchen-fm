@@ -1,0 +1,7 @@
+{
+  "extends": "@deseteral/eslint-config/typescript",
+  "rules": {
+    "max-len": "off",
+    "no-console": "off"
+  }
+}
