@@ -1,0 +1,10 @@
+{
+  "extends": "@deseteral/eslint-config/typescript",
+  "rules": {
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "max-len": "off",
+    "no-empty-function": "off",
+    "class-methods-use-this": "off",
+    "react-hooks/rules-of-hooks": "off"
+  }
+}

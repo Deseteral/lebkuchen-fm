@@ -5,4 +5,4 @@ interface ErrorResponse {
   }
 }
 
-export default ErrorResponse;
+export { ErrorResponse };

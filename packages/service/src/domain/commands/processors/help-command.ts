@@ -1,9 +1,9 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, MessageBlock } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
-import Configuration from '@service/infrastructure/configuration';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { Configuration } from '@service/infrastructure/configuration';
 import { notNull } from '@service/utils/utils';
 import { Service } from 'typedi';
 
@@ -80,4 +80,4 @@ class HelpCommand extends CommandProcessor {
   }
 }
 
-export default HelpCommand;
+export { HelpCommand };

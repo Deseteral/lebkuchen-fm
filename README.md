@@ -19,8 +19,8 @@ To build application run
 npm run build
 ```
 
-To run the application you have to have MongoDB running on localhost. If you have docker installed you can use `./packages/devops/docker-db-local.sh` script to run MongoDB in docker.
-For more info you can refer to [Local MongoDB in Docker](#Local MongoDB in Docker) documentation section.
+To run the application you have to have MongoDB running on localhost. If you have docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in docker.
+For more info you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
 
 If you don't want to use Docker you can run MongoDB locally. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).
 
@@ -31,7 +31,7 @@ When that's done you can just start the application:
 npm start
 ```
 
-This project is separated into independent modules with main ones being `service` and `fm-player`.
+This project is separated into backend service (`packages/service`) and web client application (`packages/client`).
 For development information specific to modules refer to their _Development_ sections in this document.
 
 It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for development.
@@ -50,11 +50,13 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 
 #### Configuration
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
-- `MONGODB_URI` - MongoDB connection string
 - `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
+- `MONGODB_URI` - MongoDB connection string
 - `YOUTUBE_API_KEY` - YouTube Data API token
 - `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
+- `DROPBOX_TOKEN` - Dropbox API token used for persisting files
+- `LOCALE` - language of the service
 
 #### Development
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
@@ -145,19 +147,19 @@ Requires content type to be `multipart/form-data` with fields:
 }
 ```
 
-### FM player (`/packages/fm-player`)
-Web client for the player. Communicates with the service via WebSocket event stream.
+### Client (`/packages/client`)
+Web client for the application. Communicates with the service via WebSocket event stream.
 
 #### Development
 Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.
 
 Running `npm run build` builds the application in production mode.
 
-### Devops scripts (`/packages/devops`)
+### Devops scripts (`/scripts`)
 Scripts related to maintenance of the service.
 
 #### FM Dev Helper
-Helper script `packages/devops/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
+Helper script `scripts/fm.sh` is available for local development purposes. By default it sends a command to a local development server.
 
 Example commands:
 ```
@@ -174,8 +176,8 @@ Alternatively you can run it as an npm command from the root of the project:
 ```
 
 #### Local MongoDB in Docker
-Helper script `packages/devops/docker-db-local.sh` runs MongoDB and binds ports for local development.\
-To stop container run `packages/devops/docker-db-local.sh stop`.
+Helper script `scripts/docker_db_local.sh` runs MongoDB and binds ports for local development.\
+To stop container run `scripts/docker_db_local.sh stop`.
 
 ## License
 This project is licensed under the [MIT license](LICENSE).

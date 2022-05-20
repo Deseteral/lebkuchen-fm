@@ -1,4 +1,4 @@
-import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
+import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { Container } from 'typedi';
 
 function RegisterCommand(constructor: Function): void {
@@ -6,4 +6,4 @@ function RegisterCommand(constructor: Function): void {
   commandRegistryService.register(Container.get(constructor));
 }
 
-export default RegisterCommand;
+export { RegisterCommand };

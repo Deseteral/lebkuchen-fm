@@ -1,9 +1,9 @@
 import { Service } from 'typedi';
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
-import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
 @RegisterCommand
 @Service()
@@ -49,4 +49,4 @@ class TagListCommand extends CommandProcessor {
   }
 }
 
-export default TagListCommand;
+export { TagListCommand };

@@ -1,5 +1,5 @@
 import { Collection } from 'mongodb';
-import DatabaseClient from '@service/infrastructure/storage';
+import { DatabaseClient } from '@service/infrastructure/storage';
 
 abstract class Repository<T> {
   private collectionName: string;
@@ -15,4 +15,4 @@ abstract class Repository<T> {
   }
 }
 
-export default Repository;
+export { Repository };

@@ -1,10 +1,10 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
-import XSoundsService from '@service/domain/x-sounds/x-sounds-service';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 import { PlayXSoundEvent } from '@service/event-stream/model/events';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
@@ -53,4 +53,4 @@ class XCommand extends CommandProcessor {
   }
 }
 
-export default XCommand;
+export { XCommand };

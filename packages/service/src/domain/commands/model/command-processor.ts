@@ -1,4 +1,4 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 
 abstract class CommandProcessor {
@@ -10,4 +10,4 @@ abstract class CommandProcessor {
   abstract get helpUsages(): (string[] | null);
 }
 
-export default CommandProcessor;
+export { CommandProcessor };

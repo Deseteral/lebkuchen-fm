@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
 import SocketIO from 'socket.io';
 import { AdminEventData, LogEvent, WsConnectionsEvent } from '@service/event-stream/model/admin-events';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
-import Logger from '@service/infrastructure/logger';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
+import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 class AdminEventStream {
@@ -47,4 +47,4 @@ class AdminEventStream {
   }
 }
 
-export default AdminEventStream;
+export { AdminEventStream };

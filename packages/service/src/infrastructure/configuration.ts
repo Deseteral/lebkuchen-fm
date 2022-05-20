@@ -45,4 +45,4 @@ class Configuration {
   }
 }
 
-export default Configuration;
+export { Configuration };

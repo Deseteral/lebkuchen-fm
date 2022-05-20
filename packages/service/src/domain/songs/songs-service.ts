@@ -1,9 +1,9 @@
-import Song from '@service/domain/songs/song';
-import SongsRepository from '@service/domain/songs/songs-repository';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
+import { Song } from '@service/domain/songs/song';
+import { SongsRepository } from '@service/domain/songs/songs-repository';
+import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 import { notNull } from '@service/utils/utils';
-import HistoryService from '@service/domain/history/history-service';
+import { HistoryService } from '@service/domain/history/history-service';
 
 @Service()
 class SongsService {
@@ -18,7 +18,11 @@ class SongsService {
   }
 
   async createNewSong(
-    youtubeId: string, songName?: string, timesPlayed = 0, trimStartSeconds?: number, trimEndSeconds?: number,
+    youtubeId: string,
+    songName: (string | null) = null,
+    timesPlayed: number = 0,
+    trimStartSeconds: (number | null) = null,
+    trimEndSeconds: (number | null) = null,
   ): Promise<Song> {
     const name = songName || (await this.youTubeDataClient.fetchVideoTitleForId(youtubeId));
 
@@ -26,8 +30,8 @@ class SongsService {
       name,
       youtubeId,
       timesPlayed,
-      trimStartSeconds: (trimStartSeconds || null),
-      trimEndSeconds: (trimEndSeconds || null),
+      trimStartSeconds,
+      trimEndSeconds,
     };
 
     await this.repository.insert(song);
@@ -37,15 +41,23 @@ class SongsService {
   async fetchAndStoreNewSongs(youtubeIds: string[]): Promise<Song[]> {
     const videoDetails = await this.youTubeDataClient.fetchVideosDetails(youtubeIds);
 
-    const songs: Song[] = videoDetails.items.map((el) => ({ youtubeId: el.id, name: el.snippet.title, timesPlayed: 0, trimStartSeconds: null, trimEndSeconds: null }));
+    const songs: Song[] = videoDetails.items.map((el) => ({
+      youtubeId: el.id,
+      name: el.snippet.title,
+      timesPlayed: 0,
+      trimStartSeconds: null,
+      trimEndSeconds: null,
+    }));
+
     if (songs.isEmpty()) {
       return [];
     }
+
     await this.repository.insertMany(songs);
     return songs;
   }
 
-  async incrementPlayCount(youtubeId: string, songName?: string): Promise<void> {
+  async incrementPlayCount(youtubeId: string, songName: (string | null)): Promise<void> {
     const foundSong = await this.repository.findByYoutubeId(youtubeId);
 
     if (foundSong) {
@@ -100,4 +112,4 @@ class SongsService {
   }
 }
 
-export default SongsService;
+export { SongsService };

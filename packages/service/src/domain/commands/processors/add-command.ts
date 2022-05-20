@@ -1,9 +1,9 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import RegisterCommand from '@service/domain/commands/registry/register-command';
-import SongsService from '@service/domain/songs/songs-service';
-import YouTubeDataClient from '@service/youtube/youtube-data-client';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { SongsService } from '@service/domain/songs/songs-service';
+import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 
 @RegisterCommand
@@ -33,8 +33,8 @@ class AddCommand extends CommandProcessor {
       throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
     }
 
-    const trimStartSeconds = trimStart ? this.parseTimeStringToSeconds(trimStart) : undefined;
-    const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : undefined;
+    const trimStartSeconds = trimStart ? this.parseTimeStringToSeconds(trimStart) : null;
+    const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : null;
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
     return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`);
@@ -78,4 +78,4 @@ class AddCommand extends CommandProcessor {
   }
 }
 
-export default AddCommand;
+export { AddCommand };

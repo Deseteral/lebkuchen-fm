@@ -1,5 +1,5 @@
-import Configuration from '@service/infrastructure/configuration';
-import Logger from '@service/infrastructure/logger';
+import { Configuration } from '@service/infrastructure/configuration';
+import { Logger } from '@service/infrastructure/logger';
 import { Dropbox } from 'dropbox';
 import { Service } from 'typedi';
 
@@ -51,4 +51,4 @@ class FileStorage {
   }
 }
 
-export default FileStorage;
+export { FileStorage };

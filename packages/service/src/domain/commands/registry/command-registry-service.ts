@@ -1,8 +1,8 @@
 import path from 'path';
 import { Service } from 'typedi';
 import glob from 'glob';
-import CommandProcessor from '@service/domain/commands/model/command-processor';
-import Logger from '@service/infrastructure/logger';
+import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 class CommandRegistryService {
@@ -34,4 +34,4 @@ class CommandRegistryService {
   }
 }
 
-export default CommandRegistryService;
+export { CommandRegistryService };

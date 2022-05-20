@@ -1,8 +1,8 @@
-import Command from '@service/domain/commands/model/command';
+import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
-import TextCommandParser from '@service/domain/commands/text-command-parser';
-import Logger from '@service/infrastructure/logger';
+import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
+import { TextCommandParser } from '@service/domain/commands/text-command-parser';
+import { Logger } from '@service/infrastructure/logger';
 import { Service } from 'typedi';
 
 @Service()
@@ -35,4 +35,4 @@ class CommandExecutorService {
   }
 }
 
-export default CommandExecutorService;
+export { CommandExecutorService };

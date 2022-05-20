@@ -11,12 +11,12 @@ import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
 import * as RoutingControllers from 'routing-controllers';
-import Logger from '@service/infrastructure/logger';
-import CommandRegistryService from '@service/domain/commands/registry/command-registry-service';
-import AdminEventStream from '@service/event-stream/admin-event-stream';
-import PlayerEventStream from '@service/event-stream/player-event-stream';
-import Configuration from '@service/infrastructure/configuration';
-import DatabaseClient from '@service/infrastructure/storage';
+import { Logger } from '@service/infrastructure/logger';
+import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
+import { AdminEventStream } from '@service/event-stream/admin-event-stream';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
+import { Configuration } from '@service/infrastructure/configuration';
+import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
 import memoryStore from 'memorystore';
 
@@ -49,11 +49,11 @@ async function main(): Promise<void> {
   }));
 
   const pathToStaticFiles = path.join(__dirname, 'public');
-  app.use(express.static(pathToStaticFiles, { index: 'fm-player.html', extensions: ['html'] }));
+  app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
 
   // For remaining unhandled by the service paths send client app, and let it handle that case
   app.all('*', (_: express.Request, res: express.Response) => {
-    res.sendFile(path.join(pathToStaticFiles, 'fm-player.html'), (err) => res.status(err ? 404 : 200).end());
+    res.sendFile(path.join(pathToStaticFiles, 'index.html'), (err) => res.status(err ? 404 : 200).end());
   });
 
   /* Connect to database */
