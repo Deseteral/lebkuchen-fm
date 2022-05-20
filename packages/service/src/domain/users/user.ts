@@ -1,7 +1,7 @@
-import { ObjectID } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 export interface User {
-  _id?: ObjectID,
+  _id?: ObjectId,
   name: string,
   password: UserPassword | null,
   session: UserSession | null,

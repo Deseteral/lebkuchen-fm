@@ -1,8 +1,8 @@
 import { Service } from 'typedi';
 import { Post, Body, JsonController, UnauthorizedError, Session, Req } from 'routing-controllers';
-import Logger from '@service/infrastructure/logger';
+import { Logger } from '@service/infrastructure/logger';
 import { AuthRequestDto } from '@service/lib';
-import UsersService from '@service/domain/users/users-service';
+import { UsersService } from '@service/domain/users/users-service';
 
 @Service()
 @JsonController('/auth')
@@ -35,4 +35,4 @@ class AuthController {
   }
 }
 
-export default AuthController;
+export { AuthController };

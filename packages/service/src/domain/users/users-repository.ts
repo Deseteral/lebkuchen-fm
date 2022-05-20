@@ -1,6 +1,6 @@
 import { User } from '@service/domain/users/user';
-import Repository from '@service/infrastructure/repository';
-import DatabaseClient from '@service/infrastructure/storage';
+import { Repository } from '@service/infrastructure/repository';
+import { DatabaseClient } from '@service/infrastructure/storage';
 import { Service } from 'typedi';
 
 @Service()
@@ -18,4 +18,4 @@ class UsersRepository extends Repository<User> {
   }
 }
 
-export default UsersRepository;
+export { UsersRepository };

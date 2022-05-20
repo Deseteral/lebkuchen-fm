@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import UsersRepository from '@service/domain/users/users-repository';
+import { UsersRepository } from '@service/domain/users/users-repository';
 import { User } from '@service/domain/users/user';
 import crypto from 'crypto';
 
@@ -49,4 +49,4 @@ class UsersService {
   }
 }
 
-export default UsersService;
+export { UsersService };
