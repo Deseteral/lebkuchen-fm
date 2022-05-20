@@ -17,6 +17,10 @@ import AdminEventStream from '@service/event-stream/admin-event-stream';
 import PlayerEventStream from '@service/event-stream/player-event-stream';
 import Configuration from '@service/infrastructure/configuration';
 import DatabaseClient from '@service/infrastructure/storage';
+import session from 'express-session';
+import memoryStore from 'memorystore';
+
+const MemoryStore = memoryStore(session);
 
 const logger = new Logger('app-init');
 
@@ -33,6 +37,16 @@ async function main(): Promise<void> {
   });
 
   app.use(compression());
+
+  app.use(session({
+    secret: 'keyboard cat', // TODO: generate this
+    resave: false,
+    saveUninitialized: true,
+    // cookie: { secure: false },
+    // store: new MemoryStore({
+    //   checkPeriod: 86400000, // TODO: prune expired entries every 24h
+    // }),
+  }));
 
   const pathToStaticFiles = path.join(__dirname, 'public');
   app.use(express.static(pathToStaticFiles, { index: 'fm-player.html', extensions: ['html'] }));

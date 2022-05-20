@@ -19,6 +19,9 @@
     "test:type-check:watch": "npm run test:type-check -- --watch",
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
+  "dependencies": {
+    "lebkuchen-fm-service": "*"
+  },
   "devDependencies": {
     "@deseteral/eslint-config": "5.0.0",
     "autoprefixer": "10.4.2",
