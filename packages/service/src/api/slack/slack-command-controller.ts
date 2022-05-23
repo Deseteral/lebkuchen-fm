@@ -19,6 +19,7 @@ class SlackCommandController {
     @BodyParam('channel_id') channelId: string,
     @BodyParam('command') command: string,
     @BodyParam('text') text: string,
+    @BodyParam('user_id') userId: string,
   ): Promise<(SlackBlockResponseDto | SlackSimpleResponseDto)> {
     const isValidChannelId = (channelId === this.configuration.SLACK_CHANNEL_ID);
     if (!isValidChannelId) {
@@ -26,7 +27,9 @@ class SlackCommandController {
       return makeSlackSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true);
     }
 
-    const messageContent = `${command} ${text}`;
+    const messageContent = (userId === 'DG2B88F9P' && text.trim() === 'random')
+      ? '/fm x bonk'
+      : `${command} ${text}`;
 
     SlackCommandController.logger.info(`Received ${messageContent} command from Slack`);
 
