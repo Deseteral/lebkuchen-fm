@@ -27,7 +27,7 @@ class SlackCommandController {
       return makeSlackSimpleResponse('Tej komendy można używać tylko na dedykowanym kanale', true);
     }
 
-    const messageContent = (userId === 'DG2B88F9P' && text.trim() === 'random')
+    const messageContent = (userId === 'DG2B88F9P' && text.trim().startsWith('random'))
       ? '/fm x bonk'
       : `${command} ${text}`;
 
