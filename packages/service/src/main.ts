@@ -20,7 +20,7 @@ import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
 import memoryStore from 'memorystore';
 
-const MemoryStore = memoryStore(session);
+// const MemoryStore = memoryStore(session);
 
 const logger = new Logger('app-init');
 
