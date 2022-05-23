@@ -1,8 +1,9 @@
 import { Service } from 'typedi';
-import { Post, Body, JsonController, UnauthorizedError, Session, Req } from 'routing-controllers';
+import { Post, Body, JsonController, UnauthorizedError, Session } from 'routing-controllers';
 import { Logger } from '@service/infrastructure/logger';
 import { AuthRequestDto } from '@service/lib';
 import { UsersService } from '@service/domain/users/users-service';
+import { RequestSession } from '@service/api/request-session';
 
 @Service()
 @JsonController('/auth')
@@ -12,26 +13,34 @@ class AuthController {
   constructor(private usersService: UsersService) { }
 
   @Post('/')
-  async auth(@Body() authData: AuthRequestDto, @Req() req: any): Promise<void> {
+  async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<string> {
     const { username, password } = authData;
-    console.log(req.session);
-
     const user = await this.usersService.getByName(username);
 
     if (!user) {
+      AuthController.logger.info(`User "${username}" tried to log in, but does not exist`);
       throw new UnauthorizedError('User does not exist');
     }
 
+    const authorizeUser = (): void => {
+      session.loggedUserName = user.name; // eslint-disable-line no-param-reassign
+    };
+
     if (user.password) {
       if (await UsersService.checkPassword(password, user)) {
-        // set cookie
+        authorizeUser();
+        AuthController.logger.info(`User "${username}" logged in`);
       } else {
+        AuthController.logger.info(`User "${username}" tried to log in, but provided wrong password`);
         throw new UnauthorizedError('Incorrect password');
       }
     } else {
       await this.usersService.setPassword(password, user);
-      // set cookie
+      authorizeUser();
+      AuthController.logger.info(`User "${username}" set new password`);
     }
+
+    return 'ok'; // TODO: This makes no sense
   }
 }
 

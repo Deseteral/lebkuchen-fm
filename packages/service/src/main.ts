@@ -18,7 +18,7 @@ import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Configuration } from '@service/infrastructure/configuration';
 import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
-import memoryStore from 'memorystore';
+// import memoryStore from 'memorystore';
 
 // const MemoryStore = memoryStore(session);
 
@@ -31,13 +31,9 @@ async function main(): Promise<void> {
 
   /* Create HTTP server */
   RoutingControllers.useContainer(Container);
-  const app = RoutingControllers.createExpressServer({
-    controllers: [path.join(__dirname, 'api/**/*-controller.js')],
-    classTransformer: false,
-  });
 
+  const app = express();
   app.use(compression());
-
   app.use(session({
     secret: 'keyboard cat', // TODO: generate this
     resave: false,
@@ -47,6 +43,11 @@ async function main(): Promise<void> {
     //   checkPeriod: 86400000, // TODO: prune expired entries every 24h
     // }),
   }));
+
+  RoutingControllers.useExpressServer(app, {
+    controllers: [path.join(__dirname, 'api/**/*-controller.js')],
+    classTransformer: false,
+  });
 
   const pathToStaticFiles = path.join(__dirname, 'public');
   app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
