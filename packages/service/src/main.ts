@@ -18,6 +18,9 @@ import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Configuration } from '@service/infrastructure/configuration';
 import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
+import { RequestSession } from '@service/api/request-session';
+import { UsersService } from '@service/domain/users/users-service';
+import { Action } from 'routing-controllers';
 // import memoryStore from 'memorystore';
 
 // const MemoryStore = memoryStore(session);
@@ -47,6 +50,17 @@ async function main(): Promise<void> {
   RoutingControllers.useExpressServer(app, {
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
     classTransformer: false,
+    authorizationChecker: async (action: Action) => {
+      // TODO: Extract this logic into auth service
+      const requestSession: RequestSession = action.request.session;
+
+      if (!requestSession.loggedUserName) {
+        return false;
+      }
+
+      const user = await Container.get(UsersService).getByName(requestSession.loggedUserName);
+      return (user !== null);
+    },
   });
 
   const pathToStaticFiles = path.join(__dirname, 'public');

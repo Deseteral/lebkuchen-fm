@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post, Get, UploadedFile, ContentType } from 'routing-controllers';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized } from 'routing-controllers';
 import { MissingRequriedFieldsError } from '@service/api/x-sounds/model/missing-required-fields-error';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -9,6 +9,7 @@ import { XSoundsResponseDto } from '@service/api/x-sounds/model/xsounds-response
 
 @Service()
 @Controller('/x-sounds')
+@Authorized()
 class XSoundsController {
   private static logger = new Logger('x-sound-upload-controller');
 

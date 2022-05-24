@@ -26,6 +26,8 @@ class AuthController {
       session.loggedUserName = user.name; // eslint-disable-line no-param-reassign
     };
 
+    // TODO: Extract this logic into auth service
+
     if (user.password) {
       if (await UsersService.checkPassword(password, user)) {
         authorizeUser();
