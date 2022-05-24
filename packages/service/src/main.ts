@@ -63,13 +63,7 @@ async function main(): Promise<void> {
     defaultErrorHandler: false, // TODO: This is a fix for https://github.com/typestack/routing-controllers/issues/653#issuecomment-1057906505
   });
 
-  app.use((_, res) => {
-    if (!res.headersSent) {
-      throw new NotFoundError();
-    }
-  });
-
-  app.use((error: any, _: any, res: any) => {
+  app.use((error: any, _: any, res: any, __: any) => {
     if (error instanceof HttpError) {
       res.status(error.httpCode).send(error);
     } else {
