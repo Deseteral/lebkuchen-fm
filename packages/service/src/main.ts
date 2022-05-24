@@ -20,7 +20,7 @@ import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
 import { RequestSession } from '@service/api/request-session';
 import { UsersService } from '@service/domain/users/users-service';
-import { Action } from 'routing-controllers';
+import { Action, HttpError, InternalServerError, NotFoundError } from 'routing-controllers';
 // import memoryStore from 'memorystore';
 
 // const MemoryStore = memoryStore(session);
@@ -49,7 +49,6 @@ async function main(): Promise<void> {
 
   RoutingControllers.useExpressServer(app, {
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
-    classTransformer: false,
     authorizationChecker: async (action: Action) => {
       // TODO: Extract this logic into auth service
       const requestSession: RequestSession = action.request.session;
@@ -61,8 +60,24 @@ async function main(): Promise<void> {
       const user = await Container.get(UsersService).getByName(requestSession.loggedUserName);
       return (user !== null);
     },
+    defaultErrorHandler: false, // TODO: This is a fix for https://github.com/typestack/routing-controllers/issues/653#issuecomment-1057906505
   });
 
+  app.use((_, res) => {
+    if (!res.headersSent) {
+      throw new NotFoundError();
+    }
+  });
+
+  app.use((error: any, _: any, res: any) => {
+    if (error instanceof HttpError) {
+      res.status(error.httpCode).send(error);
+    } else {
+      res.status(500).send(new InternalServerError('Unhandled error'));
+    }
+  });
+
+  // Static files for web client frontend
   const pathToStaticFiles = path.join(__dirname, 'public');
   app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
 

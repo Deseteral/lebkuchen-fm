@@ -1,9 +1,10 @@
 import { Service } from 'typedi';
-import { Post, Body, JsonController, UnauthorizedError, Session } from 'routing-controllers';
+import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get } from 'routing-controllers';
 import { Logger } from '@service/infrastructure/logger';
 import { AuthRequestDto } from '@service/lib';
 import { UsersService } from '@service/domain/users/users-service';
 import { RequestSession } from '@service/api/request-session';
+import { LoggedInResponseDto } from '@service/api/auth/model/logged-in-response-dto';
 
 @Service()
 @JsonController('/auth')
@@ -11,6 +12,18 @@ class AuthController {
   private static logger = new Logger('auth-controller');
 
   constructor(private usersService: UsersService) { }
+
+  @Get('/')
+  @Authorized()
+  async getLoggedIn(@Session() session: RequestSession): Promise<LoggedInResponseDto> {
+    if (!session.loggedUserName) {
+      throw new UnauthorizedError('Unauthorized user');
+    }
+
+    return {
+      username: session.loggedUserName,
+    };
+  }
 
   @Post('/')
   async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<string> {
