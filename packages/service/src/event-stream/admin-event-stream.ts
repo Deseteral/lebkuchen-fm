@@ -1,4 +1,4 @@
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import SocketIO from 'socket.io';
 import { AdminEventData, LogEvent, WsConnectionsEvent } from '@service/event-stream/model/admin-events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -6,11 +6,10 @@ import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 class AdminEventStream {
-  private adminNamespace: SocketIO.Namespace;
-
-  constructor(private io: SocketIO.Server, private playerEventStream: PlayerEventStream) {
-    this.adminNamespace = this.io.of('/admin');
-
+  constructor(
+    @Inject('io-admin-namespace') private adminNamespace: SocketIO.Namespace,
+    private playerEventStream: PlayerEventStream,
+  ) {
     this.adminNamespace.on('connection', () => this.adminConnected());
     this.playerEventStream.onPlayerConnection(() => this.playerConnectionChange());
     Logger.on('printedLog', () => this.sendLogsToEveryone());

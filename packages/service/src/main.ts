@@ -6,7 +6,7 @@ require('dotenv').config();
 
 import http from 'http';
 import path from 'path';
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
@@ -32,12 +32,8 @@ async function main(): Promise<void> {
   const config = Configuration.readFromEnv();
   Container.set(Configuration, config);
 
-  /* Create HTTP server */
-  RoutingControllers.useContainer(Container);
-
-  const app = express();
-  app.use(compression());
-  app.use(session({
+  /* Setup session middleware */
+  const sessionMiddleware = session({
     secret: 'keyboard cat', // TODO: generate this
     resave: false,
     saveUninitialized: true,
@@ -45,20 +41,20 @@ async function main(): Promise<void> {
     // store: new MemoryStore({
     //   checkPeriod: 86400000, // TODO: prune expired entries every 24h
     // }),
-  }));
+  });
+
+  /* Create HTTP server */
+  RoutingControllers.useContainer(Container);
+
+  const app = express();
+  app.use(compression());
+  app.use(sessionMiddleware);
 
   RoutingControllers.useExpressServer(app, {
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
     authorizationChecker: async (action: Action) => {
-      // TODO: Extract this logic into auth service
       const requestSession: RequestSession = action.request.session;
-
-      if (!requestSession.loggedUserName) {
-        return false;
-      }
-
-      const user = await Container.get(UsersService).getByName(requestSession.loggedUserName);
-      return (user !== null);
+      return Container.get(UsersService).isSessionAuthorized(requestSession);
     },
     defaultErrorHandler: false, // TODO: This is a fix for https://github.com/typestack/routing-controllers/issues/653#issuecomment-1057906505
   });
@@ -87,6 +83,28 @@ async function main(): Promise<void> {
   /* Create WebSocket server */
   const server: http.Server = new http.Server(app);
   const io = new SocketIO.Server(server, { serveClient: false });
+
+  const playerNamespace = io.of('/player');
+  const adminNamespace = io.of('/admin');
+
+  const ioSessionMiddleware = (socket: SocketIO.Socket, next: Function): void => sessionMiddleware(socket.request as Request, {} as Response, next as NextFunction);
+  const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
+    // @ts-ignore ; Trust me - session does exist on request
+    const requestSession: RequestSession = socket.request.session;
+    const isSessionAuthorized = await Container.get(UsersService).isSessionAuthorized(requestSession);
+    if (isSessionAuthorized) {
+      next();
+    } else {
+      next(new Error('Unauthorized user'));
+    }
+  };
+
+  playerNamespace.use(ioSessionMiddleware).use(ioAuthorizationChecker);
+  adminNamespace.use(ioSessionMiddleware).use(ioAuthorizationChecker);
+
+  Container.set('io-player-namespace', playerNamespace);
+  Container.set('io-admin-namespace', adminNamespace);
+
   Container.set(SocketIO.Server, io);
   Container.get(PlayerEventStream);
   Container.get(AdminEventStream);

@@ -3,6 +3,7 @@ import { UsersRepository } from '@service/domain/users/users-repository';
 import { User } from '@service/domain/users/user';
 import crypto from 'crypto';
 import { nanoid } from 'nanoid';
+import { RequestSession } from '@service/api/request-session';
 
 @Service()
 class UsersService {
@@ -29,6 +30,15 @@ class UsersService {
     };
 
     this.repository.replace(newUser);
+  }
+
+  async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
+    if (!requestSession.loggedUserName) {
+      return false;
+    }
+
+    const user = await this.getByName(requestSession.loggedUserName);
+    return (user !== null);
   }
 
   static hashPassword(password: string, salt: string): Promise<string> {
