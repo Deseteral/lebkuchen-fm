@@ -21,6 +21,10 @@ function LoginForm(_: LoginFormProps): JSX.Element {
     fetch('/auth', options).then(() => redirectTo('/'));
   };
 
+  const onInputKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') authenticate();
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
@@ -37,6 +41,7 @@ function LoginForm(_: LoginFormProps): JSX.Element {
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  onKeyPress={onInputKeyPress}
                 />
               </label>
             </div>
@@ -51,6 +56,7 @@ function LoginForm(_: LoginFormProps): JSX.Element {
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onKeyPress={onInputKeyPress}
                 />
               </label>
             </div>

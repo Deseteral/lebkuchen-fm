@@ -1,11 +1,12 @@
 import { Service } from 'typedi';
-import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get } from 'routing-controllers';
+import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get, OnUndefined } from 'routing-controllers';
 import { Logger } from '@service/infrastructure/logger';
 import { AuthRequestDto } from '@service/lib';
 import { UsersService } from '@service/domain/users/users-service';
 import { RequestSession } from '@service/api/request-session';
 import { LoggedInResponseDto } from '@service/api/auth/model/logged-in-response-dto';
 import { Session as ExpressSession } from 'express-session';
+import { StatusCodes } from 'http-status-codes';
 
 @Service()
 @JsonController('/auth')
@@ -27,6 +28,7 @@ class AuthController {
   }
 
   @Post('/')
+  @OnUndefined(StatusCodes.OK)
   async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<void> {
     const { username, password } = authData;
     const user = await this.usersService.getByName(username);
@@ -58,6 +60,7 @@ class AuthController {
   }
 
   @Post('/logout')
+  @OnUndefined(StatusCodes.OK)
   async logout(@Session() session: ExpressSession): Promise<void> {
     return new Promise((resolve) => {
       session.destroy(() => resolve());
