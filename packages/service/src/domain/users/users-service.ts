@@ -2,6 +2,7 @@ import { Service } from 'typedi';
 import { UsersRepository } from '@service/domain/users/users-repository';
 import { User } from '@service/domain/users/user';
 import crypto from 'crypto';
+import { nanoid } from 'nanoid';
 
 @Service()
 class UsersService {
@@ -9,6 +10,10 @@ class UsersService {
 
   async getByName(name: string): Promise<User | null> {
     return this.repository.findByName(name);
+  }
+
+  async getByApiToken(apiToken: string): Promise<User | null> {
+    return this.repository.findByApiToken(apiToken);
   }
 
   async setPassword(password: string, user: User): Promise<void> {
@@ -19,6 +24,7 @@ class UsersService {
       password: {
         hashedPassword: await UsersService.hashPassword(password, salt),
         salt,
+        apiToken: nanoid(32),
       },
     };
 

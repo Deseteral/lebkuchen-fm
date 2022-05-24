@@ -13,6 +13,10 @@ class UsersRepository extends Repository<User> {
     return this.collection.findOne({ name });
   }
 
+  findByApiToken(apiToken: string): Promise<User | null> {
+    return this.collection.findOne({ password: { apiToken } });
+  }
+
   async replace(user: User): Promise<void> {
     await this.collection.replaceOne({ _id: user._id }, user);
   }

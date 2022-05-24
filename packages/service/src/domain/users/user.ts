@@ -11,4 +11,5 @@ export interface User {
 export interface UserPassword {
   hashedPassword: string,
   salt: string,
+  apiToken: string,
 }
