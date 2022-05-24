@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
+import { checkLoginStatusAndRedirect } from '../services/check-status-and-redirect';
 
 function SplashScreen() {
+  React.useEffect(() => {
+    checkLoginStatusAndRedirect();
+  }, []);
+
   return (
     <div className="bg-gray-900 bg-opacity-75 m-8 rounded-xl">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">

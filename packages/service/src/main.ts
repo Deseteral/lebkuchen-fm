@@ -20,7 +20,7 @@ import { DatabaseClient } from '@service/infrastructure/storage';
 import session from 'express-session';
 import { RequestSession } from '@service/api/request-session';
 import { UsersService } from '@service/domain/users/users-service';
-import { Action, HttpError, InternalServerError, NotFoundError } from 'routing-controllers';
+import { Action, HttpError, InternalServerError } from 'routing-controllers';
 // import memoryStore from 'memorystore';
 
 // const MemoryStore = memoryStore(session);

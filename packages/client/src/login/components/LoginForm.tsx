@@ -1,9 +1,6 @@
 import { AuthRequestDto } from 'lebkuchen-fm-service';
 import * as React from 'react';
-
-function redirectTo(url: string) {
-  window.location.replace(url);
-}
+import { redirectTo } from '../../services/redirect-to';
 
 interface LoginFormProps {}
 
