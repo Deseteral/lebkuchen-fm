@@ -5,6 +5,7 @@ import { AuthRequestDto } from '@service/lib';
 import { UsersService } from '@service/domain/users/users-service';
 import { RequestSession } from '@service/api/request-session';
 import { LoggedInResponseDto } from '@service/api/auth/model/logged-in-response-dto';
+import { Session as ExpressSession } from 'express-session';
 
 @Service()
 @JsonController('/auth')
@@ -54,6 +55,13 @@ class AuthController {
       authorizeUser();
       AuthController.logger.info(`User "${username}" set new password`);
     }
+  }
+
+  @Post('/logout')
+  async logout(@Session() session: ExpressSession): Promise<void> {
+    return new Promise((resolve) => {
+      session.destroy(() => resolve());
+    });
   }
 }
 
