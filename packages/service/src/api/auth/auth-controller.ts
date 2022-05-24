@@ -26,7 +26,7 @@ class AuthController {
   }
 
   @Post('/')
-  async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<string> {
+  async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<void> {
     const { username, password } = authData;
     const user = await this.usersService.getByName(username);
 
@@ -54,8 +54,6 @@ class AuthController {
       authorizeUser();
       AuthController.logger.info(`User "${username}" set new password`);
     }
-
-    return 'ok'; // TODO: This makes no sense
   }
 }
 
