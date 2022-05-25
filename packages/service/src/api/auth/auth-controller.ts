@@ -14,12 +14,15 @@ class AuthController {
 
   @Get('/')
   @Authorized()
-  async getLoggedIn(@Session() session: RequestSession): Promise<LoggedInResponseDto> {
-    if (!session.loggedUserName) {
+  async getLoggedInStatus(@Session() session: RequestSession): Promise<LoggedInResponseDto> {
+    if (!session.loggedUser) {
       throw new UnauthorizedError('Unauthorized user');
     }
 
-    return { username: session.loggedUserName };
+    return {
+      username: session.loggedUser.name,
+      apiToken: session.loggedUser.apiToken,
+    };
   }
 
   @Post('/')

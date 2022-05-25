@@ -18,7 +18,7 @@ class AuthService {
       throw new Error('User does not exist');
     }
 
-    const userDidSetPassword: boolean = !!user.password;
+    const userDidSetPassword: boolean = (!!user.password);
 
     if (userDidSetPassword) {
       const isPasswordCorrect = await UsersService.checkPassword(password, user);
@@ -46,11 +46,11 @@ class AuthService {
   }
 
   private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
-    if (!requestSession.loggedUserName) {
+    if (!requestSession.loggedUser) {
       return false;
     }
 
-    const user = await this.usersService.getByName(requestSession.loggedUserName);
+    const user = await this.usersService.getByName(requestSession.loggedUser.name);
     return (user !== null);
   }
 
@@ -61,7 +61,10 @@ class AuthService {
 
   private loginCorrectPassword(user: User, session: RequestSession): void {
     // Authorize session
-    session.loggedUserName = user.name; // eslint-disable-line no-param-reassign
+    session.loggedUser = { // eslint-disable-line no-param-reassign
+      name: user.name,
+      apiToken: user.password!.apiToken,
+    };
 
     AuthService.logger.info(`User "${user.name}" logged in`);
   }
