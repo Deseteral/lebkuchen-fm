@@ -5,8 +5,6 @@ import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandRespon
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
 import { Logger } from '@service/infrastructure/logger';
 
-// TODO: Provide API tokens for this endpoint
-
 @Service()
 @JsonController('/commands/text')
 class TextCommandController {
