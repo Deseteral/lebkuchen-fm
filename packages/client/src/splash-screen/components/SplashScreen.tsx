@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import { logout } from '../services/logout';
-import { checkLoginStatusAndRedirect } from '../services/check-status-and-redirect';
+import { userLogout, checkLoginStateAndRedirect } from '../../services/user-account-service';
 
 function SplashScreen() {
   React.useEffect(() => {
-    checkLoginStatusAndRedirect();
+    checkLoginStateAndRedirect();
   }, []);
 
   return (
@@ -43,7 +42,7 @@ function SplashScreen() {
           <div className="inline-flex rounded-md shadow ml-8">
             <button
               type="button"
-              onClick={() => logout()}
+              onClick={() => userLogout()}
               className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
             >
               Wyloguj
