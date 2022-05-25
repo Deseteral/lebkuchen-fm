@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { JsonController, Body, Post } from 'routing-controllers';
+import { JsonController, Body, Post, Authorized } from 'routing-controllers';
 import { TextCommandRequestDto } from '@service/api/text/model/text-command-request-dto';
 import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
@@ -15,6 +15,7 @@ class TextCommandController {
   constructor(private commandExecutorService: CommandExecutorService) { }
 
   @Post('/')
+  @Authorized()
   async processTextCommand(@Body() body: TextCommandRequestDto): Promise<TextCommandResponseDto> {
     const { text } = body;
     TextCommandController.logger.info(`Received ${text} command`);

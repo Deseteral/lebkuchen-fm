@@ -20,10 +20,10 @@ import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Configuration } from '@service/infrastructure/configuration';
 import { DatabaseClient } from '@service/infrastructure/storage';
 import { RequestSession } from '@service/api/request-session';
-import { UsersService } from '@service/domain/users/users-service';
 import { Action, HttpError, InternalServerError } from 'routing-controllers';
 import { nanoid } from 'nanoid';
-import { expressMiddlewareToSocketIoMiddleware } from '@service/utils/utils';
+import { expressMiddlewareToSocketIoMiddleware, parseAuthorizationHeader } from '@service/utils/utils';
+import { AuthService } from '@service/domain/auth/auth-service';
 
 const logger = new Logger('app-init');
 
@@ -50,10 +50,10 @@ async function main(): Promise<void> {
 
   RoutingControllers.useExpressServer(app, {
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
-    authorizationChecker: async (action: Action) => {
-      const requestSession: RequestSession = action.request.session;
-      return Container.get(UsersService).isSessionAuthorized(requestSession);
-    },
+    authorizationChecker: async (action: Action) => Container.get(AuthService).isRequestAuthorized(
+      action.request.session,
+      parseAuthorizationHeader(action.request.headers.authorization),
+    ),
     defaultErrorHandler: false,
   });
 
@@ -92,7 +92,7 @@ async function main(): Promise<void> {
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
     // @ts-ignore ; Trust me - session does exist on request
     const requestSession: RequestSession = socket.request.session;
-    const isSessionAuthorized = await Container.get(UsersService).isSessionAuthorized(requestSession);
+    const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession);
     if (isSessionAuthorized) {
       next();
     } else {

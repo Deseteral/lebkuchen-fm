@@ -23,32 +23,59 @@ class AuthService {
     if (userDidSetPassword) {
       const isPasswordCorrect = await UsersService.checkPassword(password, user);
       if (isPasswordCorrect) {
-        this.correctPassword(user, session);
+        this.loginCorrectPassword(user, session);
       } else {
-        this.wrongPassword(user);
+        this.loginWrongPassword(user);
       }
     } else {
-      this.passwordNotSet(user, password, session);
+      this.loginPasswordNotSet(user, password, session);
     }
   }
 
-  private correctPassword(user: User, session: RequestSession): void {
+  async isRequestAuthorized(session: RequestSession, token: (string | null)): Promise<boolean> {
+    const isSessionAuthorized: boolean = await this.isSessionAuthorized(session);
+    const isApiTokenAuthorized: boolean = token
+      ? await this.isApiTokenAuthorized(token)
+      : false;
+
+    return (isSessionAuthorized || isApiTokenAuthorized);
+  }
+
+  async isWebSocketAuthorized(session: RequestSession): Promise<boolean> {
+    return this.isSessionAuthorized(session);
+  }
+
+  private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
+    if (!requestSession.loggedUserName) {
+      return false;
+    }
+
+    const user = await this.usersService.getByName(requestSession.loggedUserName);
+    return (user !== null);
+  }
+
+  private async isApiTokenAuthorized(token: string): Promise<boolean> {
+    const user = await this.usersService.getByApiToken(token);
+    return (user !== null);
+  }
+
+  private loginCorrectPassword(user: User, session: RequestSession): void {
     // Authorize session
     session.loggedUserName = user.name; // eslint-disable-line no-param-reassign
 
     AuthService.logger.info(`User "${user.name}" logged in`);
   }
 
-  private wrongPassword(user: User): void {
+  private loginWrongPassword(user: User): void {
     AuthService.logger.info(`User "${user.name}" tried to log in, but provided wrong password`);
     throw new Error('Incorrect password');
   }
 
-  private async passwordNotSet(user: User, nextPassword: string, session: RequestSession): Promise<void> {
+  private async loginPasswordNotSet(user: User, nextPassword: string, session: RequestSession): Promise<void> {
     await this.usersService.setPassword(nextPassword, user);
     AuthService.logger.info(`User "${user.name}" set new password`);
 
-    this.correctPassword(user, session);
+    this.loginCorrectPassword(user, session);
   }
 }
 

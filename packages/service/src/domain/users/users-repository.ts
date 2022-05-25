@@ -14,7 +14,7 @@ class UsersRepository extends Repository<User> {
   }
 
   findByApiToken(apiToken: string): Promise<User | null> {
-    return this.collection.findOne({ password: { apiToken } });
+    return this.collection.findOne({ 'password.apiToken': apiToken });
   }
 
   async replace(user: User): Promise<void> {
