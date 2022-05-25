@@ -20,12 +20,14 @@ class PlayerEventStream {
     this.playerNamespace.send(event);
   }
 
-  public getConnectedPlayerIds(): string[] {
-    return Array.from(this.playerNamespace.sockets.keys());
+  public getConnectedUsernames(): string[] {
+    return Array.from(this.playerNamespace.sockets, ([_key, value]) => value)
+      .map((socket) => socket.request.session)
+      .map((session) => (session.loggedUser?.name || 'unexpected error'));
   }
 
   public getConnectedPlayerCount(): number {
-    return this.getConnectedPlayerIds().length;
+    return this.getConnectedUsernames().length;
   }
 
   public onPlayerConnection(callback: () => void): void {

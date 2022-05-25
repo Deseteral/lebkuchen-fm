@@ -1,4 +1,12 @@
+import { RequestSession } from '@service/api/request-session';
+import { Session } from 'express-session';
 import SocketIO from 'socket.io';
+
+declare module 'http' {
+  interface IncomingMessage {
+    session: Session & RequestSession,
+  }
+}
 
 export function notNull<T>(value: T | null | undefined): value is T {
   return ((value !== null) && (value !== undefined));

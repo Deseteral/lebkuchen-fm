@@ -90,7 +90,6 @@ async function main(): Promise<void> {
 
   const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
-    // @ts-ignore ; Trust me - session does exist on request
     const requestSession: RequestSession = socket.request.session;
     const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession);
     if (isSessionAuthorized) {
