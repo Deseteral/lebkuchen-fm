@@ -18,14 +18,16 @@ class UsersService {
   }
 
   async setPassword(password: string, user: User): Promise<void> {
-    const salt = 'salty'; // TODO: generate this
+    const salt = nanoid(64);
+    const hashedPassword = await UsersService.hashPassword(password, salt);
+    const apiToken = nanoid(32);
 
     const newUser: User = {
       ...user,
       password: {
-        hashedPassword: await UsersService.hashPassword(password, salt),
+        hashedPassword,
         salt,
-        apiToken: nanoid(32),
+        apiToken,
       },
     };
 
