@@ -7,13 +7,13 @@ import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 @JsonController('/commands/text')
+@Authorized()
 class TextCommandController {
   private static logger = new Logger('text-command-controller');
 
   constructor(private commandExecutorService: CommandExecutorService) { }
 
   @Post('/')
-  @Authorized()
   async processTextCommand(@Body() body: TextCommandRequestDto): Promise<TextCommandResponseDto> {
     const { text } = body;
     TextCommandController.logger.info(`Received ${text} command`);
