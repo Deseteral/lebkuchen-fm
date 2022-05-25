@@ -6,24 +6,24 @@ require('dotenv').config();
 
 import http from 'http';
 import path from 'path';
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
 import * as RoutingControllers from 'routing-controllers';
+import memoryStore from 'memorystore';
+import session from 'express-session';
 import { Logger } from '@service/infrastructure/logger';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { AdminEventStream } from '@service/event-stream/admin-event-stream';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Configuration } from '@service/infrastructure/configuration';
 import { DatabaseClient } from '@service/infrastructure/storage';
-import session from 'express-session';
 import { RequestSession } from '@service/api/request-session';
 import { UsersService } from '@service/domain/users/users-service';
 import { Action, HttpError, InternalServerError } from 'routing-controllers';
-// import memoryStore from 'memorystore';
-
-// const MemoryStore = memoryStore(session);
+import { nanoid } from 'nanoid';
+import { expressMiddlewareToSocketIoMiddleware } from '@service/utils/utils';
 
 const logger = new Logger('app-init');
 
@@ -33,14 +33,12 @@ async function main(): Promise<void> {
   Container.set(Configuration, config);
 
   /* Setup session middleware */
+  const MemoryStore = memoryStore(session);
   const sessionMiddleware = session({
-    secret: 'keyboard cat', // TODO: generate this
+    secret: nanoid(32),
     resave: false,
     saveUninitialized: true,
-    // cookie: { secure: false },
-    // store: new MemoryStore({
-    //   checkPeriod: 86400000, // TODO: prune expired entries every 24h
-    // }),
+    store: new MemoryStore({ checkPeriod: 24 * 60 * 60 * 1000 }),
   });
 
   /* Create HTTP server */
@@ -56,9 +54,12 @@ async function main(): Promise<void> {
       const requestSession: RequestSession = action.request.session;
       return Container.get(UsersService).isSessionAuthorized(requestSession);
     },
-    defaultErrorHandler: false, // TODO: This is a fix for https://github.com/typestack/routing-controllers/issues/653#issuecomment-1057906505
+    defaultErrorHandler: false,
   });
 
+  // TODO: The error handler below and a `defaultErrorHandler=false` flag in the configuration is a fix for an issue
+  // within routing-controllers. When that issue is resolved it should be possible to return to the default error handler.
+  // https://github.com/typestack/routing-controllers/issues/653#issuecomment-1057906505
   app.use((error: any, _: any, res: any, __: any) => {
     if (error instanceof HttpError) {
       res.status(error.httpCode).send(error);
@@ -71,7 +72,7 @@ async function main(): Promise<void> {
   const pathToStaticFiles = path.join(__dirname, 'public');
   app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
 
-  // For remaining unhandled by the service paths send client app, and let it handle that case
+  // For remaining (unhandled by the service) paths send client app, and let it handle that case
   app.all('*', (_: express.Request, res: express.Response) => {
     res.sendFile(path.join(pathToStaticFiles, 'index.html'), (err) => res.status(err ? 404 : 200).end());
   });
@@ -87,7 +88,7 @@ async function main(): Promise<void> {
   const playerNamespace = io.of('/player');
   const adminNamespace = io.of('/admin');
 
-  const ioSessionMiddleware = (socket: SocketIO.Socket, next: Function): void => sessionMiddleware(socket.request as Request, {} as Response, next as NextFunction);
+  const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
     // @ts-ignore ; Trust me - session does exist on request
     const requestSession: RequestSession = socket.request.session;
@@ -104,8 +105,6 @@ async function main(): Promise<void> {
 
   Container.set('io-player-namespace', playerNamespace);
   Container.set('io-admin-namespace', adminNamespace);
-
-  Container.set(SocketIO.Server, io);
   Container.get(PlayerEventStream);
   Container.get(AdminEventStream);
 
