@@ -1,19 +1,16 @@
 import { Service } from 'typedi';
 import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get, OnUndefined } from 'routing-controllers';
-import { Logger } from '@service/infrastructure/logger';
 import { AuthRequestDto } from '@service/lib';
-import { UsersService } from '@service/domain/users/users-service';
 import { RequestSession } from '@service/api/request-session';
 import { LoggedInResponseDto } from '@service/api/auth/model/logged-in-response-dto';
 import { Session as ExpressSession } from 'express-session';
 import { StatusCodes } from 'http-status-codes';
+import { AuthService } from '@service/domain/auth/auth-service';
 
 @Service()
 @JsonController('/auth')
 class AuthController {
-  private static logger = new Logger('auth-controller');
-
-  constructor(private usersService: UsersService) { }
+  constructor(private authService: AuthService) {}
 
   @Get('/')
   @Authorized()
@@ -22,44 +19,23 @@ class AuthController {
       throw new UnauthorizedError('Unauthorized user');
     }
 
-    return {
-      username: session.loggedUserName,
-    };
+    return { username: session.loggedUserName };
   }
 
   @Post('/')
   @OnUndefined(StatusCodes.OK)
   async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<void> {
     const { username, password } = authData;
-    const user = await this.usersService.getByName(username);
 
-    if (!user) {
-      AuthController.logger.info(`User "${username}" tried to log in, but does not exist`);
-      throw new UnauthorizedError('User does not exist');
-    }
-
-    const authorizeUser = (): void => {
-      session.loggedUserName = user.name; // eslint-disable-line no-param-reassign
-    };
-
-    // TODO: Extract this logic into auth service
-
-    if (user.password) {
-      if (await UsersService.checkPassword(password, user)) {
-        authorizeUser();
-        AuthController.logger.info(`User "${username}" logged in`);
-      } else {
-        AuthController.logger.info(`User "${username}" tried to log in, but provided wrong password`);
-        throw new UnauthorizedError('Incorrect password');
-      }
-    } else {
-      await this.usersService.setPassword(password, user);
-      authorizeUser();
-      AuthController.logger.info(`User "${username}" set new password`);
+    try {
+      await this.authService.authorize(username, password, session);
+    } catch (err) {
+      throw new UnauthorizedError((err as Error).message);
     }
   }
 
   @Post('/logout')
+  @Authorized()
   @OnUndefined(StatusCodes.OK)
   async logout(@Session() session: ExpressSession): Promise<void> {
     return new Promise((resolve) => {
