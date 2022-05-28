@@ -34,7 +34,7 @@ interface AppContainerProps {
 function AppContainer({ children }: AppContainerProps) {
   return (
     <Conatiner>
-      <Heading>LebkuchenFM admin panel</Heading>
+      <Heading>LebkuchenFM admin dashboard</Heading>
       <Banner src={BESTVIEWED_BANNER_URL} alt="This page is best viewed with Internet Explorer" />
       <MainContainer>
         {children}

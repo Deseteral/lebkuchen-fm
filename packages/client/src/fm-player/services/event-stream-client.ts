@@ -5,7 +5,7 @@ import * as SoundPlayerService from '../services/sound-player-service';
 import * as SpeechService from '../services/speech-service';
 import * as YouTubePlayerService from '../services/youtube-player-service';
 
-function connect() {
+function connect(): (() => void) {
   const client = io('/player');
   client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
@@ -60,6 +60,10 @@ function connect() {
         break;
     }
   });
+
+  return function disconnect() {
+    client.disconnect();
+  };
 }
 
 export {
