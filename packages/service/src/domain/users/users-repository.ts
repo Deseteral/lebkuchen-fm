@@ -9,8 +9,12 @@ class UsersRepository extends Repository<User> {
     super('users', storage);
   }
 
+  findAllOrderByNameDesc(): Promise<User[]> {
+    return this.collection.find({}).sort({ 'data.name': -1 }).toArray();
+  }
+
   findByName(name: string): Promise<User | null> {
-    return this.collection.findOne({ name });
+    return this.collection.findOne({ 'data.name': name });
   }
 
   findByApiToken(apiToken: string): Promise<User | null> {

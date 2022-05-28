@@ -2,13 +2,16 @@ import { ObjectId } from 'mongodb';
 
 export interface User {
   _id?: ObjectId,
-  name: string,
-  password: UserPassword | null,
+  data: UserData,
+  secret: (UserSecret | null),
+}
 
+export interface UserData {
+  name: string,
   // TODO: Add more data - creation date etc.
 }
 
-export interface UserPassword {
+export interface UserSecret {
   hashedPassword: string,
   salt: string,
   apiToken: string,

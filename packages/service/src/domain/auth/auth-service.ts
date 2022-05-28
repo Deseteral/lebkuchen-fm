@@ -18,7 +18,7 @@ class AuthService {
       throw new Error('User does not exist');
     }
 
-    const userDidSetPassword: boolean = (!!user.password);
+    const userDidSetPassword: boolean = (!!user.secret);
 
     if (userDidSetPassword) {
       const isPasswordCorrect = await UsersService.checkPassword(password, user);
@@ -62,21 +62,21 @@ class AuthService {
   private loginCorrectPassword(user: User, session: RequestSession): void {
     // Authorize session
     session.loggedUser = { // eslint-disable-line no-param-reassign
-      name: user.name,
-      apiToken: user.password!.apiToken,
+      name: user.data.name,
+      apiToken: user.secret!.apiToken,
     };
 
-    AuthService.logger.info(`User "${user.name}" logged in`);
+    AuthService.logger.info(`User "${user.data.name}" logged in`);
   }
 
   private loginWrongPassword(user: User): void {
-    AuthService.logger.info(`User "${user.name}" tried to log in, but provided wrong password`);
+    AuthService.logger.info(`User "${user.data.name}" tried to log in, but provided wrong password`);
     throw new Error('Incorrect password');
   }
 
   private async loginPasswordNotSet(user: User, nextPassword: string, session: RequestSession): Promise<void> {
     await this.usersService.setPassword(nextPassword, user);
-    AuthService.logger.info(`User "${user.name}" set new password`);
+    AuthService.logger.info(`User "${user.data.name}" set new password`);
 
     this.loginCorrectPassword(user, session);
   }

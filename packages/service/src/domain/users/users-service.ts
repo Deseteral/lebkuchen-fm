@@ -1,12 +1,17 @@
 import { Service } from 'typedi';
 import { UsersRepository } from '@service/domain/users/users-repository';
-import { User } from '@service/domain/users/user';
+import { User, UserData } from '@service/domain/users/user';
 import crypto from 'crypto';
 import { nanoid } from 'nanoid';
 
 @Service()
 class UsersService {
   constructor(private repository: UsersRepository) { }
+
+  async getAllUserData(): Promise<UserData[]> {
+    return (await this.repository.findAllOrderByNameDesc())
+      .map((user) => user.data);
+  }
 
   async getByName(name: string): Promise<User | null> {
     return this.repository.findByName(name);
@@ -23,7 +28,7 @@ class UsersService {
 
     const newUser: User = {
       ...user,
-      password: {
+      secret: {
         hashedPassword,
         salt,
         apiToken,
@@ -50,10 +55,10 @@ class UsersService {
   }
 
   static async checkPassword(password: string, user: User): Promise<boolean> {
-    if (!user.password) return false;
+    if (!user.secret) return false;
 
-    const hashedRequestPassword = await UsersService.hashPassword(password, user.password.salt);
-    return hashedRequestPassword === user.password.hashedPassword;
+    const hashedRequestPassword = await UsersService.hashPassword(password, user.secret.salt);
+    return hashedRequestPassword === user.secret.hashedPassword;
   }
 }
 
