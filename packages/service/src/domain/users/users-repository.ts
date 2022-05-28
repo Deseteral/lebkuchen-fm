@@ -21,6 +21,10 @@ class UsersRepository extends Repository<User> {
     return this.collection.findOne({ 'password.apiToken': apiToken });
   }
 
+  async insert(user: User): Promise<void> {
+    await this.collection.insertOne(user);
+  }
+
   async replace(user: User): Promise<void> {
     await this.collection.replaceOne({ _id: user._id }, user);
   }

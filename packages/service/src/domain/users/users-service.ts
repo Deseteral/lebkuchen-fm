@@ -21,6 +21,19 @@ class UsersService {
     return this.repository.findByApiToken(apiToken);
   }
 
+  async addNewUser(name: string): Promise<void> {
+    const existingUser = await this.getByName(name);
+    if (existingUser !== null) {
+      throw new Error(`User "${name}" already exists`);
+    }
+
+    const user: User = {
+      data: { name },
+      secret: null,
+    };
+    await this.repository.insert(user);
+  }
+
   async setPassword(password: string, user: User): Promise<void> {
     const salt = nanoid(64);
     const hashedPassword = await UsersService.hashPassword(password, salt);
