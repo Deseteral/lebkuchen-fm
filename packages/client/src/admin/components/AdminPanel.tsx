@@ -1,13 +1,20 @@
 import * as React from 'react';
 import io from 'socket.io-client';
-import { AdminEventData, Log } from 'lebkuchen-fm-service';
+import { AdminEventData, Log, UserData, UsersResponseDto } from 'lebkuchen-fm-service';
 import { AppContainer } from './AppContainer';
-import { WsConnections } from './WsConnections';
+import { Users } from './Users';
 import { Logs } from './Logs';
 
 function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
-  const [playerIds, setPlayerIds] = React.useState<string[]>([]);
+  const [loggedInPlayerIds, setLoggedInPlayerIds] = React.useState<string[]>([]);
+  const [userList, setUserList] = React.useState<UserData[]>([]);
+
+  React.useEffect(() => {
+    fetch('/users')
+      .then((res) => res.json())
+      .then((data: UsersResponseDto) => setUserList(data.users));
+  }, []);
 
   React.useEffect(() => {
     const client = io('/admin');
@@ -22,7 +29,7 @@ function AdminPanel() {
           break;
 
         case 'WsConnectionsEvent':
-          setPlayerIds(eventData.playerIds);
+          setLoggedInPlayerIds(eventData.playerIds);
           break;
 
         default:
@@ -34,7 +41,7 @@ function AdminPanel() {
   return (
     <AppContainer>
       <Logs logs={loggerHistory} />
-      <WsConnections playerIds={playerIds} />
+      <Users loggedInPlayerIds={loggedInPlayerIds} userList={userList} />
     </AppContainer>
   );
 }

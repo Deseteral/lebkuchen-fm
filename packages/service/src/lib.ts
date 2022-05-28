@@ -1,3 +1,5 @@
+import { UsersResponseDto } from './api/users/model/users-response-dto';
+import { UserData } from './domain/users/user';
 import { AuthRequestDto } from './api/auth/model/auth-request-dto';
 import { EventData, SpeedControl } from './event-stream/model/events';
 import { PlayerState, makeDefaultPlayerState } from './domain/player-state/player-state';
@@ -18,4 +20,6 @@ export {
   AdminEventData,
   ErrorResponse,
   AuthRequestDto,
+  UserData,
+  UsersResponseDto,
 };
