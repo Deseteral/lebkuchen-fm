@@ -10,10 +10,14 @@ function AdminPanel() {
   const [loggedInPlayerIds, setLoggedInPlayerIds] = React.useState<string[]>([]);
   const [userList, setUserList] = React.useState<UserData[]>([]);
 
-  React.useEffect(() => {
+  const refreshUserList = () => {
     fetch('/users')
       .then((res) => res.json())
       .then((data: UsersResponseDto) => setUserList(data.users));
+  };
+
+  React.useEffect(() => {
+    refreshUserList();
   }, []);
 
   React.useEffect(() => {
@@ -41,7 +45,11 @@ function AdminPanel() {
   return (
     <AppContainer>
       <Logs logs={loggerHistory} />
-      <Users loggedInPlayerIds={loggedInPlayerIds} userList={userList} />
+      <Users
+        loggedInPlayerIds={loggedInPlayerIds}
+        userList={userList}
+        onUserAdded={() => refreshUserList()}
+      />
     </AppContainer>
   );
 }

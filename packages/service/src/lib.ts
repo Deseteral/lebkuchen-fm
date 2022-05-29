@@ -1,3 +1,4 @@
+import { AddUserRequestDto } from './api/users/model/add-user-request-dto';
 import { UsersResponseDto } from './api/users/model/users-response-dto';
 import { UserData } from './domain/users/user';
 import { AuthRequestDto } from './api/auth/model/auth-request-dto';
@@ -22,4 +23,5 @@ export {
   AuthRequestDto,
   UserData,
   UsersResponseDto,
+  AddUserRequestDto,
 };
