@@ -1,8 +1,9 @@
 import { Service } from 'typedi';
-import { JsonController, Get, Authorized, Post } from 'routing-controllers';
+import { JsonController, Get, Authorized, Post, Body, OnUndefined } from 'routing-controllers';
 import { UsersService } from '@service/domain/users/users-service';
 import { UsersResponseDto } from '@service/api/users/model/users-response-dto';
 import { AddUserRequestDto } from '@service/api/users/model/add-user-request-dto';
+import { StatusCodes } from 'http-status-codes';
 
 @Service()
 @JsonController('/users')
@@ -17,7 +18,8 @@ class UsersController {
   }
 
   @Post('/')
-  async addUser(addUserRequest: AddUserRequestDto): Promise<void> {
+  @OnUndefined(StatusCodes.CREATED)
+  async addUser(@Body() addUserRequest: AddUserRequestDto): Promise<void> {
     await this.usersService.addNewUser(addUserRequest.username);
   }
 }
