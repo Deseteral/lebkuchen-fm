@@ -52,8 +52,8 @@ class XSoundsService {
       throw new Error(`Dźwięk "${soundName}" nie istnieje`);
     }
 
-    const tags = (xSound.tags || []);
-    const updatedSound = {
+    const tags: string[] = (xSound.tags || []);
+    const updatedSound: XSound = {
       ...xSound,
       tags: Array.from(new Set([...tags, tag])),
     };
@@ -68,14 +68,14 @@ class XSoundsService {
       throw new Error(`Dźwięk "${soundName}" nie istnieje`);
     }
 
-    const tags = (xSound.tags || []);
+    const tags: string[] = (xSound.tags || []);
 
     const searchIndex = tags.indexOf(tag);
     if (searchIndex > -1) {
       tags.splice(searchIndex, 1);
     }
 
-    const updatedSound = {
+    const updatedSound: XSound = {
       ...xSound,
       tags,
     };
