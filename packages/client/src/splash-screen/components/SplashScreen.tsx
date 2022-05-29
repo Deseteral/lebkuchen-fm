@@ -1,7 +1,12 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
+import { userLogout, checkLoginStateAndRedirect } from '../../services/user-account-service';
 
 function SplashScreen() {
+  React.useEffect(() => {
+    checkLoginStateAndRedirect();
+  }, []);
+
   return (
     <div className="bg-gray-900 bg-opacity-75 m-8 rounded-xl">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
@@ -33,6 +38,15 @@ function SplashScreen() {
             >
               Soundboard
             </NavLink>
+          </div>
+          <div className="inline-flex rounded-md shadow ml-8">
+            <button
+              type="button"
+              onClick={() => userLogout()}
+              className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 text-xl bg-white hover:bg-indigo-100"
+            >
+              Wyloguj
+            </button>
           </div>
           <div className="ml-3 inline-flex rounded-md shadow" />
         </div>

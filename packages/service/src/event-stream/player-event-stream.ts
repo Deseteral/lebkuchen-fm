@@ -1,5 +1,5 @@
 import SocketIO from 'socket.io';
-import { Service } from 'typedi';
+import { Inject, Service } from 'typedi';
 import mitt, { Emitter } from 'mitt';
 import { PlayerStateUpdateEvent, PlayerStateRequestEvent, EventData } from '@service/event-stream/model/events';
 import { Logger } from '@service/infrastructure/logger';
@@ -10,12 +10,9 @@ class PlayerEventStream {
   private static readonly logger = new Logger('player-event-stream');
 
   private emitter: Emitter;
-  private playerNamespace: SocketIO.Namespace;
 
-  constructor(private io: SocketIO.Server) {
+  constructor(@Inject('io-player-namespace') private playerNamespace: SocketIO.Namespace) {
     this.emitter = mitt();
-
-    this.playerNamespace = this.io.of('/player');
     this.playerNamespace.on('connection', (socket) => this.playerConnected(socket));
   }
 
