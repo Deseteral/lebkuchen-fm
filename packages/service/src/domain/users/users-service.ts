@@ -28,7 +28,10 @@ class UsersService {
     }
 
     const user: User = {
-      data: { name },
+      data: {
+        name,
+        creationDate: new Date(),
+      },
       secret: null,
     };
     await this.repository.insert(user);

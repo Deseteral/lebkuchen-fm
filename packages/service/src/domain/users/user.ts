@@ -8,7 +8,7 @@ export interface User {
 
 export interface UserData {
   name: string,
-  // TODO: Add more data - creation date etc.
+  creationDate: Date,
 }
 
 export interface UserSecret {
