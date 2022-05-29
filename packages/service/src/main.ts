@@ -54,6 +54,10 @@ async function main(): Promise<void> {
       action.request.session,
       parseAuthorizationHeader(action.request.headers.authorization),
     ),
+    currentUserChecker: async (action: Action) => Container.get(AuthService).getRequestsUser(
+      action.request.session,
+      parseAuthorizationHeader(action.request.headers.authorization),
+    ),
     defaultErrorHandler: false,
   });
 

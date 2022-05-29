@@ -41,16 +41,24 @@ class AuthService {
     return (isSessionAuthorized || isApiTokenAuthorized);
   }
 
+  async getRequestsUser(session: RequestSession, token: (string | null)): Promise<User| null> {
+    const userFromSession = await this.getUserFromSession(session);
+    const userFromToken = token ? await this.usersService.getByApiToken(token) : null;
+    return userFromSession || userFromToken;
+  }
+
   async isWebSocketAuthorized(session: RequestSession): Promise<boolean> {
     return this.isSessionAuthorized(session);
   }
 
-  private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
-    if (!requestSession.loggedUser) {
-      return false;
-    }
+  private async getUserFromSession(session: RequestSession): Promise<User | null> {
+    return session.loggedUser
+      ? this.usersService.getByName(session.loggedUser.name)
+      : null;
+  }
 
-    const user = await this.usersService.getByName(requestSession.loggedUser.name);
+  private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
+    const user = await this.getUserFromSession(requestSession);
     return (user !== null);
   }
 
