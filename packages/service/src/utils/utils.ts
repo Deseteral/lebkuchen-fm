@@ -1,12 +1,6 @@
 import { RequestSession } from '@service/api/request-session';
-import { Session } from 'express-session';
+import { IncomingMessage } from 'http';
 import SocketIO from 'socket.io';
-
-declare module 'http' {
-  interface IncomingMessage {
-    session: Session & RequestSession,
-  }
-}
 
 export function notNull<T>(value: T | null | undefined): value is T {
   return ((value !== null) && (value !== undefined));
@@ -20,4 +14,9 @@ export function parseAuthorizationHeader(authHeaderValue: string): (string | nul
   const result = /^Basic (.+)$/.exec(authHeaderValue);
   const token = result && result[1];
   return token;
+}
+
+export function extractSessionFromIncomingMessage(incomingMessage: IncomingMessage): RequestSession {
+  // @ts-ignore Trust me, there is session in message
+  return incomingMessage.session;
 }

@@ -22,7 +22,7 @@ import { DatabaseClient } from '@service/infrastructure/storage';
 import { RequestSession } from '@service/api/request-session';
 import { Action, HttpError, InternalServerError } from 'routing-controllers';
 import { nanoid } from 'nanoid';
-import { expressMiddlewareToSocketIoMiddleware, parseAuthorizationHeader } from '@service/utils/utils';
+import { expressMiddlewareToSocketIoMiddleware, extractSessionFromIncomingMessage, parseAuthorizationHeader } from '@service/utils/utils';
 import { AuthService } from '@service/domain/auth/auth-service';
 
 const logger = new Logger('app-init');
@@ -90,7 +90,7 @@ async function main(): Promise<void> {
 
   const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
-    const requestSession: RequestSession = socket.request.session;
+    const requestSession: RequestSession = extractSessionFromIncomingMessage(socket.request);
     const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession);
     if (isSessionAuthorized) {
       next();

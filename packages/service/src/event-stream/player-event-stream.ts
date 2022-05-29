@@ -4,6 +4,7 @@ import mitt, { Emitter } from 'mitt';
 import { PlayerStateUpdateEvent, PlayerStateRequestEvent, EventData } from '@service/event-stream/model/events';
 import { Logger } from '@service/infrastructure/logger';
 import { PlayerState, makeDefaultPlayerState } from '@service/domain/player-state/player-state';
+import { extractSessionFromIncomingMessage } from '@service/utils/utils';
 
 @Service()
 class PlayerEventStream {
@@ -22,7 +23,7 @@ class PlayerEventStream {
 
   public getConnectedUsernames(): string[] {
     return Array.from(this.playerNamespace.sockets, ([_key, value]) => value)
-      .map((socket) => socket.request.session)
+      .map((socket) => extractSessionFromIncomingMessage(socket.request))
       .map((session) => (session.loggedUser?.name || 'unexpected error'));
   }
 
