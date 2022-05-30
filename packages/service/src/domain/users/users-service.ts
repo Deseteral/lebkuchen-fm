@@ -21,9 +21,14 @@ class UsersService {
     return this.repository.findByApiToken(apiToken);
   }
 
+  async doesUserExist(name: string): Promise<boolean> {
+    const user = await this.getByName(name);
+    return (user !== null);
+  }
+
   async addNewUser(name: string): Promise<void> {
-    const existingUser = await this.getByName(name);
-    if (existingUser !== null) {
+    const exists = await this.doesUserExist(name);
+    if (exists) {
       throw new Error(`User "${name}" already exists`);
     }
 
@@ -51,9 +56,10 @@ class UsersService {
       },
     };
 
-    this.repository.replace(newUser);
+    await this.repository.replace(newUser);
   }
 
+  // TODO: This belongs to auth service
   static hashPassword(password: string, salt: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const iterations = 50000;
