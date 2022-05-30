@@ -61,7 +61,6 @@ class UsersService {
     return newUser;
   }
 
-  // TODO: This belongs to auth service
   static hashPassword(password: string, salt: string): Promise<string> {
     return new Promise((resolve, reject) => {
       const iterations = 50000;
