@@ -55,7 +55,10 @@ function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
       body: JSON.stringify(data),
       headers: { 'Content-Type': 'application/json' },
     };
-    fetch('/users', options).then(() => onUserAdded());
+    fetch('/users', options).then(() => {
+      onUserAdded();
+      setAddUserName('');
+    });
   };
 
   return (
