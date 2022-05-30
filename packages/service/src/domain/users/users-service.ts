@@ -42,7 +42,7 @@ class UsersService {
     await this.repository.insert(user);
   }
 
-  async setPassword(password: string, user: User): Promise<void> {
+  async setPassword(password: string, user: User): Promise<User> {
     const salt = nanoid(64);
     const hashedPassword = await UsersService.hashPassword(password, salt);
     const apiToken = nanoid(32);
@@ -57,6 +57,8 @@ class UsersService {
     };
 
     await this.repository.replace(newUser);
+
+    return newUser;
   }
 
   // TODO: This belongs to auth service

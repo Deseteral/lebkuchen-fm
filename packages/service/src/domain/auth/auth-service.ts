@@ -92,11 +92,8 @@ class AuthService {
   }
 
   private async loginPasswordNotSet(user: User, nextPassword: string, session: RequestSession): Promise<void> {
-    await this.usersService.setPassword(nextPassword, user);
+    const userWithPassword = await this.usersService.setPassword(nextPassword, user);
     AuthService.logger.info(`User "${user.data.name}" set new password`);
-
-    const userWithPassword = await this.usersService.getByName(user.data.name);
-    if (!userWithPassword) throw new Error('Something went wrong');
 
     this.loginCorrectPassword(userWithPassword, session);
   }
