@@ -4,7 +4,7 @@ import { HistoryService } from '@service/domain/history/history-service';
 import { HistoryResponseDto } from '@service/api/history/model/history-response-dto';
 
 @Service()
-@JsonController('/history')
+@JsonController('/api/history')
 @Authorized()
 class HistoryController {
   constructor(private historyService: HistoryService) { }

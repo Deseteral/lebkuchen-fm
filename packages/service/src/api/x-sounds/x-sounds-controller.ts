@@ -9,7 +9,7 @@ import { XSoundsResponseDto } from '@service/api/x-sounds/model/xsounds-response
 import { User } from '@service/domain/users/user';
 
 @Service()
-@Controller('/x-sounds')
+@Controller('/api/x-sounds')
 @Authorized()
 class XSoundsController {
   private static logger = new Logger('x-sound-upload-controller');

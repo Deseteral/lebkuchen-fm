@@ -7,7 +7,7 @@ import { Configuration } from '@service/infrastructure/configuration';
 import { Logger } from '@service/infrastructure/logger';
 
 @Service()
-@Controller('/commands/slack')
+@Controller('/api/commands/slack')
 class SlackCommandController {
   private static logger = new Logger('slack-command-controller');
 

@@ -89,8 +89,8 @@ async function main(): Promise<void> {
   const server: http.Server = new http.Server(app);
   const io = new SocketIO.Server(server, { serveClient: false });
 
-  const playerNamespace = io.of('/player');
-  const adminNamespace = io.of('/admin');
+  const playerNamespace = io.of('/api/player');
+  const adminNamespace = io.of('/api/admin');
 
   const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {

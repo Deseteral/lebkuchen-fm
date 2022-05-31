@@ -6,7 +6,7 @@ import { AddUserRequestDto } from '@service/api/users/model/add-user-request-dto
 import { StatusCodes } from 'http-status-codes';
 
 @Service()
-@JsonController('/users')
+@JsonController('/api/users')
 @Authorized()
 class UsersController {
   constructor(private usersService: UsersService) { }

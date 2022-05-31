@@ -1,5 +1,6 @@
-import { UserData, AddUserRequestDto } from 'lebkuchen-fm-service';
+import { UserData } from 'lebkuchen-fm-service';
 import * as React from 'react';
+import { addNewUser } from '../../admin/services/add-user-service';
 import styled from 'styled-components';
 import { Section } from './Section';
 
@@ -55,14 +56,8 @@ interface UsersProps {
 function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
   const [addUserName, setAddUserName] = React.useState<string>('');
 
-  const addNewUser = () => {
-    const data: AddUserRequestDto = { username: addUserName };
-    const options: RequestInit = {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    };
-    fetch('/users', options).then(() => {
+  const onAddUserButtonClick = () => {
+    addNewUser(addUserName).then(() => {
       onUserAdded();
       setAddUserName('');
     });
@@ -76,7 +71,7 @@ function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
           onChange={(e) => setAddUserName(e.target.value)}
           placeholder="Username"
         />
-        <Button onClick={() => addNewUser()}>
+        <Button onClick={() => onAddUserButtonClick()}>
           Add user
         </Button>
       </AddNewUserRow>

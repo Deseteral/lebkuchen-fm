@@ -58,7 +58,7 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     formData.append('soundFile', files[0]);
     formData.append('soundName', soundName);
 
-    const response = await fetch('/x-sounds', { method: 'POST', body: formData });
+    const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
     if (response.status === 200) {

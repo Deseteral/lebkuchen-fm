@@ -1,6 +1,6 @@
 async function queueXSound(name: string) {
   console.log('queuing sound ', name);
-  fetch('/commands/text', {
+  fetch('/api/commands/text', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

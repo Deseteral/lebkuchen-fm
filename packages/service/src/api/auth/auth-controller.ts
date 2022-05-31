@@ -8,7 +8,7 @@ import { StatusCodes } from 'http-status-codes';
 import { AuthService } from '@service/domain/auth/auth-service';
 
 @Service()
-@JsonController('/auth')
+@JsonController('/api/auth')
 class AuthController {
   constructor(private authService: AuthService) {}
 

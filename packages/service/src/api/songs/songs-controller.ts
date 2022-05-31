@@ -4,7 +4,7 @@ import { SongsService } from '@service/domain/songs/songs-service';
 import { SongsResponseDto } from '@service/api/songs/model/songs-response-dto';
 
 @Service()
-@JsonController('/songs')
+@JsonController('/api/songs')
 @Authorized()
 class SongsController {
   constructor(private songsService: SongsService) { }

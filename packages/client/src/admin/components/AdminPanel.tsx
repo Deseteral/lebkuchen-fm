@@ -11,7 +11,7 @@ function AdminPanel() {
   const [userList, setUserList] = React.useState<UserData[]>([]);
 
   const refreshUserList = () => {
-    fetch('/users')
+    fetch('/api/users')
       .then((res) => res.json())
       .then((data: UsersResponseDto) => setUserList(data.users));
   };
@@ -21,7 +21,7 @@ function AdminPanel() {
   }, []);
 
   React.useEffect(() => {
-    const client = io('/admin');
+    const client = io('/api/admin');
     client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
     client.on('message', (eventData: AdminEventData) => {
