@@ -3,9 +3,12 @@ import { UsersRepository } from '@service/domain/users/users-repository';
 import { User, UserData } from '@service/domain/users/user';
 import crypto from 'crypto';
 import { nanoid } from 'nanoid';
+import { Logger } from '@service/infrastructure/logger';
 
 @Service()
 class UsersService {
+  private static logger = new Logger('users-service');
+
   constructor(private repository: UsersRepository) { }
 
   async getAllUserData(): Promise<UserData[]> {
@@ -41,7 +44,10 @@ class UsersService {
       },
       secret: null,
     };
+
     await this.repository.insert(user);
+
+    UsersService.logger.info(`Created new user "${user.data.name}"`);
   }
 
   async setPassword(password: string, user: User): Promise<User> {
