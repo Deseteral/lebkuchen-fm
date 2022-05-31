@@ -8,12 +8,15 @@ const Conatiner = styled.div`
   height: 100vh;
   background-color: #c0c0c0;
   padding: 8px;
+  font-family: serif;
 `;
 
 const Heading = styled.h1`
   margin: 0;
   padding: 16px 8px;
   margin-bottom: 32px;
+  font-size: 32px;
+  font-weight: bold;
 `;
 
 const Banner = styled.img`

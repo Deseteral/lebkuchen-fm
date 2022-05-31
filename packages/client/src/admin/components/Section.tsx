@@ -8,14 +8,20 @@ const Container = styled.section`
   padding-block-start: 8px;
   margin: 0;
   margin-bottom: 32px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 `;
 
 const Header = styled.h2`
   margin: 0;
-  margin-top: -23px;
+  margin-top: -26px;
   padding-bottom: 8px;
   background: #c0c0c0;
   width: fit-content;
+  font-size: 24px;
+  font-weight: bold;
 `;
 
 interface SectionProps {

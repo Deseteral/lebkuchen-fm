@@ -5,6 +5,8 @@ import { Section } from './Section';
 
 const UserName = styled.code<{online: boolean}>`
   color: ${(props) => (props.online ? 'darkgreen' : 'black')};
+  font-size: 13px;
+  margin-left: 8px;
 `;
 
 const AddNewUserRow = styled.div`
@@ -22,6 +24,9 @@ const Input = styled.input`
   background-color: #fff;
   box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
   padding: 3px 4px;
+  font-family: sans-serif;
+  font-size: 13px;
+  outline: none;
 `;
 
 const Button = styled.button`
@@ -32,6 +37,8 @@ const Button = styled.button`
   padding: 0 12px;
   background: silver;
   box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px grey, inset 2px 2px #dfdfdf;
+  font-family: sans-serif;
+  font-size: 13px;
 
   &:active {
     box-shadow: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #dfdfdf, inset 2px 2px grey;
@@ -74,12 +81,12 @@ function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
         </Button>
       </AddNewUserRow>
 
-      <div>Currently logged in user count: {loggedInPlayerIds.length}</div>
+      <div>Currently logged in users count: {loggedInPlayerIds.length}</div>
       <ul>
         {userList.map((userData) => (
           <li>
             <UserName online={loggedInPlayerIds.includes(userData.name)}>
-              {userData.name}
+              {`> ${userData.name}`}
             </UserName>
           </li>
         ))}
