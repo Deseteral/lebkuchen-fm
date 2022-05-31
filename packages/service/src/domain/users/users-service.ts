@@ -32,10 +32,12 @@ class UsersService {
       throw new Error(`User "${name}" already exists`);
     }
 
+    const dateNow = new Date();
     const user: User = {
       data: {
         name,
-        creationDate: new Date(),
+        creationDate: dateNow,
+        lastLoggedIn: dateNow,
       },
       secret: null,
     };
@@ -59,6 +61,18 @@ class UsersService {
     await this.repository.replace(newUser);
 
     return newUser;
+  }
+
+  async updateLastLoginDate(user: User): Promise<void> {
+    const updatedUser: User = {
+      ...user,
+      data: {
+        ...user.data,
+        lastLoggedIn: new Date(),
+      },
+    };
+
+    await this.repository.replace(updatedUser);
   }
 
   static hashPassword(password: string, salt: string): Promise<string> {

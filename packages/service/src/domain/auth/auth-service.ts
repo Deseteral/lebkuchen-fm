@@ -32,7 +32,7 @@ class AuthService {
     if (userDidSetPassword) {
       const isPasswordCorrect = await UsersService.checkPassword(password, user);
       if (isPasswordCorrect) {
-        this.loginCorrectPassword(user, session);
+        await this.loginCorrectPassword(user, session);
       } else {
         this.loginWrongPassword(user);
       }
@@ -76,12 +76,14 @@ class AuthService {
     return (user !== null);
   }
 
-  private loginCorrectPassword(user: User, session: RequestSession): void {
+  private async loginCorrectPassword(user: User, session: RequestSession): Promise<void> {
     // Authorize session
     session.loggedUser = { // eslint-disable-line no-param-reassign
       name: user.data.name,
       apiToken: user.secret!.apiToken,
     };
+
+    await this.usersService.updateLastLoginDate(user);
 
     AuthService.logger.info(`User "${user.data.name}" logged in`);
   }
@@ -95,7 +97,7 @@ class AuthService {
     const userWithPassword = await this.usersService.setPassword(nextPassword, user);
     AuthService.logger.info(`User "${user.data.name}" set new password`);
 
-    this.loginCorrectPassword(userWithPassword, session);
+    await this.loginCorrectPassword(userWithPassword, session);
   }
 }
 

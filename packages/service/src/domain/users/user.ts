@@ -9,6 +9,7 @@ export interface User {
 export interface UserData {
   name: string,
   creationDate: Date,
+  lastLoggedIn: Date,
 }
 
 export interface UserSecret {
