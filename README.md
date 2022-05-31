@@ -61,6 +61,16 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 #### Development
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
 
+#### Authorization
+LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*`
+endpoint has to be authorized.
+
+Session cookie is set during successful `POST` request to `/api/auth` endpoint and is generally handled by the web client.
+
+For external integrations users should use API tokens. Each user can obtain this token after logging in the web client
+and requesting `GET /api/auth` as mentioned in [REST endpoints](#REST-endpoints) section of this documentation. Using this
+token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api token>` header set.
+
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
