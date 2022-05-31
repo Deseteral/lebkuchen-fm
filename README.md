@@ -65,31 +65,48 @@ Running `npm run dev` builds your code and runs the application. You have to set
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
 #### REST endpoints
-`POST /commands/slack` \
-Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
-
----
-
-`POST /commands/text` \
-Plain text interface for slash commands.
-
-**Body**
-```json
-{
-  "text": "/fm help"
-}
-```
+`GET /api/auth` \
+Information about currently logged in user.
 
 **Response**
 ```json
 {
-  "textResponse": "Command response in plain text format"
+  "username": "anton",
+  "apiToken": "this_users_api_token"
 }
 ```
 
 ---
 
-`GET /songs` \
+`POST /api/auth/logout` \
+Logs out currently logged in user.
+
+---
+
+`GET /api/history` \
+History listing containing list of queued songs.
+
+**Response**
+```json
+{
+  "entries": [
+    {
+      "date": "2022-05-31T12:46:17.968Z",
+      "youtubeId": "c6pPAso-y8s"
+    },
+    // ...
+  ]
+}
+```
+
+---
+
+`POST /api/commands/slack` \
+Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
+
+---
+
+`GET /api/songs` \
 Returns list of all songs in the database sorted by play count (descending).
 
 **Response**
@@ -109,7 +126,45 @@ Returns list of all songs in the database sorted by play count (descending).
 
 ---
 
-`GET /x-sounds` \
+`POST /api/commands/text` \
+Plain text interface for slash commands.
+
+**Body**
+```json
+{
+  "text": "/fm help"
+}
+```
+
+**Response**
+```json
+{
+  "textResponse": "Command response in plain text format"
+}
+```
+
+---
+
+`GET /api/users` \
+List of all registered users.
+
+**Response**
+```json
+{
+  "users": [
+    {
+      "name": "anton",
+      "creationDate": "2022-05-31T19:59:05.879Z",
+      "lastLoggedIn": "2022-05-31T20:01:17.072Z"
+    },
+    // ...
+  ]
+}
+```
+
+---
+
+`GET /api/x-sounds` \
 Returns list of all XSounds in the database.
 
 **Response**
@@ -129,7 +184,7 @@ Returns list of all XSounds in the database.
 
 ---
 
-`POST /x-sounds` \
+`POST /api/x-sounds` \
 Adds new sound file to X Sounds database.
 
 **Request** \
