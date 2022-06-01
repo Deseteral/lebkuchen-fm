@@ -1,7 +1,7 @@
 # LebkuchenFM
 [![Actions Status](https://github.com/Deseteral/lebkuchen-fm/workflows/Build/badge.svg)](https://github.com/Deseteral/lebkuchen-fm/actions)
 
-Monorepo for Lebkuchen FM project - _YouTube TV-like_ service with super powers controlled via Slack.
+Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Slack.
 
 ## Development
 Start by installing dependencies:
@@ -14,15 +14,15 @@ You can run tests using:
 npm test
 ```
 
-To build application run
+To build application run:
 ```sh
 npm run build
 ```
 
-To run the application you have to have MongoDB running on localhost. If you have docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in docker.
-For more info you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
+To run the application you have to connect to MongoDB database.
 
-If you don't want to use Docker you can run MongoDB locally. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).
+If you have Docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in Docker locally. For
+more information you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
 
 Then create `.env` file in the root of this project and put desired configuration variables in it (refer to [Service > Configuration](#Configuration) section of this document for available options).
 
@@ -103,8 +103,7 @@ History listing containing list of queued songs.
     {
       "date": "2022-05-31T12:46:17.968Z",
       "youtubeId": "c6pPAso-y8s"
-    },
-    // ...
+    }
   ]
 }
 ```
@@ -120,7 +119,7 @@ Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/
 Returns list of all songs in the database sorted by play count (descending).
 
 **Response**
-```jsonc
+```json
 {
   "songs": [
     {
@@ -128,8 +127,7 @@ Returns list of all songs in the database sorted by play count (descending).
       "name": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
       "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
       "timesPlayed": 1337
-    },
-    // ...
+    }
   ]
 }
 ```
@@ -166,8 +164,7 @@ List of all registered users.
       "name": "anton",
       "creationDate": "2022-05-31T19:59:05.879Z",
       "lastLoggedIn": "2022-05-31T20:01:17.072Z"
-    },
-    // ...
+    }
   ]
 }
 ```
@@ -178,7 +175,7 @@ List of all registered users.
 Returns list of all XSounds in the database.
 
 **Response**
-```jsonc
+```json
 {
   "sounds": [
     {
@@ -186,8 +183,7 @@ Returns list of all XSounds in the database.
       "name": "example sound",
       "url": "https://example.com/example_sound.wav",
       "timesPlayed": 6
-    },
-    // ...
+    }
   ]
 }
 ```
@@ -203,7 +199,7 @@ Requires content type to be `multipart/form-data` with fields:
 - `soundFile`: sound [File](https://developer.mozilla.org/en-US/docs/Web/API/File) ideally in mp3 or wav format
 
 **Response**
-```jsonc
+```json
 {
   "_id": "storage_id",
   "name": "my new sound",
