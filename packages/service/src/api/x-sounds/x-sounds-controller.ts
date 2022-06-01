@@ -1,10 +1,9 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser } from 'routing-controllers';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser, InternalServerError } from 'routing-controllers';
 import { MissingRequriedFieldsError } from '@service/api/x-sounds/model/missing-required-fields-error';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 import { Logger } from '@service/infrastructure/logger';
-import { InternalServerError } from '@service/api/internal-server-error';
 import { XSoundsResponseDto } from '@service/api/x-sounds/model/xsounds-response-dto';
 import { User } from '@service/domain/users/user';
 
@@ -46,7 +45,7 @@ class XSoundsController {
     } catch (err) {
       const errorMessage = (err as Error).message;
       XSoundsController.logger.error(`An error occured ${errorMessage}`);
-      throw new InternalServerError(err as Error);
+      throw new InternalServerError(errorMessage);
     }
   }
 }
