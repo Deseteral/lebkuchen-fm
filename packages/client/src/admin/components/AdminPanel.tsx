@@ -1,9 +1,10 @@
 import * as React from 'react';
 import io from 'socket.io-client';
-import { AdminEventData, Log, UserData, UsersResponseDto } from 'lebkuchen-fm-service';
+import { AdminEventData, Log, UserData } from 'lebkuchen-fm-service';
 import { AppContainer } from './AppContainer';
 import { Users } from './Users';
 import { Logs } from './Logs';
+import { getUserList } from '../services/get-user-list';
 
 function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
@@ -11,9 +12,7 @@ function AdminPanel() {
   const [userList, setUserList] = React.useState<UserData[]>([]);
 
   const refreshUserList = () => {
-    fetch('/api/users')
-      .then((res) => res.json())
-      .then((data: UsersResponseDto) => setUserList(data.users));
+    getUserList().then((users) => setUserList(users));
   };
 
   React.useEffect(() => {
