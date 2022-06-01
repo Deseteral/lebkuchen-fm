@@ -71,6 +71,10 @@ For external integrations users should use API tokens. Each user can obtain this
 and requesting `GET /api/auth` as mentioned in [REST endpoints](#REST-endpoints) section of this documentation. Using this
 token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api token>` header set.
 
+There is no way to register as a new user. Instead LebkuchenFM functions as an invite only system. \
+When there are no registered users, first login is always correct and creates that account. Every next user has to be
+created using admin dashboard (`/admin`). That way a new account will be created and user is going be able to set the password when they login for the first time.
+
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
