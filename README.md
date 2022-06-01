@@ -21,8 +21,7 @@ npm run build
 
 To run the application you have to connect to MongoDB database.
 
-If you have Docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in Docker locally. For
-more information you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
+If you have Docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in Docker locally. For more information you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
 
 Then create `.env` file in the root of this project and put desired configuration variables in it (refer to [Service > Configuration](#Configuration) section of this document for available options).
 
@@ -62,18 +61,14 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
 
 #### Authorization
-LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*`
-endpoint has to be authorized.
+LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.
 
 Session cookie is set during successful `POST` request to `/api/auth` endpoint and is generally handled by the web client.
 
-For external integrations users should use API tokens. Each user can obtain this token after logging in the web client
-and requesting `GET /api/auth` as mentioned in [REST endpoints](#REST-endpoints) section of this documentation. Using this
-token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api token>` header set.
+For external integrations users should use API tokens. Each user can obtain this token after logging in the web client and requesting `GET /api/auth` as mentioned in [REST endpoints](#REST-endpoints) section of this documentation. Using this token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api token>` header set.
 
 There is no way to register as a new user. Instead LebkuchenFM functions as an invite only system. \
-When there are no registered users, first login is always correct and creates that account. Every next user has to be
-created using admin dashboard (`/admin`). That way a new account will be created and user is going be able to set the password when they login for the first time.
+When there are no registered users, first login is always correct and creates that account. Every next user has to be created using admin dashboard (`/admin`). That way a new account will be created and user is going be able to set the password when they login for the first time.
 
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
@@ -216,8 +211,7 @@ Requires content type to be `multipart/form-data` with fields:
 Web client for the application. Communicates with the service via WebSocket event stream.
 
 #### Development
-Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.
-
+Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.\
 Running `npm run build` builds the application in production mode.
 
 ### Devops scripts (`/scripts`)
