@@ -58,7 +58,7 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 - `LOCALE` - language of the service
 
 #### Development
-Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
+Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [Development](#Development) section of this document to have fully functioning application.
 
 #### Authorization
 LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.
