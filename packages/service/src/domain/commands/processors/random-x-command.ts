@@ -17,7 +17,7 @@ class RandomXCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const { tags } = this.amountAndKeywordsFromArgs(commandArgs);
+    const { tags } = this.keywordsFromArgs(commandArgs);
 
     const allXSounds = await this.xSoundsService.getAll();
     const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => tags.every((word) => xSound.tags?.includes(word.toLowerCase()));
@@ -47,7 +47,7 @@ class RandomXCommand extends CommandProcessor {
     };
   }
 
-  private amountAndKeywordsFromArgs(args: string[]): { tags: string[] } {
+  private keywordsFromArgs(args: string[]): { tags: string[] } {
     const argsCopy = Array.from(args);
     return { tags: argsCopy };
   }
