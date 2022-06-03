@@ -16,35 +16,35 @@ class RandomXCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-      const commandArgs = command.getArgsByDelimiter(' ');
-      const { tags } = this.amountAndKeywordsFromArgs(commandArgs);
+    const commandArgs = command.getArgsByDelimiter(' ');
+    const { tags } = this.amountAndKeywordsFromArgs(commandArgs);
 
-      const allXSounds = await this.xSoundsService.getAll();
-      const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => tags.every((word) => xSound.tags?.includes(word.toLowerCase()));
+    const allXSounds = await this.xSoundsService.getAll();
+    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => tags.every((word) => xSound.tags?.includes(word.toLowerCase()));
 
-      const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
+    const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
 
-      if (xSoundsFollowingCriteria.isEmpty()) {
-        const message = 'Nie znaleziono dźwięków spełniających kryteria.';
-        throw new Error(message);
-      }
+    if (xSoundsFollowingCriteria.isEmpty()) {
+      const message = 'Nie znaleziono dźwięków spełniających kryteria.';
+      throw new Error(message);
+    }
 
-      const xSoundToPlay = xSoundsFollowingCriteria[0];
+    const xSoundToPlay = xSoundsFollowingCriteria[0];
 
-      const eventData: PlayXSoundEvent = { id: 'PlayXSoundEvent', soundUrl: xSoundToPlay.url };
-      this.playerEventStream.sendToEveryone(eventData);
+    const eventData: PlayXSoundEvent = { id: 'PlayXSoundEvent', soundUrl: xSoundToPlay.url };
+    this.playerEventStream.sendToEveryone(eventData);
 
-      this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
+    this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-      const text = this.buildMessage(xSoundToPlay.name);
+    const text = this.buildMessage(xSoundToPlay.name);
 
-      return {
-        messages: [{
-          text,
-          type: 'MARKDOWN',
-        }],
-        isVisibleToIssuerOnly: false,
-      };
+    return {
+      messages: [{
+        text,
+        type: 'MARKDOWN',
+      }],
+      isVisibleToIssuerOnly: false,
+    };
   }
 
   private amountAndKeywordsFromArgs(args: string[]): { tags: string[] } {
