@@ -9,14 +9,14 @@ Start by installing dependencies:
 npm install
 ```
 
-You can run tests using:
-```sh
-npm test
-```
-
 To build application run:
 ```sh
 npm run build
+```
+
+You can run tests using:
+```sh
+npm test
 ```
 
 To run the application you have to connect to MongoDB database.
