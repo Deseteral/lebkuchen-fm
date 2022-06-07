@@ -17,10 +17,12 @@ class RandomXCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-    const { tags } = this.keywordsFromArgs(commandArgs);
 
     const allXSounds = await this.xSoundsService.getAll();
-    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => tags.every((word) => xSound.tags?.includes(word.toLowerCase()));
+    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => 
+      commandArgs.every((word) => xSound.tags
+        ?.map((tag) => tag.toLocaleLowerCase())
+        .includes(word.toLowerCase()));
 
     const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
 
@@ -36,7 +38,7 @@ class RandomXCommand extends CommandProcessor {
 
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    const text = this.buildMessage(xSoundToPlay.name);
+    const text = `Dodano ${xSoundToPlay.name}$`;
 
     return {
       messages: [{
@@ -45,16 +47,6 @@ class RandomXCommand extends CommandProcessor {
       }],
       isVisibleToIssuerOnly: false,
     };
-  }
-
-  private keywordsFromArgs(args: string[]): { tags: string[] } {
-    const argsCopy = Array.from(args);
-    return { tags: argsCopy };
-  }
-
-  private buildMessage(xSoundName: string): string {
-    const text = `Dodano ${xSoundName}$`;
-    return text;
   }
 
   get key(): string {
