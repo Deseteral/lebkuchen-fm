@@ -31,7 +31,7 @@ class RandomXCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(eventData);
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    return makeSingleTextProcessingResponse(`Wylosowano dźwięk ${xSoundToPlay.name} :ultrafastparrot:`);
+    return makeSingleTextProcessingResponse(`:ultrafastparrot: ${xSoundToPlay.name}`);
   }
 
   get key(): string {
