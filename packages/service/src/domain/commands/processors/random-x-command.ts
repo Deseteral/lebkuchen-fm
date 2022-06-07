@@ -19,9 +19,8 @@ class RandomXCommand extends CommandProcessor {
     const commandArgs = command.getArgsByDelimiter(' ');
 
     const allXSounds = await this.xSoundsService.getAll();
-    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => commandArgs.every((word) => xSound.tags
-      ?.map((tag) => tag.toLocaleLowerCase())
-      .includes(word.toLowerCase()));
+
+    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => commandArgs.every((word) => xSound.tags?.includes(word));
 
     const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
 
@@ -37,11 +36,9 @@ class RandomXCommand extends CommandProcessor {
 
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    const text = `Dodano ${xSoundToPlay.name}$`;
-
     return {
       messages: [{
-        text,
+        text: `Dodano ${xSoundToPlay.name}$`,
         type: 'MARKDOWN',
       }],
       isVisibleToIssuerOnly: false,
