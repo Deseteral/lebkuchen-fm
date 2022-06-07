@@ -19,10 +19,9 @@ class RandomXCommand extends CommandProcessor {
     const commandArgs = command.getArgsByDelimiter(' ');
 
     const allXSounds = await this.xSoundsService.getAll();
-    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => 
-      commandArgs.every((word) => xSound.tags
-        ?.map((tag) => tag.toLocaleLowerCase())
-        .includes(word.toLowerCase()));
+    const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => commandArgs.every((word) => xSound.tags
+      ?.map((tag) => tag.toLocaleLowerCase())
+      .includes(word.toLowerCase()));
 
     const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
 
