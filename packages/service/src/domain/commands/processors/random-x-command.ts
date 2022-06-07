@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSound } from '@service/domain/x-sounds/x-sound';
@@ -31,13 +31,7 @@ class RandomXCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(eventData);
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    return {
-      messages: [{
-        text: `Dodano ${xSoundToPlay.name}$`,
-        type: 'MARKDOWN',
-      }],
-      isVisibleToIssuerOnly: false,
-    };
+    return makeSingleTextProcessingResponse(`:ultrafastparrot: ${xSoundToPlay.name}`);
   }
 
   get key(): string {
