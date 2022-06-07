@@ -17,11 +17,8 @@ class RandomXCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
-
     const allXSounds = await this.xSoundsService.getAll();
-
     const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => commandArgs.every((word) => xSound.tags?.includes(word));
-
     const xSoundsFollowingCriteria = allXSounds.filter(xSoundsContainsEverySearchedWord).randomShuffle();
 
     if (xSoundsFollowingCriteria.isEmpty()) {
@@ -30,10 +27,8 @@ class RandomXCommand extends CommandProcessor {
     }
 
     const xSoundToPlay = xSoundsFollowingCriteria[0];
-
     const eventData: PlayXSoundEvent = { id: 'PlayXSoundEvent', soundUrl: xSoundToPlay.url };
     this.playerEventStream.sendToEveryone(eventData);
-
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
     return {
