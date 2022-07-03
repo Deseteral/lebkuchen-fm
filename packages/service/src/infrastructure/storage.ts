@@ -3,6 +3,8 @@ import { Logger } from '@service/infrastructure/logger';
 import { Collection, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
+const DATABASE_NAME = 'lebkuchen-fm';
+
 @Service()
 class DatabaseClient {
   private static logger = new Logger('database-client');
@@ -15,8 +17,8 @@ class DatabaseClient {
 
   async connect(): Promise<void> {
     await this.client.connect();
+    this.db = this.client.db(DATABASE_NAME);
 
-    this.db = this.client.db(this.configuration.DATABASE_NAME);
     await this.db.command({ ping: 1 });
 
     DatabaseClient.logger.info('Connected to MongoDB server');

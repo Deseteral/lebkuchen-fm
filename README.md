@@ -49,7 +49,6 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 
 #### Configuration
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
-- `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
 - `MONGODB_URI` - MongoDB connection string
 - `YOUTUBE_API_KEY` - YouTube Data API token
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)

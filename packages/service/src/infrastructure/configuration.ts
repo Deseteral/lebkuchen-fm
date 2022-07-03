@@ -3,27 +3,27 @@ import { Service } from 'typedi';
 @Service()
 class Configuration {
   public readonly PORT: string;
-  public readonly DATABASE_NAME: string;
   public readonly MONGODB_URI: string;
   public readonly YOUTUBE_API_KEY: string;
   public readonly COMMAND_PROMPT: string;
+  public readonly DISCORD_TOKEN: string;
   public readonly DROPBOX_TOKEN: string;
   public readonly LOCALE: string;
 
   private constructor(
     PORT: string,
-    DATABASE_NAME: string,
     MONGODB_URI: string,
     YOUTUBE_API_KEY: string,
     COMMAND_PROMPT: string,
+    DISCORD_TOKEN: string,
     DROPBOX_TOKEN: string,
     LOCALE: string,
   ) {
     this.PORT = PORT;
-    this.DATABASE_NAME = DATABASE_NAME;
     this.MONGODB_URI = MONGODB_URI;
     this.YOUTUBE_API_KEY = YOUTUBE_API_KEY;
     this.COMMAND_PROMPT = COMMAND_PROMPT;
+    this.DISCORD_TOKEN = DISCORD_TOKEN;
     this.DROPBOX_TOKEN = DROPBOX_TOKEN;
     this.LOCALE = LOCALE;
   }
@@ -31,10 +31,10 @@ class Configuration {
   public static readFromEnv(): Configuration {
     return new Configuration(
       (process.env.PORT || '9000'),
-      'lebkuchen-fm',
       process.env.MONGODB_URI || 'mongodb://localhost:27017',
       process.env.YOUTUBE_API_KEY || '',
       process.env.COMMAND_PROMPT || '/fm',
+      process.env.DISCORD_TOKEN || '',
       process.env.DROPBOX_TOKEN || '',
       process.env.LOCALE || 'pl',
     );
