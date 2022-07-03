@@ -17,7 +17,7 @@ if [[ $1 != \/fm* ]]
     exit 1
 fi
 
-curl -s -S -X POST 'http://localhost:9000/commands/text' \
+curl -s -S -X POST 'http://localhost:9000/api/commands/text' \
   -H "Content-Type: application/json" \
   -H "Authorization: Basic $2" \
   --data "{\"text\": \"$1\"}" \

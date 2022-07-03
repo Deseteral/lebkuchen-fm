@@ -6,6 +6,7 @@ interface XSound {
   url: string,
   timesPlayed: number,
   tags?: string[],
+  addedBy?: string,
 }
 
 export { XSound };

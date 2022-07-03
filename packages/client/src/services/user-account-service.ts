@@ -11,15 +11,15 @@ export function userLogin(username: string, password: string) {
     },
   };
 
-  fetch('/auth', options).then(() => redirectTo('/'));
+  fetch('/api/auth', options).then(() => redirectTo('/'));
 }
 
 export function userLogout() {
-  fetch('/auth/logout', { method: 'POST' }).then(() => redirectTo('/login'));
+  fetch('/api/auth/logout', { method: 'POST' }).then(() => redirectTo('/login'));
 }
 
 export async function checkLoginStateAndRedirect() {
-  fetch('/auth').then((res) => {
+  fetch('/api/auth').then((res) => {
     if (res.status === 401) redirectTo('/login');
   });
 }

@@ -11,24 +11,33 @@ class AuthService {
   constructor(private usersService: UsersService) {}
 
   async authorize(username: string, password: string, session: RequestSession): Promise<void> {
-    const user = await this.usersService.getByName(username);
+    const userExists = await this.usersService.doesUserExist(username);
 
-    if (!user) {
-      AuthService.logger.info(`User "${username}" tried to log in, but does not exist`);
-      throw new Error('User does not exist');
+    if (!userExists) {
+      const userCount = (await this.usersService.getAllUserData()).length;
+
+      if (userCount === 0) {
+        await this.usersService.addNewUser(username);
+      } else {
+        AuthService.logger.info(`User "${username}" tried to log in, but does not exist`);
+        throw new Error('User does not exist');
+      }
     }
 
-    const userDidSetPassword: boolean = (!!user.password);
+    const user = await this.usersService.getByName(username);
+    if (!user) throw new Error('Something went wrong');
+
+    const userDidSetPassword: boolean = (!!user.secret);
 
     if (userDidSetPassword) {
       const isPasswordCorrect = await UsersService.checkPassword(password, user);
       if (isPasswordCorrect) {
-        this.loginCorrectPassword(user, session);
+        await this.loginCorrectPassword(user, session);
       } else {
         this.loginWrongPassword(user);
       }
     } else {
-      this.loginPasswordNotSet(user, password, session);
+      await this.loginPasswordNotSet(user, password, session);
     }
   }
 
@@ -41,16 +50,24 @@ class AuthService {
     return (isSessionAuthorized || isApiTokenAuthorized);
   }
 
+  async getRequestsUser(session: RequestSession, token: (string | null)): Promise<User| null> {
+    const userFromSession = await this.getUserFromSession(session);
+    const userFromToken = token ? await this.usersService.getByApiToken(token) : null;
+    return userFromSession || userFromToken;
+  }
+
   async isWebSocketAuthorized(session: RequestSession): Promise<boolean> {
     return this.isSessionAuthorized(session);
   }
 
-  private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
-    if (!requestSession.loggedUser) {
-      return false;
-    }
+  private async getUserFromSession(session: RequestSession): Promise<User | null> {
+    return session.loggedUser
+      ? this.usersService.getByName(session.loggedUser.name)
+      : null;
+  }
 
-    const user = await this.usersService.getByName(requestSession.loggedUser.name);
+  private async isSessionAuthorized(requestSession: RequestSession): Promise<boolean> {
+    const user = await this.getUserFromSession(requestSession);
     return (user !== null);
   }
 
@@ -59,26 +76,28 @@ class AuthService {
     return (user !== null);
   }
 
-  private loginCorrectPassword(user: User, session: RequestSession): void {
+  private async loginCorrectPassword(user: User, session: RequestSession): Promise<void> {
     // Authorize session
     session.loggedUser = { // eslint-disable-line no-param-reassign
-      name: user.name,
-      apiToken: user.password!.apiToken,
+      name: user.data.name,
+      apiToken: user.secret!.apiToken,
     };
 
-    AuthService.logger.info(`User "${user.name}" logged in`);
+    await this.usersService.updateLastLoginDate(user);
+
+    AuthService.logger.info(`User "${user.data.name}" logged in`);
   }
 
   private loginWrongPassword(user: User): void {
-    AuthService.logger.info(`User "${user.name}" tried to log in, but provided wrong password`);
+    AuthService.logger.info(`User "${user.data.name}" tried to log in, but provided wrong password`);
     throw new Error('Incorrect password');
   }
 
   private async loginPasswordNotSet(user: User, nextPassword: string, session: RequestSession): Promise<void> {
-    await this.usersService.setPassword(nextPassword, user);
-    AuthService.logger.info(`User "${user.name}" set new password`);
+    const userWithPassword = await this.usersService.setPassword(nextPassword, user);
+    AuthService.logger.info(`User "${user.data.name}" set new password`);
 
-    this.loginCorrectPassword(user, session);
+    await this.loginCorrectPassword(userWithPassword, session);
   }
 }
 

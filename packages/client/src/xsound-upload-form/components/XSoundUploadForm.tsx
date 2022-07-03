@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { ErrorResponse } from 'lebkuchen-fm-service';
+import { HttpError } from 'lebkuchen-fm-service';
 
 const InputGroup = styled.div`
   display: flex;
@@ -58,14 +58,14 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     formData.append('soundFile', files[0]);
     formData.append('soundName', soundName);
 
-    const response = await fetch('/x-sounds', { method: 'POST', body: formData });
+    const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
     if (response.status === 200) {
       displayMessage(`Added new sound ${JSON.stringify(data)}`);
     } else {
-      const errorData: ErrorResponse = data;
-      displayMessage(`Could not add new sound: ${errorData.error.message}`);
+      const errorData: HttpError = data;
+      displayMessage(`Could not add new sound: ${errorData.message}`);
     }
 
     setIsWaitingForResponse(false);

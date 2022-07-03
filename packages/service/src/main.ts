@@ -22,7 +22,7 @@ import { DatabaseClient } from '@service/infrastructure/storage';
 import { RequestSession } from '@service/api/request-session';
 import { Action, HttpError, InternalServerError } from 'routing-controllers';
 import { nanoid } from 'nanoid';
-import { expressMiddlewareToSocketIoMiddleware, parseAuthorizationHeader } from '@service/utils/utils';
+import { expressMiddlewareToSocketIoMiddleware, extractSessionFromIncomingMessage, parseAuthorizationHeader } from '@service/utils/utils';
 import { AuthService } from '@service/domain/auth/auth-service';
 
 const logger = new Logger('app-init');
@@ -51,6 +51,10 @@ async function main(): Promise<void> {
   RoutingControllers.useExpressServer(app, {
     controllers: [path.join(__dirname, 'api/**/*-controller.js')],
     authorizationChecker: async (action: Action) => Container.get(AuthService).isRequestAuthorized(
+      action.request.session,
+      parseAuthorizationHeader(action.request.headers.authorization),
+    ),
+    currentUserChecker: async (action: Action) => Container.get(AuthService).getRequestsUser(
       action.request.session,
       parseAuthorizationHeader(action.request.headers.authorization),
     ),
@@ -85,13 +89,12 @@ async function main(): Promise<void> {
   const server: http.Server = new http.Server(app);
   const io = new SocketIO.Server(server, { serveClient: false });
 
-  const playerNamespace = io.of('/player');
-  const adminNamespace = io.of('/admin');
+  const playerNamespace = io.of('/api/player');
+  const adminNamespace = io.of('/api/admin');
 
   const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
-    // @ts-ignore ; Trust me - session does exist on request
-    const requestSession: RequestSession = socket.request.session;
+    const requestSession: RequestSession = extractSessionFromIncomingMessage(socket.request);
     const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession);
     if (isSessionAuthorized) {
       next();

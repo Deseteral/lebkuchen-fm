@@ -1,3 +1,4 @@
+import { User } from '@service/domain/users/user';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsRepository } from '@service/domain/x-sounds/x-sounds-repository';
 import { FileStorage } from '@service/infrastructure/file-storage';
@@ -51,8 +52,8 @@ class XSoundsService {
       throw new Error(`Dźwięk "${soundName}" nie istnieje`);
     }
 
-    const tags = (xSound.tags || []);
-    const updatedSound = {
+    const tags: string[] = (xSound.tags || []);
+    const updatedSound: XSound = {
       ...xSound,
       tags: Array.from(new Set([...tags, tag])),
     };
@@ -67,14 +68,14 @@ class XSoundsService {
       throw new Error(`Dźwięk "${soundName}" nie istnieje`);
     }
 
-    const tags = (xSound.tags || []);
+    const tags: string[] = (xSound.tags || []);
 
     const searchIndex = tags.indexOf(tag);
     if (searchIndex > -1) {
       tags.splice(searchIndex, 1);
     }
 
-    const updatedSound = {
+    const updatedSound: XSound = {
       ...xSound,
       tags,
     };
@@ -101,7 +102,12 @@ class XSoundsService {
     return sortedTags;
   }
 
-  async createNewSound(name: string, fileDescriptor: { buffer: Buffer, fileName: string }, timesPlayed = 0): Promise<XSound> {
+  async createNewSound(
+    name: string,
+    fileDescriptor: { buffer: Buffer, fileName: string },
+    user: User,
+    timesPlayed = 0,
+  ): Promise<XSound> {
     const exists = await this.soundExists(name);
     if (exists) {
       throw new Error(`Dźwięk o nazwie "${name}" już jest w bazie`);
@@ -118,6 +124,7 @@ class XSoundsService {
       url,
       timesPlayed,
       tags: [],
+      addedBy: user.data.name,
     };
 
     await this.repository.insert(xSound);

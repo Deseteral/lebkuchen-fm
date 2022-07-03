@@ -29,6 +29,7 @@ function LoginForm(_: LoginFormProps): JSX.Element {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   onKeyPress={onInputKeyPress}
+                  autoFocus // eslint-disable-line jsx-a11y/no-autofocus
                 />
               </label>
             </div>

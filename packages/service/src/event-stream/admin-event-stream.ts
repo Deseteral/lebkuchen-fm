@@ -37,7 +37,7 @@ class AdminEventStream {
   }
 
   private sendWsConnections(): void {
-    const playerIds = this.playerEventStream.getConnectedPlayerIds();
+    const playerIds = this.playerEventStream.getConnectedUsernames();
     const eventData: WsConnectionsEvent = {
       id: 'WsConnectionsEvent',
       playerIds,

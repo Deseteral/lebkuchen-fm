@@ -6,7 +6,7 @@ import { CommandExecutorService } from '@service/domain/commands/command-executo
 import { Logger } from '@service/infrastructure/logger';
 
 @Service()
-@JsonController('/commands/text')
+@JsonController('/api/commands/text')
 @Authorized()
 class TextCommandController {
   private static logger = new Logger('text-command-controller');
