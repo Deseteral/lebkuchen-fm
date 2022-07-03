@@ -1,7 +1,7 @@
 # LebkuchenFM
 [![Actions Status](https://github.com/Deseteral/lebkuchen-fm/workflows/Build/badge.svg)](https://github.com/Deseteral/lebkuchen-fm/actions)
 
-Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Slack.
+Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Discord.
 
 ## Development
 Start by installing dependencies:
@@ -52,7 +52,6 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 - `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
 - `MONGODB_URI` - MongoDB connection string
 - `YOUTUBE_API_KEY` - YouTube Data API token
-- `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
 - `DROPBOX_TOKEN` - Dropbox API token used for persisting files
 - `LOCALE` - language of the service
@@ -106,11 +105,6 @@ History listing containing list of queued songs.
   ]
 }
 ```
-
----
-
-`POST /api/commands/slack` \
-Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
 
 ---
 
