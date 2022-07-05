@@ -10,30 +10,17 @@ import { Service } from 'typedi';
 @RegisterCommand
 @Service()
 class HelpCommand extends CommandProcessor {
-  constructor(private commandRegistryService: CommandRegistryService, private configuration: Configuration) {
+  constructor(private commandRegistryService: CommandRegistryService) {
     super();
   }
 
   async execute(_: Command): Promise<CommandProcessingResponse> {
     const uniqueCommands = this.getAllUniqueCommands();
-    const messages: MessageBlock[] = [
-      { type: 'HEADER', text: 'LebkuchenFM - komendy' },
-    ];
 
-    uniqueCommands.forEach((definition) => {
-      messages.push({
-        type: 'MARKDOWN',
-        text: this.formatDefinitionToMarkdown(definition),
-      });
-
-      if (definition.helpUsages) {
-        const prompt = this.configuration.COMMAND_PROMPT;
-        const text = definition.helpUsages
-          .map((usage) => `${prompt} ${definition.key} ${usage}`)
-          .join(', ');
-        messages.push({ type: 'CONTEXT', text });
-      }
-    });
+    const messages: MessageBlock[] = uniqueCommands.map((definition) => ({
+      type: 'MARKDOWN',
+      text: this.formatDefinitionToMarkdown(definition),
+    }));
 
     return {
       messages,
@@ -52,15 +39,12 @@ class HelpCommand extends CommandProcessor {
   }
 
   private formatDefinitionToMarkdown(definition: CommandProcessor): string {
-    const { key, shortKey, helpMessage } = definition;
+    const { key, shortKey } = definition;
     const shortKeyFragment = shortKey
       ? ` \`[${shortKey}]\``
       : '';
 
-    return [
-      `\`${key}\`${shortKeyFragment}`,
-      helpMessage,
-    ].join('\n');
+    return `- \`${key}\`${shortKeyFragment}`;
   }
 
   get key(): string {
