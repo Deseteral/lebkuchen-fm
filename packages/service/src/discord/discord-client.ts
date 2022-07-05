@@ -57,6 +57,10 @@ class DiscordClient {
 
   private async interactionCreate(interaction: Interaction): Promise<void> {
     if (!interaction.isCommand()) return;
+    if (interaction.channelId !== this.configuration.DISCORD_CHANNEL_ID) {
+      await interaction.reply({ content: "You're not allowed to use this command here", ephemeral: true });
+      return;
+    }
 
     const messageContent = `${this.configuration.COMMAND_PROMPT} ${interaction.options.getString('command', true)}`;
     const commandProcessingResponse = await this.commandExecutorService.processFromText(messageContent);

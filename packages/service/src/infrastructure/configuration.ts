@@ -9,6 +9,7 @@ class Configuration {
   public readonly DISCORD_TOKEN: string;
   public readonly DISCORD_CLIENT_ID: string;
   public readonly DISCORD_GUILD_ID: string;
+  public readonly DISCORD_CHANNEL_ID: string;
   public readonly DROPBOX_TOKEN: string;
   public readonly LOCALE: string;
 
@@ -20,6 +21,7 @@ class Configuration {
     DISCORD_TOKEN: string,
     DISCORD_CLIENT_ID: string,
     DISCORD_GUILD_ID: string,
+    DISCORD_CHANNEL_ID: string,
     DROPBOX_TOKEN: string,
     LOCALE: string,
   ) {
@@ -30,6 +32,7 @@ class Configuration {
     this.DISCORD_TOKEN = DISCORD_TOKEN;
     this.DISCORD_CLIENT_ID = DISCORD_CLIENT_ID;
     this.DISCORD_GUILD_ID = DISCORD_GUILD_ID;
+    this.DISCORD_CHANNEL_ID = DISCORD_CHANNEL_ID;
     this.DROPBOX_TOKEN = DROPBOX_TOKEN;
     this.LOCALE = LOCALE;
   }
@@ -43,6 +46,7 @@ class Configuration {
       process.env.DISCORD_TOKEN || '',
       process.env.DISCORD_CLIENT_ID || '',
       process.env.DISCORD_GUILD_ID || '',
+      process.env.DISCORD_CHANNEL_ID || '',
       process.env.DROPBOX_TOKEN || '',
       process.env.LOCALE || 'pl',
     );
