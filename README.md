@@ -1,7 +1,7 @@
 # LebkuchenFM
 [![Actions Status](https://github.com/Deseteral/lebkuchen-fm/workflows/Build/badge.svg)](https://github.com/Deseteral/lebkuchen-fm/actions)
 
-Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Slack.
+Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Discord.
 
 ## Development
 Start by installing dependencies:
@@ -48,14 +48,16 @@ This projects consists of these modules:
 Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
-- `PORT` - port on which the service will be running (automatically injected by cloud providers)
-- `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
-- `MONGODB_URI` - MongoDB connection string
-- `YOUTUBE_API_KEY` - YouTube Data API token
-- `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
+- `DISCORD_CHANNEL_ID` - ID of the Discord channel where the bot is allowed to run
+- `DISCORD_CLIENT_ID` - Discord application ID
+- `DISCORD_GUILD_ID` - ID of the Discord guild (server) where the bot will operate
+- `DISCORD_TOKEN` - token of the Discord bot
 - `DROPBOX_TOKEN` - Dropbox API token used for persisting files
 - `LOCALE` - language of the service
+- `MONGODB_URI` - MongoDB connection string
+- `PORT` - port on which the service will be running (automatically injected by cloud providers)
+- `YOUTUBE_API_KEY` - YouTube Data API token
 
 #### Development
 Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [Development](#Development) section of this document to have fully functioning application.
@@ -106,11 +108,6 @@ History listing containing list of queued songs.
   ]
 }
 ```
-
----
-
-`POST /api/commands/slack` \
-Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
 
 ---
 

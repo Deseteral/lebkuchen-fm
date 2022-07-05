@@ -24,6 +24,7 @@ import { Action, HttpError, InternalServerError } from 'routing-controllers';
 import { nanoid } from 'nanoid';
 import { expressMiddlewareToSocketIoMiddleware, extractSessionFromIncomingMessage, parseAuthorizationHeader } from '@service/utils/utils';
 import { AuthService } from '@service/domain/auth/auth-service';
+import { DiscordClient } from '@service/discord/discord-client';
 
 const logger = new Logger('app-init');
 
@@ -113,6 +114,11 @@ async function main(): Promise<void> {
 
   /* Initialize commands */
   CommandRegistryService.detectProcessorModules();
+
+  /* Connect to Discord */
+  const discordClient = Container.get(DiscordClient);
+  await discordClient.registerCommands();
+  await discordClient.login();
 
   /* Start the server */
   server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
