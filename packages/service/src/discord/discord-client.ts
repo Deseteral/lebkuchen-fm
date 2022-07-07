@@ -66,7 +66,8 @@ class DiscordClient {
 
     const discordId = interaction.user.id;
 
-    if (!this.usersService.hasConnectedDiscordAccount(discordId)) {
+    const hasConnectedAccount: boolean = await this.usersService.hasConnectedDiscordAccount(discordId);
+    if (!hasConnectedAccount) {
       await interaction.reply({
         content: `You have to connect your Discord account with LebkuchenFM\nUse \`${this.configuration.COMMAND_PROMPT} login <lebkuchen-fm-username>\` to login.`,
         ephemeral: true,
