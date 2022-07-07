@@ -8,6 +8,7 @@ export interface User {
 
 export interface UserData {
   name: string,
+  discordId: (string | null),
   creationDate: Date,
   lastLoggedIn: Date,
 }

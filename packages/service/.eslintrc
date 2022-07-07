@@ -1,5 +1,6 @@
 {
   "extends": "@deseteral/eslint-config/typescript",
+  "root": true,
   "rules": {
     "@typescript-eslint/explicit-function-return-type": "error",
     "max-len": "off",
