@@ -50,7 +50,7 @@ class DiscordClient {
 
       DiscordClient.logger.info('Successfully refreshed slash commands');
     } catch (error) {
-      DiscordClient.logger.error('There was a problem with refreshing slash commands');
+      DiscordClient.logger.error('There was a problem refreshing slash commands');
       DiscordClient.logger.withError(error as Error);
     }
   }
