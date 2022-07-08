@@ -23,12 +23,12 @@ class DiscordClient {
     this.client = new Client({ intents: [Intents.FLAGS.GUILDS] });
     this.rest = new REST({ version: '9' }).setToken(this.configuration.DISCORD_TOKEN);
 
-    this.client.once('ready', () => this.ready());
     this.client.on('interactionCreate', async (interaction) => this.interactionCreate(interaction));
   }
 
   public async login(): Promise<void> {
     await this.client.login(this.configuration.DISCORD_TOKEN);
+    DiscordClient.logger.info('Logged in to Discord');
   }
 
   public async registerCommands(): Promise<void> {
@@ -53,10 +53,6 @@ class DiscordClient {
       DiscordClient.logger.error('There was a problem refreshing slash commands');
       DiscordClient.logger.withError(error as Error);
     }
-  }
-
-  private ready(): void {
-    DiscordClient.logger.info('Discord bot is ready');
   }
 
   private async interactionCreate(interaction: Interaction): Promise<void> {
