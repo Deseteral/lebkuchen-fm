@@ -4,6 +4,7 @@ import { TextCommandRequestDto } from '@service/api/text/model/text-command-requ
 import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
 import { Logger } from '@service/infrastructure/logger';
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 
 @Service()
 @JsonController('/api/commands/text')
@@ -18,7 +19,10 @@ class TextCommandController {
     const { text } = body;
     TextCommandController.logger.info(`Received ${text} command`);
 
-    const commandProcessingResponse = await this.commandExecutorService.processFromText(text);
+    const context: ExecutionContext = {
+      discordId: null,
+    };
+    const commandProcessingResponse = await this.commandExecutorService.processFromText(text, context);
     return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
   }
 }

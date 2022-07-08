@@ -70,7 +70,7 @@ class UsersService {
   }
 
   async connectWithDiscordAccount(user: User, discordId: string): Promise<void> {
-    if (user.data.discordId) return;
+    if (user.data.discordId) throw new Error('This user is already connected to Discord');
 
     const newUser: User = {
       ...user,

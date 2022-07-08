@@ -8,6 +8,9 @@ import { CommandExecutorService } from '@service/domain/commands/command-executo
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 import { Logger } from '@service/infrastructure/logger';
 import { UsersService } from '@service/domain/users/users-service';
+import { ExecutionContext } from '@service/domain/commands/execution-context';
+
+const DISCORD_LOGIN_COMMAND_KEY = 'discord-login';
 
 @Service()
 class DiscordClient {
@@ -64,19 +67,25 @@ class DiscordClient {
       return;
     }
 
-    const discordId = interaction.user.id;
-
+    const commandText: string = interaction.options.getString('command', true);
+    const discordId: string = interaction.user.id;
     const hasConnectedAccount: boolean = await this.usersService.hasConnectedDiscordAccount(discordId);
-    if (!hasConnectedAccount) {
+    const isLoginCommand: boolean = commandText.startsWith(DISCORD_LOGIN_COMMAND_KEY);
+
+    if (!hasConnectedAccount && !isLoginCommand) {
       await interaction.reply({
-        content: `You have to connect your Discord account with LebkuchenFM\nUse \`${this.configuration.COMMAND_PROMPT} login <lebkuchen-fm-username>\` to login.`,
+        content: `You have to connect your Discord account with LebkuchenFM\nUse \`${this.configuration.COMMAND_PROMPT} ${DISCORD_LOGIN_COMMAND_KEY} <lebkuchen-fm-username>\` to login.`,
         ephemeral: true,
       });
       return;
     }
 
-    const messageContent = `${this.configuration.COMMAND_PROMPT} ${interaction.options.getString('command', true)}`;
-    const commandProcessingResponse = await this.commandExecutorService.processFromText(messageContent);
+    const messageContent = `${this.configuration.COMMAND_PROMPT} ${commandText}`;
+    const context: ExecutionContext = {
+      discordId,
+    };
+
+    const commandProcessingResponse = await this.commandExecutorService.processFromText(messageContent, context);
     const response = this.mapCommandProcessingResponseToDiscordResponse(commandProcessingResponse);
 
     try {
