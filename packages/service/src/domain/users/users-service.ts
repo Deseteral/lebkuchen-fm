@@ -39,6 +39,7 @@ class UsersService {
     const user: User = {
       data: {
         name,
+        discordId: null,
         creationDate: dateNow,
         lastLoggedIn: dateNow,
       },
@@ -65,8 +66,26 @@ class UsersService {
     };
 
     await this.repository.replace(newUser);
-
     return newUser;
+  }
+
+  async connectWithDiscordAccount(user: User, discordId: string): Promise<void> {
+    if (user.data.discordId) throw new Error('This user is already connected to Discord');
+
+    const newUser: User = {
+      ...user,
+      data: {
+        ...user.data,
+        discordId,
+      },
+    };
+
+    await this.repository.replace(newUser);
+  }
+
+  async hasConnectedDiscordAccount(discordId: string): Promise<boolean> {
+    const user: (User | null) = await this.repository.findByDiscordId(discordId);
+    return !!user;
   }
 
   async updateLastLoginDate(user: User): Promise<void> {

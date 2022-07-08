@@ -21,6 +21,10 @@ class UsersRepository extends Repository<User> {
     return this.collection.findOne({ 'password.apiToken': apiToken });
   }
 
+  findByDiscordId(discordId: string): User | PromiseLike<User | null> | null {
+    return this.collection.findOne({ 'data.discordId': discordId });
+  }
+
   async insert(user: User): Promise<void> {
     await this.collection.insertOne(user);
   }
