@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Song } from '@service/domain/songs/song';
@@ -47,13 +47,7 @@ class RandomCommand extends CommandProcessor {
     });
     const text = this.buildMessage(songsToQueue, amount);
 
-    return {
-      messages: [{
-        text,
-        type: 'MARKDOWN',
-      }],
-      isVisibleToIssuerOnly: false,
-    };
+    return CommandProcessingResponses.markdown(text);
   }
 
   private amountAndKeywordsFromArgs(args: string[]): { amount: number, keywords: string[] } {

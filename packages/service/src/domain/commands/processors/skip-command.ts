@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SkipEvent } from '@service/event-stream/model/events';
@@ -25,7 +25,8 @@ class SkipCommand extends CommandProcessor {
 
     const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
     this.playerEventStream.sendToEveryone(event);
-    return makeSingleTextProcessingResponse('Lecimy dalej!');
+
+    return CommandProcessingResponses.markdown('Lecimy dalej!');
   }
 
   get key(): string {

@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, MessageBlock } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
@@ -16,15 +16,22 @@ class HelpCommand extends CommandProcessor {
   async execute(_: Command): Promise<CommandProcessingResponse> {
     const uniqueCommands = this.getAllUniqueCommands();
 
-    const messages: MessageBlock[] = uniqueCommands.map((definition) => ({
-      type: 'MARKDOWN',
-      text: this.formatDefinitionToMarkdown(definition),
-    }));
+    const commandLines: string[] = uniqueCommands.map((definition) => {
+      const { key, shortKey } = definition;
+      const shortKeyFragment = shortKey
+        ? ` [${shortKey}]`
+        : '';
 
-    return {
-      messages,
-      isVisibleToIssuerOnly: false,
-    };
+      return `  ${key}${shortKeyFragment}`;
+    });
+
+    return CommandProcessingResponses.markdown(
+      '```LebkuchenFM help',
+      '',
+      'Commands:',
+      ...commandLines,
+      '```',
+    );
   }
 
   private getAllUniqueCommands(): CommandProcessor[] {
@@ -35,15 +42,6 @@ class HelpCommand extends CommandProcessor {
       .map((key) => registry.get(key))
       .filter(notNull)
       .sort((a, b) => a.key.localeCompare(b.key));
-  }
-
-  private formatDefinitionToMarkdown(definition: CommandProcessor): string {
-    const { key, shortKey } = definition;
-    const shortKeyFragment = shortKey
-      ? ` \`[${shortKey}]\``
-      : '';
-
-    return `- \`${key}\`${shortKeyFragment}`;
   }
 
   get key(): string {

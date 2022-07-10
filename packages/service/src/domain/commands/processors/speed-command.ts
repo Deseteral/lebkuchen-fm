@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeSpeedEvent } from '@service/event-stream/model/events';
@@ -36,7 +36,7 @@ class SpeedCommand extends CommandProcessor {
     }
 
     this.playerEventStream.sendToEveryone(event);
-    return makeSingleTextProcessingResponse(`Lecimy z ${message} prędkością!`);
+    return CommandProcessingResponses.markdown(`Lecimy z ${message} prędkością!`);
   }
 
   get key(): string {

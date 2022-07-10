@@ -5,9 +5,7 @@ export interface TextCommandResponseDto {
 }
 
 export function mapCommandProcessingResponseToTextCommandResponseDto(processingResponse: CommandProcessingResponse): TextCommandResponseDto {
-  const textResponse = processingResponse.messages
-    .map((message) => (('text' in message) ? message.text : null))
-    .filter((s) => (s !== null))
-    .join('\n');
-  return { textResponse };
+  return {
+    textResponse: processingResponse.message.markdown,
+  };
 }

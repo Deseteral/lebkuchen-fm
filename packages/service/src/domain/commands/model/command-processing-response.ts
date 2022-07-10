@@ -1,42 +1,17 @@
-export interface HeaderMessageBlock {
-  type: 'HEADER',
-  text: string,
+export interface CommandProcessingResponseMessage {
+  markdown: string,
+  isVisibleToIssuerOnly: boolean
 }
-
-export interface PlainTextMessageBlock {
-  type: 'PLAIN_TEXT',
-  text: string,
-}
-
-export interface MarkdownMessageBlock {
-  type: 'MARKDOWN',
-  text: string,
-}
-
-export interface ContextMessageBlock {
-  type: 'CONTEXT',
-  text: string,
-}
-
-export interface DividerMessageBlock {
-  type: 'DIVIDER',
-}
-
-export type MessageBlock =
-  | HeaderMessageBlock
-  | PlainTextMessageBlock
-  | MarkdownMessageBlock
-  | ContextMessageBlock
-  | DividerMessageBlock;
 
 export interface CommandProcessingResponse {
-  messages: MessageBlock[],
-  isVisibleToIssuerOnly: boolean,
+  message: CommandProcessingResponseMessage,
 }
 
-export function makeSingleTextProcessingResponse(text: string, isVisibleToIssuerOnly = false): CommandProcessingResponse {
-  return {
-    messages: [{ text, type: 'PLAIN_TEXT' }],
-    isVisibleToIssuerOnly,
-  };
-}
+export const CommandProcessingResponses = {
+  markdown: (...markdown: string[]): CommandProcessingResponse => ({
+    message: { markdown: markdown.join('\n'), isVisibleToIssuerOnly: false },
+  }),
+  visibleToTheIssuerOnly: (...markdown: string[]): CommandProcessingResponse => ({
+    message: { markdown: markdown.join('\n'), isVisibleToIssuerOnly: true },
+  }),
+};

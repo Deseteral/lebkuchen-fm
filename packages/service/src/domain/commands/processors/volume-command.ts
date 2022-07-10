@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeVolumeEvent } from '@service/event-stream/model/events';
@@ -37,9 +37,9 @@ class VolumeCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(event);
 
     if (isRelativeChange) {
-      return makeSingleTextProcessingResponse(`Zmieniono głośność o "${value}"`);
+      return CommandProcessingResponses.markdown(`Zmieniono głośność o "${value}"`);
     }
-    return makeSingleTextProcessingResponse(`Ustawiono głośność na "${value}"`);
+    return CommandProcessingResponses.markdown(`Ustawiono głośność na "${value}"`);
   }
 
   get key(): string {
