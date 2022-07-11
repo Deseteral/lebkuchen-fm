@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class SpeedCommand extends CommandProcessor {
+class PlaybackSpeedCommand extends CommandProcessor {
   constructor(private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -40,11 +40,11 @@ class SpeedCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'speed';
+    return 'playback-speed';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'speed';
   }
 
   get helpMessage(): string {
@@ -60,4 +60,4 @@ class SpeedCommand extends CommandProcessor {
   }
 }
 
-export { SpeedCommand };
+export { PlaybackSpeedCommand };

@@ -13,7 +13,7 @@ const MAX_SONGS_IN_YOUTUBE_REQUEST = 50;
 
 @RegisterCommand
 @Service()
-class RandomCommand extends CommandProcessor {
+class SongRandomCommand extends CommandProcessor {
   constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -78,11 +78,11 @@ class RandomCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'random';
+    return 'song-random';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'random';
   }
 
   get helpMessage(): string {
@@ -100,4 +100,4 @@ class RandomCommand extends CommandProcessor {
   }
 }
 
-export { RandomCommand };
+export { SongRandomCommand };

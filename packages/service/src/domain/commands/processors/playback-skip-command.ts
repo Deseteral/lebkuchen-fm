@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class SkipCommand extends CommandProcessor {
+class PlaybackSkipCommand extends CommandProcessor {
   constructor(private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -30,11 +30,11 @@ class SkipCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'skip';
+    return 'playback-skip';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'skip';
   }
 
   get helpMessage(): string {
@@ -50,4 +50,4 @@ class SkipCommand extends CommandProcessor {
   }
 }
 
-export { SkipCommand };
+export { PlaybackSkipCommand };

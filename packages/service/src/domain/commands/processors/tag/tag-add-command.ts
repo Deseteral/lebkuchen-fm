@@ -30,7 +30,7 @@ class TagAddCommand extends CommandProcessor {
   }
 
   get shortKey(): (string | null) {
-    return 'ta';
+    return null;
   }
 
   get helpMessage(): string {

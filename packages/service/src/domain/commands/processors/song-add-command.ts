@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class AddCommand extends CommandProcessor {
+class SongAddCommand extends CommandProcessor {
   constructor(private songService: SongsService, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
@@ -58,7 +58,7 @@ class AddCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'add';
+    return 'song-add';
   }
 
   get shortKey(): (string | null) {
@@ -78,4 +78,4 @@ class AddCommand extends CommandProcessor {
   }
 }
 
-export { AddCommand };
+export { SongAddCommand };

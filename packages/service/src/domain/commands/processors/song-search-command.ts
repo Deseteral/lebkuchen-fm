@@ -1,15 +1,15 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
-import { QueueCommand } from '@service/domain/commands/processors/queue-command';
+import { SongQueueCommand } from '@service/domain/commands/processors/song-queue-command';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class SearchCommand extends CommandProcessor {
-  constructor(private queueProcessor: QueueCommand, private youTubeDataClient: YouTubeDataClient) {
+class SongSearchCommand extends CommandProcessor {
+  constructor(private queueProcessor: SongQueueCommand, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
 
@@ -22,7 +22,7 @@ class SearchCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'search';
+    return 'song-search';
   }
 
   get shortKey(): (string | null) {
@@ -41,4 +41,4 @@ class SearchCommand extends CommandProcessor {
   }
 }
 
-export { SearchCommand };
+export { SongSearchCommand };

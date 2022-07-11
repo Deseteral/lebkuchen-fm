@@ -39,7 +39,7 @@ class TagSearchCommand extends CommandProcessor {
   }
 
   get shortKey(): (string | null) {
-    return 'ts';
+    return null;
   }
 
   get helpMessage(): string {

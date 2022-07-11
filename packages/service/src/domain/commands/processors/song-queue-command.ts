@@ -10,7 +10,7 @@ import { Song } from '@service/domain/songs/song';
 
 @RegisterCommand
 @Service()
-class QueueCommand extends CommandProcessor {
+class SongQueueCommand extends CommandProcessor {
   constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -46,7 +46,7 @@ class QueueCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'queue';
+    return 'song-queue';
   }
 
   get shortKey(): (string | null) {
@@ -67,4 +67,4 @@ class QueueCommand extends CommandProcessor {
   }
 }
 
-export { QueueCommand };
+export { SongQueueCommand };

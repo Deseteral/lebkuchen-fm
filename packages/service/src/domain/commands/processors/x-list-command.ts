@@ -7,7 +7,7 @@ import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
 @RegisterCommand
 @Service()
-class ListXCommand extends CommandProcessor {
+class XListCommand extends CommandProcessor {
   constructor(private xSoundService: XSoundsService) {
     super();
   }
@@ -28,7 +28,7 @@ class ListXCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'listx';
+    return 'x-list';
   }
 
   get shortKey(): (string | null) {
@@ -44,4 +44,4 @@ class ListXCommand extends CommandProcessor {
   }
 }
 
-export { ListXCommand };
+export { XListCommand };

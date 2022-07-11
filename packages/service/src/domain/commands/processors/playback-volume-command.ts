@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class VolumeCommand extends CommandProcessor {
+class PlaybackVolumeCommand extends CommandProcessor {
   constructor(private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -43,11 +43,11 @@ class VolumeCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'volume';
+    return 'playback-volume';
   }
 
   get shortKey(): (string | null) {
-    return 'vol';
+    return 'volume';
   }
 
   get helpMessage(): string {
@@ -66,4 +66,4 @@ class VolumeCommand extends CommandProcessor {
   }
 }
 
-export { VolumeCommand };
+export { PlaybackVolumeCommand };

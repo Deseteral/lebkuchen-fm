@@ -32,7 +32,7 @@ class TagListCommand extends CommandProcessor {
   }
 
   get shortKey(): (string | null) {
-    return 'tl';
+    return null;
   }
 
   get helpMessage(): string {

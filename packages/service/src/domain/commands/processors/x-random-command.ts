@@ -10,7 +10,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class RandomXCommand extends CommandProcessor {
+class XRandomCommand extends CommandProcessor {
   constructor(private xSoundsService: XSoundsService, private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -35,11 +35,11 @@ class RandomXCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'random-x';
+    return 'x-random';
   }
 
   get shortKey(): (string | null) {
-    return 'rx';
+    return 'xr';
   }
 
   get helpMessage(): string {
@@ -55,4 +55,4 @@ class RandomXCommand extends CommandProcessor {
   }
 }
 
-export { RandomXCommand };
+export { XRandomCommand };
