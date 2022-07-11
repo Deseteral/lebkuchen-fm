@@ -9,6 +9,7 @@ import { CommandProcessingResponse } from '@service/domain/commands/model/comman
 import { Logger } from '@service/infrastructure/logger';
 import { UsersService } from '@service/domain/users/users-service';
 import { ExecutionContext } from '@service/domain/commands/execution-context';
+import { User } from '@service/domain/users/user';
 
 const DISCORD_LOGIN_COMMAND_KEY = 'discord-login';
 
@@ -65,10 +66,10 @@ class DiscordClient {
 
     const commandText: string = interaction.options.getString('command', true);
     const discordId: string = interaction.user.id;
-    const hasConnectedAccount: boolean = await this.usersService.hasConnectedDiscordAccount(discordId);
+    const user: (User | null) = await this.usersService.getByDiscordId(discordId);
     const isLoginCommand: boolean = commandText.startsWith(DISCORD_LOGIN_COMMAND_KEY);
 
-    if (!hasConnectedAccount && !isLoginCommand) {
+    if (!user && !isLoginCommand) {
       await interaction.reply({
         content: `You have to connect your Discord account with LebkuchenFM\nUse \`${this.configuration.COMMAND_PROMPT} ${DISCORD_LOGIN_COMMAND_KEY} <lebkuchen-fm-username>\` to login.`,
         ephemeral: true,
@@ -79,6 +80,7 @@ class DiscordClient {
     const messageContent = `${this.configuration.COMMAND_PROMPT} ${commandText}`;
     const context: ExecutionContext = {
       discordId,
+      user: user!, // user might be null but this is only the case for discord-login command
     };
 
     const commandProcessingResponse = await this.commandExecutorService.processFromText(messageContent, context);

@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
@@ -13,7 +14,7 @@ class SongSearchCommand extends CommandProcessor {
     super();
   }
 
-  async execute(command: Command): Promise<CommandProcessingResponse> {
+  async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const phrase = command.rawArgs;
 
     if (!phrase) {
@@ -23,7 +24,7 @@ class SongSearchCommand extends CommandProcessor {
     const youtubeId = await this.youTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
 
     const queueCommand = new Command('queue', youtubeId);
-    return this.queueProcessor.execute(queueCommand);
+    return this.queueProcessor.execute(queueCommand, context);
   }
 
   get key(): string {
