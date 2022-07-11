@@ -37,15 +37,15 @@ function playNextSong() {
   done();
 }
 
-function pause() {
-  player.pause();
-  PlayerStateService.getState().isPlaying = false;
-  done();
-}
+function playPause() {
+  const { isPlaying } = PlayerStateService.getState();
+  if (isPlaying) {
+    player.pause();
+  } else {
+    player.play();
+  }
 
-function resume() {
-  player.play();
-  PlayerStateService.getState().isPlaying = true;
+  PlayerStateService.getState().isPlaying = !isPlaying;
   done();
 }
 
@@ -134,8 +134,7 @@ function initialize(playerContainerDomId: string) {
 
 export {
   initialize,
-  pause,
-  resume,
+  playPause,
   playNextSong,
   setVolume,
   setSpeed,
