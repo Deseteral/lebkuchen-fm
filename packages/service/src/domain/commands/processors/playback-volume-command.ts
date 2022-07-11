@@ -16,6 +16,8 @@ class PlaybackVolumeCommand extends CommandProcessor {
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const value = command.rawArgs;
 
+    if (!value) throw new Error('You have to provide value');
+
     const isRelativeChange = (value.startsWith('+') || value.startsWith('-'));
     const parsedVolume = parseInt(value, 10);
 

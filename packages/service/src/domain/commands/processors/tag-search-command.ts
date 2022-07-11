@@ -13,7 +13,7 @@ class TagSearchCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const tagName = command.rawArgs.trim();
+    const tagName = command.rawArgs;
     if (!tagName) {
       throw new Error('Podaj nazwę tagu');
     }

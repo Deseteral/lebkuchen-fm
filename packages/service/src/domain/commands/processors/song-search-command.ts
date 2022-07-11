@@ -15,6 +15,11 @@ class SongSearchCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const phrase = command.rawArgs;
+
+    if (!phrase) {
+      throw new Error('You have to provide search phrase');
+    }
+
     const youtubeId = await this.youTubeDataClient.fetchFirstYouTubeIdForPhrase(phrase);
 
     const queueCommand = new Command('queue', youtubeId);

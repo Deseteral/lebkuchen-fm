@@ -21,7 +21,11 @@ class CommandExecutorService {
     } catch (e) {
       const errorMessage = (e as Error).message;
       CommandExecutorService.logger.error(errorMessage);
-      return CommandProcessingResponses.visibleToTheIssuerOnly(errorMessage);
+      return CommandProcessingResponses.visibleToTheIssuerOnly(
+        errorMessage,
+        '',
+        `For more usage information checkout \`help ${commandDefinition.key}\``,
+      );
     }
   }
 

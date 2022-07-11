@@ -13,7 +13,7 @@ class TagShowCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const soundName = command.rawArgs.trim();
+    const soundName = command.rawArgs;
     if (!soundName) {
       throw new Error('Podaj nazwę dźwięku');
     }

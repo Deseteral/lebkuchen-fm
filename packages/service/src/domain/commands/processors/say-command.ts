@@ -15,6 +15,9 @@ class SayCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const text = command.rawArgs;
+
+    if (!text) throw new Error('You have to provide message text');
+
     const eventMessage: SayEvent = {
       id: 'SayEvent',
       text,

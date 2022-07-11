@@ -15,7 +15,7 @@ class PlaybackSkipCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const skipAll = command.rawArgs === 'all';
-    const amount = (command.rawArgs === '')
+    const amount = (!command.rawArgs)
       ? 1
       : parseInt(command.rawArgs, 10);
 

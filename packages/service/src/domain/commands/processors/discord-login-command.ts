@@ -16,6 +16,9 @@ class DiscordLoginCommand extends CommandProcessor {
 
   async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const username = command.rawArgs;
+
+    if (!username) throw new Error('You have to provide username');
+
     const user: (User | null) = await this.usersService.getByName(username);
     const { discordId } = context;
 

@@ -17,6 +17,11 @@ class SongQueueCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const id = command.rawArgs;
+
+    if (!id) {
+      throw new Error('You have to provide video ID');
+    }
+
     const songs: Song[] = [];
     try {
       const song = await this.songService.getSongByNameWithYouTubeIdFallback(id);
