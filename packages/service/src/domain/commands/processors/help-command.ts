@@ -13,23 +13,52 @@ class HelpCommand extends CommandProcessor {
     super();
   }
 
-  async execute(_: Command): Promise<CommandProcessingResponse> {
-    const uniqueCommands = this.getAllUniqueCommands();
+  async execute(command: Command): Promise<CommandProcessingResponse> {
+    const commandName = command.rawArgs;
+    return commandName
+      ? this.helpWithCommand(commandName)
+      : this.helpWithoutCommand();
+  }
 
-    const commandLines: string[] = uniqueCommands.map((definition) => {
-      const { key, shortKey } = definition;
-      const shortKeyFragment = shortKey
-        ? ` [${shortKey}]`
-        : '';
+  private helpWithCommand(commandName: string): CommandProcessingResponse {
+    const registry = this.commandRegistryService.getRegistry();
+    const definition = registry.get(commandName);
 
-      return `  ${key}${shortKeyFragment}`;
-    });
+    if (!definition) {
+      throw new Error('No such command');
+    }
 
     return CommandProcessingResponses.markdown(
-      '```LebkuchenFM help',
+      '```markdown',
+      this.getCommandHelpLine(definition),
+      definition.helpMessage,
+      '',
+      definition.helpUsages?.join(' ') || '',
+      '```',
+    );
+  }
+
+  private helpWithoutCommand(): CommandProcessingResponse {
+    const uniqueCommands = this.getAllUniqueCommands();
+    const groups: {[groupKey: string]: string[]} = {};
+
+    uniqueCommands.forEach((definition) => {
+      const groupKey = definition.key.split('-')[0];
+      if (!groups[groupKey]) groups[groupKey] = [];
+      groups[groupKey].push(`  ${this.getCommandHelpLine(definition)}`);
+    });
+
+    const groupsText = Object.values(groups)
+      .map((group) => group.join('\n'))
+      .join('\n\n');
+
+    return CommandProcessingResponses.markdown(
+      '```markdown',
+      '*LebkuchenFM*',
+      'For command specific information use `help <command name>`',
       '',
       'Commands:',
-      ...commandLines,
+      groupsText,
       '```',
     );
   }
@@ -44,6 +73,15 @@ class HelpCommand extends CommandProcessor {
       .sort((a, b) => a.key.localeCompare(b.key));
   }
 
+  private getCommandHelpLine(definition: CommandProcessor): string {
+    const { key, shortKey } = definition;
+    const shortKeyFragment = shortKey
+      ? ` \`[${shortKey}]\``
+      : '';
+
+    return `\`${key}\`${shortKeyFragment}`;
+  }
+
   get key(): string {
     return 'help';
   }
@@ -53,11 +91,15 @@ class HelpCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Pokazuje tę wiadomość';
+    return 'Wyświetla dostępne komendy oraz przykłady ich użycia';
   }
 
   get helpUsages(): (string[] | null) {
-    return null;
+    return [
+      '',
+      '<command name>',
+      'song-random',
+    ];
   }
 }
 
