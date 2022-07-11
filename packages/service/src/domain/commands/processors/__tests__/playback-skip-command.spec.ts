@@ -5,7 +5,7 @@ import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 jest.mock('@service/domain/commands/registry/register-command');
 jest.mock('@service/event-stream/player-event-stream');
 
-describe('Skip command', () => {
+describe('playback-skip command', () => {
   const PlayerEventStreamMock = PlayerEventStream as unknown as jest.Mock<PlayerEventStream>;
   const playerEventStream = new PlayerEventStreamMock();
   const commandProcessor = new PlaybackSkipCommand(playerEventStream);
