@@ -18,7 +18,7 @@ class UsersRepository extends Repository<User> {
   }
 
   findByApiToken(apiToken: string): Promise<User | null> {
-    return this.collection.findOne({ 'password.apiToken': apiToken });
+    return this.collection.findOne({ 'secret.apiToken': apiToken });
   }
 
   findByDiscordId(discordId: string): User | PromiseLike<User | null> | null {
