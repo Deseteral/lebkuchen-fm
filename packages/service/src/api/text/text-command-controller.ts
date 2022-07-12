@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { JsonController, Body, Post, Authorized } from 'routing-controllers';
 import { TextCommandRequestDto } from '@service/api/text/model/text-command-request-dto';
-import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
+import { TextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
 import { Logger } from '@service/infrastructure/logger';
 import { ExecutionContext } from '@service/domain/commands/execution-context';
@@ -22,8 +22,12 @@ class TextCommandController {
     const context: ExecutionContext = {
       discordId: null,
     };
+
     const commandProcessingResponse = await this.commandExecutorService.processFromText(text, context);
-    return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
+
+    return {
+      textResponse: commandProcessingResponse.message.markdown,
+    };
   }
 }
 
