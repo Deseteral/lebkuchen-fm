@@ -1,6 +1,6 @@
 import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { User } from '@service/domain/users/user';
@@ -24,7 +24,7 @@ class DiscordLoginCommand extends CommandProcessor {
 
     await this.usersService.connectWithDiscordAccount(user, discordId);
 
-    return makeSingleTextProcessingResponse('Successfully conntected Discord account', true);
+    return CommandProcessingResponses.visibleToTheIssuerOnly('Successfully conntected Discord account');
   }
 
   get key(): string {

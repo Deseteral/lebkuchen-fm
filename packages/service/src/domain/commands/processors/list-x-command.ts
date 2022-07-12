@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
@@ -19,17 +19,12 @@ class ListXCommand extends CommandProcessor {
       throw new Error('Brak dźwięków w bazie');
     }
 
-    const soundListText = sounds
-      .map((sound) => `- ${sound.name}`)
-      .join('\n');
+    const soundListText = sounds.map((sound) => `- \`${sound.name}\``);
 
-    return {
-      messages: [
-        { type: 'HEADER', text: 'X Sounds list' },
-        { type: 'MARKDOWN', text: soundListText },
-      ],
-      isVisibleToIssuerOnly: false,
-    };
+    return CommandProcessingResponses.markdown(
+      '*X Sounds list*',
+      ...soundListText,
+    );
   }
 
   get key(): string {

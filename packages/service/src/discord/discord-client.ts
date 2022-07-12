@@ -93,10 +93,10 @@ class DiscordClient {
   }
 
   private mapCommandProcessingResponseToDiscordResponse(commandProcessingResponse: CommandProcessingResponse): InteractionReplyOptions {
-    const content = commandProcessingResponse.messages.map((message: any) => message.text || '').join('\n'); // TODO: Convert with formatting
+    const { markdown, isVisibleToIssuerOnly } = commandProcessingResponse.message;
     return {
-      content,
-      ephemeral: commandProcessingResponse.isVisibleToIssuerOnly,
+      content: markdown,
+      ephemeral: isVisibleToIssuerOnly,
     };
   }
 }

@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ResumeEvent } from '@service/event-stream/model/events';
@@ -17,7 +17,7 @@ class ResumeCommand extends CommandProcessor {
     const event: ResumeEvent = { id: 'ResumeEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return makeSingleTextProcessingResponse('Wznowiono odtwarzanie');
+    return CommandProcessingResponses.markdown('Wznowiono odtwarzanie');
   }
 
   get key(): string {

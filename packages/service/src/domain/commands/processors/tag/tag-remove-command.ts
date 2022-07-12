@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -22,7 +22,7 @@ class TagRemoveCommand extends CommandProcessor {
     const [tagName, soundName] = commandArgs;
 
     await this.xSoundsService.removeTag(soundName, tagName);
-    return makeSingleTextProcessingResponse(`Usunięto tag "${tagName}" z dźwięku ${soundName}`);
+    return CommandProcessingResponses.markdown(`Usunięto tag \`${tagName}\` z dźwięku \`${soundName}\``);
   }
 
   get key(): string {

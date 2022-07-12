@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -21,21 +21,17 @@ class TagSearchCommand extends CommandProcessor {
     const sounds = await this.xSoundsService.getAllByTag(tagName);
 
     if (sounds.isEmpty()) {
-      return makeSingleTextProcessingResponse(`Nie ma dźwięków z tagiem "${tagName}"`);
+      return CommandProcessingResponses.markdown(`Nie ma dźwięków z tagiem \`${tagName}\``);
     }
 
     const tagListText = sounds
       .map((sound) => sound.name)
-      .map((soundName) => `- ${soundName}`)
-      .join('\n');
+      .map((soundName) => `- ${soundName}`);
 
-    return {
-      messages: [
-        { type: 'HEADER', text: `Dźwięki z tagiem "${tagName}"` },
-        { type: 'MARKDOWN', text: tagListText },
-      ],
-      isVisibleToIssuerOnly: false,
-    };
+    return CommandProcessingResponses.markdown(
+      `*Dźwięki z tagiem \`${tagName}\`*`,
+      ...tagListText,
+    );
   }
 
   get key(): string {

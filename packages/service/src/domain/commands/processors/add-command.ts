@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
@@ -37,7 +37,7 @@ class AddCommand extends CommandProcessor {
     const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : null;
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
-    return makeSingleTextProcessingResponse(`Dodano utwór "${name}" do biblioteki`);
+    return CommandProcessingResponses.markdown(`Dodano utwór "${name}" do biblioteki`);
   }
 
   private parseTimeStringToSeconds(text: string): number {

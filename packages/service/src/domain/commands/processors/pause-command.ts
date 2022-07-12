@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { PauseEvent } from '@service/event-stream/model/events';
@@ -17,7 +17,7 @@ class PauseCommand extends CommandProcessor {
     const event: PauseEvent = { id: 'PauseEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return makeSingleTextProcessingResponse('Spauzowano muzykę');
+    return CommandProcessingResponses.markdown('Spauzowano muzykę');
   }
 
   get key(): string {

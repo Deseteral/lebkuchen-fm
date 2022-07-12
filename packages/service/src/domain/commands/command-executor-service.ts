@@ -1,6 +1,6 @@
 import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { TextCommandParser } from '@service/domain/commands/text-command-parser';
 import { Logger } from '@service/infrastructure/logger';
@@ -19,8 +19,9 @@ class CommandExecutorService {
     try {
       return await commandDefinition.execute(command, context);
     } catch (e) {
-      CommandExecutorService.logger.error((e as Error).message);
-      return makeSingleTextProcessingResponse((e as Error).message, true);
+      const errorMessage = (e as Error).message;
+      CommandExecutorService.logger.error(errorMessage);
+      return CommandProcessingResponses.visibleToTheIssuerOnly(errorMessage);
     }
   }
 
@@ -32,7 +33,7 @@ class CommandExecutorService {
   }
 
   private static get commandDoesNotExistResponse(): CommandProcessingResponse {
-    return makeSingleTextProcessingResponse('Komenda nie istnieje', true);
+    return CommandProcessingResponses.visibleToTheIssuerOnly('Komenda nie istnieje');
   }
 }
 

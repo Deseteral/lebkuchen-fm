@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
 import { CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -30,7 +30,7 @@ class XCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(playXSoundEvent);
     this.xSoundService.incrementPlayCount(xSound.name);
 
-    return makeSingleTextProcessingResponse(':ultrafastparrot:');
+    return CommandProcessingResponses.markdown(`Played \`${soundName}\` sound`);
   }
 
   get key(): string {
