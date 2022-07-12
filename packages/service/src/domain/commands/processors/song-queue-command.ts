@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
@@ -62,13 +62,18 @@ class SongQueueCommand extends CommandProcessor {
     return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma traktuje frazę jako YouTube ID lub ID playlisty YouTube';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<video name, youtube-id or youtube-playlist-id>',
       'transatlantik',
       'p28K7Fz0KrQ',
       'PLpdRVFVH_vIMvkMVdJScNK3S2SeOv7k1d',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequiredOr('video-name', 'youtube-id', 'youtube-playlist-id')
+      .build();
   }
 }
 

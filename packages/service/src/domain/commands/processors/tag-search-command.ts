@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 import { Service } from 'typedi';
@@ -46,11 +46,16 @@ class TagSearchCommand extends CommandProcessor {
     return 'Wyszukuje dźwięki z danym tagiem';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<tag name>',
       'fun stuff',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('tag-name')
+      .build();
   }
 }
 

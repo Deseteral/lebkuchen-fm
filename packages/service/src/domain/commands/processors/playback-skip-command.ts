@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SkipEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -38,15 +38,21 @@ class PlaybackSkipCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Pomija utwory';
+    return 'Pomija utwory. Parameter `amount` ma domyślną wartość `1`. Aby pominąć wszystkie utwory `amount` może mieć wartość `all`';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '[amount; defaults to 1]',
+      '',
       '3',
       'all',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptionalOr('amount', '"all"')
+      .build();
   }
 }
 

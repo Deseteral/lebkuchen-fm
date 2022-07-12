@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -46,12 +46,17 @@ class XRandomCommand extends CommandProcessor {
     return 'Losuje dźwięk z bazy dźwięków. Parametr jest opcjonalny.';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<tag>',
-      'bomba',
       '',
+      'bomba',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptional('tag')
+      .build();
   }
 }
 

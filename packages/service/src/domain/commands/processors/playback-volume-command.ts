@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeVolumeEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -56,15 +56,19 @@ class PlaybackVolumeCommand extends CommandProcessor {
     return 'Ustawia głośność na zadaną z zakresu [0,100] lub zmienia głośność o zadaną wartość z zakresu [-100,+100]';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<volume from 1 to 100>',
-      '<relative volume change from -100 to 100>',
       '55',
       '0',
       '+10',
       '-10',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequiredOr('volume', 'relative-volume-change')
+      .build();
   }
 }
 

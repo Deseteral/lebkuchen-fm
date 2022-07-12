@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
@@ -37,11 +37,18 @@ class TagAddCommand extends CommandProcessor {
     return 'Dodaje tag do podanego dźwięku';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<tag-name>|<sound name>',
       'fun stuff|airhorn',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('tag-name')
+      .withRequired('sound-name')
+      .withDelimeter('|')
+      .build();
   }
 }
 

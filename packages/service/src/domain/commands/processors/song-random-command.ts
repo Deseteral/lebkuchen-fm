@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Song } from '@service/domain/songs/song';
 import { SongsService } from '@service/domain/songs/songs-service';
@@ -89,14 +89,21 @@ class SongRandomCommand extends CommandProcessor {
     return 'Losuje utwory z historii. Parametry są opcjonalne. Może zwrócić mniej klipów niż żądano.';
   }
 
-  get exampleUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<amount> <phrase>',
+      '',
       '3',
       'britney',
       '3 britney',
-      '',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptional('amount')
+      .withOptional('phrase')
+      .withDelimeter(' ')
+      .build();
   }
 }
 
