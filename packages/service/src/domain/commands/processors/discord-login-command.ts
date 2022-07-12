@@ -42,7 +42,7 @@ class DiscordLoginCommand extends CommandProcessor {
     return 'Powiązuje konto Discord z kontem LebkuchenFM';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<lebkuchen-fm-username>',
     ];

@@ -46,7 +46,7 @@ class XRandomCommand extends CommandProcessor {
     return 'Losuje dźwięk z bazy dźwięków. Parametr jest opcjonalny.';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<tag>',
       'bomba',

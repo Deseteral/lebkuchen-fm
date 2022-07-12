@@ -62,7 +62,7 @@ class SongQueueCommand extends CommandProcessor {
     return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma traktuje frazę jako YouTube ID lub ID playlisty YouTube';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<video name, youtube-id or youtube-playlist-id>',
       'transatlantik',

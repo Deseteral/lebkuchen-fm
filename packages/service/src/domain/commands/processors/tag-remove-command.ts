@@ -37,7 +37,7 @@ class TagRemoveCommand extends CommandProcessor {
     return 'Usuwa tag z podanego dźwięku';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<tag-name>|<sound name>',
       'fun stuff|airhorn',

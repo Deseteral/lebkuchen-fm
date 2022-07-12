@@ -45,7 +45,7 @@ class XCommand extends CommandProcessor {
     return 'Puszcza szalony dźwięk!';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<sound name>',
       'airhorn',

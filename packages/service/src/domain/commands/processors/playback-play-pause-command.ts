@@ -32,7 +32,7 @@ class PlayPauseCommand extends CommandProcessor {
     return 'Odtwarza/zatrzymuje bieżący film';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return null;
   }
 }

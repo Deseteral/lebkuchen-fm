@@ -39,7 +39,7 @@ class XListCommand extends CommandProcessor {
     return 'Wypisuje listę czaderskich dźwięków w bazie';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return null;
   }
 }

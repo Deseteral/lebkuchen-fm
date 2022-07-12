@@ -89,7 +89,7 @@ class SongRandomCommand extends CommandProcessor {
     return 'Losuje utwory z historii. Parametry są opcjonalne. Może zwrócić mniej klipów niż żądano.';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '<amount> <phrase>',
       '3',

@@ -51,7 +51,7 @@ class PlaybackSpeedCommand extends CommandProcessor {
     return 'Zmienia prędkość odtwarzania';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '--',
       '++',

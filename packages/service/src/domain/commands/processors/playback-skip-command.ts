@@ -41,7 +41,7 @@ class PlaybackSkipCommand extends CommandProcessor {
     return 'Pomija utwory';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '[amount; defaults to 1]',
       '3',

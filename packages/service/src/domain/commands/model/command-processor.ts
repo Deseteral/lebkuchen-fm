@@ -8,7 +8,7 @@ abstract class CommandProcessor {
   abstract get key(): string;
   abstract get shortKey(): (string | null);
   abstract get helpMessage(): string;
-  abstract get helpUsages(): (string[] | null);
+  abstract get exampleUsages(): (string[] | null);
 }
 
 export { CommandProcessor };

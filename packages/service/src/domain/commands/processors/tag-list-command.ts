@@ -39,7 +39,7 @@ class TagListCommand extends CommandProcessor {
     return 'Wyświetla wszystkie unikatowe tagi';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return null;
   }
 }

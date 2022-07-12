@@ -33,7 +33,7 @@ class HelpCommand extends CommandProcessor {
       this.getCommandHelpLine(definition),
       definition.helpMessage,
       '',
-      definition.helpUsages?.join(' ') || '',
+      definition.exampleUsages?.join(' ') || '',
       '```',
     );
   }
@@ -94,7 +94,7 @@ class HelpCommand extends CommandProcessor {
     return 'Wyświetla dostępne komendy oraz przykłady ich użycia';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): (string[] | null) {
     return [
       '',
       '<command name>',
