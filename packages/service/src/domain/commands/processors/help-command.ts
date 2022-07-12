@@ -76,10 +76,10 @@ class HelpCommand extends CommandProcessor {
   private getCommandHelpLine(definition: CommandProcessor): string {
     const { key, shortKey } = definition;
     const shortKeyFragment = shortKey
-      ? ` \`[${shortKey}]\``
+      ? ` [${shortKey}]`
       : '';
 
-    return `\`${key}\`${shortKeyFragment}`;
+    return `${key}${shortKeyFragment}`;
   }
 
   get key(): string {
