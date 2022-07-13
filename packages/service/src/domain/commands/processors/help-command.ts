@@ -30,7 +30,7 @@ class HelpCommand extends CommandProcessor {
     }
 
     const exampleText = definition.exampleUsages
-      .map((usage) => `${this.configuration.COMMAND_PROMPT} ${usage}`)
+      .map((usage) => `${this.configuration.COMMAND_PROMPT} ${commandName} ${usage}`)
       .map((usage) => `  ${usage}`)
       .join('\n');
 
