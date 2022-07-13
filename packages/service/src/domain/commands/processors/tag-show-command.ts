@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 import { Service } from 'typedi';
@@ -13,7 +13,7 @@ class TagShowCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const soundName = command.rawArgs.trim();
+    const soundName = command.rawArgs;
     if (!soundName) {
       throw new Error('Podaj nazwę dźwięku');
     }
@@ -44,11 +44,16 @@ class TagShowCommand extends CommandProcessor {
     return 'Wyświetla wszystkie tagi przypisane do dźwięku';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<sound name>',
       'airhorn',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('sound-name')
+      .build();
   }
 }
 

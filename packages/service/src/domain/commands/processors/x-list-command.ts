@@ -2,12 +2,12 @@ import { Service } from 'typedi';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
 @RegisterCommand
 @Service()
-class ListXCommand extends CommandProcessor {
+class XListCommand extends CommandProcessor {
   constructor(private xSoundService: XSoundsService) {
     super();
   }
@@ -28,7 +28,7 @@ class ListXCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'listx';
+    return 'x-list';
   }
 
   get shortKey(): (string | null) {
@@ -39,9 +39,15 @@ class ListXCommand extends CommandProcessor {
     return 'Wypisuje listę czaderskich dźwięków w bazie';
   }
 
-  get helpUsages(): (string[] | null) {
-    return null;
+  get exampleUsages(): string[] {
+    return [
+      '',
+    ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder().buildEmpty();
   }
 }
 
-export { ListXCommand };
+export { XListCommand };

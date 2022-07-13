@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class AddCommand extends CommandProcessor {
+class SongAddCommand extends CommandProcessor {
   constructor(private songService: SongsService, private youTubeDataClient: YouTubeDataClient) {
     super();
   }
@@ -58,7 +58,7 @@ class AddCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'add';
+    return 'song-add';
   }
 
   get shortKey(): (string | null) {
@@ -69,13 +69,22 @@ class AddCommand extends CommandProcessor {
     return 'Dodaje przebój do bazy utworów';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<youtube-id>|<video name>|[start time]|[end time]',
       'jK4ICUBdsuc|aldonka slowmo',
       'p28K7Fz0KrQ|transatlantik|0:00|1:53',
     ];
   }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('youtube-id')
+      .withRequired('video-name')
+      .withOptional('start-time')
+      .withOptional('end-time')
+      .withDelimeter('|')
+      .build();
+  }
 }
 
-export { AddCommand };
+export { SongAddCommand };

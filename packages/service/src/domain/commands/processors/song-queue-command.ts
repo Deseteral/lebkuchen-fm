@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
@@ -10,13 +10,18 @@ import { Song } from '@service/domain/songs/song';
 
 @RegisterCommand
 @Service()
-class QueueCommand extends CommandProcessor {
+class SongQueueCommand extends CommandProcessor {
   constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const id = command.rawArgs;
+
+    if (!id) {
+      throw new Error('You have to provide video ID');
+    }
+
     const songs: Song[] = [];
     try {
       const song = await this.songService.getSongByNameWithYouTubeIdFallback(id);
@@ -46,7 +51,7 @@ class QueueCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'queue';
+    return 'song-queue';
   }
 
   get shortKey(): (string | null) {
@@ -57,14 +62,19 @@ class QueueCommand extends CommandProcessor {
     return 'Dodaje do kolejki utwór z bazy, a jeżeli go tam nie ma traktuje frazę jako YouTube ID lub ID playlisty YouTube';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<video name, youtube-id or youtube-playlist-id>',
       'transatlantik',
       'p28K7Fz0KrQ',
       'PLpdRVFVH_vIMvkMVdJScNK3S2SeOv7k1d',
     ];
   }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequiredOr('video-name', 'youtube-id', 'youtube-playlist-id')
+      .build();
+  }
 }
 
-export { QueueCommand };
+export { SongQueueCommand };

@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Song } from '@service/domain/songs/song';
 import { SongsService } from '@service/domain/songs/songs-service';
@@ -13,7 +13,7 @@ const MAX_SONGS_IN_YOUTUBE_REQUEST = 50;
 
 @RegisterCommand
 @Service()
-class RandomCommand extends CommandProcessor {
+class SongRandomCommand extends CommandProcessor {
   constructor(private songService: SongsService, private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -78,26 +78,33 @@ class RandomCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'random';
+    return 'song-random';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'random';
   }
 
   get helpMessage(): string {
     return 'Losuje utwory z historii. Parametry są opcjonalne. Może zwrócić mniej klipów niż żądano.';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<amount> <phrase>',
+      '',
       '3',
       'britney',
       '3 britney',
-      '',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptional('amount')
+      .withOptional('phrase')
+      .withDelimeter(' ')
+      .build();
   }
 }
 
-export { RandomCommand };
+export { SongRandomCommand };

@@ -25,12 +25,8 @@ export interface SayEvent {
   text: string,
 }
 
-export interface PauseEvent {
-  id: 'PauseEvent',
-}
-
-export interface ResumeEvent {
-  id: 'ResumeEvent',
+export interface PlayPauseEvent {
+  id: 'PlayPauseEvent',
 }
 
 export interface SkipEvent {
@@ -57,8 +53,7 @@ export type EventData =
   | AddSongsToQueueEvent
   | PlayXSoundEvent
   | SayEvent
-  | PauseEvent
-  | ResumeEvent
+  | PlayPauseEvent
   | SkipEvent
   | ChangeSpeedEvent
   | ChangeVolumeEvent;

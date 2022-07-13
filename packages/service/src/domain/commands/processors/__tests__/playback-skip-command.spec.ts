@@ -1,14 +1,14 @@
 import { Command } from '@service/domain/commands/model/command';
-import { SkipCommand } from '@service/domain/commands/processors/skip-command';
+import { PlaybackSkipCommand } from '@service/domain/commands/processors/playback-skip-command';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 
 jest.mock('@service/domain/commands/registry/register-command');
 jest.mock('@service/event-stream/player-event-stream');
 
-describe('Skip command', () => {
+describe('playback-skip command', () => {
   const PlayerEventStreamMock = PlayerEventStream as unknown as jest.Mock<PlayerEventStream>;
   const playerEventStream = new PlayerEventStreamMock();
-  const commandProcessor = new SkipCommand(playerEventStream);
+  const commandProcessor = new PlaybackSkipCommand(playerEventStream);
 
   beforeEach(() => {
     jest.clearAllMocks();

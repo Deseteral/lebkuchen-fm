@@ -1,40 +1,46 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
-import { PauseEvent } from '@service/event-stream/model/events';
+import { PlayPauseEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class PauseCommand extends CommandProcessor {
+class PlayPauseCommand extends CommandProcessor {
   constructor(private playerEventStream: PlayerEventStream) {
     super();
   }
 
   async execute(_: Command): Promise<CommandProcessingResponse> {
-    const event: PauseEvent = { id: 'PauseEvent' };
+    const event: PlayPauseEvent = { id: 'PlayPauseEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return CommandProcessingResponses.markdown('Spauzowano muzykę');
+    return CommandProcessingResponses.markdown('⏯');
   }
 
   get key(): string {
-    return 'pause';
+    return 'playback-play-pause';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'play';
   }
 
   get helpMessage(): string {
-    return 'Zatrzymuje odtwarzanie bieżącego filmu';
+    return 'Odtwarza/zatrzymuje bieżący film';
   }
 
-  get helpUsages(): (string[] | null) {
-    return null;
+  get exampleUsages(): string[] {
+    return [
+      '',
+    ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder().buildEmpty();
   }
 }
 
-export { PauseCommand };
+export { PlayPauseCommand };

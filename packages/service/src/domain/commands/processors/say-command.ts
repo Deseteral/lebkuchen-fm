@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SayEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -15,6 +15,9 @@ class SayCommand extends CommandProcessor {
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const text = command.rawArgs;
+
+    if (!text) throw new Error('You have to provide message text');
+
     const eventMessage: SayEvent = {
       id: 'SayEvent',
       text,
@@ -37,11 +40,16 @@ class SayCommand extends CommandProcessor {
     return 'Prosi spikera o odczytanie wiadomości';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<message>',
       'to jest moja fantastyczna wiadomość',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('message')
+      .build();
   }
 }
 

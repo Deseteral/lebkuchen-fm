@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeSpeedEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -8,7 +8,7 @@ import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class SpeedCommand extends CommandProcessor {
+class PlaybackSpeedCommand extends CommandProcessor {
   constructor(private playerEventStream: PlayerEventStream) {
     super();
   }
@@ -40,24 +40,30 @@ class SpeedCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'speed';
+    return 'playback-speed';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'speed';
   }
 
   get helpMessage(): string {
     return 'Zmienia prędkość odtwarzania';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
       '--',
       '++',
-      '1 (resetuje)',
+      '1',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequiredOr('"--"', '"++"', '"1"')
+      .build();
   }
 }
 
-export { SpeedCommand };
+export { PlaybackSpeedCommand };
