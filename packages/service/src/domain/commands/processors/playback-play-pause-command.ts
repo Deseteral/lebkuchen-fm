@@ -17,7 +17,7 @@ class PlayPauseCommand extends CommandProcessor {
     const event: PlayPauseEvent = { id: 'PlayPauseEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return CommandProcessingResponses.markdown('Spauzowano muzykę');
+    return CommandProcessingResponses.markdown('⏯');
   }
 
   get key(): string {
