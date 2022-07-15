@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
@@ -34,16 +34,18 @@ class HelpCommand extends CommandProcessor {
       .map((usage) => `  ${usage}`)
       .join('\n');
 
-    return CommandProcessingResponses.markdown(
-      '```',
-      this.getCommandWithParamsLine(definition),
-      '',
-      `> ${definition.helpMessage}`,
-      '',
-      'Examples:',
-      exampleText,
-      '```',
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '```',
+        this.getCommandWithParamsLine(definition),
+        '',
+        `> ${definition.helpMessage}`,
+        '',
+        'Examples:',
+        exampleText,
+        '```',
+      )
+      .build();
   }
 
   private helpWithoutCommand(): CommandProcessingResponse {
@@ -60,16 +62,18 @@ class HelpCommand extends CommandProcessor {
       .map((group) => group.join('\n'))
       .join('\n\n');
 
-    return CommandProcessingResponses.markdown(
-      '```',
-      'LebkuchenFM',
-      '',
-      `For command specific information use \`${this.configuration.COMMAND_PROMPT} help <command name>\``,
-      '',
-      'Commands:',
-      groupsText,
-      '```',
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '```',
+        'LebkuchenFM',
+        '',
+        `For command specific information use \`${this.configuration.COMMAND_PROMPT} help <command name>\``,
+        '',
+        'Commands:',
+        groupsText,
+        '```',
+      )
+      .build();
   }
 
   private getAllUniqueCommands(): CommandProcessor[] {

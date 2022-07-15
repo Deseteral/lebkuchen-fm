@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -21,15 +21,19 @@ class TagShowCommand extends CommandProcessor {
     const tags = await this.xSoundsService.getSoundTags(soundName);
 
     if (tags.isEmpty()) {
-      return CommandProcessingResponses.markdown(`Do dźwięku \`${soundName}\` nie ma przyspisanych żadnych tagów`);
+      return new CommandProcessingResponseBuilder()
+        .fromMarkdown(`Do dźwięku \`${soundName}\` nie ma przyspisanych żadnych tagów`)
+        .build();
     }
 
     const tagListText = tags.map((tagName) => `- ${tagName}`);
 
-    return CommandProcessingResponses.markdown(
-      `*Tagi dla \`${soundName}\`*`,
-      `${tagListText}`,
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        `*Tagi dla \`${soundName}\`*`,
+        ...tagListText,
+      )
+      .build();
   }
 
   get key(): string {

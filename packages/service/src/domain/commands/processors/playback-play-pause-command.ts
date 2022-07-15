@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { PlayPauseEvent } from '@service/event-stream/model/events';
@@ -17,7 +17,9 @@ class PlayPauseCommand extends CommandProcessor {
     const event: PlayPauseEvent = { id: 'PlayPauseEvent' };
     this.playerEventStream.sendToEveryone(event);
 
-    return CommandProcessingResponses.markdown('⏯');
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown('⏯')
+      .build();
   }
 
   get key(): string {

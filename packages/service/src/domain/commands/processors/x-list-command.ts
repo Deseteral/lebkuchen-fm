@@ -1,7 +1,7 @@
 import { Service } from 'typedi';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 
@@ -21,10 +21,12 @@ class XListCommand extends CommandProcessor {
 
     const soundListText = sounds.map((sound) => `- \`${sound.name}\``);
 
-    return CommandProcessingResponses.markdown(
-      '*X Sounds list*',
-      ...soundListText,
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '*X Sounds list*',
+        ...soundListText,
+      )
+      .build();
   }
 
   get key(): string {

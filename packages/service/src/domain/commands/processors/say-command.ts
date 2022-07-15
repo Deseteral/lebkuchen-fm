@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SayEvent } from '@service/event-stream/model/events';
@@ -25,7 +25,9 @@ class SayCommand extends CommandProcessor {
 
     this.playerEventStream.sendToEveryone(eventMessage);
 
-    return CommandProcessingResponses.markdown(`_"${text}"_`);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`_"${text}"_`)
+      .build();
   }
 
   get key(): string {

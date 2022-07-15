@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SkipEvent } from '@service/event-stream/model/events';
@@ -26,7 +26,9 @@ class PlaybackSkipCommand extends CommandProcessor {
     const event: SkipEvent = { id: 'SkipEvent', skipAll, amount: amount || 1 };
     this.playerEventStream.sendToEveryone(event);
 
-    return CommandProcessingResponses.markdown('Lecimy dalej!');
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown('Lecimy dalej!')
+      .build();
   }
 
   get key(): string {

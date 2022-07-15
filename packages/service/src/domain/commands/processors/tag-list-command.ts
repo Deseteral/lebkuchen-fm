@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -16,15 +16,19 @@ class TagListCommand extends CommandProcessor {
     const tags = await this.xSoundService.getAllUniqueTags();
 
     if (tags.isEmpty()) {
-      return CommandProcessingResponses.markdown('Aktualnie nie ma żadnych tagów');
+      return new CommandProcessingResponseBuilder()
+        .fromMarkdown('Aktualnie nie ma żadnych tagów')
+        .build();
     }
 
     const tagListText = tags.map((tagName) => `- ${tagName}`);
 
-    return CommandProcessingResponses.markdown(
-      '*Wszystkie tagi*',
-      ...tagListText,
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '*Wszystkie tagi*',
+        ...tagListText,
+      )
+      .build();
   }
 
   get key(): string {
