@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSound } from '@service/domain/x-sounds/x-sound';
@@ -31,7 +31,9 @@ class XRandomCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(eventData);
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    return CommandProcessingResponses.markdown(`💥 \`${xSoundToPlay.name}\``);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`💥 \`${xSoundToPlay.name}\``)
+      .build();
   }
 
   get key(): string {

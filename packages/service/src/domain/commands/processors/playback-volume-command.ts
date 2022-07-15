@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeVolumeEvent } from '@service/event-stream/model/events';
@@ -38,10 +38,9 @@ class PlaybackVolumeCommand extends CommandProcessor {
     };
     this.playerEventStream.sendToEveryone(event);
 
-    if (isRelativeChange) {
-      return CommandProcessingResponses.markdown(`Zmieniono głośność o "${value}"`);
-    }
-    return CommandProcessingResponses.markdown(`Ustawiono głośność na "${value}"`);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(isRelativeChange ? `Zmieniono głośność o "${value}"` : `Ustawiono głośność na "${value}"`)
+      .build();
   }
 
   get key(): string {

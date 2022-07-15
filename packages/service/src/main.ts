@@ -117,7 +117,6 @@ async function main(): Promise<void> {
 
   /* Connect to Discord */
   const discordClient = Container.get(DiscordClient);
-  await discordClient.registerCommands();
   await discordClient.login();
 
   /* Start the server */

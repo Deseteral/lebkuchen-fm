@@ -1,5 +1,5 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
@@ -47,7 +47,9 @@ class SongQueueCommand extends CommandProcessor {
     embeddableSongs.forEach((song) => this.songService.incrementPlayCount(song.youtubeId, song.name));
 
     const songNames = embeddableSongs.map((song) => song.name).join(', ');
-    return CommandProcessingResponses.markdown(`Dodano "${songNames}" do kolejki`);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`Dodano "${songNames}" do kolejki`)
+      .build();
   }
 
   get key(): string {
