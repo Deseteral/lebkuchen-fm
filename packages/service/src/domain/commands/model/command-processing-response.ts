@@ -1,17 +1,27 @@
 export interface CommandProcessingResponseMessage {
   markdown: string,
-  isVisibleToIssuerOnly: boolean
 }
 
 export interface CommandProcessingResponse {
   message: CommandProcessingResponseMessage,
 }
 
-export const CommandProcessingResponses = {
-  markdown: (...markdown: string[]): CommandProcessingResponse => ({
-    message: { markdown: markdown.join('\n'), isVisibleToIssuerOnly: false },
-  }),
-  visibleToTheIssuerOnly: (...markdown: string[]): CommandProcessingResponse => ({
-    message: { markdown: markdown.join('\n'), isVisibleToIssuerOnly: true },
-  }),
-};
+export class CommandProcessingResponseBuilder {
+  markdown: string = '';
+
+  fromMarkdown(markdown: string): CommandProcessingResponseBuilder {
+    this.markdown = markdown;
+    return this;
+  }
+
+  fromMultilineMarkdown(...markdownLines: string[]): CommandProcessingResponseBuilder {
+    this.markdown = markdownLines.join('\n');
+    return this;
+  }
+
+  build(): CommandProcessingResponse {
+    return {
+      message: { markdown: this.markdown },
+    };
+  }
+}

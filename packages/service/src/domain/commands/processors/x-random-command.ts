@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -31,7 +31,9 @@ class XRandomCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(eventData);
     this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
 
-    return CommandProcessingResponses.markdown(`:ultrafastparrot: \`${xSoundToPlay.name}\``);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`💥 \`${xSoundToPlay.name}\``)
+      .build();
   }
 
   get key(): string {
@@ -46,12 +48,17 @@ class XRandomCommand extends CommandProcessor {
     return 'Losuje dźwięk z bazy dźwięków. Parametr jest opcjonalny.';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<tag>',
-      'bomba',
       '',
+      'bomba',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptional('tag')
+      .build();
   }
 }
 

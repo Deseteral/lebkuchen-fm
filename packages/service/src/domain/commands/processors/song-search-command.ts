@@ -1,7 +1,7 @@
 import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { SongQueueCommand } from '@service/domain/commands/processors/song-queue-command';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
@@ -39,11 +39,16 @@ class SongSearchCommand extends CommandProcessor {
     return 'Kolejkuje pierwszy wynik wyszukiwania danej frazy na YouTube';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<phrase>',
       'krawczyk parostatek',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('phrase')
+      .build();
   }
 }
 

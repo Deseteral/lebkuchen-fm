@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
@@ -37,7 +37,9 @@ class SongAddCommand extends CommandProcessor {
     const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : null;
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
-    return CommandProcessingResponses.markdown(`Dodano utwór "${name}" do biblioteki`);
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`Dodano utwór "${name}" do biblioteki`)
+      .build();
   }
 
   private parseTimeStringToSeconds(text: string): number {
@@ -69,12 +71,21 @@ class SongAddCommand extends CommandProcessor {
     return 'Dodaje przebój do bazy utworów';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<youtube-id>|<video name>|[start time]|[end time]',
       'jK4ICUBdsuc|aldonka slowmo',
       'p28K7Fz0KrQ|transatlantik|0:00|1:53',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('youtube-id')
+      .withRequired('video-name')
+      .withOptional('start-time')
+      .withOptional('end-time')
+      .withDelimeter('|')
+      .build();
   }
 }
 

@@ -1,8 +1,9 @@
 import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { TextCommandParser } from '@service/domain/commands/text-command-parser';
+import { Configuration } from '@service/infrastructure/configuration';
 import { Logger } from '@service/infrastructure/logger';
 import { Service } from 'typedi';
 
@@ -10,7 +11,11 @@ import { Service } from 'typedi';
 class CommandExecutorService {
   private static logger = new Logger('command-executor-service');
 
-  constructor(private commandRegistryService: CommandRegistryService, private textCommandParser: TextCommandParser) { }
+  constructor(
+    private commandRegistryService: CommandRegistryService,
+    private textCommandParser: TextCommandParser,
+    private configuration: Configuration,
+  ) { }
 
   async processCommand(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const commandDefinition = this.commandRegistryService.getRegistry().get(command.key);
@@ -21,11 +26,13 @@ class CommandExecutorService {
     } catch (e) {
       const errorMessage = (e as Error).message;
       CommandExecutorService.logger.error(errorMessage);
-      return CommandProcessingResponses.visibleToTheIssuerOnly(
-        errorMessage,
-        '',
-        `For more usage information checkout \`help ${commandDefinition.key}\``,
-      );
+      return new CommandProcessingResponseBuilder()
+        .fromMultilineMarkdown(
+          errorMessage,
+          '',
+          `For more usage information checkout \`${this.configuration.COMMAND_PROMPT} help ${commandDefinition.key}\``,
+        )
+        .build();
     }
   }
 
@@ -37,7 +44,9 @@ class CommandExecutorService {
   }
 
   private static get commandDoesNotExistResponse(): CommandProcessingResponse {
-    return CommandProcessingResponses.visibleToTheIssuerOnly('Komenda nie istnieje');
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown('Komenda nie istnieje')
+      .build();
   }
 }
 

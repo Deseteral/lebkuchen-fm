@@ -1,15 +1,16 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { Configuration } from '@service/infrastructure/configuration';
 import { notNull } from '@service/utils/utils';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
 class HelpCommand extends CommandProcessor {
-  constructor(private commandRegistryService: CommandRegistryService) {
+  constructor(private commandRegistryService: CommandRegistryService, private configuration: Configuration) {
     super();
   }
 
@@ -28,14 +29,23 @@ class HelpCommand extends CommandProcessor {
       throw new Error('No such command');
     }
 
-    return CommandProcessingResponses.markdown(
-      '```markdown',
-      this.getCommandHelpLine(definition),
-      definition.helpMessage,
-      '',
-      definition.helpUsages?.join(' ') || '',
-      '```',
-    );
+    const exampleText = definition.exampleUsages
+      .map((usage) => `${this.configuration.COMMAND_PROMPT} ${commandName} ${usage}`)
+      .map((usage) => `  ${usage}`)
+      .join('\n');
+
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '```',
+        this.getCommandWithParamsLine(definition),
+        '',
+        `> ${definition.helpMessage}`,
+        '',
+        'Examples:',
+        exampleText,
+        '```',
+      )
+      .build();
   }
 
   private helpWithoutCommand(): CommandProcessingResponse {
@@ -52,15 +62,18 @@ class HelpCommand extends CommandProcessor {
       .map((group) => group.join('\n'))
       .join('\n\n');
 
-    return CommandProcessingResponses.markdown(
-      '```markdown',
-      '*LebkuchenFM*',
-      'For command specific information use `help <command name>`',
-      '',
-      'Commands:',
-      groupsText,
-      '```',
-    );
+    return new CommandProcessingResponseBuilder()
+      .fromMultilineMarkdown(
+        '```',
+        'LebkuchenFM',
+        '',
+        `For command specific information use \`${this.configuration.COMMAND_PROMPT} help <command name>\``,
+        '',
+        'Commands:',
+        groupsText,
+        '```',
+      )
+      .build();
   }
 
   private getAllUniqueCommands(): CommandProcessor[] {
@@ -76,10 +89,20 @@ class HelpCommand extends CommandProcessor {
   private getCommandHelpLine(definition: CommandProcessor): string {
     const { key, shortKey } = definition;
     const shortKeyFragment = shortKey
-      ? ` \`[${shortKey}]\``
+      ? ` (${shortKey})`
       : '';
 
-    return `\`${key}\`${shortKeyFragment}`;
+    return `${key}${shortKeyFragment}`;
+  }
+
+  private getCommandWithParamsLine(definition: CommandProcessor): string {
+    const { key, parameters } = definition;
+
+    const paramsText = parameters.parameters
+      .map((param) => (param.required ? `<${param.names.join(' | ')}>` : `[${param.names.join(' | ')}]`))
+      .join(parameters.delimeter || '');
+
+    return `${key} ${paramsText}`;
   }
 
   get key(): string {
@@ -94,12 +117,17 @@ class HelpCommand extends CommandProcessor {
     return 'Wyświetla dostępne komendy oraz przykłady ich użycia';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
       '',
-      '<command name>',
       'song-random',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withOptional('command-name')
+      .build();
   }
 }
 

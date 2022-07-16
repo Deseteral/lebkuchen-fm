@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { ChangeSpeedEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
@@ -36,7 +36,10 @@ class PlaybackSpeedCommand extends CommandProcessor {
     }
 
     this.playerEventStream.sendToEveryone(event);
-    return CommandProcessingResponses.markdown(`Lecimy z ${message} prędkością!`);
+
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`Lecimy z ${message} prędkością!`)
+      .build();
   }
 
   get key(): string {
@@ -51,12 +54,18 @@ class PlaybackSpeedCommand extends CommandProcessor {
     return 'Zmienia prędkość odtwarzania';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
       '--',
       '++',
-      '1 (resetuje)',
+      '1',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequiredOr('"--"', '"++"', '"1"')
+      .build();
   }
 }
 

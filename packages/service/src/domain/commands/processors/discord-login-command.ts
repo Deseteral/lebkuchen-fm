@@ -1,7 +1,7 @@
 import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, CommandProcessingResponses } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { User } from '@service/domain/users/user';
 import { UsersService } from '@service/domain/users/users-service';
@@ -27,7 +27,9 @@ class DiscordLoginCommand extends CommandProcessor {
 
     await this.usersService.connectWithDiscordAccount(user, discordId);
 
-    return CommandProcessingResponses.visibleToTheIssuerOnly('Successfully conntected Discord account');
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown('Successfully conntected Discord account')
+      .build();
   }
 
   get key(): string {
@@ -42,10 +44,16 @@ class DiscordLoginCommand extends CommandProcessor {
     return 'Powiązuje konto Discord z kontem LebkuchenFM';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<lebkuchen-fm-username>',
+      'MyUsername',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('lebkuchen-fm-username')
+      .build();
   }
 }
 

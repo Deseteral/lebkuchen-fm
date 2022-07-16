@@ -23,8 +23,6 @@
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {
-    "@discordjs/builders": "0.15.0",
-    "@discordjs/rest": "0.5.0",
     "compression": "1.7.4",
     "discord-api-types": "0.36.1",
     "discord.js": "13.8.1",
