@@ -14,11 +14,15 @@ class TextCommandController {
 
   @Post('/')
   async processTextCommand(@Body() body: TextCommandRequestDto): Promise<TextCommandResponseDto> {
-    const { text } = body;
-    TextCommandController.logger.info(`Received ${text} command`);
+    return {
+      textResponse: 'Słodziaczku nie zesraj się z tym cronem',
+    };
 
-    const commandProcessingResponse = await this.commandExecutorService.processFromText(text);
-    return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
+    // const { text } = body;
+    // TextCommandController.logger.info(`Received ${text} command`);
+
+    // const commandProcessingResponse = await this.commandExecutorService.processFromText(text);
+    // return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
   }
 }
 
