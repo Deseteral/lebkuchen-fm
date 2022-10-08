@@ -5,6 +5,7 @@ import { CommandExecutorService } from '@service/domain/commands/command-executo
 import { Logger } from '@service/infrastructure/logger';
 import { UsersService } from '@service/domain/users/users-service';
 import { ExecutionContext } from '@service/domain/commands/execution-context';
+import { User } from '@service/domain/users/user';
 
 const DISCORD_LOGIN_COMMAND_KEY = 'discord-login';
 
@@ -29,8 +30,9 @@ class DiscordClient {
     if (message.channelId !== this.configuration.DISCORD_CHANNEL_ID) return;
 
     const discordId: string = message.author.id;
-    const hasConnectedAccount: boolean = await this.usersService.hasConnectedDiscordAccount(discordId);
+    const user: (User | null) = await this.usersService.getByDiscordId(discordId);
     const isLoginCommand: boolean = message.content.startsWith(`${this.configuration.COMMAND_PROMPT} ${DISCORD_LOGIN_COMMAND_KEY}`);
+    const hasConnectedAccount: boolean = !!user;
 
     if (!hasConnectedAccount && !isLoginCommand) {
       await message.reply(
@@ -41,6 +43,7 @@ class DiscordClient {
 
     const context: ExecutionContext = {
       discordId,
+      user: user!, // user might be null but this is only the case for discord-login command
     };
 
     const commandProcessingResponse = await this.commandExecutorService.processFromText(message.content, context);

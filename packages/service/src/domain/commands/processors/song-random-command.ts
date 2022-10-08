@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
@@ -18,7 +19,7 @@ class SongRandomCommand extends CommandProcessor {
     super();
   }
 
-  async execute(command: Command): Promise<CommandProcessingResponse> {
+  async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
     const { amount, keywords } = this.amountAndKeywordsFromArgs(commandArgs);
 
@@ -43,7 +44,7 @@ class SongRandomCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(eventData);
 
     songsToQueue.forEach((song) => {
-      this.songService.incrementPlayCount(song.youtubeId, song.name);
+      this.songService.incrementPlayCount(song.youtubeId, song.name, context.user);
     });
     const text = this.buildMessage(songsToQueue, amount);
 

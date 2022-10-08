@@ -83,9 +83,8 @@ class UsersService {
     await this.repository.replace(newUser);
   }
 
-  async hasConnectedDiscordAccount(discordId: string): Promise<boolean> {
-    const user: (User | null) = await this.repository.findByDiscordId(discordId);
-    return !!user;
+  async getByDiscordId(discordId: string): Promise<User | null> {
+    return this.repository.findByDiscordId(discordId);
   }
 
   async updateLastLoginDate(user: User): Promise<void> {

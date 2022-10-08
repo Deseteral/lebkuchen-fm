@@ -7,6 +7,7 @@ import { AddSongsToQueueEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 import { Song } from '@service/domain/songs/song';
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 
 @RegisterCommand
 @Service()
@@ -15,7 +16,7 @@ class SongQueueCommand extends CommandProcessor {
     super();
   }
 
-  async execute(command: Command): Promise<CommandProcessingResponse> {
+  async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const id = command.rawArgs;
 
     if (!id) {
@@ -44,7 +45,7 @@ class SongQueueCommand extends CommandProcessor {
     const eventData: AddSongsToQueueEvent = { id: 'AddSongsToQueueEvent', songs: embeddableSongs };
     this.playerEventStream.sendToEveryone(eventData);
 
-    embeddableSongs.forEach((song) => this.songService.incrementPlayCount(song.youtubeId, song.name));
+    embeddableSongs.forEach((song) => this.songService.incrementPlayCount(song.youtubeId, song.name, context.user));
 
     const songNames = embeddableSongs.map((song) => song.name).join(', ');
     return new CommandProcessingResponseBuilder()
