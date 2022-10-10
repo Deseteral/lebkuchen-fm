@@ -1,0 +1,10 @@
+node_modules/
+build/
+dist/
+.cache/
+.parcel-cache/
+coverage/
+
+.env
+*.log
+.DS_Store
