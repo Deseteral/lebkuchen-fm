@@ -11,7 +11,7 @@ function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
 
   React.useEffect(() => {
-    EventStreamClient.connect();
+    const eventStreamDisconnect = EventStreamClient.connect();
     SpeechService.initialize();
 
     PlayerStateService.onStateChange((nextState?: PlayerState) => {
@@ -22,6 +22,8 @@ function FmPlayer() {
         isPlaying: nextState.isPlaying,
       } as PlayerState);
     });
+
+    return () => eventStreamDisconnect();
   }, []);
 
   if (playerState === null) return (<div />);

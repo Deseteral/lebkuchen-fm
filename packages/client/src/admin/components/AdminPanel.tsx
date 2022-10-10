@@ -1,16 +1,26 @@
 import * as React from 'react';
 import io from 'socket.io-client';
-import { AdminEventData, Log } from 'lebkuchen-fm-service';
+import { AdminEventData, Log, UserData } from 'lebkuchen-fm-service';
 import { AppContainer } from './AppContainer';
-import { WsConnections } from './WsConnections';
+import { Users } from './Users';
 import { Logs } from './Logs';
+import { getUserList } from '../services/get-user-list';
 
 function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
-  const [playerIds, setPlayerIds] = React.useState<string[]>([]);
+  const [loggedInPlayerIds, setLoggedInPlayerIds] = React.useState<string[]>([]);
+  const [userList, setUserList] = React.useState<UserData[]>([]);
+
+  const refreshUserList = () => {
+    getUserList().then((users) => setUserList(users));
+  };
 
   React.useEffect(() => {
-    const client = io('/admin');
+    refreshUserList();
+  }, []);
+
+  React.useEffect(() => {
+    const client = io('/api/admin');
     client.on('connect', () => console.log('Connected to event stream WebSocket'));
 
     client.on('message', (eventData: AdminEventData) => {
@@ -22,7 +32,7 @@ function AdminPanel() {
           break;
 
         case 'WsConnectionsEvent':
-          setPlayerIds(eventData.playerIds);
+          setLoggedInPlayerIds(eventData.playerIds);
           break;
 
         default:
@@ -34,7 +44,11 @@ function AdminPanel() {
   return (
     <AppContainer>
       <Logs logs={loggerHistory} />
-      <WsConnections playerIds={playerIds} />
+      <Users
+        loggedInPlayerIds={loggedInPlayerIds}
+        userList={userList}
+        onUserAdded={() => refreshUserList()}
+      />
     </AppContainer>
   );
 }

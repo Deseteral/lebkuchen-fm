@@ -1,10 +1,11 @@
 import { Service } from 'typedi';
-import { JsonController, Get } from 'routing-controllers';
+import { JsonController, Get, Authorized } from 'routing-controllers';
 import { HistoryService } from '@service/domain/history/history-service';
 import { HistoryResponseDto } from '@service/api/history/model/history-response-dto';
 
 @Service()
-@JsonController('/history')
+@JsonController('/api/history')
+@Authorized()
 class HistoryController {
   constructor(private historyService: HistoryService) { }
 

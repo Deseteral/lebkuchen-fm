@@ -1,28 +1,35 @@
 import { Service } from 'typedi';
-import { JsonController, Body, Post } from 'routing-controllers';
+import { JsonController, Body, Post, Authorized, CurrentUser } from 'routing-controllers';
 import { TextCommandRequestDto } from '@service/api/text/model/text-command-request-dto';
-import { TextCommandResponseDto, mapCommandProcessingResponseToTextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
+import { TextCommandResponseDto } from '@service/api/text/model/text-command-response-dto';
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
 import { Logger } from '@service/infrastructure/logger';
+import { ExecutionContext } from '@service/domain/commands/execution-context';
+import { User } from '@service/domain/users/user';
 
 @Service()
-@JsonController('/commands/text')
+@JsonController('/api/commands/text')
+@Authorized()
 class TextCommandController {
   private static logger = new Logger('text-command-controller');
 
   constructor(private commandExecutorService: CommandExecutorService) { }
 
   @Post('/')
-  async processTextCommand(@Body() body: TextCommandRequestDto): Promise<TextCommandResponseDto> {
-    return {
-      textResponse: 'Słodziaczku nie zesraj się z tym cronem',
+  async processTextCommand(@Body() body: TextCommandRequestDto, @CurrentUser() user: User): Promise<TextCommandResponseDto> {
+    const { text } = body;
+    TextCommandController.logger.info(`Received ${text} command`);
+
+    const context: ExecutionContext = {
+      discordId: null,
+      user,
     };
 
-    // const { text } = body;
-    // TextCommandController.logger.info(`Received ${text} command`);
+    const commandProcessingResponse = await this.commandExecutorService.processFromText(text, context);
 
-    // const commandProcessingResponse = await this.commandExecutorService.processFromText(text);
-    // return mapCommandProcessingResponseToTextCommandResponseDto(commandProcessingResponse);
+    return {
+      textResponse: commandProcessingResponse.message.markdown,
+    };
   }
 }
 

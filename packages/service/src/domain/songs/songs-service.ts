@@ -4,6 +4,7 @@ import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 import { notNull } from '@service/utils/utils';
 import { HistoryService } from '@service/domain/history/history-service';
+import { User } from '@service/domain/users/user';
 
 @Service()
 class SongsService {
@@ -57,17 +58,17 @@ class SongsService {
     return songs;
   }
 
-  async incrementPlayCount(youtubeId: string, songName: (string | null)): Promise<void> {
+  async incrementPlayCount(youtubeId: string, songName: (string | null), user: User): Promise<void> {
     const foundSong = await this.repository.findByYoutubeId(youtubeId);
 
     if (foundSong) {
       const timesPlayed = (foundSong.timesPlayed + 1);
       await this.repository.replace({ ...foundSong, timesPlayed });
 
-      await this.historyService.markAsPlayed(foundSong);
+      await this.historyService.markAsPlayed(foundSong, user);
     } else {
       const newSong = await this.createNewSong(youtubeId, songName, 1);
-      await this.historyService.markAsPlayed(newSong);
+      await this.historyService.markAsPlayed(newSong, user);
     }
   }
 

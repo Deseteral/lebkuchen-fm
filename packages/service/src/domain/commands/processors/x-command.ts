@@ -1,6 +1,6 @@
 import { Command } from '@service/domain/commands/model/command';
-import { CommandProcessingResponse, makeSingleTextProcessingResponse } from '@service/domain/commands/model/command-processing-response';
-import { CommandProcessor } from '@service/domain/commands/model/command-processor';
+import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
+import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
 import { PlayXSoundEvent } from '@service/event-stream/model/events';
@@ -15,7 +15,7 @@ class XCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const soundName = command.rawArgs.trim();
+    const soundName = command.rawArgs;
     if (!soundName) {
       throw new Error('Podaj nazwę dźwięku');
     }
@@ -30,7 +30,9 @@ class XCommand extends CommandProcessor {
     this.playerEventStream.sendToEveryone(playXSoundEvent);
     this.xSoundService.incrementPlayCount(xSound.name);
 
-    return makeSingleTextProcessingResponse(':ultrafastparrot:');
+    return new CommandProcessingResponseBuilder()
+      .fromMarkdown(`Played \`${soundName}\` sound`)
+      .build();
   }
 
   get key(): string {
@@ -45,11 +47,16 @@ class XCommand extends CommandProcessor {
     return 'Puszcza szalony dźwięk!';
   }
 
-  get helpUsages(): (string[] | null) {
+  get exampleUsages(): string[] {
     return [
-      '<sound name>',
       'airhorn',
     ];
+  }
+
+  get parameters(): CommandParameters {
+    return new CommandParametersBuilder()
+      .withRequired('sound-name')
+      .build();
   }
 }
 

@@ -19,7 +19,7 @@ class TextCommandParser {
     if (prompt !== this.configuration.COMMAND_PROMPT) return null;
 
     const rawArgsIndex = (text.indexOf(key) + key.length + 1);
-    const rawArgs = text.substring(rawArgsIndex);
+    const rawArgs = text.substring(rawArgsIndex) || null;
 
     return new Command(key, rawArgs);
   }

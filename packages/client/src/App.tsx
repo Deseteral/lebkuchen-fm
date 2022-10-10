@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LoginForm } from './login/components/LoginForm';
 import { AdminPanel } from './admin/components/AdminPanel';
 import { FmPlayer } from './fm-player/components/FmPlayer';
 import { SoundBoard } from './sound-board/components/SoundBoard';
@@ -16,6 +17,7 @@ function App() {
         <Route path="/player" element={<FmPlayer />} />
         <Route path="/soundboard" element={<SoundBoard />} />
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/login" element={<LoginForm />} />
       </Routes>
     </Router>
   );

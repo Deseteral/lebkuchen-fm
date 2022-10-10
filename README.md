@@ -1,7 +1,7 @@
 # LebkuchenFM
 [![Actions Status](https://github.com/Deseteral/lebkuchen-fm/workflows/Build/badge.svg)](https://github.com/Deseteral/lebkuchen-fm/actions)
 
-Monorepo for Lebkuchen FM project - _YouTube TV-like_ service with super powers controlled via Slack.
+Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Discord.
 
 ## Development
 Start by installing dependencies:
@@ -9,20 +9,19 @@ Start by installing dependencies:
 npm install
 ```
 
+To build application run:
+```sh
+npm run build
+```
+
 You can run tests using:
 ```sh
 npm test
 ```
 
-To build application run
-```sh
-npm run build
-```
+To run the application you have to connect to MongoDB database.
 
-To run the application you have to have MongoDB running on localhost. If you have docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in docker.
-For more info you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
-
-If you don't want to use Docker you can run MongoDB locally. For information on how to do that head over to [MongoDB documentation](https://docs.mongodb.com/manual/administration/install-community).
+If you have Docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in Docker locally. For more information you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.
 
 Then create `.env` file in the root of this project and put desired configuration variables in it (refer to [Service > Configuration](#Configuration) section of this document for available options).
 
@@ -49,28 +48,89 @@ This projects consists of these modules:
 Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
-- `PORT` - port on which the service will be running (automatically injected by cloud providers)
-- `DATABASE_NAME` - MongoDB database name (optional, defaults to `lebkuchen-fm`)
-- `MONGODB_URI` - MongoDB connection string
-- `YOUTUBE_API_KEY` - YouTube Data API token
-- `SLACK_CHANNEL_ID` - ID of Slack's channel on which the application will respond (required if you use `/commands/slack` endpoint)
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
+- `DISCORD_CHANNEL_ID` - ID of the Discord channel where the bot is allowed to run
+- `DISCORD_CLIENT_ID` - Discord application ID
+- `DISCORD_GUILD_ID` - ID of the Discord guild (server) where the bot will operate
+- `DISCORD_TOKEN` - token of the Discord bot
 - `DROPBOX_TOKEN` - Dropbox API token used for persisting files
 - `LOCALE` - language of the service
+- `MONGODB_URI` - MongoDB connection string
+- `PORT` - port on which the service will be running (automatically injected by cloud providers)
+- `YOUTUBE_API_KEY` - YouTube Data API token
 
 #### Development
-Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [#Development](#Development) section of this document to have fully functioning application.
+Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [Development](#Development) section of this document to have fully functioning application.
+
+#### Authorization
+LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.
+
+Session cookie is set during successful `POST` request to `/api/auth` endpoint and is generally handled by the web client.
+
+For external integrations users should use API tokens. Each user can obtain this token after logging in the web client and requesting `GET /api/auth` as mentioned in [REST endpoints](#REST-endpoints) section of this documentation. Using this token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api token>` header set.
+
+There is no way to register as a new user. Instead LebkuchenFM functions as an invite only system. \
+When there are no registered users, first login is always correct and creates that account. Every next user has to be created using admin dashboard (`/admin`). That way a new account will be created and user is going be able to set the password when they login for the first time.
 
 #### Event stream
 This service communicates with clients mostly using event stream implemented on WebSockets. For possible events check out [event data models](packages/service/src/event-stream/model/events.ts).
 
 #### REST endpoints
-`POST /commands/slack` \
-Slash commands interface for Slack. Read [Slack API docs](https://api.slack.com/interactivity/slash-commands) for more information.
+`GET /api/auth` \
+Information about currently logged in user.
+
+**Response**
+```json
+{
+  "username": "anton",
+  "apiToken": "this_users_api_token"
+}
+```
 
 ---
 
-`POST /commands/text` \
+`POST /api/auth/logout` \
+Logs out currently logged in user.
+
+---
+
+`GET /api/history` \
+History listing containing list of queued songs.
+
+**Response**
+```json
+{
+  "entries": [
+    {
+      "date": "2022-05-31T12:46:17.968Z",
+      "youtubeId": "c6pPAso-y8s"
+    }
+  ]
+}
+```
+
+---
+
+`GET /api/songs` \
+Returns list of all songs in the database sorted by play count (descending).
+
+**Response**
+```json
+{
+  "songs": [
+    {
+      "_id": "storage_id",
+      "name": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "timesPlayed": 1337
+    }
+  ]
+}
+```
+
+---
+
+`POST /api/commands/text` \
 Plain text interface for slash commands.
 
 **Body**
@@ -89,31 +149,29 @@ Plain text interface for slash commands.
 
 ---
 
-`GET /songs` \
-Returns list of all songs in the database sorted by play count (descending).
+`GET /api/users` \
+List of all registered users.
 
 **Response**
-```jsonc
+```json
 {
-  "songs": [
+  "users": [
     {
-      "_id": "storage_id",
-      "name": "Rick Astley - Never Gonna Give You Up (Official Music Video)",
-      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "timesPlayed": 1337
-    },
-    // ...
+      "name": "anton",
+      "creationDate": "2022-05-31T19:59:05.879Z",
+      "lastLoggedIn": "2022-05-31T20:01:17.072Z"
+    }
   ]
 }
 ```
 
 ---
 
-`GET /x-sounds` \
+`GET /api/x-sounds` \
 Returns list of all XSounds in the database.
 
 **Response**
-```jsonc
+```json
 {
   "sounds": [
     {
@@ -121,15 +179,14 @@ Returns list of all XSounds in the database.
       "name": "example sound",
       "url": "https://example.com/example_sound.wav",
       "timesPlayed": 6
-    },
-    // ...
+    }
   ]
 }
 ```
 
 ---
 
-`POST /x-sounds` \
+`POST /api/x-sounds` \
 Adds new sound file to X Sounds database.
 
 **Request** \
@@ -138,7 +195,7 @@ Requires content type to be `multipart/form-data` with fields:
 - `soundFile`: sound [File](https://developer.mozilla.org/en-US/docs/Web/API/File) ideally in mp3 or wav format
 
 **Response**
-```jsonc
+```json
 {
   "_id": "storage_id",
   "name": "my new sound",
@@ -151,8 +208,7 @@ Requires content type to be `multipart/form-data` with fields:
 Web client for the application. Communicates with the service via WebSocket event stream.
 
 #### Development
-Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.
-
+Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.\
 Running `npm run build` builds the application in production mode.
 
 ### Devops scripts (`/scripts`)

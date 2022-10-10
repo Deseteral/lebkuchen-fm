@@ -17,7 +17,7 @@ function SoundBoard() {
 
   React.useEffect(() => {
     (async function fetchSounds() {
-      const response = await fetch('/x-sounds');
+      const response = await fetch('/api/x-sounds');
       const data = await response.json();
       setSounds(data.sounds);
       setFilteredSounds(data.sounds);
