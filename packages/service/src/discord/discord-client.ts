@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Client, Intents, Message } from 'discord.js';
+import { Client, GatewayIntentBits, Message } from 'discord.js';
 import { Configuration } from '@service/infrastructure/configuration';
 import { CommandExecutorService } from '@service/domain/commands/command-executor-service';
 import { Logger } from '@service/infrastructure/logger';
@@ -16,7 +16,13 @@ class DiscordClient {
   private client: Client;
 
   constructor(private configuration: Configuration, private commandExecutorService: CommandExecutorService, private usersService: UsersService) {
-    this.client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+    this.client = new Client({
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+      ],
+    });
     this.client.on('messageCreate', (message) => this.messageCreate(message));
   }
 
