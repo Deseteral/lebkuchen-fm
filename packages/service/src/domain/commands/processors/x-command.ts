@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
@@ -14,7 +15,7 @@ class XCommand extends CommandProcessor {
     super();
   }
 
-  async execute(command: Command): Promise<CommandProcessingResponse> {
+  async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const soundName = command.rawArgs;
     if (!soundName) {
       throw new Error('Podaj nazwę dźwięku');
@@ -28,7 +29,7 @@ class XCommand extends CommandProcessor {
     };
 
     this.playerEventStream.sendToEveryone(playXSoundEvent);
-    this.xSoundService.incrementPlayCount(xSound.name);
+    this.xSoundService.incrementPlayCount(xSound.name, context.user);
 
     return new CommandProcessingResponseBuilder()
       .fromMarkdown(`Played \`${soundName}\` sound`)

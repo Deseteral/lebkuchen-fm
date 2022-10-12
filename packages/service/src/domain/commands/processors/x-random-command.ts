@@ -1,3 +1,4 @@
+import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
@@ -15,7 +16,7 @@ class XRandomCommand extends CommandProcessor {
     super();
   }
 
-  async execute(command: Command): Promise<CommandProcessingResponse> {
+  async execute(command: Command, context: ExecutionContext): Promise<CommandProcessingResponse> {
     const commandArgs = command.getArgsByDelimiter(' ');
     const allXSounds = await this.xSoundsService.getAll();
     const xSoundsContainsEverySearchedWord = (xSound: XSound): boolean => commandArgs.every((word) => xSound.tags?.includes(word));
@@ -29,7 +30,7 @@ class XRandomCommand extends CommandProcessor {
     const xSoundToPlay = xSoundsFollowingCriteria[0];
     const eventData: PlayXSoundEvent = { id: 'PlayXSoundEvent', soundUrl: xSoundToPlay.url };
     this.playerEventStream.sendToEveryone(eventData);
-    this.xSoundsService.incrementPlayCount(xSoundToPlay.name);
+    this.xSoundsService.incrementPlayCount(xSoundToPlay.name, context.user);
 
     return new CommandProcessingResponseBuilder()
       .fromMarkdown(`💥 \`${xSoundToPlay.name}\``)
