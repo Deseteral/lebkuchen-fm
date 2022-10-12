@@ -2,11 +2,14 @@ import { User } from '@service/domain/users/user';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsRepository } from '@service/domain/x-sounds/x-sounds-repository';
 import { FileStorage } from '@service/infrastructure/file-storage';
+import { Logger } from '@service/infrastructure/logger';
 import path from 'path';
 import { Service } from 'typedi';
 
 @Service()
 class XSoundsService {
+  private static logger = new Logger('x-sound-service');
+
   constructor(private repository: XSoundsRepository, private fileStorage: FileStorage) { }
 
   getAll(): Promise<XSound[]> {
@@ -32,7 +35,7 @@ class XSoundsService {
     return !!xSound;
   }
 
-  async incrementPlayCount(soundName: string): Promise<void> {
+  async incrementPlayCount(soundName: string, user: User): Promise<void> {
     const xSound = await this.repository.findByName(soundName);
 
     if (xSound) {
@@ -42,6 +45,8 @@ class XSoundsService {
       };
 
       await this.repository.replace(updatedSound);
+
+      XSoundsService.logger.info(`User ${user.data.name} played "${xSound.name}" sound`);
     }
   }
 
