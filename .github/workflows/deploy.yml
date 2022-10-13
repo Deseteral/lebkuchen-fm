@@ -1,5 +1,6 @@
 name: Deploy
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -12,4 +13,9 @@ jobs:
       steps:
         - uses: actions/checkout@v2
         - uses: superfly/flyctl-actions/setup-flyctl@master
-        - run: flyctl deploy --remote-only --no-cache
+        - name: Deploy on production
+          if: github.ref == 'refs/heads/main'
+          run: flyctl deploy --remote-only --no-cache --app lebkuchen-fm
+        - name: Deploy on dev
+          if: github.ref != 'refs/heads/main'
+          run: flyctl deploy --remote-only --no-cache --app lebkuchen-fm-dev
