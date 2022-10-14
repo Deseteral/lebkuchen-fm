@@ -23,7 +23,8 @@ class PlaybackCurrentCommand extends CommandProcessor {
 
     const text = this.buildMessage(
       currentPlayerState.currentlyPlaying?.song ?? null,
-      includeQueue ? currentPlayerState.queue : null,
+      currentPlayerState.queue ?? [],
+      includeQueue,
     );
 
     return new CommandProcessingResponseBuilder()
@@ -31,17 +32,16 @@ class PlaybackCurrentCommand extends CommandProcessor {
       .build();
   }
 
-  private buildMessage(current: Song | null, queue: Song[] | null): string {
-    const queueMessage = (queue ?? [])
-      .map((song) => `  - ${song.name.replace(/(.{50})..+/, '$1…')}`);
-    const hasQueue = !queueMessage.isEmpty();
+  private buildMessage(current: Song | null, queue: Song[], includeQueue: Boolean): string {
+    const queueSongsTitles = includeQueue ? queue.map((song) => `  - ${song.name.replace(/(.{50})..+/, '$1…')}`) : [];
+    const queueTitle = !queueSongsTitles.isEmpty() ? 'W kolejce:' : 'Playlista jest pusta';
     const currentSongName = current?.name ?? '';
 
     const text = [
       currentSongName ? 'Obecnie gramy:' : 'Obecnie nic nie gramy.',
       currentSongName ? `  ${currentSongName}` : '',
-      hasQueue ? 'W kolejce:' : 'Playlista jest pusta',
-      ...queueMessage,
+      includeQueue ? queueTitle : '',
+      ...queueSongsTitles,
     ].filter(Boolean).join('\n');
     return text;
   }
