@@ -21,6 +21,16 @@ class PlayerEventStream {
     this.playerNamespace.send(event);
   }
 
+  public sendToPrimaryPlayer<R>(reqEventData: EventData): Promise<R> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.getPrimaryPlayerSocket()?.send(reqEventData, (res: R) => resolve(res));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
   public getConnectedUsernames(): string[] {
     return Array.from(this.playerNamespace.sockets, ([_key, value]) => value)
       .map((socket) => extractSessionFromIncomingMessage(socket.request))
