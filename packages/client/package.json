@@ -13,11 +13,11 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "npm run dev",
+    "start": "yarn run dev",
     "clean": "rm -rf dist",
-    "test": "npm run test:type-check && npm run test:lint",
+    "test": "yarn run test:type-check && yarn run test:lint",
     "test:type-check": "tsc --noEmit",
-    "test:type-check:watch": "npm run test:type-check -- --watch",
+    "test:type-check:watch": "yarn run test:type-check -- --watch",
     "test:lint": "eslint src --ext js,jsx,ts,tsx"
   },
   "dependencies": {

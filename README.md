@@ -30,6 +30,16 @@ When that's done you can just start the application:
 yarn start
 ```
 
+If you want to create local frontend dev server with hot reloading you should use "dev" script from `packages/client`:
+```sh
+yarn nx dev lebkuchen-fm-client
+```
+
+If you want to run script from one of the packages in root directory:
+```sh
+yarn nx [script-name] [package-name-from-package-json]
+```
+
 This project is separated into backend service (`packages/service`) and web client application (`packages/client`).
 For development information specific to modules refer to their _Development_ sections in this document.
 
@@ -58,9 +68,6 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 - `MONGODB_URI` - MongoDB connection string
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
 - `YOUTUBE_API_KEY` - YouTube Data API token
-
-#### Development
-Running `yarn run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [Development](#Development) section of this document to have fully functioning application.
 
 #### Authorization
 LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.

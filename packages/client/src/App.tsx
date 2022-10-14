@@ -6,9 +6,9 @@ import { FmPlayer } from './fm-player/components/FmPlayer';
 import { SoundBoard } from './sound-board/components/SoundBoard';
 import { SplashScreen } from './splash-screen/components/SplashScreen';
 import { XSoundUploadForm } from './xsound-upload-form/components/XSoundUploadForm';
-import './styles.css';
 import { checkLoginStateAndRedirect } from './services/user-account-service';
 import { LoginForm } from './login/components/LoginForm';
+import './styles.css';
 
 function App() {
   React.useEffect(() => {
