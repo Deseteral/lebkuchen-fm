@@ -1,4 +1,3 @@
-import { ExecutionContext } from '@service/domain/commands/execution-context';
 import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
@@ -20,14 +19,14 @@ class SongTopCommand extends CommandProcessor {
       : parseInt(command.rawArgs, 10);
 
     const topSongs = await this.songService.getTop(amount);
-    const text = this.buildMessage(topSongs, amount);
+    const text = this.buildMessage(topSongs);
 
     return new CommandProcessingResponseBuilder()
       .fromMarkdown(text)
       .build();
   }
 
-  private buildMessage(songsList: Song[], amount: number): string {
+  private buildMessage(songsList: Song[]): string {
     const titleMessages = songsList
       .map((song, index) => {
         const place = `${index + 1}`.padEnd(5);
