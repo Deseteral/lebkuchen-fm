@@ -11,17 +11,16 @@ import compression from 'compression';
 import Container from 'typedi';
 import SocketIO from 'socket.io';
 import * as RoutingControllers from 'routing-controllers';
-import memoryStore from 'memorystore';
+import MongoStore from 'connect-mongo';
 import session from 'express-session';
 import { Logger } from '@service/infrastructure/logger';
 import { CommandRegistryService } from '@service/domain/commands/registry/command-registry-service';
 import { AdminEventStream } from '@service/event-stream/admin-event-stream';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Configuration } from '@service/infrastructure/configuration';
-import { DatabaseClient } from '@service/infrastructure/storage';
+import { DatabaseClient, DATABASE_NAME } from '@service/infrastructure/storage';
 import { RequestSession } from '@service/api/request-session';
 import { Action, HttpError, InternalServerError } from 'routing-controllers';
-import { nanoid } from 'nanoid';
 import { expressMiddlewareToSocketIoMiddleware, extractSessionFromIncomingMessage, parseAuthorizationHeader } from '@service/utils/utils';
 import { AuthService } from '@service/domain/auth/auth-service';
 import { DiscordClient } from '@service/discord/discord-client';
@@ -34,12 +33,11 @@ async function main(): Promise<void> {
   Container.set(Configuration, config);
 
   /* Setup session middleware */
-  const MemoryStore = memoryStore(session);
   const sessionMiddleware = session({
-    secret: nanoid(32),
+    secret: Buffer.from(config.MONGODB_URI).toString('base64'),
     resave: false,
     saveUninitialized: true,
-    store: new MemoryStore({ checkPeriod: 24 * 60 * 60 * 1000 }),
+    store: MongoStore.create({ mongoUrl: config.MONGODB_URI, dbName: DATABASE_NAME }),
   });
 
   /* Create HTTP server */
