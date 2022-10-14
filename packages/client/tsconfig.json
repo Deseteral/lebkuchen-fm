@@ -17,7 +17,7 @@
       "DOM",
       "es2018"
     ],
-    "types": ["react"],
+    "types": ["react", "jest"],
     "baseUrl": ".",
     "paths": {
       "@service/*": ["../service/src/*"],

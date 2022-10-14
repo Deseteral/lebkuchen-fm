@@ -20,6 +20,6 @@ export function userLogout() {
 
 export async function checkLoginStateAndRedirect() {
   fetch('/api/auth').then((res) => {
-    if (res.status === 401) redirectTo('/login');
+    if (res.status === 401 && window.location.pathname !== '/login') redirectTo('/login');
   });
 }

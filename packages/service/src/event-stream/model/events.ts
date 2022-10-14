@@ -14,6 +14,10 @@ export interface AddSongsToQueueEvent {
   id: 'AddSongsToQueueEvent',
   songs: Song[],
 }
+export interface ReplaceQueueEvent {
+  id: 'ReplaceQueueEvent',
+  songs: Song[],
+}
 
 export interface PlayXSoundEvent {
   id: 'PlayXSoundEvent',
@@ -56,4 +60,5 @@ export type EventData =
   | PlayPauseEvent
   | SkipEvent
   | ChangeSpeedEvent
-  | ChangeVolumeEvent;
+  | ChangeVolumeEvent
+  | ReplaceQueueEvent;

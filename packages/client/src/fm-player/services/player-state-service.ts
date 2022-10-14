@@ -36,6 +36,11 @@ function dropFromQueueFront(amount: number) {
   emitter.emit('change', playerState);
 }
 
+function replaceQueue(songs: Song[]) {
+  playerState.queue = songs;
+  emitter.emit('change', playerState);
+}
+
 function changeVolume(nextVolume: number, isRelative: boolean) {
   if (isRelative) {
     playerState.volume += nextVolume;
@@ -68,6 +73,7 @@ export {
   setState,
   popFromQueueFront,
   dropFromQueueFront,
+  replaceQueue,
   addToQueue,
   changeVolume,
   on,

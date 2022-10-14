@@ -3,7 +3,7 @@ import { Logger } from '@service/infrastructure/logger';
 import { Collection, Db, MongoClient } from 'mongodb';
 import { Service } from 'typedi';
 
-const DATABASE_NAME = 'lebkuchen-fm';
+export const DATABASE_NAME = 'lebkuchen-fm';
 
 @Service()
 class DatabaseClient {

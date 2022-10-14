@@ -52,6 +52,10 @@ function connect(): (() => void) {
         PlayerStateService.changeVolume(eventData.nextVolume, eventData.isRelative);
         break;
 
+      case 'ReplaceQueueEvent':
+        PlayerStateService.replaceQueue(eventData.songs);
+        break;
+
       default:
         break;
     }

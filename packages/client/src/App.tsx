@@ -1,15 +1,20 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { LoginForm } from './login/components/LoginForm';
+import { createRoot } from 'react-dom/client';
 import { AdminPanel } from './admin/components/AdminPanel';
 import { FmPlayer } from './fm-player/components/FmPlayer';
 import { SoundBoard } from './sound-board/components/SoundBoard';
 import { SplashScreen } from './splash-screen/components/SplashScreen';
 import { XSoundUploadForm } from './xsound-upload-form/components/XSoundUploadForm';
 import './styles.css';
+import { checkLoginStateAndRedirect } from './services/user-account-service';
+import { LoginForm } from './login/components/LoginForm';
 
 function App() {
+  React.useEffect(() => {
+    checkLoginStateAndRedirect();
+  }, []);
+
   return (
     <Router>
       <Routes>
@@ -24,4 +29,5 @@ function App() {
   );
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+const root = createRoot(document.getElementById('app')!);
+root.render(<App />);
