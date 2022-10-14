@@ -49,7 +49,7 @@ const MessageContainer = styled.div`
   margin-top: 16px;
 `;
 
-interface XSoundUploadFormProps { }
+interface XSoundUploadFormProps {}
 
 function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   const inputFile = React.useRef<HTMLInputElement>(null);
