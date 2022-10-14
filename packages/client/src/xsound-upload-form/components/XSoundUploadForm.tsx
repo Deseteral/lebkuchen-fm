@@ -10,7 +10,7 @@ const Container = styled.div`
 
 const Box = styled.div`
   background-color: white;
-  padding: 1rem 2rem;
+  padding: 16px 32px;
 `;
 
 const InputGroup = styled.div`
@@ -31,9 +31,9 @@ const Header = styled.h2`
 const Input = styled.input`
   margin-bottom: 8px;
   width: 100%;
-  padding: 1rem;
+  padding: 16px;
   border-width: 1px;
-  border-radius: 0.375rem;
+  border-radius: 6px;
   border-color: rgba(229,231,235);;
 `;
 
@@ -41,8 +41,8 @@ const SubmitButton = styled.input`
   margin-top: 8px;
   background-color: rgba(37,99,235);
   color: white;
-  padding: 0.5rem 1.5rem;
-  border-radius: 0.5rem;
+  padding: 8px 24px;
+  border-radius: 8px;
 `;
 
 const MessageContainer = styled.div`
@@ -100,17 +100,8 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
         <form onSubmit={submit}>
           <InputGroup>
             <Header>Add new sound</Header>
-            <Input
-              type="file"
-              name="soundFile"
-              ref={inputFile}
-            />
-            <Input
-              type="text"
-              placeholder="Sound name"
-              name="soundName"
-              ref={inputSoundName}
-            />
+            <Input type="file" name="soundFile" ref={inputFile} />
+            <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
             <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
             {message && <MessageContainer>{message}</MessageContainer>}
           </InputGroup>
