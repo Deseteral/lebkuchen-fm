@@ -1,4 +1,4 @@
-import { HttpError } from 'routing-controllers';
+import type { HttpError } from 'routing-controllers';
 import type { AddUserRequestDto } from './api/users/model/add-user-request-dto';
 import type { UsersResponseDto } from './api/users/model/users-response-dto';
 import type { UserData } from './domain/users/user';
