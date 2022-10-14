@@ -4,18 +4,34 @@
   "engines": {
     "node": "18.x"
   },
+  "workspaces": [
+    "packages/client",
+    "packages/service"
+  ],
   "scripts": {
     "start": "node packages/service/build/main.js",
-    "build": "npm run clean && lerna run build && npm run build:static",
-    "build:static": "mkdir -p packages/service/build/public && cp packages/**/dist/* packages/service/build/public/",
-    "test": "lerna run test",
-    "clean": "lerna run clean",
+    "build": "yarn run clean && nx build lebkuchen-fm-service && nx build lebkuchen-fm-client && yarn run build:static",
+    "build:static": "mkdir -p packages/service/build/public && cp -r packages/**/dist/* packages/service/build/public/",
+    "test": "nx run-many --target=test all",
+    "clean": "nx run-many --target=clean all",
     "clean:deps": "rm -rf ./node_modules ./packages/**/node_modules",
-    "bootstrap": "lerna bootstrap",
-    "postinstall": "npm run bootstrap",
     "fm": "./scripts/fm.sh"
   },
   "devDependencies": {
-    "lerna": "4.0.0"
+    "@nrwl/cli": "14.8.5",
+    "@nrwl/js": "14.8.5",
+    "@nrwl/nx-cloud": "14.7.0",
+    "@nrwl/workspace": "14.8.5",
+    "assert": "2.0.0",
+    "browserify-zlib": "0.2.0",
+    "crypto-browserify": "3.12.0",
+    "nx": "14.8.5",
+    "os-browserify": "0.3.0",
+    "path-browserify": "1.0.1",
+    "querystring-es3": "0.2.1",
+    "stream-browserify": "3.0.0",
+    "stream-http": "3.2.0",
+    "url": "0.11.0",
+    "util": "0.12.4"
   }
 }

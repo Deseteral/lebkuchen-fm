@@ -10,8 +10,9 @@
     "node": "18.x"
   },
   "scripts": {
-    "build": "parcel build src/index.html",
-    "dev": "parcel src/index.html",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "start": "npm run dev",
     "clean": "rm -rf dist",
     "test": "npm run test:type-check && npm run test:lint",
@@ -25,6 +26,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-router-dom": "6.2.2",
+    "serve": "14.0.1",
     "socket.io-client": "4.2.0",
     "styled-components": "5.2.0",
     "yt-player": "3.4.3"
@@ -35,16 +37,20 @@
     "@types/react-dom": "17.0.13",
     "@types/styled-components": "5.1.24",
     "@types/yt-player": "3.4.2",
+    "@vitejs/plugin-react": "2.1.0",
     "buffer": "6.0.3",
+    "class-transformer": "0.5.1",
+    "class-validator": "0.13.2",
     "cssnano": "5.0.8",
     "eslint": "8.15.0",
     "events": "3.3.0",
-    "parcel": "2.5.0",
+    "kcors": "2.2.2",
     "postcss": "8.3.8",
     "postcss-import": "14.0.2",
     "process": "0.11.10",
     "tailwindcss": "2.2.16",
-    "typescript": "4.5.4"
+    "typescript": "4.5.4",
+    "vite": "3.1.8"
   },
   "browserslist": [
     "last 2 Chrome versions"

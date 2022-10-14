@@ -1,5 +1,5 @@
 import { AuthRequestDto } from 'lebkuchen-fm-service';
-import { redirectTo } from '../services/redirect-to';
+import { redirectTo } from './redirect-to';
 
 export function userLogin(username: string, password: string) {
   const data: AuthRequestDto = { username, password };

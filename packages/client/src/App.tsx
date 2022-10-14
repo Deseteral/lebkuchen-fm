@@ -7,6 +7,7 @@ import { FmPlayer } from './fm-player/components/FmPlayer';
 import { SoundBoard } from './sound-board/components/SoundBoard';
 import { SplashScreen } from './splash-screen/components/SplashScreen';
 import { XSoundUploadForm } from './xsound-upload-form/components/XSoundUploadForm';
+import './styles.css';
 
 function App() {
   return (
