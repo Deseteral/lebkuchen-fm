@@ -4,6 +4,8 @@
 Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Discord.
 
 ## Development
+⚠️ **Please don't use npm to install dependencies**
+
 Start by installing dependencies:
 ```sh
 yarn install
