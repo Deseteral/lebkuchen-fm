@@ -1,5 +1,5 @@
 import { AuthRequestDto } from 'lebkuchen-fm-service';
-import { redirectTo } from '../services/redirect-to';
+import { redirectTo } from './redirect-to';
 
 export function userLogin(username: string, password: string) {
   const data: AuthRequestDto = { username, password };
@@ -20,6 +20,6 @@ export function userLogout() {
 
 export async function checkLoginStateAndRedirect() {
   fetch('/api/auth').then((res) => {
-    if (res.status === 401) redirectTo('/login');
+    if (res.status === 401 && window.location.pathname !== '/login') redirectTo('/login');
   });
 }
