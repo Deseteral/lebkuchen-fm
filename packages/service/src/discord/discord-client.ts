@@ -27,6 +27,12 @@ class DiscordClient {
   }
 
   public async login(): Promise<void> {
+    if (!this.configuration.DISCORD_TOKEN) {
+      DiscordClient.logger.error('Discord token was not provided');
+      DiscordClient.logger.info('Running in local only mode');
+      return;
+    }
+
     await this.client.login(this.configuration.DISCORD_TOKEN);
     DiscordClient.logger.info('Logged in to Discord');
   }
