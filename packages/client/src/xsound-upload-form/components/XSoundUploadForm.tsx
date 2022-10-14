@@ -2,29 +2,50 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { HttpError } from 'lebkuchen-fm-service';
 
+const Container = styled.div`
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+`;
+
+const Box = styled.div`
+  background-color: white;
+  padding: 16px 32px;
+`;
+
 const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid grey;
   padding: 8px;
-  max-width: 250px;
+  max-width: 350px;
 `;
 
 const Header = styled.h2`
-  margin: 0;
   margin: 8px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  font-size: 24px;
 `;
 
 const Input = styled.input`
   margin-bottom: 8px;
+  width: 100%;
+  padding: 16px;
+  border-width: 1px;
+  border-radius: 6px;
+  border-color: rgba(229,231,235);;
 `;
 
 const SubmitButton = styled.input`
   margin-top: 8px;
+  background-color: rgba(37,99,235);
+  color: white;
+  padding: 8px 24px;
+  border-radius: 8px;
 `;
 
 const MessageContainer = styled.div`
-  background-color: grey;
   margin-top: 16px;
 `;
 
@@ -74,16 +95,19 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   };
 
   return (
-    <form onSubmit={submit}>
-      <InputGroup>
-        <Header>Add new sound</Header>
-        <Input type="file" name="soundFile" ref={inputFile} />
-        <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
-        <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
-
-        {message && <MessageContainer>{message}</MessageContainer>}
-      </InputGroup>
-    </form>
+    <Container>
+      <Box>
+        <form onSubmit={submit}>
+          <InputGroup>
+            <Header>Add new sound</Header>
+            <Input type="file" name="soundFile" ref={inputFile} />
+            <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
+            <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
+            {message && <MessageContainer>{message}</MessageContainer>}
+          </InputGroup>
+        </form>
+      </Box>
+    </Container>
   );
 }
 
