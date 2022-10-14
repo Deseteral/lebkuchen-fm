@@ -1,14 +1,10 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
-import { AnimatedBackground } from '../../animated-background/AnimatedBackground';
-import { userLogout, checkLoginStateAndRedirect } from '../../services/user-account-service';
+import { userLogout } from '../../services/user-account-service';
 import './SplashScreen.css';
+import { AnimatedBackground } from '../../animated-background/AnimatedBackground';
 
 function SplashScreen() {
-  React.useEffect(() => {
-    checkLoginStateAndRedirect();
-  }, []);
-
   return (
     <div>
       <AnimatedBackground />
