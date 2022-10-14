@@ -15,7 +15,11 @@ class SongsService {
   }
 
   async getAll(): Promise<Song[]> {
-    return this.repository.findAllOrderByTimesPlayedDesc();
+    return this.repository.getOrderedByTimesPlayedDesc(0);
+  }
+
+  async getTop(limit: number): Promise<Song[]> {
+    return this.repository.getOrderedByTimesPlayedDesc(limit);
   }
 
   async createNewSong(

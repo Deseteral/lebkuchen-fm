@@ -9,8 +9,8 @@ class SongsRepository extends Repository<Song> {
     super('songs', storage);
   }
 
-  findAllOrderByTimesPlayedDesc(): Promise<Song[]> {
-    return this.collection.find({}).sort({ timesPlayed: -1 }).toArray();
+  getOrderedByTimesPlayedDesc(limit: number): Promise<Song[]> {
+    return this.collection.find().sort({ timesPlayed: -1 }).limit(limit).toArray();
   }
 
   findByName(name: string): Promise<Song | null> {
