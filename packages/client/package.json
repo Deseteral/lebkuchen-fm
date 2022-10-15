@@ -41,8 +41,6 @@
     "@types/yt-player": "3.4.2",
     "@vitejs/plugin-react": "2.1.0",
     "buffer": "6.0.3",
-    "class-transformer": "0.5.1",
-    "class-validator": "0.13.2",
     "cssnano": "5.0.8",
     "eslint": "8.15.0",
     "events": "3.3.0",
