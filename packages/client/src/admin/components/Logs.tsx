@@ -43,28 +43,33 @@ interface LogsProps {
 }
 
 function Logs({ logs }: LogsProps) {
-  const containerElement = React.useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [updateScroll, setUpdateScroll] = React.useState<boolean>(false);
   const [showScrollDownButton, setShowScrollDownButton] = React.useState<boolean>(true);
 
   const scrollDown = (): void => {
-    if (containerElement.current) {
-      containerElement.current.scrollTo({ left: 0, top: containerElement.current.scrollHeight, behavior: 'smooth' });
+    const container = containerRef.current;
+    if (container) {
+      container.scrollTo({
+        left: 0,
+        top: container.scrollHeight,
+        behavior: 'smooth',
+      });
     }
-  }
+  };
 
   const isScrolledToBottom = (): boolean => {
-    if (!containerElement.current) {
+    if (!containerRef.current) {
       return false;
     }
     const {
       scrollHeight,
       scrollTop,
-      clientHeight
-    } = containerElement.current;
+      clientHeight,
+    } = containerRef.current;
 
     return scrollHeight - scrollTop - clientHeight < 25;
-  }
+  };
 
   const autoScrollToBottom = (): void => {
     const scrolledToBottom = isScrolledToBottom();
@@ -79,19 +84,19 @@ function Logs({ logs }: LogsProps) {
       setUpdateScroll(true);
       setShowScrollDownButton(false);
     }
-  }
-
+  };
 
   React.useEffect(() => {
     if (updateScroll) {
       scrollDown();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logs]);
 
   return (
     <Section header="Logs">
       <RelativeContainer>
-        <Container ref={containerElement} onScroll={autoScrollToBottom}>
+        <Container ref={containerRef} onScroll={autoScrollToBottom}>
           <table>
             <tbody>
               {logs.map((log) => (<LogLine log={log} key={`${log.datetime}${log.message}`} />))}
