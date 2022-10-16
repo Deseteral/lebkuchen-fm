@@ -3,8 +3,9 @@ import { Service } from 'typedi';
 import { HistoryRepository } from '@service/domain/history/history-repository';
 import { HistoryEntry } from '@service/domain/history/history-entry';
 import { User } from '@service/domain/users/user';
-import { HistorySummary } from '@service/domain/history/history-summary';
+import { HistorySummary, SongPopularity } from '@service/domain/history/history-summary';
 import { SongsService } from '@service/domain/songs/songs-service';
+import { notNull } from '@service/utils/utils';
 
 @Service()
 class HistoryService {
@@ -26,12 +27,15 @@ class HistoryService {
 
   async generateSummary(): Promise<HistorySummary> {
     const history = await this.repository.findAllOrderByDateDesc();
-    const songs = await this.songsService.getAll();
 
-    const mostPopularSongs = history
+    const songIdToPlayCount: Map<string, number> = history
       .map((e) => e.youtubeId)
-      .countOccurrences()
-      .sort(([_, av], [__, bv]) => (bv - av));
+      .countOccurrences();
+
+    const mostPopularSongs: SongPopularity[] = (await this.songsService.getSongsByYoutubeIds([...songIdToPlayCount.keys()]))
+      .filter(notNull)
+      .map((song) => ({ song, playCount: (songIdToPlayCount.get(song.youtubeId) || 0) }))
+      .sort((a, b) => (b.playCount - a.playCount));
 
     return {
       mostPopularSongs,
