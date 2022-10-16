@@ -14,8 +14,11 @@ class HistoryRepository extends Repository<HistoryEntry> {
   }
 
   async findInDateRangeOrderByDateDesc(dateFrom: string, dateTo: string): Promise<HistoryEntry[]> {
+    const gte = new Date(`${dateFrom}T00:00:00.000Z`);
+    const lt = new Date(`${dateTo}T00:00:00.000Z`);
+
     return this.collection
-      .find({ date: { $gte: new Date(`${dateFrom}T00:00:00.000Z`), $lt: new Date(`${dateTo}T00:00:00.000Z`) } })
+      .find({ date: { $gte: gte, $lt: lt } }, { projection: { _id: 0 } })
       .sort({ date: -1 })
       .toArray();
   }
