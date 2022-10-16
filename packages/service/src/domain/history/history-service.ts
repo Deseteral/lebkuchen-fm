@@ -3,10 +3,12 @@ import { Service } from 'typedi';
 import { HistoryRepository } from '@service/domain/history/history-repository';
 import { HistoryEntry } from '@service/domain/history/history-entry';
 import { User } from '@service/domain/users/user';
+import { HistorySummary } from '@service/domain/history/history-summary';
+import { SongsService } from '@service/domain/songs/songs-service';
 
 @Service()
 class HistoryService {
-  constructor(private repository: HistoryRepository) { }
+  constructor(private repository: HistoryRepository, private songsService: SongsService) { }
 
   async getAll(): Promise<HistoryEntry[]> {
     return this.repository.findAllOrderByDateDesc();
@@ -20,6 +22,20 @@ class HistoryService {
     };
 
     this.repository.insert(entry);
+  }
+
+  async generateSummary(): Promise<HistorySummary> {
+    const history = await this.repository.findAllOrderByDateDesc();
+    const songs = await this.songsService.getAll();
+
+    const mostPopularSongs = history
+      .map((e) => e.youtubeId)
+      .countOccurrences()
+      .sort(([_, av], [__, bv]) => (bv - av));
+
+    return {
+      mostPopularSongs,
+    };
   }
 }
 
