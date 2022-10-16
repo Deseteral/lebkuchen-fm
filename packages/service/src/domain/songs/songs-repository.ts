@@ -10,19 +10,19 @@ class SongsRepository extends Repository<Song> {
   }
 
   findAllOrderByTimesPlayedDesc(): Promise<Song[]> {
-    return this.collection.find({}).sort({ timesPlayed: -1 }).toArray();
+    return this.collection.find({}, { projection: { _id: 0 } }).sort({ timesPlayed: -1 }).toArray();
   }
 
   findByName(name: string): Promise<Song | null> {
-    return this.collection.findOne({ name });
+    return this.collection.findOne({ name }, { projection: { _id: 0 } });
   }
 
   findByYoutubeId(youtubeId: string): Promise<Song | null> {
-    return this.collection.findOne({ youtubeId });
+    return this.collection.findOne({ youtubeId }, { projection: { _id: 0 } });
   }
 
   findByYoutubeIds(youtubeIds: string[]): Promise<Song[]> {
-    return this.collection.find({ youtubeId: { $in: youtubeIds } }).toArray();
+    return this.collection.find({ youtubeId: { $in: youtubeIds } }, { projection: { _id: 0 } }).toArray();
   }
 
   async insert(song: Song): Promise<void> {
