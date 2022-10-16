@@ -4,19 +4,21 @@
 Monorepo for Lebkuchen FM project - opinionated _YouTube TV-like_ service with super powers controlled via Discord.
 
 ## Development
+⚠️ **Please don't use npm to install dependencies**
+
 Start by installing dependencies:
 ```sh
-npm install
+yarn install
 ```
 
 To build application run:
 ```sh
-npm run build
+yarn run build
 ```
 
 You can run tests using:
 ```sh
-npm test
+yarn test
 ```
 
 To run the application you have to connect to MongoDB database.
@@ -27,7 +29,17 @@ Then create `.env` file in the root of this project and put desired configuratio
 
 When that's done you can just start the application:
 ```sh
-npm start
+yarn start
+```
+
+If you want to create local frontend dev server with hot reloading you should use "dev" script from `packages/client`:
+```sh
+yarn nx dev lebkuchen-fm-client
+```
+
+If you want to run script from one of the packages in root directory:
+```sh
+yarn nx [script-name] [package-name-from-package-json]
 ```
 
 This project is separated into backend service (`packages/service`) and web client application (`packages/client`).
@@ -38,7 +50,7 @@ It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESL
 ### Type checking
 Modules using TypeScript will compile even when there are type checking errors in the code. This allows for fast development iteration. Type checking is done during `test` script. For development it's recommended that you use type checker in watch mode:
 ```sh
-npm run test:type-check:watch
+yarn run test:type-check:watch
 ```
 
 ## Modules
@@ -58,9 +70,6 @@ Core LebkuchenFM Node.js service with MongoDB storage that communicates with cli
 - `MONGODB_URI` - MongoDB connection string
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
 - `YOUTUBE_API_KEY` - YouTube Data API token
-
-#### Development
-Running `npm run dev` builds your code and runs the application. You have to setup MongoDB and environmental variables as described in [Development](#Development) section of this document to have fully functioning application.
 
 #### Authorization
 LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.
@@ -208,8 +217,8 @@ Requires content type to be `multipart/form-data` with fields:
 Web client for the application. Communicates with the service via WebSocket event stream.
 
 #### Development
-Running `npm run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.\
-Running `npm run build` builds the application in production mode.
+Running `yarn run dev` runs the application in development mode with hot reload on file change. This version of application won't connect to the service.\
+Running `yarn run build` builds the application in production mode.
 
 ### Devops scripts (`/scripts`)
 Scripts related to maintenance of the service.
@@ -224,11 +233,11 @@ Example commands:
 > fm.sh "/fm x alert"
 ```
 
-Alternatively you can run it as an npm command from the root of the project:
+Alternatively you can run it as an yarn command from the root of the project:
 ```
-> npm run fm -- "/fm resume"
-> npm run fm -- "/fm q dQw4w9WgXcQ"
-> npm run fm -- "/fm x alert"
+> yarn run fm "/fm resume"
+> yarn run fm "/fm q dQw4w9WgXcQ"
+> yarn run fm "/fm x alert"
 ```
 
 #### Local MongoDB in Docker

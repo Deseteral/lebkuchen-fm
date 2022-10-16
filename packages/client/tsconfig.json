@@ -17,12 +17,20 @@
       "DOM",
       "es2018"
     ],
-    "types": ["react"],
+    "types": [
+      "react",
+      "jest"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@service/*": ["../service/src/*"],
-      "*": ["node_modules/*"],
+      "@service/*": [
+        "../service/src/*"
+      ],
+      "*": [
+        "node_modules/*"
+      ],
     },
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"

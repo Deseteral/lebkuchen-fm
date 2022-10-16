@@ -2,8 +2,8 @@ module.exports = {
   mode: 'jit',
   purge: [
     './src/**/*.html',
-    './src/**/*.js',
     './src/**/*.jsx',
+    './src/**/*.js',
     './src/**/*.ts',
     './src/**/*.tsx',
   ],
