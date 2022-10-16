@@ -1,3 +1,4 @@
+import { UserData } from '@service/domain/users/user';
 import { Song } from '@service/lib';
 
 export interface SongPopularity {
@@ -5,6 +6,12 @@ export interface SongPopularity {
   playCount: number,
 }
 
+export interface UserPopularity {
+  user: UserData,
+  playCount: number,
+}
+
 export interface HistorySummary {
-  mostPopularSongs: SongPopularity[]
+  mostPopularSongs: SongPopularity[],
+  mostActiveUsers: UserPopularity[],
 }

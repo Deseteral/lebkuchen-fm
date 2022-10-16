@@ -4,6 +4,7 @@ import { User, UserData } from '@service/domain/users/user';
 import crypto from 'crypto';
 import { nanoid } from 'nanoid';
 import { Logger } from '@service/infrastructure/logger';
+import { notNull } from '@service/utils/utils';
 
 @Service()
 class UsersService {
@@ -18,6 +19,11 @@ class UsersService {
 
   async getByName(name: string): Promise<User | null> {
     return this.repository.findByName(name);
+  }
+
+  async getByNames(names: string[]): Promise<User[]> {
+    const resolvedUsers: (User | null)[] = await Promise.all(names.map((name) => this.getByName(name)));
+    return resolvedUsers.filter(notNull);
   }
 
   async getByApiToken(apiToken: string): Promise<User | null> {
