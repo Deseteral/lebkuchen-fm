@@ -8,6 +8,7 @@ import { SplashScreen } from './splash-screen/components/SplashScreen';
 import { XSoundUploadForm } from './xsound-upload-form/components/XSoundUploadForm';
 import { checkLoginStateAndRedirect } from './services/user-account-service';
 import { LoginForm } from './login/components/LoginForm';
+import './styles.css';
 
 function App() {
   React.useEffect(() => {

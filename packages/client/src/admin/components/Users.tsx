@@ -1,10 +1,10 @@
 import { UserData } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
-import { addNewUser } from '../../admin/services/add-user-service';
+import { addNewUser } from '../services/add-user-service';
 import { Section } from './Section';
 
-const UserName = styled.code<{online: boolean}>`
+const UserName = styled.code<{ online: boolean }>`
   color: ${(props) => (props.online ? 'darkgreen' : 'black')};
   font-size: 13px;
   margin-left: 8px;
