@@ -29,8 +29,8 @@ class HistoryService {
     this.repository.insert(entry);
   }
 
-  async generateSummary(): Promise<HistorySummary> {
-    const history = await this.repository.findAllOrderByDateDesc();
+  async generateSummary(dateFrom: string, dateTo: string): Promise<HistorySummary> {
+    const history = await this.repository.findInDateRangeOrderByDateDesc(dateFrom, dateTo);
 
     const songIdToPlayCount: Map<string, number> = history
       .map((e) => e.youtubeId)

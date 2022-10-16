@@ -13,6 +13,13 @@ class HistoryRepository extends Repository<HistoryEntry> {
     return this.collection.find({}).sort({ date: -1 }).toArray();
   }
 
+  async findInDateRangeOrderByDateDesc(dateFrom: string, dateTo: string): Promise<HistoryEntry[]> {
+    return this.collection
+      .find({ date: { $gte: new Date(`${dateFrom}T00:00:00.000Z`), $lt: new Date(`${dateTo}T00:00:00.000Z`) } })
+      .sort({ date: -1 })
+      .toArray();
+  }
+
   async insert(history: HistoryEntry): Promise<void> {
     await this.collection.insertOne(history);
   }
