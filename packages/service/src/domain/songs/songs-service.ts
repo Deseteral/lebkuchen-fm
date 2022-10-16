@@ -85,6 +85,10 @@ class SongsService {
   }
 
   async getSongsByYoutubeIds(youTubeIds: string[]): Promise<Song[]> {
+    return this.repository.findByYoutubeIds(youTubeIds);
+  }
+
+  private async getSongsByYoutubeIdsWithDataApiFallback(youTubeIds: string[]): Promise<Song[]> {
     const songsFromRepo: Song[] = await this.repository.findByYoutubeIds(youTubeIds);
     const youtubeIdsFromRepo = songsFromRepo.map((song) => song.youtubeId);
     const youtubeIdsToSongsFromRepo: Map<string, Song> = new Map(songsFromRepo.map((song) => [song.youtubeId, song]));
@@ -100,7 +104,7 @@ class SongsService {
 
   async getSongsFromPlaylist(id: string): Promise<Song[]> {
     const videoIds = await this.youTubeDataClient.fetchYouTubeIdsForPlaylist(id);
-    const songs: Promise<Song[]> = this.getSongsByYoutubeIds(videoIds);
+    const songs: Promise<Song[]> = this.getSongsByYoutubeIdsWithDataApiFallback(videoIds);
     return songs;
   }
 
