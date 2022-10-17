@@ -10,7 +10,17 @@ class HistoryRepository extends Repository<HistoryEntry> {
   }
 
   async findAllOrderByDateDesc(): Promise<HistoryEntry[]> {
-    return this.collection.find({}).sort({ date: -1 }).toArray();
+    return this.collection.find({}, { projection: { _id: 0 } }).sort({ date: -1 }).toArray();
+  }
+
+  async findInDateRangeOrderByDateDesc(dateFrom: string, dateTo: string): Promise<HistoryEntry[]> {
+    const gte = new Date(`${dateFrom}T00:00:00.000Z`);
+    const lt = new Date(`${dateTo}T00:00:00.000Z`);
+
+    return this.collection
+      .find({ date: { $gte: gte, $lt: lt } }, { projection: { _id: 0 } })
+      .sort({ date: -1 })
+      .toArray();
   }
 
   async insert(history: HistoryEntry): Promise<void> {

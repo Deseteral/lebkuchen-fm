@@ -11,15 +11,22 @@ class XSoundsRepository extends Repository<XSound> {
   }
 
   findAllOrderByNameAsc(): Promise<XSound[]> {
-    return this.collection.find({}).collation({ locale: this.configuration.LOCALE }).sort({ name: 1 }).toArray();
+    return this.collection
+      .find({}, { projection: { _id: 0 } })
+      .collation({ locale: this.configuration.LOCALE })
+      .sort({ name: 1 })
+      .toArray();
   }
 
   findAllByTagOrderByNameAsc(tag: string): Promise<XSound[]> {
-    return this.collection.find({ tags: tag }).sort({ name: 1 }).toArray();
+    return this.collection
+      .find({ tags: tag }, { projection: { _id: 0 } })
+      .sort({ name: 1 })
+      .toArray();
   }
 
   findByName(name: string): Promise<XSound | null> {
-    return this.collection.findOne({ name });
+    return this.collection.findOne({ name }, { projection: { _id: 0 } });
   }
 
   async insert(sound: XSound): Promise<void> {

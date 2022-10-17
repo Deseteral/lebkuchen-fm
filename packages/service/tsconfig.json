@@ -23,8 +23,11 @@
     "declarationDir": "build/types",
     "baseUrl": ".",
     "paths": {
-      "@service/*": ["./src/*"],
+      "@service/*": [
+        "./src/*"
+      ],
     },
+    "skipLibCheck": true
   },
   "include": [
     "src/**/*"
