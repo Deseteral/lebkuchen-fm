@@ -1,7 +1,13 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { userLogin } from '../../services/user-account-service';
 
 interface LoginFormProps {}
+
+const Container = styled.div`
+  background-image: url("../../assets/rock-stop.png");
+  background-size: cover;
+`;
 
 function LoginForm(_: LoginFormProps): JSX.Element {
   const [username, setUsername] = React.useState('');
@@ -11,9 +17,8 @@ function LoginForm(_: LoginFormProps): JSX.Element {
   const onInputKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') login();
   };
-
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <Container className="flex items-center justify-center min-h-screen">
       <div className="px-8 py-6 mt-4 text-left bg-white shadow-lg">
         <h3 className="text-2xl font-bold text-center">Login to LebkuchenFM</h3>
         <form name="login-form">
@@ -61,7 +66,7 @@ function LoginForm(_: LoginFormProps): JSX.Element {
           </div>
         </form>
       </div>
-    </div>
+    </Container>
   );
 }
 

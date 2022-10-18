@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { userLogout } from '../../services/user-account-service';
 import './SplashScreen.css';
 import { AnimatedBackground } from '../../animated-background/AnimatedBackground';
@@ -8,7 +9,7 @@ function SplashScreen() {
   return (
     <div>
       <AnimatedBackground />
-      <div>
+      <motion.div initial={{ opacity: 0, scale: 0.1 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}>
         <div className="menu max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 lg:flex lg:items-center lg:justify-between">
           <h2 className="text-3xl font-extrabold tracking-tight text-gray-500 sm:text-4xl">
             <span className="block text-indigo-500">Lebkuchen FM</span>
@@ -51,7 +52,7 @@ function SplashScreen() {
             <div className="ml-3 inline-flex rounded-md shadow" />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
