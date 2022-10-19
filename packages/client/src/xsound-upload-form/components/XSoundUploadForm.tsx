@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { HttpError } from 'lebkuchen-fm-service';
+import { motion } from 'framer-motion';
 
 const Container = styled.div`
   display: grid;
@@ -37,7 +38,7 @@ const Input = styled.input`
   border-color: rgba(229,231,235);;
 `;
 
-const SubmitButton = styled.input`
+const SubmitButton = styled.button`
   margin-top: 8px;
   background-color: rgba(37,99,235);
   color: white;
@@ -95,14 +96,14 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   };
 
   return (
-    <Container>
+    <Container as={motion.div} initial={{ opacity: 0, scale: 0.01, rotate: -270 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.5 }}>
       <Box>
         <form onSubmit={submit}>
           <InputGroup>
             <Header>Add new sound</Header>
             <Input type="file" name="soundFile" ref={inputFile} />
             <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
-            <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
+            <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
             {message && <MessageContainer>{message}</MessageContainer>}
           </InputGroup>
         </form>
