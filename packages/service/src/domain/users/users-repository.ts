@@ -10,19 +10,19 @@ class UsersRepository extends Repository<User> {
   }
 
   findAllOrderByNameDesc(): Promise<User[]> {
-    return this.collection.find({}, { projection: { _id: 0 } }).sort({ 'data.name': -1 }).toArray();
+    return this.collection.find({}).sort({ 'data.name': -1 }).toArray();
   }
 
   findByName(name: string): Promise<User | null> {
-    return this.collection.findOne({ 'data.name': name }, { projection: { _id: 0 } });
+    return this.collection.findOne({ 'data.name': name });
   }
 
   findByApiToken(apiToken: string): Promise<User | null> {
-    return this.collection.findOne({ 'secret.apiToken': apiToken }, { projection: { _id: 0 } });
+    return this.collection.findOne({ 'secret.apiToken': apiToken });
   }
 
   findByDiscordId(discordId: string): User | PromiseLike<User | null> | null {
-    return this.collection.findOne({ 'data.discordId': discordId }, { projection: { _id: 0 } });
+    return this.collection.findOne({ 'data.discordId': discordId });
   }
 
   async insert(user: User): Promise<void> {
