@@ -25,6 +25,7 @@ class RewindToCommand extends CommandProcessor {
     if (time === null) {
       throw new Error('Wrong argument. You have to provide time in seconds or hh:mm:ss format.');
     }
+
     const event: RewindToEvent = {
       id: 'RewindToEvent',
       time,
@@ -46,13 +47,14 @@ class RewindToCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Przewija filmik do x sekund';
+    return 'Przewija filmik do podanego czasu w sekundach lub formacie hh:mm:ss';
   }
 
   get exampleUsages(): string[] {
     return [
       '10',
       '90',
+      '1:30',
     ];
   }
 
