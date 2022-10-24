@@ -34,8 +34,16 @@ class SongAddCommand extends CommandProcessor {
       throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
     }
 
-    const trimStartSeconds = trimStart ? parseToSeconds(trimStart) : null;
-    const trimEndSeconds = trimEnd ? parseToSeconds(trimEnd) : null;
+    const trimStartSeconds = parseToSeconds(trimStart);
+    const trimEndSeconds = parseToSeconds(trimEnd);
+
+    if (
+      (trimStart && trimStartSeconds === null) ||
+      (trimEnd && trimEndSeconds === null)
+    ) {
+      throw new Error('Niepoprawny format czasu');
+    }
+
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
     return new CommandProcessingResponseBuilder()

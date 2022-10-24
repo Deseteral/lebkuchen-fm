@@ -21,7 +21,11 @@ export function extractSessionFromIncomingMessage(incomingMessage: IncomingMessa
   return incomingMessage.session;
 }
 
-export function parseToSeconds(time: string): number | null {
+export function parseToSeconds(time?: string): number | null {
+  if (!time) {
+    return null;
+  }
+
   const splitedTime = time.split(':');
   if (!splitedTime.length || splitedTime.length > 3) {
     return null;
