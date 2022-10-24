@@ -89,7 +89,7 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
             <Header>Add new sound</Header>
             <Input type="file" required name="soundFile" />
             <Input type="text" required placeholder="Sound name" name="soundName" />
-            <Input type="text" required placeholder="Tags, separate them with a comma" name="tags" />
+            <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
             <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
             {message && <MessageContainer>{message}</MessageContainer>}
           </InputGroup>

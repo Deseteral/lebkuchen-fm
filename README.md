@@ -200,7 +200,8 @@ Adds new sound file to X Sounds database.
 
 **Request** \
 Requires content type to be `multipart/form-data` with fields:
-- `soundName`: name of the sound to be added (like _"bruh"_)
+- `soundName`: name of the sound to be added (like _"bruh"_
+- `tags` (optional): tag list separated with comma (like _"jp2, jan pawel, jean paul"_)
 - `soundFile`: sound [File](https://developer.mozilla.org/en-US/docs/Web/API/File) ideally in mp3 or wav format
 
 **Response**
