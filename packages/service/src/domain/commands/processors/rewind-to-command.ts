@@ -17,13 +17,13 @@ class RewindToCommand extends CommandProcessor {
   async execute(command: Command): Promise<CommandProcessingResponse> {
     const timeArgument = command.rawArgs;
     if (!timeArgument) {
-      throw new Error('You have to provide time to skip');
+      throw new Error('Brak wymaganego argumentu. Wymagane podanie czasu w sekundach lub w formacie hh:mm:ss.');
     }
 
     const time = parseToSeconds(timeArgument);
 
     if (time === null) {
-      throw new Error('Wrong argument. You have to provide time in seconds or hh:mm:ss format.');
+      throw new Error('Niepoprawny argument. Wymagane podanie czasu w sekundach lub w formacie hh:mm:ss.');
     }
 
     const event: RewindToEvent = {

@@ -3,6 +3,7 @@ import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@se
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { SongsService } from '@service/domain/songs/songs-service';
+import { parseToSeconds } from '@service/utils/utils';
 import { YouTubeDataClient } from '@service/youtube/youtube-data-client';
 import { Service } from 'typedi';
 
@@ -33,30 +34,13 @@ class SongAddCommand extends CommandProcessor {
       throw new Error('Ten plik nie jest obsługiwany przez osadzony odtwarzacz');
     }
 
-    const trimStartSeconds = trimStart ? this.parseTimeStringToSeconds(trimStart) : null;
-    const trimEndSeconds = trimEnd ? this.parseTimeStringToSeconds(trimEnd) : null;
+    const trimStartSeconds = trimStart ? parseToSeconds(trimStart) : null;
+    const trimEndSeconds = trimEnd ? parseToSeconds(trimEnd) : null;
     this.songService.createNewSong(youtubeId, name, 0, trimStartSeconds, trimEndSeconds);
 
     return new CommandProcessingResponseBuilder()
       .fromMarkdown(`Dodano utwór "${name}" do biblioteki`)
       .build();
-  }
-
-  private parseTimeStringToSeconds(text: string): number {
-    const [minutes, seconds] = text.split(':');
-
-    if (!minutes || !seconds) {
-      throw new Error('Niepoprawny format czasu');
-    }
-
-    const parsedMinutes = parseInt(minutes, 10);
-    const parsedSeconds = parseInt(seconds, 10);
-
-    if (Number.isNaN(parsedMinutes) || Number.isNaN(parsedSeconds)) {
-      throw new Error('Niepoprawny format czasu');
-    }
-
-    return ((parsedMinutes * 60) + parsedSeconds);
   }
 
   get key(): string {
