@@ -77,6 +77,11 @@ function setSpeed(nextSpeed: SpeedControl) {
   }
 }
 
+function rewindTo(time: number) {
+  player.seek(time);
+  done();
+}
+
 function initialize(playerContainerDomId: string) {
   player = new YTPlayer(`#${playerContainerDomId}`);
 
@@ -138,4 +143,5 @@ export {
   playNextSong,
   setVolume,
   setSpeed,
+  rewindTo,
 };
