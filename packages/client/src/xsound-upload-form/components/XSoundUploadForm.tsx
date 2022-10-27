@@ -53,8 +53,6 @@ const MessageContainer = styled.div`
 interface XSoundUploadFormProps {}
 
 function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
-  const inputFile = React.useRef<HTMLInputElement>(null);
-  const inputSoundName = React.useRef<HTMLInputElement>(null);
   const [message, setMessage] = React.useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = React.useState<boolean>(false);
 
@@ -65,21 +63,10 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const files = inputFile.current?.files;
-    const soundName = inputSoundName.current?.value;
-
-    if (!(files && files[0]) || !soundName) {
-      displayMessage('You have to provide both sound file and name');
-      return;
-    }
-
     setIsWaitingForResponse(true);
 
-    const formData = new FormData();
-    formData.append('soundFile', files[0]);
-    formData.append('soundName', soundName);
-
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
@@ -91,8 +78,7 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     }
 
     setIsWaitingForResponse(false);
-    if (inputFile.current) inputFile.current.value = '';
-    if (inputSoundName.current) inputSoundName.current.value = '';
+    form.reset();
   };
 
   return (
@@ -101,8 +87,9 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
         <form onSubmit={submit}>
           <InputGroup>
             <Header>Add new sound</Header>
-            <Input type="file" name="soundFile" ref={inputFile} />
-            <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
+            <Input type="file" required name="soundFile" />
+            <Input type="text" required placeholder="Sound name" name="soundName" />
+            <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
             <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
             {message && <MessageContainer>{message}</MessageContainer>}
           </InputGroup>
