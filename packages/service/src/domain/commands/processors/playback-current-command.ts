@@ -32,8 +32,8 @@ class PlaybackCurrentCommand extends CommandProcessor {
       .build();
   }
 
-  private buildMessage(current: Song | null, queue: Song[], includeQueue: Boolean): string {
-    const queueSongsTitles = includeQueue ? queue.map((song) => `  - ${song.name.replace(/(.{50})..+/, '$1…')}`) : [];
+  private buildMessage(current: (Song | null), queue: Song[], includeQueue: Boolean): string {
+    const queueSongsTitles = includeQueue ? queue.map((song) => `  - ${song.name.truncated(50, false)}`) : [];
     const queueTitle = !queueSongsTitles.isEmpty() ? 'W kolejce:' : 'Playlista jest pusta';
     const currentSongName = current?.name ?? '';
 
