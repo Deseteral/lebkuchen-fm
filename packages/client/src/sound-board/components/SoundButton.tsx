@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { motion } from 'framer-motion';
 
 interface SoundButtonProps {
   name: string,
@@ -16,13 +17,19 @@ function getBgColor(timesPlayed: number = 0) {
 
 function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps) {
   return (
-    <button
+    <motion.button
+      variants={{
+        hidden: { opacity: 0, x: -200 },
+        show: { opacity: 1, x: 0 },
+      }}
+      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.1 }}
       className={`${getBgColor(timesPlayed)} text-bl font-bold py-2 px-4 rounded-full m-4`}
       type="button"
       onClick={onClick}
     >
       {name}
-    </button>
+    </motion.button>
   );
 }
 

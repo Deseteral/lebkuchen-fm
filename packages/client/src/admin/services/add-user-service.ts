@@ -1,4 +1,4 @@
-import { AddUserRequestDto } from 'lebkuchen-fm-service';
+import type { AddUserRequestDto } from 'lebkuchen-fm-service';
 
 export async function addNewUser(username: string): Promise<void> {
   const data: AddUserRequestDto = { username };
