@@ -82,6 +82,22 @@ function rewindTo(time: number) {
   done();
 }
 
+function rewindBy(time: number) {
+  const state = PlayerStateService.getState();
+  const actualTime = state.currentlyPlaying?.time;
+
+  if (actualTime === undefined) {
+    return done();
+  }
+
+  const timeAfterRewind = Math.ceil(actualTime + time);
+  if (timeAfterRewind < 0) {
+    return rewindTo(0);
+  }
+
+  return rewindTo(timeAfterRewind);
+}
+
 function initialize(playerContainerDomId: string) {
   player = new YTPlayer(`#${playerContainerDomId}`);
 
@@ -144,4 +160,5 @@ export {
   setVolume,
   setSpeed,
   rewindTo,
+  rewindBy,
 };

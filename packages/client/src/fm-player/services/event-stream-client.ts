@@ -56,8 +56,12 @@ function connect(): (() => void) {
         PlayerStateService.replaceQueue(eventData.songs);
         break;
 
-      case 'RewindToEvent':
-        YouTubePlayerService.rewindTo(eventData.time);
+      case 'RewindEvent':
+        if (eventData.modifier) {
+          YouTubePlayerService.rewindBy(eventData.time * eventData.modifier);
+        } else {
+          YouTubePlayerService.rewindTo(eventData.time);
+        }
         break;
 
       default:
