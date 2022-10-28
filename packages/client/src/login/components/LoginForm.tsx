@@ -1,11 +1,12 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { userLogin } from '../../services/user-account-service';
+import rockStop from '../../assets/rock-stop.png';
 
 interface LoginFormProps {}
 
 const Container = styled.div`
-  background-image: url("../../assets/rock-stop.png");
+  background-image: url(${rockStop});
   background-size: cover;
 `;
 
