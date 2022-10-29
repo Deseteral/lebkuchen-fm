@@ -109,6 +109,7 @@ class XSoundsService {
 
   async createNewSound(
     name: string,
+    tags: string[],
     fileDescriptor: { buffer: Buffer, fileName: string },
     user: User,
     timesPlayed = 0,
@@ -128,7 +129,7 @@ class XSoundsService {
       name,
       url,
       timesPlayed,
-      tags: [],
+      tags,
       addedBy: user.data.name,
     };
 

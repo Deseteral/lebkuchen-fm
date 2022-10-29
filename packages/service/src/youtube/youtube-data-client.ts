@@ -8,7 +8,7 @@ interface SearchResults {
       id: { videoId: string },
       snippet: { title: string },
     }
-  ]
+  ] | [],
 }
 
 interface PlaylistDetails {
@@ -16,7 +16,7 @@ interface PlaylistDetails {
     {
       snippet: { title: string, resourceId: {videoId: string} },
     }
-  ]
+  ] | [],
 }
 
 interface VideoDetails {
@@ -26,7 +26,7 @@ interface VideoDetails {
       snippet: { title: string },
       status: {embeddable: boolean},
     }
-  ]
+  ] | [],
 }
 
 @Service()
@@ -102,6 +102,8 @@ class YouTubeDataClient {
   }
 
   private async getVideoDetails(youtubeIds: string[], part: string): Promise<VideoDetails> {
+    if (youtubeIds.isEmpty()) return { items: [] };
+
     const url = this.makeYouTubeUrl('/videos');
     url.searchParams.set('id', youtubeIds.join(','));
     url.searchParams.set('part', part);

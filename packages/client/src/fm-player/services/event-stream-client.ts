@@ -1,9 +1,9 @@
 import io from 'socket.io-client';
 import { EventData } from 'lebkuchen-fm-service';
 import * as PlayerStateService from './player-state-service';
-import * as SoundPlayerService from '../services/sound-player-service';
-import * as SpeechService from '../services/speech-service';
-import * as YouTubePlayerService from '../services/youtube-player-service';
+import * as SoundPlayerService from './sound-player-service';
+import * as SpeechService from './speech-service';
+import * as YouTubePlayerService from './youtube-player-service';
 
 function connect(): (() => void) {
   const client = io('/api/player');
@@ -54,6 +54,14 @@ function connect(): (() => void) {
 
       case 'ReplaceQueueEvent':
         PlayerStateService.replaceQueue(eventData.songs);
+        break;
+
+      case 'RewindEvent':
+        if (eventData.modifier) {
+          YouTubePlayerService.rewindBy(eventData.time * eventData.modifier);
+        } else {
+          YouTubePlayerService.rewindTo(eventData.time);
+        }
         break;
 
       default:

@@ -26,6 +26,7 @@ class XSoundsController {
   async addXSound(
     @UploadedFile('soundFile') soundFile: any,
     @BodyParam('soundName') soundName: string,
+    @BodyParam('tags', { required: false }) tags: string,
     @CurrentUser() loggedInUser: User,
   ): Promise<XSound> {
     if (!soundFile || !soundName) {
@@ -33,12 +34,13 @@ class XSoundsController {
     }
 
     const { buffer, originalname } = soundFile;
+    const tagsList = tags ? tags.split(',').map((tag) => tag.trim()).filter(Boolean) : [];
 
     XSoundsController.logger.info(`Uploading x-sound ${soundName}`);
-
     try {
       return this.xSoundsService.createNewSound(
         soundName,
+        tagsList,
         { buffer, fileName: originalname },
         loggedInUser,
       );

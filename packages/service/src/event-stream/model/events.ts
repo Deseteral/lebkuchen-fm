@@ -51,6 +51,12 @@ export interface ChangeVolumeEvent {
   nextVolume: number,
 }
 
+export interface RewindEvent {
+  id: 'RewindEvent',
+  time: number,
+  modifier: number | null,
+}
+
 export type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
@@ -61,4 +67,5 @@ export type EventData =
   | SkipEvent
   | ChangeSpeedEvent
   | ChangeVolumeEvent
-  | ReplaceQueueEvent;
+  | ReplaceQueueEvent
+  | RewindEvent;

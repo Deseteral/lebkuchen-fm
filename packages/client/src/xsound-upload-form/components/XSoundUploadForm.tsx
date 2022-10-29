@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { HttpError } from 'lebkuchen-fm-service';
+import { motion } from 'framer-motion';
 
 const Container = styled.div`
   display: grid;
@@ -37,7 +38,7 @@ const Input = styled.input`
   border-color: rgba(229,231,235);;
 `;
 
-const SubmitButton = styled.input`
+const SubmitButton = styled.button`
   margin-top: 8px;
   background-color: rgba(37,99,235);
   color: white;
@@ -52,8 +53,6 @@ const MessageContainer = styled.div`
 interface XSoundUploadFormProps {}
 
 function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
-  const inputFile = React.useRef<HTMLInputElement>(null);
-  const inputSoundName = React.useRef<HTMLInputElement>(null);
   const [message, setMessage] = React.useState<string | null>(null);
   const [isWaitingForResponse, setIsWaitingForResponse] = React.useState<boolean>(false);
 
@@ -64,21 +63,10 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const files = inputFile.current?.files;
-    const soundName = inputSoundName.current?.value;
-
-    if (!(files && files[0]) || !soundName) {
-      displayMessage('You have to provide both sound file and name');
-      return;
-    }
-
     setIsWaitingForResponse(true);
 
-    const formData = new FormData();
-    formData.append('soundFile', files[0]);
-    formData.append('soundName', soundName);
-
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
@@ -90,19 +78,19 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     }
 
     setIsWaitingForResponse(false);
-    if (inputFile.current) inputFile.current.value = '';
-    if (inputSoundName.current) inputSoundName.current.value = '';
+    form.reset();
   };
 
   return (
-    <Container>
+    <Container as={motion.div} initial={{ opacity: 0, scale: 0.01, rotate: -270 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.5 }}>
       <Box>
         <form onSubmit={submit}>
           <InputGroup>
             <Header>Add new sound</Header>
-            <Input type="file" name="soundFile" ref={inputFile} />
-            <Input type="text" placeholder="Sound name" name="soundName" ref={inputSoundName} />
-            <SubmitButton type="submit" value="Submit" disabled={isWaitingForResponse} />
+            <Input type="file" required name="soundFile" />
+            <Input type="text" required placeholder="Sound name" name="soundName" />
+            <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
+            <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
             {message && <MessageContainer>{message}</MessageContainer>}
           </InputGroup>
         </form>

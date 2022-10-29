@@ -118,7 +118,7 @@ async function main(): Promise<void> {
   await discordClient.login();
 
   /* Start the server */
-  server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on port ${config.PORT}`));
+  server.listen(config.PORT, () => logger.info(`LebkuchenFM service started on http://localhost:${config.PORT}`));
 }
 
 try {
