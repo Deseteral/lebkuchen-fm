@@ -36,10 +36,12 @@ class PlaybackCurrentCommand extends CommandProcessor {
     const queueSongsTitles = includeQueue ? queue.map((song) => `  - ${song.name.truncated(50, false)}`) : [];
     const queueTitle = !queueSongsTitles.isEmpty() ? 'W kolejce:' : 'Playlista jest pusta';
     const currentSongName = current?.name ?? '';
+    const currentYoutubeId = current?.youtubeId ?? '';
 
     const text = [
       currentSongName ? 'Obecnie gramy:' : 'Obecnie nic nie gramy.',
       currentSongName ? `  ${currentSongName}` : '',
+      currentYoutubeId ? `  https://www.youtube.com/watch?v=${currentYoutubeId}` : '',
       includeQueue ? queueTitle : '',
       ...queueSongsTitles,
     ].filter(Boolean).join('\n');

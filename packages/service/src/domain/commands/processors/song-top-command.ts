@@ -36,9 +36,11 @@ class SongTopCommand extends CommandProcessor {
       });
 
     const text = [
+      '```',
       '#    grano   tytuł',
       '------------------------',
       ...titleMessages,
+      '```',
     ].filter(Boolean).join('\n');
     return text;
   }
