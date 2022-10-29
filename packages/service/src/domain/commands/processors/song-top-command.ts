@@ -18,7 +18,7 @@ class SongTopCommand extends CommandProcessor {
       ? 10
       : parseInt(command.rawArgs, 10);
 
-    const topSongs = await this.songService.getTop(amount);
+    const topSongs = await this.songService.getWithHighestPlayCount(amount);
     const text = this.buildMessage(topSongs);
 
     return new CommandProcessingResponseBuilder()
@@ -31,8 +31,8 @@ class SongTopCommand extends CommandProcessor {
       .map((song, index) => {
         const place = `${index + 1}`.padEnd(5);
         const played = song.timesPlayed.toString().padEnd(8);
-        const title = song.name;
-        return place + played + title.replace(/(.{50})..+/, '$1…');
+        const title = song.name.truncated(50, false);
+        return place + played + title;
       });
 
     const text = [
