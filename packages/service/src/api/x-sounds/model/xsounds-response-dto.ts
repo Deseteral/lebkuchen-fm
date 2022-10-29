@@ -4,4 +4,8 @@ interface XSoundsResponseDto {
   sounds: XSound[],
 }
 
-export { XSoundsResponseDto };
+interface XSoundsTagsResponseDto {
+  tags: string[],
+}
+
+export { XSoundsResponseDto, XSoundsTagsResponseDto };
