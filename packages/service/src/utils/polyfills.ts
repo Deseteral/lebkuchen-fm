@@ -1,3 +1,11 @@
+String.prototype.truncated = function truncated(limit: number, useWordBoundary: Boolean): string { // eslint-disable-line no-extend-native
+  if (this.length <= limit) { return String(this); }
+  const subString = this.slice(0, limit - 1);
+  return `${useWordBoundary
+    ? subString.slice(0, subString.lastIndexOf(' '))
+    : subString}…`;
+};
+
 Array.prototype.last = function last<T>(): T { // eslint-disable-line no-extend-native
   return this[this.length - 1];
 };
@@ -21,6 +29,10 @@ declare global {
     randomShuffle(): T[],
     isEmpty(): boolean,
     countOccurrences(): Map<T, number>,
+  }
+
+  interface String {
+    truncated(limit: number, useWordBoundary: Boolean): string,
   }
 }
 
