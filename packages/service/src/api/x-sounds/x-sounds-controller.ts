@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser, InternalServerError, Param, NotFoundError } from 'routing-controllers';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser, InternalServerError, QueryParam } from 'routing-controllers';
 import { MissingRequriedFieldsError } from '@service/api/x-sounds/model/missing-required-fields-error';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -17,8 +17,13 @@ class XSoundsController {
 
   @Get('/')
   @ContentType('application/json')
-  async getXSounds(): Promise<XSoundsResponseDto> {
-    const sounds = await this.xSoundsService.getAll();
+  async getXSounds(
+    @QueryParam('tag') tag: string,
+  ): Promise<XSoundsResponseDto> {
+    const sounds = tag
+      ? await this.xSoundsService.getAllByTag(tag)
+      : await this.xSoundsService.getAll();
+
     return { sounds };
   }
 
@@ -27,18 +32,6 @@ class XSoundsController {
   async getXSoundsAllTags(): Promise<XSoundsTagsResponseDto> {
     const tags = await this.xSoundsService.getAllUniqueTags();
     return { tags };
-  }
-
-  @Get('/tags/:tag')
-  @ContentType('application/json')
-  async getXSoundsByTag(
-    @Param('tag') tag: string,
-  ): Promise<XSoundsResponseDto> {
-    const sounds = await this.xSoundsService.getAllByTag(tag);
-    if (!sounds.length) {
-      throw new NotFoundError('Invalid tag. No sounds found.');
-    }
-    return { sounds };
   }
 
   @Post('/')
