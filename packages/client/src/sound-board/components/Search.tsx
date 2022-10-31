@@ -17,7 +17,7 @@ function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
     <div className="relative p-4 min-w-full">
       <input
         type="search"
-        className="bg-purple-white shadow rounded border-0 p-3 w-6/12"
+        className="bg-purple-white shadow rounded border-0 p-3 w-full sm:w-6/12"
         placeholder="Filter sounds..."
         value={value}
         // eslint-disable-next-line jsx-a11y/no-autofocus
