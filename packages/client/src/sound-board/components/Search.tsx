@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useFocus } from '../../hooks/useFocus';
 import { useKeyStroke } from '../../hooks/useKeyStroke';
+import { getPlatform } from '../../services/get-platform';
 
 interface SearchProps {
   value: string,
@@ -16,7 +17,11 @@ function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
     if (event.key === 'Escape') onEscape();
   };
 
-  useKeyStroke({ key: 'k', metaKey: true }, setSearchFocus);
+  const searchFocusKeystrokeConfig = getPlatform() === 'mac'
+    ? { key: 'k', metaKey: true }
+    : { key: 'k', ctrlKey: true };
+
+  useKeyStroke(searchFocusKeystrokeConfig, setSearchFocus);
 
   return (
     <div className="relative p-4 min-w-full">
