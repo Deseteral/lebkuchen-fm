@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { useFocus } from '../../hooks/useFocus';
+import { useKeyStroke } from '../../hooks/useKeyStroke';
+import { getPlatform } from '../../services/get-platform';
 
 interface SearchProps {
   value: string,
@@ -8,10 +11,17 @@ interface SearchProps {
 }
 
 function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
+  const [searchRef, setSearchFocus] = useFocus<HTMLInputElement>();
   const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.key === 'Enter') onSubmit();
     if (event.key === 'Escape') onEscape();
   };
+
+  const searchFocusKeystrokeConfig = getPlatform() === 'mac'
+    ? { key: 'k', metaKey: true }
+    : { key: 'k', ctrlKey: true };
+
+  useKeyStroke(searchFocusKeystrokeConfig, setSearchFocus);
 
   return (
     <div className="relative p-4 min-w-full">
@@ -24,6 +34,7 @@ function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
         autoFocus
         onChange={(e) => onPhraseChange(e.target.value)}
         onKeyDown={onKeyDown}
+        ref={searchRef}
       />
     </div>
   );
