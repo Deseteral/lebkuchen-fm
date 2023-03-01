@@ -5,7 +5,8 @@ const BESTVIEWED_BANNER_URL = 'https://web.archive.org/web/20090724131902im_/htt
 
 const Conatiner = styled.div`
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: max-content;
   background-color: #c0c0c0;
   padding: 8px;
   font-family: serif;
