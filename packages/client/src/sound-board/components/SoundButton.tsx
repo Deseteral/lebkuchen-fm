@@ -32,23 +32,16 @@ function getBgColor(timesPlayed: number = 0) {
 
 function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps): JSX.Element {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const wasVisible = useRef(false);
-  const refClassListDispatch = refClassListReducer(buttonRef);
+  const refClassList = refClassListReducer(buttonRef);
 
-  const handleIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+  const handleIntersection = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry: IntersectionObserverEntry) => {
-      if (entry.isIntersecting) {
-        wasVisible.current = true;
-      } else {
+      if (!entry.isIntersecting) {
         entry.target.classList.remove('hoverOut');
       }
-      // TODO Uncomment this for one way animation
-      // if (wasVisible.current) {
-      //   observer.unobserve(entry.target);
-      // }
-      // @ts-ignore
-      entry.target.style.setProperty('--shown', entry.isIntersecting ? '1' : '0');
-      entry.target.classList.toggle('buttonVisible', entry.isIntersecting);
+      if (entry.target instanceof HTMLButtonElement) {
+        entry.target.style.setProperty('--shown', entry.isIntersecting ? '1' : '0');
+      }
     });
   };
 
@@ -62,23 +55,23 @@ function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps): JSX.Elem
 
   return (
     <button
+      type="button"
       ref={buttonRef}
       className={`${getBgColor(timesPlayed)} text-bl font-bold py-2 px-4 rounded-full m-4 button`}
       onMouseDown={() => {
-        refClassListDispatch('add', 'mouseDown');
-        refClassListDispatch('remove', 'buttonVisible');
-        refClassListDispatch('remove', 'hoverOut');
+        refClassList('add', 'mouseDown');
+        refClassList('remove', 'button');
+        refClassList('remove', 'hoverOut');
       }}
       onMouseUp={() => {
-        refClassListDispatch('add', 'buttonVisible');
-        refClassListDispatch('remove', 'mouseDown');
+        refClassList('add', 'button');
+        refClassList('remove', 'mouseDown');
       }}
       onMouseOut={() => {
-        refClassListDispatch('add', 'hoverOut');
-        refClassListDispatch('remove', 'mouseDown');
+        refClassList('add', 'hoverOut');
+        refClassList('remove', 'mouseDown');
       }}
-      onBlur={() => refClassListDispatch('add', 'hoverOut')}
-      type="button"
+      onBlur={() => {}}
       onClick={onClick}
     >
       {name}

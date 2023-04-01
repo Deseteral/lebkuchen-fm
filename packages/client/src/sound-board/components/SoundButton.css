@@ -1,25 +1,19 @@
 :root {
-  --shown: 1,
+  --shown: 1;
 }
 
 .button {
-  /*TODO uncomment this one below to see pills appearing out from 0*/
-  /*transform: scale(var(--shown));*/
-  transform: scale(calc(0.25 + (var(--shown) * 0.75)));
+  transform: scale(calc(0.10 + (var(--shown) * 0.90)));
   transition: transform 0.5s cubic-bezier(.5,1,.75,1.25);
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px 2px 0, rgba(0, 0, 0, 0.15) 0 1px 2px 0;
 }
 
-/*.buttonVisible {*/
-/*  animation: hoverOut 0.5s cubic-bezier(.35,.07,.2,.97) both;*/
-/*}*/
+.button:hover {
+  animation: hoverIn 0.8s cubic-bezier(.35,.07,.2,.97) both;
+}
 
 .hoverOut {
   animation: hoverOut 0.5s cubic-bezier(.35,.07,.2,.97);
-}
-
-.buttonVisible:hover {
-  animation: hoverIn 0.8s cubic-bezier(.35,.07,.2,.97) both;
 }
 
 .mouseDown {
@@ -34,7 +28,7 @@
     transform: scale(1.1);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.08);
   }
   100% {
     transform: scale(1.1);
@@ -46,10 +40,10 @@
     transform: scale(1.1);
   }
   25% {
-    transform: scale(1.02);
+    transform: scale(1.01);
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
   100% {
     transform: scale(1);
