@@ -10,6 +10,7 @@
   ],
   "scripts": {
     "start": "node packages/service/build/main.js",
+    "start:client": "yarn nx dev lebkuchen-fm-client",
     "build": "yarn run clean && nx build lebkuchen-fm-service && nx build lebkuchen-fm-client && yarn run build:static",
     "build:static": "mkdir -p packages/service/build/public && cp -r packages/**/dist/* packages/service/build/public/",
     "test": "nx test lebkuchen-fm-service && nx test lebkuchen-fm-client",

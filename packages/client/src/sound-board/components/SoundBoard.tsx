@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { XSound } from 'lebkuchen-fm-service';
-import { motion } from 'framer-motion';
 import { queueXSound } from '../service/soundboard-service';
 import { SoundButton } from './SoundButton';
 import { Search } from './Search';
@@ -35,16 +34,6 @@ function SoundBoard() {
     if (selectedSound) queueXSound(selectedSound.name);
   };
 
-  const soundsContainerAnimationVariants = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.01,
-      },
-    },
-  };
-
   return (
     <div>
       <Search
@@ -54,11 +43,8 @@ function SoundBoard() {
         onEscape={() => onPhraseChange('')}
       />
       {sounds.length > 1 && (
-        <motion.div
+        <div
           className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8"
-          variants={soundsContainerAnimationVariants}
-          initial="hidden"
-          animate="show"
         >
           {filteredSounds.map(({ name, timesPlayed }) => (
             <SoundButton
@@ -68,7 +54,7 @@ function SoundBoard() {
               onClick={() => queueXSound(name)}
             />
           ))}
-        </motion.div>
+        </div>
       )}
     </div>
   );
