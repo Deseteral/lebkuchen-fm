@@ -60,16 +60,26 @@ This projects consists of these modules:
 Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
+Configure your instance via Environment variables.
+##### Service
+- `MONGODB_URI` - MongoDB connection string
+- `PORT` - port on which the service will be running (automatically injected by cloud providers)
+- `LOCALE` - language of the service
 - `COMMAND_PROMPT` - command prompt (optional, defaults to `/fm`)
+
+##### Youtube player
+- `YOUTUBE_API_KEY` - YouTube Data API token
+##### Discord
 - `DISCORD_CHANNEL_ID` - ID of the Discord channel where the bot is allowed to run
 - `DISCORD_CLIENT_ID` - Discord application ID
 - `DISCORD_GUILD_ID` - ID of the Discord guild (server) where the bot will operate
 - `DISCORD_TOKEN` - token of the Discord bot
-- `DROPBOX_TOKEN` - Dropbox API token used for persisting files
-- `LOCALE` - language of the service
-- `MONGODB_URI` - MongoDB connection string
-- `PORT` - port on which the service will be running (automatically injected by cloud providers)
-- `YOUTUBE_API_KEY` - YouTube Data API token
+##### Dropbox - used for persisting files
+- `DROPBOX_CLIENT_ID` - Dropbox App Key 
+- `DROPBOX_SECRET` - Dropbox App Secret 
+- `DROPBOX_REFRESH_TOKEN` - Dropbox [refresh token][how_to_get_refresh_token] used for persisting files
+
+[how_to_get_refresh_token]: https://www.codemzy.com/blog/dropbox-long-lived-access-refresh-token#how-can-i-get-a-refresh-token-manually
 
 #### Authorization
 LebkuchenFM uses _session cookie_ and/or _basic auth with token_ methods to authorize it's users. Each request to `/api/*` endpoint has to be authorized.

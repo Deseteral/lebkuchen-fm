@@ -7,7 +7,9 @@ class Configuration {
   public readonly DISCORD_CLIENT_ID: string;
   public readonly DISCORD_GUILD_ID: string;
   public readonly DISCORD_TOKEN: string;
-  public readonly DROPBOX_TOKEN: string;
+  public readonly DROPBOX_CLIENT_ID: string;
+  public readonly DROPBOX_SECRET: string;
+  public readonly DROPBOX_REFRESH_TOKEN: string;
   public readonly LOCALE: string;
   public readonly MONGODB_URI: string;
   public readonly PORT: string;
@@ -19,7 +21,9 @@ class Configuration {
     DISCORD_CLIENT_ID: string,
     DISCORD_GUILD_ID: string,
     DISCORD_TOKEN: string,
-    DROPBOX_TOKEN: string,
+    DROPBOX_CLIENT_ID: string,
+    DROPBOX_SECRET: string,
+    DROPBOX_REFRESH_TOKEN: string,
     LOCALE: string,
     MONGODB_URI: string,
     PORT: string,
@@ -30,7 +34,9 @@ class Configuration {
     this.DISCORD_CLIENT_ID = DISCORD_CLIENT_ID;
     this.DISCORD_GUILD_ID = DISCORD_GUILD_ID;
     this.DISCORD_TOKEN = DISCORD_TOKEN;
-    this.DROPBOX_TOKEN = DROPBOX_TOKEN;
+    this.DROPBOX_CLIENT_ID = DROPBOX_CLIENT_ID;
+    this.DROPBOX_SECRET = DROPBOX_SECRET;
+    this.DROPBOX_REFRESH_TOKEN = DROPBOX_REFRESH_TOKEN;
     this.LOCALE = LOCALE;
     this.MONGODB_URI = MONGODB_URI;
     this.PORT = PORT;
@@ -44,7 +50,9 @@ class Configuration {
       process.env.DISCORD_CLIENT_ID || '',
       process.env.DISCORD_GUILD_ID || '',
       process.env.DISCORD_TOKEN || '',
-      process.env.DROPBOX_TOKEN || '',
+      process.env.DROPBOX_CLIENT_ID || '',
+      process.env.DROPBOX_SECRET || '',
+      process.env.DROPBOX_REFRESH_TOKEN || '',
       process.env.LOCALE || 'pl',
       process.env.MONGODB_URI || 'mongodb://localhost:27017',
       process.env.PORT || '9000',
