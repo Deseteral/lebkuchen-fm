@@ -13,7 +13,11 @@ class FileStorage {
   private client: Dropbox;
 
   constructor(private configuration: Configuration) {
-    this.client = new Dropbox({ accessToken: this.configuration.DROPBOX_TOKEN });
+    this.client = new Dropbox({
+      clientId: this.configuration.DROPBOX_CLIENT_ID,
+      clientSecret: this.configuration.DROPBOX_SECRET,
+      refreshToken: this.configuration.DROPBOX_REFRESH_TOKEN,
+    });
   }
 
   async uploadFile({ path, contents }: { path: string, contents: Buffer }): Promise<FileUploadResult> {
