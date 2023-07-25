@@ -60,7 +60,7 @@ This projects consists of these modules:
 Core LebkuchenFM Node.js service with MongoDB storage that communicates with clients over WebSockets and REST endpoints.
 
 #### Configuration
-Configure your instance via Environment variables.
+Configure your instance via environment variables.
 ##### Service
 - `MONGODB_URI` - MongoDB connection string
 - `PORT` - port on which the service will be running (automatically injected by cloud providers)
@@ -69,11 +69,13 @@ Configure your instance via Environment variables.
 
 ##### Youtube player
 - `YOUTUBE_API_KEY` - YouTube Data API token
+
 ##### Discord
 - `DISCORD_CHANNEL_ID` - ID of the Discord channel where the bot is allowed to run
 - `DISCORD_CLIENT_ID` - Discord application ID
 - `DISCORD_GUILD_ID` - ID of the Discord guild (server) where the bot will operate
 - `DISCORD_TOKEN` - token of the Discord bot
+
 ##### Dropbox - used for persisting files
 - `DROPBOX_CLIENT_ID` - Dropbox App Key 
 - `DROPBOX_SECRET` - Dropbox App Secret 
