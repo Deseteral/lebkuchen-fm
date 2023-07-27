@@ -33,10 +33,13 @@ async function main(): Promise<void> {
   Container.set(Configuration, config);
 
   /* Setup session middleware */
+  const days30 = 30 * 24 * 60 * 60 * 1000;
   const sessionMiddleware = session({
     secret: Buffer.from(config.MONGODB_URI).toString('base64'),
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: { maxAge: days30 },
     store: MongoStore.create({ mongoUrl: config.MONGODB_URI, dbName: DATABASE_NAME }),
   });
 
