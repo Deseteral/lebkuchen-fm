@@ -22,6 +22,7 @@ function makeDefaultPlayerState(): PlayerState {
 }
 
 export {
+  CurrentlyPlaying,
   PlayerState,
   makeDefaultPlayerState,
 };
