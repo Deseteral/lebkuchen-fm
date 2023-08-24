@@ -35,21 +35,28 @@ class PlaybackCurrentCommand extends CommandProcessor {
   }
 
   private buildMessage(current: (CurrentlyPlaying | null), queue: Song[], includeQueue: Boolean, includePreview: Boolean): string {
+    const songMessage = this.getCurrentSongMessageLines(current, includePreview);
     const queueSongsTitles = includeQueue ? queue.map((song) => `- ${song.name.truncated(50, false)}`) : [];
     const queueTitle = !queueSongsTitles.isEmpty() ? 'W kolejce:' : 'Playlista jest pusta';
-    const currentSongName = current?.song.name ?? '';
-    let currentUrl = `https://www.youtube.com/watch?v=${current?.song.youtubeId}&t=${current?.time.toFixed(0)}`;
-    if (!includePreview) {
-      currentUrl = `<${currentUrl}>`;
-    }
 
     const text = [
-      currentSongName ? 'Obecnie gramy:' : 'Obecnie nic nie gramy.',
-      currentSongName ? `  [${currentSongName}](${currentUrl})` : '',
+      ...songMessage,
       includeQueue ? queueTitle : '',
       ...queueSongsTitles,
     ].filter(Boolean).join('\n');
     return text;
+  }
+
+  private getCurrentSongMessageLines(current: (CurrentlyPlaying | null), includePreview: Boolean): string[] {
+    if (!current) { return ['Obecnie nic nie gramy.']; }
+
+    let currentUrl = `https://www.youtube.com/watch?v=${current.song.youtubeId}&t=${current.time.toFixed(0)}`;
+    if (!includePreview) { currentUrl = `<${currentUrl}>`; }
+
+    return [
+      'Obecnie gramy:',
+      `  [${current.song.name}](${currentUrl})`,
+    ];
   }
 
   get key(): string {
