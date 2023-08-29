@@ -50,12 +50,12 @@ class PlaybackCurrentCommand extends CommandProcessor {
   private getCurrentSongMessageLines(current: (CurrentlyPlaying | null), includePreview: Boolean): string[] {
     if (!current) { return ['Obecnie nic nie gramy.']; }
 
-    let currentUrl = `https://www.youtube.com/watch?v=${current.song.youtubeId}&t=${current.time.toFixed(0)}`;
-    if (!includePreview) { currentUrl = `<${currentUrl}>`; }
+    const youtubeUrl = `https://www.youtube.com/watch?v=${current.song.youtubeId}&t=${current.time.toFixed(0)}`;
+    const currentSongUrl = includePreview ? youtubeUrl : `<${youtubeUrl}>`;
 
     return [
       'Obecnie gramy:',
-      `  [${current.song.name}](${currentUrl})`,
+      `  [${current.song.name}](${currentSongUrl})`,
     ];
   }
 
