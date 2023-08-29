@@ -4,7 +4,7 @@ import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
 import { PlayerStateRequestEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
-import { PlayerState } from '@service/domain/player-state/player-state';
+import { PlayerState, CurrentlyPlaying } from '@service/domain/player-state/player-state';
 import { Service } from 'typedi';
 import { Song } from '@service/lib';
 
@@ -16,15 +16,17 @@ class PlaybackCurrentCommand extends CommandProcessor {
   }
 
   async execute(command: Command): Promise<CommandProcessingResponse> {
-    const includeQueue = command.rawArgs === 'queue';
+    const includeQueue = command.rawArgs?.includes('queue') ?? false;
+    const includePreview = command.rawArgs?.includes('embed') ?? false;
 
     const playerStateRequest: PlayerStateRequestEvent = { id: 'PlayerStateRequestEvent' };
     const currentPlayerState: PlayerState = await this.playerEventStream.sendToPrimaryPlayer(playerStateRequest);
 
     const text = this.buildMessage(
-      currentPlayerState.currentlyPlaying?.song ?? null,
+      currentPlayerState.currentlyPlaying ?? null,
       currentPlayerState.queue ?? [],
       includeQueue,
+      includePreview,
     );
 
     return new CommandProcessingResponseBuilder()
@@ -32,20 +34,29 @@ class PlaybackCurrentCommand extends CommandProcessor {
       .build();
   }
 
-  private buildMessage(current: (Song | null), queue: Song[], includeQueue: Boolean): string {
-    const queueSongsTitles = includeQueue ? queue.map((song) => `  - ${song.name.truncated(50, false)}`) : [];
+  private buildMessage(current: (CurrentlyPlaying | null), queue: Song[], includeQueue: Boolean, includePreview: Boolean): string {
+    const songMessage = this.getCurrentSongMessageLines(current, includePreview);
+    const queueSongsTitles = includeQueue ? queue.map((song) => `- ${song.name.truncated(50, false)}`) : [];
     const queueTitle = !queueSongsTitles.isEmpty() ? 'W kolejce:' : 'Playlista jest pusta';
-    const currentSongName = current?.name ?? '';
-    const currentYoutubeId = current?.youtubeId ?? '';
 
     const text = [
-      currentSongName ? 'Obecnie gramy:' : 'Obecnie nic nie gramy.',
-      currentSongName ? `  ${currentSongName}` : '',
-      currentYoutubeId ? `  https://www.youtube.com/watch?v=${currentYoutubeId}` : '',
+      ...songMessage,
       includeQueue ? queueTitle : '',
       ...queueSongsTitles,
     ].filter(Boolean).join('\n');
     return text;
+  }
+
+  private getCurrentSongMessageLines(current: (CurrentlyPlaying | null), includePreview: Boolean): string[] {
+    if (!current) { return ['Obecnie nic nie gramy.']; }
+
+    const youtubeUrl = `https://www.youtube.com/watch?v=${current.song.youtubeId}&t=${current.time.toFixed(0)}`;
+    const currentSongUrl = includePreview ? youtubeUrl : `<${youtubeUrl}>`;
+
+    return [
+      'Obecnie gramy:',
+      `  [${current.song.name}](${currentSongUrl})`,
+    ];
   }
 
   get key(): string {
@@ -57,13 +68,14 @@ class PlaybackCurrentCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Pokazuje utwór załadowany w playerze oraz opcjonalnie kolejkę';
+    return 'Pokazuje utwór załadowany w playerze oraz opcjonalnie kolejkę.';
   }
 
   get exampleUsages(): string[] {
     return [
       '',
       'queue',
+      'queue embed',
     ];
   }
 
