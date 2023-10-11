@@ -14,7 +14,7 @@ const Box = styled.div`
   padding: 16px 32px;
 `;
 
-const InputGroup = styled.div`
+const AddXSoundForm = styled.form`
   display: flex;
   flex-direction: column;
   padding: 8px;
@@ -84,16 +84,14 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
   return (
     <Container as={motion.div} initial={{ opacity: 0, scale: 0.01, rotate: -270 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 0.5 }}>
       <Box>
-        <form onSubmit={submit}>
-          <InputGroup>
-            <Header>Add new sound</Header>
-            <Input type="file" required name="soundFile" />
-            <Input type="text" required placeholder="Sound name" name="soundName" />
-            <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
-            <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
-            {message && <MessageContainer>{message}</MessageContainer>}
-          </InputGroup>
-        </form>
+        <AddXSoundForm onSubmit={submit}>
+          <Header>Add new sound</Header>
+          <Input type="file" required name="soundFile" />
+          <Input type="text" required placeholder="Sound name" name="soundName" />
+          <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
+          <SubmitButton as={motion.button} whileTap={{ scale: 0.95 }} whileHover={{ scale: 1.1 }} type="submit" disabled={isWaitingForResponse}>Submit</SubmitButton>
+          {message && <MessageContainer>{message}</MessageContainer>}
+        </AddXSoundForm>
       </Box>
     </Container>
   );
