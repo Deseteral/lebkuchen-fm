@@ -1,7 +1,6 @@
 const AudioClient = new Audio();
 
 async function queueXSound(name: string) {
-  console.log('queuing sound ', name);
   fetch('/api/commands/text', {
     method: 'POST',
     headers: {
