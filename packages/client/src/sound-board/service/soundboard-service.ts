@@ -1,4 +1,4 @@
-const audioClient = new Audio();
+const AudioClient = new Audio();
 
 async function queueXSound(name: string) {
   console.log('queuing sound ', name);
@@ -12,8 +12,8 @@ async function queueXSound(name: string) {
 }
 
 function playXSoundLocally(url: string) {
-  audioClient.src = url;
-  audioClient.play();
+  AudioClient.src = url;
+  AudioClient.play();
 }
 
 export { queueXSound, playXSoundLocally };
