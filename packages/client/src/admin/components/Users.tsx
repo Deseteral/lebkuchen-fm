@@ -10,7 +10,7 @@ const UserName = styled.code<{ online: boolean }>`
   margin-left: 8px;
 `;
 
-const AddNewUserRow = styled.div`
+const AddNewUserForm = styled.form`
   display: flex;
   flex-direction: row;
   margin-bottom: 16px;
@@ -54,27 +54,26 @@ interface UsersProps {
 }
 
 function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
-  const [addUserName, setAddUserName] = React.useState<string>('');
+  const onAddUserSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const onAddUserButtonClick = () => {
-    addNewUser(addUserName).then(() => {
+    const form = event.currentTarget;
+    const userName = (new FormData(form)).get('userName') as string;
+
+    addNewUser(userName).then(() => {
       onUserAdded();
-      setAddUserName('');
+      form.reset();
     });
   };
 
   return (
     <Section header="Users">
-      <AddNewUserRow>
-        <Input
-          value={addUserName}
-          onChange={(e) => setAddUserName(e.target.value)}
-          placeholder="Username"
-        />
-        <Button onClick={() => onAddUserButtonClick()}>
+      <AddNewUserForm onSubmit={onAddUserSubmit}>
+        <Input placeholder="Username" name="userName" required />
+        <Button type="submit">
           Add user
         </Button>
-      </AddNewUserRow>
+      </AddNewUserForm>
 
       <div>Currently logged in users count: {loggedInPlayerIds.length}</div>
       <ul>
