@@ -8,14 +8,15 @@ import { Service } from 'typedi';
 class AuthService {
   private static logger = new Logger('auth-service');
 
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService) { }
 
   async authorize(username: string, password: string, session: RequestSession): Promise<void> {
     const userExists = await this.usersService.doesUserExist(username);
-
+    console.log({ userExists });
     if (!userExists) {
       const userCount = (await this.usersService.getAllUserData()).length;
-
+      console.log(await this.usersService.getAllUserData());
+      console.log({ userCount });
       if (userCount === 0) {
         await this.usersService.addNewUser(username);
       } else {
@@ -25,6 +26,7 @@ class AuthService {
     }
 
     const user = await this.usersService.getByName(username);
+    console.log({ user });
     if (!user) throw new Error('Something went wrong');
 
     const userDidSetPassword: boolean = (!!user.secret);
@@ -50,7 +52,7 @@ class AuthService {
     return (isSessionAuthorized || isApiTokenAuthorized);
   }
 
-  async getRequestsUser(session: RequestSession, token: (string | null)): Promise<User| null> {
+  async getRequestsUser(session: RequestSession, token: (string | null)): Promise<User | null> {
     const userFromSession = await this.getUserFromSession(session);
     const userFromToken = token ? await this.usersService.getByApiToken(token) : null;
     return userFromSession || userFromToken;

@@ -39,3 +39,23 @@ body {
   background-color: #d6dee1;
   opacity: .75;
 }
+
+.sound-board-layer-button {
+  right: calc(100% - 7px);
+  top: 50%;
+  transform: translateY(-50%);
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+
+.sound-board-layer {
+  transition: width .3s ease-in-out;
+}
+
+.sound-board-layer:not(.expanded) {
+  transition: width .1s ease-in;
+}
+
+.sound-board-layer:not(.expanded):has(.sound-board-layer-button:hover) {
+  width: 10px;
+}
