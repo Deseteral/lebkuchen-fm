@@ -6,7 +6,8 @@ import { queueXSound, playXSoundLocally } from '../service/soundboard-service';
 interface SoundButtonProps {
   name: string,
   timesPlayed: number,
-  url: string
+  url: string,
+  isLocalMode: boolean
 }
 
 type refClassListReducerAction = 'add' | 'remove';
@@ -23,15 +24,16 @@ const refClassListReducer = (
   }
 };
 
-function getBgColor(timesPlayed: number = 0) {
-  if (timesPlayed > 200) return 'bg-blue-900 hover:bg-blue-900 text-white';
-  if (timesPlayed > 100) return 'bg-blue-700 hover:bg-blue-800 text-white';
-  if (timesPlayed > 50) return 'bg-blue-500 hover:bg-blue-600 text-white';
-  if (timesPlayed > 20) return 'bg-blue-300 hover:bg-blue-400 text-blue-900';
-  return 'bg-blue-100 hover:bg-blue-200 text-blue-900';
+function getBgColor(isLocalMode: boolean, timesPlayed: number = 0) {
+  const color = isLocalMode ? 'green' : 'blue';
+  if (timesPlayed > 200) return `bg-${color}-900 hover:bg-${color}-900 text-white`;
+  if (timesPlayed > 100) return `bg-${color}-700 hover:bg-${color}-800 text-white`;
+  if (timesPlayed > 50) return `bg-${color}-500 hover:bg-${color}-600 text-white`;
+  if (timesPlayed > 20) return `bg-${color}-300 hover:bg-${color}-400 text-${color}-900`;
+  return `bg-${color}-100 hover:bg-${color}-200 text-${color}-900`;
 }
 
-function SoundButton({ name, timesPlayed, url }: SoundButtonProps): JSX.Element {
+function SoundButton({ name, timesPlayed, url, isLocalMode }: SoundButtonProps): JSX.Element {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const refClassList = refClassListReducer(buttonRef);
 
@@ -66,7 +68,7 @@ function SoundButton({ name, timesPlayed, url }: SoundButtonProps): JSX.Element 
     <button
       type="button"
       ref={buttonRef}
-      className={`${getBgColor(timesPlayed)} text-bl font-bold py-2 px-4 rounded-full m-4 button`}
+      className={`${getBgColor(isLocalMode, timesPlayed)} text-bl font-bold py-2 px-4 rounded-full m-4 button`}
       onMouseDown={() => {
         refClassList('add', 'mouseDown');
         refClassList('remove', 'button');

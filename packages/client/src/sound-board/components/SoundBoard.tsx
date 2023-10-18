@@ -14,6 +14,7 @@ function SoundBoard() {
   const [sounds, setSounds] = React.useState<XSound[]>([]);
   const [filteredSounds, setFilteredSounds] = React.useState<XSound[]>([]);
   const [filterPhrase, setFilterPhrase] = React.useState<string>('');
+  const [isLocalMode, setIsLocalMode] = React.useState(false);
 
   React.useEffect(() => {
     (async function fetchSounds() {
@@ -22,6 +23,21 @@ function SoundBoard() {
       setSounds(data.sounds);
       setFilteredSounds(data.sounds);
     }());
+
+    const keyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.altKey) {
+        setIsLocalMode(true);
+      }
+    };
+    const keyUp = () => setIsLocalMode(false);
+
+    document.addEventListener('keydown', keyDown);
+    document.addEventListener('keyup', keyUp);
+
+    return () => {
+      document.removeEventListener('keydown', keyDown);
+      document.addEventListener('keyup', keyUp);
+    };
   }, []);
 
   const onPhraseChange = (phrase: string) => {
@@ -54,6 +70,7 @@ function SoundBoard() {
         >
           {filteredSounds.map(({ name, timesPlayed, url }) => (
             <SoundButton
+              isLocalMode={isLocalMode}
               key={name}
               name={name}
               url={url}
