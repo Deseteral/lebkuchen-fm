@@ -46,12 +46,12 @@ function SoundBoard() {
         <div
           className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8"
         >
-          {filteredSounds.map(({ name, timesPlayed }) => (
+          {filteredSounds.map(({ name, timesPlayed, url }) => (
             <SoundButton
               key={name}
               name={name}
+              url={url}
               timesPlayed={timesPlayed}
-              onClick={() => queueXSound(name)}
             />
           ))}
         </div>

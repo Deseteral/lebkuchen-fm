@@ -1,5 +1,6 @@
+const audioClient = new Audio();
+
 async function queueXSound(name: string) {
-  console.log('queuing sound ', name);
   fetch('/api/commands/text', {
     method: 'POST',
     headers: {
@@ -9,6 +10,9 @@ async function queueXSound(name: string) {
   });
 }
 
-export {
-  queueXSound,
-};
+function playXSoundLocally(url: string) {
+  audioClient.src = url;
+  audioClient.play();
+}
+
+export { queueXSound, playXSoundLocally };
