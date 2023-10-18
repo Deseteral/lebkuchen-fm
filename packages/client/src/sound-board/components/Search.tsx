@@ -6,14 +6,14 @@ import { getPlatform } from '../../services/get-platform';
 interface SearchProps {
   value: string,
   onPhraseChange: (phrase: string) => void,
-  onSubmit: () => void,
+  onSubmit: (event: React.KeyboardEvent) => void,
   onEscape: () => void,
 }
 
 function Search({ value, onPhraseChange, onSubmit, onEscape }: SearchProps) {
   const [searchRef, setSearchFocus] = useFocus<HTMLInputElement>();
-  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.key === 'Enter') onSubmit();
+  const onKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') onSubmit(event);
     if (event.key === 'Escape') onEscape();
   };
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { XSound } from 'lebkuchen-fm-service';
-import { queueXSound } from '../service/soundboard-service';
+import { playXSoundLocally, queueXSound } from '../service/soundboard-service';
 import { SoundButton } from './SoundButton';
 import { Search } from './Search';
 
@@ -29,9 +29,15 @@ function SoundBoard() {
     setFilteredSounds(sounds.filter((sound: XSound) => soundMatchesPhrase(sound, phrase)));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (event: React.KeyboardEvent) => {
     const selectedSound = filteredSounds[0];
-    if (selectedSound) queueXSound(selectedSound.name);
+    if (selectedSound) {
+      if (event.metaKey || event.altKey) {
+        playXSoundLocally(selectedSound.url);
+      } else {
+        queueXSound(selectedSound.name);
+      }
+    }
   };
 
   return (
