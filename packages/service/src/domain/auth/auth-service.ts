@@ -12,11 +12,8 @@ class AuthService {
 
   async authorize(username: string, password: string, session: RequestSession): Promise<void> {
     const userExists = await this.usersService.doesUserExist(username);
-    console.log({ userExists });
     if (!userExists) {
       const userCount = (await this.usersService.getAllUserData()).length;
-      console.log(await this.usersService.getAllUserData());
-      console.log({ userCount });
       if (userCount === 0) {
         await this.usersService.addNewUser(username);
       } else {
@@ -26,7 +23,6 @@ class AuthService {
     }
 
     const user = await this.usersService.getByName(username);
-    console.log({ user });
     if (!user) throw new Error('Something went wrong');
 
     const userDidSetPassword: boolean = (!!user.secret);
