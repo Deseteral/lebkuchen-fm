@@ -6,6 +6,7 @@ import * as SpeechService from '../services/speech-service';
 import { NowPlaying } from './NowPlaying/NowPlaying';
 import * as PlayerStateService from '../services/player-state-service';
 import { SongsQueue } from './SongsQueue/SongsQueue';
+import { SoundBoardWidget } from './SoundBoardWidget';
 
 function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
@@ -32,6 +33,7 @@ function FmPlayer() {
     <div className="relative">
       {playerState && (<NowPlaying playerState={playerState} />)}
       {playerState && (<SongsQueue playerState={playerState} />)}
+      <SoundBoardWidget />
       <YouTubePlayer />
     </div>
   );
