@@ -1,15 +1,12 @@
 import * as React from 'react';
+import clsx from 'clsx';
 import { SoundIcon } from '../icons/SoundIcon';
 import { SoundBoard } from '../../sound-board/components/SoundBoard';
 
 function SoundBoardWidget() {
-  const soundBoardLayer = React.useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
 
-  const toggleSoundBoardView = () => {
-    if (soundBoardLayer.current) {
-      soundBoardLayer.current.classList.toggle('expanded');
-    }
-  };
+  const toggleSoundBoardView = () => setIsExpanded((previousValue) => !previousValue);
 
   React.useEffect(() => {
     document.addEventListener('keydown', (event) => {
@@ -20,7 +17,9 @@ function SoundBoardWidget() {
   }, []);
 
   return (
-    <div ref={soundBoardLayer} className="sound-board-layer">
+    <div
+      className={clsx('sound-board-layer', isExpanded && 'expanded')}
+    >
       <button onClick={toggleSoundBoardView} type="button" className="sound-board-layer-button">
         <SoundIcon />
       </button>
