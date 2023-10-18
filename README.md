@@ -199,6 +199,27 @@ Returns list of all XSounds in the database.
       "_id": "storage_id",
       "name": "example sound",
       "url": "https://example.com/example_sound.wav",
+      "tags": ["tag1", "tag2"],
+      "timesPlayed": 6
+    }
+  ]
+}
+```
+
+---
+
+`GET /api/x-sounds?tag=example-tag` \
+Returns a filtered list of XSounds containing given tag in the database.
+
+**Response**
+```json
+{
+  "sounds": [
+    {
+      "_id": "storage_id",
+      "name": "example sound",
+      "url": "https://example.com/example_sound.wav",
+      "tags": ["example-tag"],
       "timesPlayed": 6
     }
   ]
@@ -208,7 +229,7 @@ Returns list of all XSounds in the database.
 ---
 
 `POST /api/x-sounds` \
-Adds new sound file to X Sounds database.
+Adds new sound file to XSounds database.
 
 **Request** \
 Requires content type to be `multipart/form-data` with fields:
@@ -225,6 +246,23 @@ Requires content type to be `multipart/form-data` with fields:
   "timesPlayed": 0
 }
 ```
+
+---
+
+`GET /api/x-sounds/tags` \
+Returns list of all unique XSounds tags in database.
+
+**Response**
+```json
+{
+  "tags": [
+    "example tag",
+    "another tag"
+  ]
+}
+```
+
+---
 
 ### Client (`/packages/client`)
 Web client for the application. Communicates with the service via WebSocket event stream.
