@@ -11,8 +11,8 @@ async function queueXSound(name: string) {
 }
 
 function playXSoundLocally(url: string) {
-  AudioClient.src = url;
-  AudioClient.play();
+  audioClient.src = url;
+  audioClient.play();
 }
 
 export { queueXSound, playXSoundLocally };
