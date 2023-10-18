@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import './SoundButton.css';
+import { queueXSound, playXSoundLocally } from '../service/soundboard-service';
 
 interface SoundButtonProps {
   name: string,
   timesPlayed: number,
-  onClick: () => void,
+  url: string
 }
 
 type refClassListReducerAction = 'add' | 'remove';
@@ -30,7 +31,7 @@ function getBgColor(timesPlayed: number = 0) {
   return 'bg-blue-100 hover:bg-blue-200 text-blue-900';
 }
 
-function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps): JSX.Element {
+function SoundButton({ name, timesPlayed, url }: SoundButtonProps): JSX.Element {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const refClassList = refClassListReducer(buttonRef);
 
@@ -53,6 +54,14 @@ function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps): JSX.Elem
     }
   }, []);
 
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (event.metaKey || event.altKey) {
+      playXSoundLocally(url);
+    } else {
+      queueXSound(name);
+    }
+  };
+
   return (
     <button
       type="button"
@@ -72,7 +81,7 @@ function SoundButton({ name, timesPlayed, onClick }: SoundButtonProps): JSX.Elem
         refClassList('remove', 'mouseDown');
       }}
       onBlur={() => {}}
-      onClick={onClick}
+      onClick={handleClick}
     >
       {name}
     </button>
