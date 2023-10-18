@@ -1,4 +1,4 @@
-@-webkit-keyframes bounce {
+@-webkit-keyframes bounceButton {
   0% {
     transform: scale(1,1) translate(0px, 0px);
   }
@@ -63,14 +63,53 @@
   animation: wiggle 0.5s infinite;
 }
 
-.bounce:hover {
-  -webkit-animation: bounce 0.50s infinite;
+.bounceButton {
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.carDrive {
+  position: relative;
+  -webkit-animation: linear infinite;
+  -webkit-animation-name: run;
+  -webkit-animation-duration: 1s;
+}
+
+@-webkit-keyframes run {
+  0% {
+    right: -100%;
+  }
+  50% { 
+    left: 100%; 
+   }
+  100% {
+    left: -100%;     
+  }
+}
+
+.bounceButton:hover {
+  -webkit-animation: bounceButton 0.50s infinite;
 }
 
 .menu {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
   position: relative;
   margin-top: 15%;
   background-color: rgba(0,0,0,0.7);
   border-radius: 20px;
+  padding: 32px;
+}
+
+.container {
   display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
 }
