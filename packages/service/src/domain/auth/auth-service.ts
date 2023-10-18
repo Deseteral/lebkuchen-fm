@@ -12,8 +12,10 @@ class AuthService {
 
   async authorize(username: string, password: string, session: RequestSession): Promise<void> {
     const userExists = await this.usersService.doesUserExist(username);
+
     if (!userExists) {
       const userCount = (await this.usersService.getAllUserData()).length;
+
       if (userCount === 0) {
         await this.usersService.addNewUser(username);
       } else {
