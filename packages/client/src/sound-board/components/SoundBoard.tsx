@@ -41,7 +41,7 @@ function SoundBoard() {
   };
 
   return (
-    <div>
+    <div className="max-h-screen overflow-y-auto">
       <Search
         value={filterPhrase}
         onPhraseChange={onPhraseChange}
