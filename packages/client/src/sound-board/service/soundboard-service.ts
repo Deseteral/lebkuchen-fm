@@ -1,4 +1,4 @@
-const AudioClient = new Audio();
+const audioClient = new Audio();
 
 async function queueXSound(name: string) {
   fetch('/api/commands/text', {
