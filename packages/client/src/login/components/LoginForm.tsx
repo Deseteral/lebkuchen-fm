@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { userLogin } from '../../services/user-account-service';
 import rockStop from '../../assets/rock-stop.png';
 
-interface LoginFormProps {}
+interface LoginFormProps { }
 
 const Container = styled.div`
   background-image: url(${rockStop});

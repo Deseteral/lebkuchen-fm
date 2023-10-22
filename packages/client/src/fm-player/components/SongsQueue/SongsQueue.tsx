@@ -13,7 +13,7 @@ function SongsQueue({ playerState }: SongsQueueProps) {
   const [isExpanded, setIsExpanded] = useState<boolean>(true);
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
-  if (!playerState.queue.length) {
+  if (!playerState || !playerState.queue.length) {
     return null;
   }
 
@@ -30,15 +30,15 @@ function SongsQueue({ playerState }: SongsQueueProps) {
   }
 
   return (
-    <div className="absolute right-2 top-16 max-w-md w-1/4 bg-gray-900 opacity-75 rounded-lg outline-none">
-      <div className="sticky top-0 bg-gray-900 leading-none text-white flex rounded-lg items-center justify-between w-full p-4">
-        <button type="button" className="absolute hover:opacity-75 -right-2 -top-2 z-10" onClick={toggleVisibility}>
+    <div className="absolute left-3 top-16 max-w-md w-1/4 bg-green-400/90 rounded-lg outline-none">
+      <div className="sticky top-0 leading-none text-black flex rounded-lg items-center justify-between w-full p-4">
+        <button type="button" className="absolute hover:opacity-75 -right-4 -top-4 z-10" onClick={toggleVisibility}>
           <CloseIconSolid />
         </button>
-        <button className="hover:text-gray-300" type="button" onClick={toggleExpandedView}>
+        <button className="hover:text-gray-700" type="button" onClick={toggleExpandedView}>
           Queue
         </button>
-        <button className="hover:text-gray-300" type="button" onClick={toggleExpandedView}>
+        <button className="hover:text-gray-700" type="button" onClick={toggleExpandedView}>
           <ExpandIcon isRotated={isExpanded} />
         </button>
       </div>
