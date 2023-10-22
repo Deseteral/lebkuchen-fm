@@ -36,7 +36,7 @@ function SongsQueue({ playerState }: SongsQueueProps) {
           <CloseIconSolid />
         </button>
         <button className="hover:text-gray-700" type="button" onClick={toggleExpandedView}>
-          Queue
+          Kolejka
         </button>
         <button className="hover:text-gray-700" type="button" onClick={toggleExpandedView}>
           <ExpandIcon isRotated={isExpanded} />
