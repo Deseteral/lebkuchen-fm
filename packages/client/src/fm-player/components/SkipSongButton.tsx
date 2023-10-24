@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { ForwardIcon } from '../icons/ForwardIcon';
-import { runSkipCommand } from '../services/player-commands';
+import { skipSong } from '../services/player-commands';
 
 function SkipSongButton() {
   const handleClick = () => {
-    runSkipCommand();
+    skipSong();
   };
 
   return (

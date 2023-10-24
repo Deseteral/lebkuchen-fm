@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { DiceIcon } from '../icons/DiceIcon';
-import { runRandomCommand } from '../services/player-commands';
+import { playRandomSongFromHistory } from '../services/player-commands';
 
 function RandomSongButton() {
   const handleClick = () => {
-    runRandomCommand();
+    playRandomSongFromHistory();
   };
 
   return (

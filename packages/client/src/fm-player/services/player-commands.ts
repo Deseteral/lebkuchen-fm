@@ -8,25 +8,25 @@ function runCommand(command: string) {
   });
 }
 
-function runSkipCommand() {
+function skipSong() {
   runCommand('/fm skip 1');
 }
 
-function runRandomCommand(phrase?: string) {
+function playRandomSongFromHistory(phrase?: string) {
   runCommand(`/fm random ${phrase || ''}`);
 }
 
-function runSearchByPhraseCommand(phrase: string) {
+function playSongByPhrase(phrase: string) {
   runCommand(`/fm s ${phrase}`);
 }
 
-function runSearchByYoutubeIdCommand(youtubeId: string) {
+function playSongByYoutubeIdCommand(youtubeId: string) {
   runCommand(`/fm q ${youtubeId}`);
 }
 
 export {
-  runSkipCommand,
-  runRandomCommand,
-  runSearchByPhraseCommand,
-  runSearchByYoutubeIdCommand,
+  skipSong,
+  playRandomSongFromHistory,
+  playSongByPhrase,
+  playSongByYoutubeIdCommand,
 };

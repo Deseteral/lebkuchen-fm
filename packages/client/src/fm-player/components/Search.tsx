@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SearchIcon } from '../icons/SearchIcon';
-import { runRandomCommand, runSearchByPhraseCommand, runSearchByYoutubeIdCommand } from '../services/player-commands';
+import { playRandomSongFromHistory, playSongByPhrase, playSongByYoutubeIdCommand } from '../services/player-commands';
 
 function Search() {
   const [isFormExpanded, setIsFormExpanded] = React.useState<boolean>(false);
@@ -12,11 +12,11 @@ function Search() {
     event.preventDefault();
 
     if (searchPhrase.startsWith('/q')) {
-      runSearchByYoutubeIdCommand(searchPhrase.replace('/q', '').trim());
+      playSongByYoutubeIdCommand(searchPhrase.replace('/q', '').trim());
     } else if (searchPhrase.startsWith('/r')) {
-      runRandomCommand(searchPhrase.replace('/r', '').trim());
+      playRandomSongFromHistory(searchPhrase.replace('/r', '').trim());
     } else {
-      runSearchByPhraseCommand(searchPhrase);
+      playSongByPhrase(searchPhrase);
     }
 
     setSearchPhrase('');

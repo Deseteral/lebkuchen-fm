@@ -29,20 +29,18 @@ function NowPlaying({ playerState, onClose }: NowPlayingProps) {
           <div className="flex flex-col ml-3">
             <div className="font-medium text-xl leading-none text-gray-100"> {currentSongTitle}</div>
             {nextSongTitle.length > 0 && (
-              <p className="text-gray-400 text-lg leading-none mt-2"><span className="font-bold italic">Next:</span> {nextSongTitle}</p>
+              <p className="text-gray-400 text-lg leading-none mt-2"><span className="font-bold italic">Następnie:</span> {nextSongTitle}</p>
             )}
           </div>
         </div>
       </div>
-      <div
+      <button
         className="absolute right-1 top-1"
-        role="button"
+        type="button"
         onClick={onClose}
-        tabIndex={0}
-        aria-hidden="true"
       >
         <CloseIcon />
-      </div>
+      </button>
     </div>
   );
 }
