@@ -7,16 +7,14 @@ interface SongsQueueIconProps {
 
 function SongsQueueIcon({ onClick }: SongsQueueIconProps) {
   return (
-    <div
-      className="absolute right-2 top-16 bg-green-400 hover:bg-green-600 p-3 rounded-full text-black font-bold"
-      role="button"
+    <button
+      className="absolute left-3 top-16 p-2 bg-green-400 text-2xl hover:bg-green-600 rounded-full text-black font-bold"
+      type="button"
       onClick={onClick}
-      tabIndex={0}
-      aria-hidden="true"
-      title="Songs Queue"
+      title="Kolejka"
     >
       <CollectionIcon />
-    </div>
+    </button>
   );
 }
 

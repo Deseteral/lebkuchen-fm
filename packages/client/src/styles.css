@@ -45,7 +45,7 @@ body {
   top: 0;
   bottom: 0;
   right: 0;
-  width: 95%;
+  width: calc(100% - 100px);
   background-color: rgba(52, 211, 153, 1);
   transform: translateX(100%);
   transition:
