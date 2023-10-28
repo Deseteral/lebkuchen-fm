@@ -97,7 +97,8 @@ async function main(): Promise<void> {
   const ioSessionMiddleware = expressMiddlewareToSocketIoMiddleware(sessionMiddleware);
   const ioAuthorizationChecker = async (socket: SocketIO.Socket, next: Function): Promise<void | Error> => {
     const requestSession: RequestSession = extractSessionFromIncomingMessage(socket.request);
-    const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession);
+    const token = (socket.handshake.auth.token || null) as (string | null);
+    const isSessionAuthorized: boolean = await Container.get(AuthService).isWebSocketAuthorized(requestSession, token);
     if (isSessionAuthorized) {
       next();
     } else {
