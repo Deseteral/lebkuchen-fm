@@ -56,8 +56,8 @@ class AuthService {
     return userFromSession || userFromToken;
   }
 
-  async isWebSocketAuthorized(session: RequestSession): Promise<boolean> {
-    return this.isSessionAuthorized(session);
+  async isWebSocketAuthorized(session: RequestSession, token: (string | null)): Promise<boolean> {
+    return this.isRequestAuthorized(session, token);
   }
 
   private async getUserFromSession(session: RequestSession): Promise<User | null> {
