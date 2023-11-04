@@ -3,7 +3,7 @@
 # https://docs.docker.com/compose/compose-file/
 
 services:
-  server:
+  lebkuchen-fm:
     build:
       context: .
     environment:
