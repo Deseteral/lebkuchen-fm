@@ -10,9 +10,6 @@ ARG NODE_VERSION=18
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
 
-RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
-RUN npm install -g node-gyp
-
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
