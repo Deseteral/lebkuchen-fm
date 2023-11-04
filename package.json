@@ -10,19 +10,12 @@
   ],
   "scripts": {
     "start": "node packages/service/build/main.js",
-    "start:client": "yarn nx dev lebkuchen-fm-client",
-    "build": "yarn run clean && nx build lebkuchen-fm-service && nx build lebkuchen-fm-client && yarn run build:static",
+    "start:client": "yarn workspace lebkuchen-fm-client dev",
+    "build": "yarn run clean && yarn workspace lebkuchen-fm-service build && yarn workspace lebkuchen-fm-client build && yarn run build:static",
     "build:static": "mkdir -p packages/service/build/public && cp -r packages/**/dist/* packages/service/build/public/",
-    "test": "nx test lebkuchen-fm-service && nx test lebkuchen-fm-client",
-    "clean": "nx run-many --target=clean all",
+    "test": "yarn workspace lebkuchen-fm-service test && yarn workspace lebkuchen-fm-client test",
+    "clean": "yarn workspace lebkuchen-fm-service clean && yarn workspace lebkuchen-fm-client clean",
     "clean:deps": "rm -rf ./node_modules ./packages/**/node_modules",
     "fm": "./scripts/fm.sh"
-  },
-  "devDependencies": {
-    "@nrwl/cli": "14.8.5",
-    "@nrwl/js": "14.8.5",
-    "@nrwl/nx-cloud": "14.7.0",
-    "@nrwl/workspace": "14.8.5",
-    "nx": "14.8.5"
   }
 }
