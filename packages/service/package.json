@@ -1,5 +1,5 @@
 {
-  "name": "lebkuchen-fm-service",
+  "name": "service",
   "version": "2.0.0",
   "description": "LebkuchenFM backend service",
   "main": "src/lib.ts",
