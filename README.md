@@ -34,18 +34,11 @@ yarn start
 
 If you want to create local frontend dev server with hot reloading you should use "dev" script from `packages/client`:
 ```sh
-yarn nx dev lebkuchen-fm-client
+yarn workspace lebkuchen-fm-client dev
 ```
 
-If you want to run script from one of the packages in root directory:
-```sh
-yarn nx [script-name] [package-name-from-package-json]
-```
-
-This project is separated into backend service (`packages/service`) and web client application (`packages/client`).
-For development information specific to modules refer to their _Development_ sections in this document.
-
-It's recommended that you use [VS Code](https://code.visualstudio.com) with [ESLint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) for development.
+This project is separated into backend service (`lebkuchen-fm-service` located in `packages/service`) and web client application (`lebkuchen-fm-client` located in `packages/client`).
+For development information specific to modules refer to their _Development_ sections in this document. For more information about managing modules check out [yarn workspace docs](https://classic.yarnpkg.com/lang/en/docs/workspaces/).
 
 ### Type checking
 Modules using TypeScript will compile even when there are type checking errors in the code. This allows for fast development iteration. Type checking is done during `test` script. For development it's recommended that you use type checker in watch mode:
