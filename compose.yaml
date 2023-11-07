@@ -8,5 +8,21 @@ services:
       context: .
     environment:
       NODE_ENV: production
+      MONGODB_URI: mongodb://mongo:27017
     ports:
       - 9000:9000
+    networks:
+      - lebkuchen-network
+    depends_on:
+     - mongo
+  mongo:
+    container_name: lebkuchen-fm-db-local
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    networks:
+      - lebkuchen-network
+
+networks:
+  lebkuchen-network:
+    driver: bridge

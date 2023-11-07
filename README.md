@@ -301,5 +301,12 @@ Alternatively you can run it as an yarn command from the root of the project:
 Helper script `scripts/docker_db_local.sh` runs MongoDB and binds ports for local development.\
 To stop container run `scripts/docker_db_local.sh stop`.
 
+#### Docker Compose
+You can also run this app via Docker Compose. It has MongoDB already configured. Just pass other necessary config variables.
+```sh
+docker compose up --build
+```
+
+
 ## License
 This project is licensed under the [MIT license](LICENSE).
