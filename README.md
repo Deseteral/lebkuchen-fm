@@ -21,6 +21,11 @@ You can run tests using:
 yarn test
 ```
 
+To clean up after previous builds before installing dependencies use:
+```sh
+yarn run clean:deps
+```
+
 To run the application you have to connect to MongoDB database.
 
 If you have Docker installed you can use `./scripts/docker_db_local.sh` script to run MongoDB in Docker locally. For more information you can refer to [Local MongoDB in Docker](#Local-MongoDB-in-Docker) documentation section.

@@ -57,6 +57,11 @@ export interface RewindEvent {
   modifier: number | null,
 }
 
+export interface ConnectedUsersEvent {
+  id: 'ConnectedUsersEvent',
+  connectedUsers: string[],
+}
+
 export type EventData =
   | PlayerStateUpdateEvent
   | PlayerStateRequestEvent
@@ -68,4 +73,5 @@ export type EventData =
   | ChangeSpeedEvent
   | ChangeVolumeEvent
   | ReplaceQueueEvent
-  | RewindEvent;
+  | RewindEvent
+  | ConnectedUsersEvent;
