@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import { EventData } from 'lebkuchen-fm-service';
+import * as ConnectedUsersService from './connected-users-service';
 import * as PlayerStateService from './player-state-service';
 import * as SoundPlayerService from './sound-player-service';
 import * as SpeechService from './speech-service';
@@ -13,6 +14,10 @@ function connect(): (() => void) {
     console.log('Received event from event stream', eventData);
 
     switch (eventData.id) {
+      case 'ConnectedUsersEvent':
+        ConnectedUsersService.setUsers(eventData.connectedUsers);
+        break;
+
       case 'PlayerStateUpdateEvent':
         PlayerStateService.setState(eventData.state);
         break;
