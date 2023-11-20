@@ -5,7 +5,7 @@ const emitter: Emitter = mitt();
 let connectedUsers: string[] = [];
 
 function getUsers(): string[] {
-  return connectedUsers;
+  return [...connectedUsers];
 }
 
 function setUsers(users: string[]): void {
