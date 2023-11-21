@@ -1,7 +1,7 @@
 import SocketIO from 'socket.io';
 import { Inject, Service } from 'typedi';
 import mitt, { Emitter } from 'mitt';
-import { PlayerStateUpdateEvent, PlayerStateRequestEvent, EventData } from '@service/event-stream/model/events';
+import { PlayerStateUpdateEvent, PlayerStateRequestEvent, EventData, ConnectedUsersEvent } from '@service/event-stream/model/events';
 import { Logger } from '@service/infrastructure/logger';
 import { PlayerState, makeDefaultPlayerState } from '@service/domain/player-state/player-state';
 import { extractSessionFromIncomingMessage } from '@service/utils/utils';
@@ -15,6 +15,7 @@ class PlayerEventStream {
   constructor(@Inject('io-player-namespace') private playerNamespace: SocketIO.Namespace) {
     this.emitter = mitt();
     this.playerNamespace.on('connection', (socket) => this.playerConnected(socket));
+    this.emitter.on('playerConnectionChange', () => this.sendConnectedUsers());
   }
 
   public sendToEveryone(event: EventData): void {
@@ -91,6 +92,15 @@ class PlayerEventStream {
       };
       receiver.send(updateEventData);
     });
+  }
+
+  private sendConnectedUsers(): void {
+    const connectedUsers = this.getConnectedUsernames();
+    const eventData: ConnectedUsersEvent = {
+      id: 'ConnectedUsersEvent',
+      connectedUsers,
+    };
+    this.sendToEveryone(eventData);
   }
 }
 

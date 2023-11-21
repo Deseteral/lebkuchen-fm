@@ -11,6 +11,7 @@ import { RandomSongButton } from './RandomSongButton';
 import { SkipSongButton } from './SkipSongButton';
 import { ShowNowPlayingButton } from './NowPlaying/ShowNowPlayingButton';
 import { Search } from './Search';
+import { UsersButton } from './UsersButton';
 
 function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
@@ -42,6 +43,7 @@ function FmPlayer() {
         <RandomSongButton />
         {playerState && !showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
         <SkipSongButton />
+        <UsersButton />
       </div>
       <SoundBoardWidget />
       <YouTubePlayer />
