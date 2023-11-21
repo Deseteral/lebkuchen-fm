@@ -4,7 +4,7 @@ const emitter: Emitter = mitt();
 
 let connectedUsers: string[] = [];
 
-function getUsers(): string[] {
+function getUsers(): readonly string[] {
   return [...connectedUsers] as const;
 }
 

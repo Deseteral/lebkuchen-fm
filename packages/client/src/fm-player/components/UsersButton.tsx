@@ -3,7 +3,7 @@ import { UsersIcon } from '../icons/UsersIcon';
 import * as ConnectedUsersService from '../services/connected-users-service';
 
 function UsersButton() {
-  const [currentUsers, setCurrentUsers] = React.useState<string[]>([]);
+  const [currentUsers, setCurrentUsers] = React.useState<readonly string[]>([]);
 
   React.useEffect(() => {
     setCurrentUsers(ConnectedUsersService.getUsers());
