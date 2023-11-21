@@ -10,7 +10,7 @@ function getUsers(): string[] {
 
 function setUsers(users: string[]): void {
   connectedUsers = users;
-  emitter.emit('change', connectedUsers);
+  emitter.emit('change', getUsers());
 }
 
 function onUsersChange(callback: Handler<string[]>) {
