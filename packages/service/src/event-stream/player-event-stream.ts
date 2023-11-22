@@ -1,7 +1,12 @@
 import SocketIO from 'socket.io';
 import { Inject, Service } from 'typedi';
 import mitt, { Emitter } from 'mitt';
-import { PlayerStateUpdateEvent, PlayerStateRequestEvent, EventData, ConnectedUsersEvent } from '@service/event-stream/model/events';
+import {
+  PlayerStateUpdateEvent,
+  PlayerStateRequestEvent,
+  EventData,
+  ConnectedUsersEvent,
+} from '@service/event-stream/model/events';
 import { Logger } from '@service/infrastructure/logger';
 import { PlayerState, makeDefaultPlayerState } from '@service/domain/player-state/player-state';
 import { extractSessionFromIncomingMessage } from '@service/utils/utils';
@@ -33,13 +38,15 @@ class PlayerEventStream {
   }
 
   public getConnectedUsernames(): string[] {
-    return Array.from(this.playerNamespace.sockets, ([_key, value]) => value)
+    const socketToUsername = Array.from(this.playerNamespace.sockets, ([_key, value]) => value)
       .map((socket) => extractSessionFromIncomingMessage(socket.request))
       .map((session) => (session.loggedUser?.name || 'unexpected error'));
+
+    return Array.from(new Set(socketToUsername));
   }
 
-  public getConnectedPlayerCount(): number {
-    return this.getConnectedUsernames().length;
+  public getConnectedPlayerSocketsCount(): number {
+    return this.playerNamespace.sockets.size;
   }
 
   public onPlayerConnection(callback: () => void): void {
@@ -64,7 +71,7 @@ class PlayerEventStream {
   }
 
   private sendPlayerState(connectedPlayerSocket: SocketIO.Socket): void {
-    const connectedSocketCount = this.getConnectedPlayerCount();
+    const connectedSocketCount = this.getConnectedPlayerSocketsCount();
 
     if (connectedSocketCount <= 1) {
       this.sendDefaultPlayerState(connectedPlayerSocket);
