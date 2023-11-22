@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { UsersIcon } from '../icons/UsersIcon';
 import * as ConnectedUsersService from '../services/connected-users-service';
-import { CloseIconSolid } from '../icons/CloseIconSolid';
 
 function UsersButton() {
   const [currentUsers, setCurrentUsers] = React.useState<readonly string[]>([]);
