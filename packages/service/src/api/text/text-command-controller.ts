@@ -18,7 +18,7 @@ class TextCommandController {
   @Post('/')
   async processTextCommand(@Body() body: TextCommandRequestDto, @CurrentUser() user: User): Promise<TextCommandResponseDto> {
     const { text } = body;
-    TextCommandController.logger.info(`Received ${text} command`);
+    TextCommandController.logger.info(`Received ${text} command from ${user.data.name}`);
 
     const context: ExecutionContext = {
       discordId: null,
