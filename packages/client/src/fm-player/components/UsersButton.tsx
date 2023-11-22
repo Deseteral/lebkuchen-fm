@@ -19,23 +19,26 @@ function UsersButton() {
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="bg-green-400 rounded-xl p-2 hover:bg-green-600 text-xl font-bold"
-    >
-      <div>
-        <UsersIcon />
-        <span>{currentUsers.length}</span>
-      </div>
-      {isExtended && (
-        <ul className="text-base font-normal">
+    <div className="relative">
+      <button
+        type="button"
+        onClick={handleClick}
+        className="absolute bg-green-400 rounded-xl p-3 hover:bg-green-600 text-2xl font-bold leading-none"
+      >
+        <div className="flex">
+          <UsersIcon />
+          <span className="pl-1">{currentUsers.length}</span>
+        </div>
+        {isExtended && (
+        <ul className="text-base font-normal leading-normal pt-1">
           {currentUsers.map((user) => (
-            <li>{user}</li>
+            <li className="whitespace-nowrap">{user}</li>
           ))}
         </ul>
-      )}
-    </button>
+        )}
+      </button>
+    </div>
+
   );
 }
 export { UsersButton };
