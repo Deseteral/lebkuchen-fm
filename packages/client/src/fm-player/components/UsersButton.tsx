@@ -31,8 +31,7 @@ function UsersButton() {
         {isExtended && (
         <ul className="text-base font-normal leading-normal pt-1">
           {currentUsers.map((user, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <li className="whitespace-nowrap" key={index}>{user}</li>
+            <li className="whitespace-nowrap" key={user}>{user}</li>
           ))}
         </ul>
         )}
