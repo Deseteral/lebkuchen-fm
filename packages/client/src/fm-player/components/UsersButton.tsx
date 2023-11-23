@@ -30,7 +30,7 @@ function UsersButton() {
         </div>
         {isExtended && (
         <ul className="text-base font-normal leading-normal pt-1">
-          {currentUsers.map((user, index) => (
+          {currentUsers.map((user) => (
             <li className="whitespace-nowrap" key={user}>{user}</li>
           ))}
         </ul>
