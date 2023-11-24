@@ -12,6 +12,7 @@ import { SkipSongButton } from './SkipSongButton';
 import { ShowNowPlayingButton } from './NowPlaying/ShowNowPlayingButton';
 import { Search } from './Search';
 import { UsersButton } from './UsersButton';
+import { Activity } from './Activity/Activity';
 
 function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
@@ -37,6 +38,7 @@ function FmPlayer() {
 
   return (
     <div className="relative">
+      <Activity />
       <SongsQueue playerState={playerState} />
       <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col items-start gap-4 overflow-x-visible">
         <Search />
