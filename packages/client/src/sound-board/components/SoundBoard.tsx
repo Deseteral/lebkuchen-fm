@@ -19,7 +19,7 @@ function soundsSorting(phrase: string) {
       return isGoodMatchA ? -1 : 1;
     }
 
-    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || b.timesPlayed - a.timesPlayed;
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || (b.timesPlayed - a.timesPlayed);
   };
 }
 
