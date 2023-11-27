@@ -10,6 +10,19 @@ function soundMatchesPhrase(sound: XSound, phrase: string) {
   return phrase.toLowerCase().split(' ').every((keyword) => tagsAndNameJoinedString.includes(keyword));
 }
 
+function soundsSorting(phrase: string) {
+  return function compare(a: XSound, b: XSound) {
+    const isGoodMatchA = a.name.startsWith(phrase);
+    const isGoodMatchB = b.name.startsWith(phrase);
+
+    if (isGoodMatchA !== isGoodMatchB) {
+      return isGoodMatchA ? -1 : 1;
+    }
+
+    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || (b.timesPlayed - a.timesPlayed);
+  };
+}
+
 function SoundBoard() {
   const [sounds, setSounds] = React.useState<XSound[]>([]);
   const [filteredSounds, setFilteredSounds] = React.useState<XSound[]>([]);
@@ -26,7 +39,7 @@ function SoundBoard() {
 
   const onPhraseChange = (phrase: string) => {
     setFilterPhrase(phrase);
-    setFilteredSounds(sounds.filter((sound: XSound) => soundMatchesPhrase(sound, phrase)));
+    setFilteredSounds(sounds.filter((sound: XSound) => soundMatchesPhrase(sound, phrase)).sort(soundsSorting(phrase)));
   };
 
   const handleSubmit = (event: React.KeyboardEvent) => {
