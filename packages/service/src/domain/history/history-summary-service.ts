@@ -15,6 +15,12 @@ class HistorySummaryService {
     private userService: UsersService,
   ) { }
 
+  async getAvailableYears(): Promise<string[]> {
+    return (await this.repository.findInDateRangeOrderByDateDesc('1970', '2100'))
+      .map((historyEntry) => historyEntry.date.getFullYear().toString())
+      .unique();
+  }
+
   async generateSummary(dateFrom: string, dateTo: string, mostPopularSongsLimit?: number): Promise<HistorySummary> {
     const history = await this.repository.findInDateRangeOrderByDateDesc(dateFrom, dateTo);
 

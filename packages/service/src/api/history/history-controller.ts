@@ -2,7 +2,7 @@ import { Service } from 'typedi';
 import { JsonController, Get, Authorized, QueryParam } from 'routing-controllers';
 import { HistoryService } from '@service/domain/history/history-service';
 import { HistoryResponseDto } from '@service/api/history/model/history-response-dto';
-import { HistorySummaryResponseDto } from '@service/api/history/model/history-summary-response-dto';
+import { HistorySummaryResponseDto, HistorySummaryYearsResponseDto } from '@service/api/history/model/history-summary-response-dto';
 import { HistorySummaryService } from '@service/domain/history/history-summary-service';
 
 @Service()
@@ -18,6 +18,12 @@ class HistoryController {
   async getHistoryEntries(): Promise<HistoryResponseDto> {
     const entries = await this.historyService.getAll();
     return { entries };
+  }
+
+  @Get('/summary/years')
+  async getHistorySummaryYears(): Promise<HistorySummaryYearsResponseDto> {
+    const years = await this.historySummaryService.getAvailableYears();
+    return { years };
   }
 
   @Get('/summary')
