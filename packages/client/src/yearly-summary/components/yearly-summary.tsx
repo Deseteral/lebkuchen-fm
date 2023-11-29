@@ -21,11 +21,11 @@ export function YearlySummary() {
     <main className="yearly-summary-container">
       <h1>Yearly summary</h1>
       {(yearOptions.length > 0 && selectedYearOption !== null) && (
-      <select value={selectedYearOption} onChange={(e) => onYearSelectionChange(e.target.value)}>
-        {yearOptions.map((yearOption) => (
-          <option value={yearOption.label} key={yearOption.label}>{yearOption.label}</option>
-        ))}
-      </select>
+        <select value={selectedYearOption} onChange={(e) => onYearSelectionChange(e.target.value)}>
+          {yearOptions.map((yearOption) => (
+            <option value={yearOption.label} key={yearOption.label}>{yearOption.label}</option>
+          ))}
+        </select>
       )}
     </main>
   );
