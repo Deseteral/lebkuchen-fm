@@ -9,6 +9,7 @@ export interface SongPopularity {
 export interface UserPopularity {
   user: UserData,
   playCount: number,
+  favoriteSong: (SongPopularity | null),
 }
 
 export interface HistorySummary {
