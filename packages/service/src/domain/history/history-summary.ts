@@ -13,5 +13,6 @@ export interface UserPopularity {
 
 export interface HistorySummary {
   mostPopularSongs: SongPopularity[],
+  totalSongPlayCount: number,
   mostActiveUsers: UserPopularity[],
 }

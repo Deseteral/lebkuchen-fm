@@ -15,6 +15,8 @@ class HistorySummaryService {
   async generateSummary(dateFrom: string, dateTo: string, mostPopularSongsLimit?: number): Promise<HistorySummary> {
     const history = await this.repository.findInDateRangeOrderByDateDesc(dateFrom, dateTo);
 
+    const totalSongPlayCount = history.length;
+
     const songIdToPlayCount: Map<string, number> = history
       .map((e) => e.youtubeId)
       .countOccurrences();
@@ -35,6 +37,7 @@ class HistorySummaryService {
 
     return {
       mostPopularSongs,
+      totalSongPlayCount,
       mostActiveUsers,
     };
   }
