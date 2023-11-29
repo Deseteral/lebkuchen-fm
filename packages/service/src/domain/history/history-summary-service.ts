@@ -2,7 +2,7 @@
 
 import { Service } from 'typedi';
 import { HistoryRepository } from '@service/domain/history/history-repository';
-import { HistorySummary, SongPopularity, UserPopularity } from '@service/domain/history/history-summary';
+import { HistorySummary, SongPopularity, UserPopularity, YearlySummary } from '@service/domain/history/history-summary';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { UsersService } from '@service/domain/users/users-service';
 import { HistoryEntry } from '@service/domain/history/history-entry';
@@ -15,10 +15,28 @@ class HistorySummaryService {
     private userService: UsersService,
   ) { }
 
-  async getAvailableYears(): Promise<string[]> {
-    return (await this.repository.findInDateRangeOrderByDateDesc('1970', '2100'))
+  async getAvailableYears(): Promise<YearlySummary[]> {
+    const availableYears = (await this.repository.findInDateRangeOrderByDateDesc('1970', '2100'))
       .map((historyEntry) => historyEntry.date.getFullYear().toString())
       .unique();
+
+    const summaryUrl = (from: string, to: string): string => {
+      const params = new URLSearchParams({ from, to, most_popular_songs_limit: '100' }).toString();
+      return `/api/history/summary?${params}`;
+    };
+
+    const years = availableYears.map((year) => ({
+      label: year,
+      url: summaryUrl(`${year}-01-01`, `${year}-12-31`),
+    }));
+
+    return [
+      ...years,
+      {
+        label: 'All time',
+        url: summaryUrl('1970-01-01', '2100-12-31'),
+      },
+    ];
   }
 
   async generateSummary(dateFrom: string, dateTo: string, mostPopularSongsLimit?: number): Promise<HistorySummary> {

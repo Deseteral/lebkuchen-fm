@@ -17,3 +17,8 @@ export interface HistorySummary {
   totalSongPlayCount: number,
   mostActiveUsers: UserPopularity[],
 }
+
+export interface YearlySummary {
+  label: string,
+  url: string,
+}
