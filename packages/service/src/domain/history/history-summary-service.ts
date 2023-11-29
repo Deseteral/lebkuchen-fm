@@ -2,7 +2,7 @@
 
 import { Service } from 'typedi';
 import { HistoryRepository } from '@service/domain/history/history-repository';
-import { HistorySummary, SongPopularity, UserPopularity, YearlySummary } from '@service/domain/history/history-summary';
+import { HistorySummary, SongPopularity, UserPopularity, YearlyHistorySummary } from '@service/domain/history/history-summary';
 import { SongsService } from '@service/domain/songs/songs-service';
 import { UsersService } from '@service/domain/users/users-service';
 import { HistoryEntry } from '@service/domain/history/history-entry';
@@ -15,7 +15,7 @@ class HistorySummaryService {
     private userService: UsersService,
   ) { }
 
-  async getAvailableYears(): Promise<YearlySummary[]> {
+  async getAvailableYears(): Promise<YearlyHistorySummary[]> {
     const availableYears = (await this.repository.findInDateRangeOrderByDateDesc('1970', '2100'))
       .map((historyEntry) => historyEntry.date.getFullYear().toString())
       .unique();

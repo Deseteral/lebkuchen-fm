@@ -18,7 +18,7 @@ export interface HistorySummary {
   mostActiveUsers: UserPopularity[],
 }
 
-export interface YearlySummary {
+export interface YearlyHistorySummary {
   label: string,
   url: string,
 }
