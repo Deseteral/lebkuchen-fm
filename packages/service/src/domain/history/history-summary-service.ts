@@ -12,7 +12,7 @@ class HistorySummaryService {
     private userService: UsersService,
   ) { }
 
-  async generateSummary(dateFrom: string, dateTo: string): Promise<HistorySummary> {
+  async generateSummary(dateFrom: string, dateTo: string, mostPopularSongsLimit?: number): Promise<HistorySummary> {
     const history = await this.repository.findInDateRangeOrderByDateDesc(dateFrom, dateTo);
 
     const songIdToPlayCount: Map<string, number> = history
@@ -25,7 +25,8 @@ class HistorySummaryService {
 
     const mostPopularSongs: SongPopularity[] = (await this.songsService.getSongsByYoutubeIds([...songIdToPlayCount.keys()]))
       .map((song) => ({ song, playCount: (songIdToPlayCount.get(song.youtubeId) || 0) }))
-      .sort((a, b) => (b.playCount - a.playCount));
+      .sort((a, b) => (b.playCount - a.playCount))
+      .slice(0, mostPopularSongsLimit);
 
     const mostActiveUsers: UserPopularity[] = (await this.userService.getByNames([...usernameToPlayCount.keys()]))
       .map((user) => user.data)
