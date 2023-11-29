@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { HttpError } from 'lebkuchen-fm-service';
 import { motion } from 'framer-motion';
+import '../xsound-upload-form.css';
 
 const Container = styled.div`
   display: grid;

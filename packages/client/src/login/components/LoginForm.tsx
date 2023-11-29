@@ -2,6 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { userLogin } from '../../services/user-account-service';
 import rockStop from '../../assets/rock-stop.png';
+import '../login.css';
 
 interface LoginFormProps { }
 

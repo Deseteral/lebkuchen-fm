@@ -3,6 +3,7 @@ import { XSound } from 'lebkuchen-fm-service';
 import { playXSoundLocally, queueXSound } from '../service/soundboard-service';
 import { SoundButton } from './SoundButton';
 import { Search } from './Search';
+import '../sound-board.css';
 
 function soundMatchesPhrase(sound: XSound, phrase: string) {
   const { name, tags = [] } = sound;

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { userLogout } from '../../services/user-account-service';
 import './SplashScreen.css';
 import { AnimatedBackground } from '../../animated-background/AnimatedBackground';
+import '../splash-screen-styles.css';
 
 function SplashScreen() {
   return (

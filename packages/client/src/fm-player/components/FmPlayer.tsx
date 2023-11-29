@@ -12,6 +12,7 @@ import { SkipSongButton } from './SkipSongButton';
 import { ShowNowPlayingButton } from './NowPlaying/ShowNowPlayingButton';
 import { Search } from './Search';
 import { UsersButton } from './UsersButton';
+import '../fm-player.css';
 
 function FmPlayer() {
   const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
