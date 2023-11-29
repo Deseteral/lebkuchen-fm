@@ -24,8 +24,9 @@ class HistoryController {
   async getHistorySummary(
     @QueryParam('from', { required: true }) from: string,
     @QueryParam('to', { required: true }) to: string,
+    @QueryParam('most_popular_songs_limit') mostPopularSongsLimit?: number,
   ): Promise<HistorySummaryResponseDto> {
-    const summary = await this.historySummaryService.generateSummary(from, to);
+    const summary = await this.historySummaryService.generateSummary(from, to, mostPopularSongsLimit);
     return { summary };
   }
 }
