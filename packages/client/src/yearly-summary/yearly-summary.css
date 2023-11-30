@@ -16,6 +16,7 @@ body {
 .yearly-summary-tables-container {
   display: flex;
   flex-direction: row;
+  gap: 8px;
 }
 
 .yearly-summary-table, .yearly-summary-th, .yearly-summary-td {

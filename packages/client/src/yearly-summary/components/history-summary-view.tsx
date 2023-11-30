@@ -33,6 +33,36 @@ export function HistorySummaryView({ historySummary }: HistorySummaryViewProps) 
             ))}
           </tbody>
         </table>
+
+        <table className="yearly-summary-table">
+          <thead>
+            <tr>
+              <th className="yearly-summary-th">Username</th>
+              <th className="yearly-summary-th">Play count</th>
+              <th className="yearly-summary-th">Favorite song</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {historySummary.mostActiveUsers.map((userPopularity) => (
+              <tr key={userPopularity.user.name}>
+                <td className="yearly-summary-td">{userPopularity.user.name}</td>
+                <td className="yearly-summary-td">{userPopularity.playCount}</td>
+
+                {!userPopularity.favoriteSong && <td>-</td>}
+                {!!userPopularity.favoriteSong && (
+                  <td className="yearly-summary-td">
+                    <a href={`https://www.youtube.com/watch?v=${userPopularity.favoriteSong?.song}`} target="_blank" rel="noreferrer">
+                      {userPopularity.favoriteSong.song.name}
+                    </a>
+                    <br />
+                    played {userPopularity.favoriteSong.playCount} times
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
