@@ -52,7 +52,7 @@ export function HistorySummaryView({ historySummary }: HistorySummaryViewProps) 
                 {!userPopularity.favoriteSong && <td>-</td>}
                 {!!userPopularity.favoriteSong && (
                   <td className="yearly-summary-td">
-                    <a href={`https://www.youtube.com/watch?v=${userPopularity.favoriteSong?.song}`} target="_blank" rel="noreferrer">
+                    <a href={`https://www.youtube.com/watch?v=${userPopularity.favoriteSong?.song.youtubeId}`} target="_blank" rel="noreferrer">
                       {userPopularity.favoriteSong.song.name}
                     </a>
                     <br />
