@@ -7,3 +7,18 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
+.summary-view {
+  display: flex;
+  flex-direction: column;
+}
+
+.yearly-summary-tables-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.yearly-summary-table, .yearly-summary-th, .yearly-summary-td {
+  border: 1px solid black;
+  border-collapse: collapse;
+}

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { HistorySummary, YearlyHistorySummary } from '@service/domain/history/history-summary';
 import '../yearly-summary.css';
 import { HistorySummaryResponseDto, HistorySummaryYearsResponseDto } from '@service/api/history/model/history-summary-response-dto';
+import { HistorySummaryView } from './history-summary-view';
 
 export function YearlySummary() {
   const [yearOptions, setYearOptions] = React.useState<YearlyHistorySummary[]>([]);
@@ -47,7 +48,7 @@ export function YearlySummary() {
 
       {isLoading && <div>Loading...</div>}
 
-      {!!historySummary && <div>{JSON.stringify(historySummary)}</div>}
+      {!!historySummary && <HistorySummaryView historySummary={historySummary} />}
 
     </main>
   );
