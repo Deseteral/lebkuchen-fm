@@ -72,7 +72,8 @@ export type EventData =
   | AddSongsToQueueEvent
   | PlayXSoundEvent
   | SayEvent
-  | PlayPauseEvent
+  | PlayerPauseEvent
+  | PlayerResumeEvent
   | SkipEvent
   | ChangeSpeedEvent
   | ChangeVolumeEvent
