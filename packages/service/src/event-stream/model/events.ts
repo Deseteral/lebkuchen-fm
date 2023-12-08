@@ -29,8 +29,12 @@ export interface SayEvent {
   text: string,
 }
 
-export interface PlayPauseEvent {
-  id: 'PlayPauseEvent',
+export interface PlayerResumeEvent {
+  id: 'ResumeEvent',
+}
+
+export interface PlayerPauseEvent {
+  id: 'PauseEvent',
 }
 
 export interface SkipEvent {
