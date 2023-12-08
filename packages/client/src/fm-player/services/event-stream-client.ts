@@ -39,8 +39,12 @@ function connect(): (() => void) {
         SpeechService.say(eventData.text);
         break;
 
-      case 'PlayPauseEvent':
-        YouTubePlayerService.playPause();
+      case 'PauseEvent':
+        YouTubePlayerService.pause();
+        break;
+
+      case 'ResumeEvent':
+        YouTubePlayerService.resume();
         break;
 
       case 'SkipEvent': {

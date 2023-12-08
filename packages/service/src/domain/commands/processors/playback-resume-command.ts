@@ -2,27 +2,36 @@ import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
+import { PlayerResumeEvent } from '@service/event-stream/model/events';
+import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class PlayPauseCommand extends CommandProcessor {
+class PlayCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
+
   async execute(_: Command): Promise<CommandProcessingResponse> {
+    const event: PlayerResumeEvent = { id: 'ResumeEvent' };
+    this.playerEventStream.sendToEveryone(event);
+
     return new CommandProcessingResponseBuilder()
-      .fromMarkdown(this.helpMessage)
+      .fromMarkdown('▶️')
       .build();
   }
 
   get key(): string {
-    return 'playback-play-pause';
+    return 'playback-resume';
   }
 
   get shortKey(): (string | null) {
-    return 'play';
+    return 'resume';
   }
 
   get helpMessage(): string {
-    return '`@Deprecated` użyj bardziej precyzyjnych komend `resume`/`pause`';
+    return 'Wznawia otwarzanie zatrzymanego lub zakończonego wideo';
   }
 
   get exampleUsages(): string[] {
@@ -36,4 +45,4 @@ class PlayPauseCommand extends CommandProcessor {
   }
 }
 
-export { PlayPauseCommand };
+export { PlayCommand as PlayPauseCommand };
