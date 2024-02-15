@@ -3,7 +3,7 @@ interface TweenOverTimeArgs {
   to: number,
   time: number,
   onUpdate: (value: number) => void,
-  onComplete: () => void,
+  onComplete?: () => void,
 }
 
 function tweenOverTime({ from, to, time, onUpdate, onComplete }: TweenOverTimeArgs) {
@@ -14,7 +14,7 @@ function tweenOverTime({ from, to, time, onUpdate, onComplete }: TweenOverTimeAr
 
     if (t >= 1.0) {
       onUpdate(to);
-      onComplete();
+      if (onComplete) onComplete();
       return;
     }
 
