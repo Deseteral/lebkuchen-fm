@@ -1,5 +1,6 @@
 import { Song, SpeedControl } from 'lebkuchen-fm-service';
 import YTPlayer from 'yt-player';
+import mitt, { Emitter, Handler } from 'mitt';
 import * as PlayerStateService from './player-state-service';
 
 let player: YTPlayer;
@@ -16,6 +17,8 @@ const ytPlayerStateUpdateQueue: YTPlayerStateUpdateQueue = {
   time: null,
 };
 
+const emitter: Emitter = mitt();
+
 function playSong(song: (Song | null), time = 0) {
   if (song) {
     const state = PlayerStateService.getState();
@@ -23,6 +26,8 @@ function playSong(song: (Song | null), time = 0) {
       song,
       time,
     };
+
+    emitter.emit<Song>('songChanged', song);
 
     player.load(song.youtubeId, state.isPlaying);
   } else {
@@ -153,6 +158,10 @@ function initialize(playerContainerDomId: string) {
   });
 }
 
+function onSongChanged(callback: Handler<Song>) {
+  emitter.on('songChanged', callback);
+}
+
 export {
   initialize,
   resume,
@@ -162,4 +171,5 @@ export {
   setSpeed,
   rewindTo,
   rewindBy,
+  onSongChanged,
 };

@@ -78,6 +78,10 @@ function connect(): (() => void) {
     }
   });
 
+  YouTubePlayerService.onSongChanged((song) => {
+    client.emit('SongChanged', song);
+  });
+
   return function disconnect() {
     client.disconnect();
   };

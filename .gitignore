@@ -4,6 +4,8 @@ dist/
 .cache/
 .parcel-cache/
 coverage/
+.idea/
+.vscode/
 
 .env
 *.log

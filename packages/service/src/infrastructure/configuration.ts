@@ -14,6 +14,7 @@ class Configuration {
   public readonly MONGODB_URI: string;
   public readonly PORT: string;
   public readonly YOUTUBE_API_KEY: string;
+  public readonly GEMINI_TOKEN: string;
 
   private constructor(
     COMMAND_PROMPT: string,
@@ -28,6 +29,7 @@ class Configuration {
     MONGODB_URI: string,
     PORT: string,
     YOUTUBE_API_KEY: string,
+    GEMINI_TOKEN: string,
   ) {
     this.COMMAND_PROMPT = COMMAND_PROMPT;
     this.DISCORD_CHANNEL_ID = DISCORD_CHANNEL_ID;
@@ -41,6 +43,7 @@ class Configuration {
     this.MONGODB_URI = MONGODB_URI;
     this.PORT = PORT;
     this.YOUTUBE_API_KEY = YOUTUBE_API_KEY;
+    this.GEMINI_TOKEN = GEMINI_TOKEN;
   }
 
   public static readFromEnv(): Configuration {
@@ -57,6 +60,7 @@ class Configuration {
       process.env.MONGODB_URI || 'mongodb://localhost:27017',
       process.env.PORT || '9000',
       process.env.YOUTUBE_API_KEY || '',
+      process.env.GEMINI_TOKEN || '',
     );
   }
 }
