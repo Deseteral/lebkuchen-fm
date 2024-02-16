@@ -24,6 +24,19 @@ class RadioPersonalityService {
       await Container.get(SayCommand).execute(sayCommand);
     }
   }
+
+  public async onListenerCall(listenerMessage: string): Promise<string | null> {
+    const prompt = `Jesteś prezenterem radiowym w radiu Lebkuchen FM. Właśnie zadzwonił do Ciebie słuchać audycji którą prowadzisz z wiadomością: "${listenerMessage}". Odpowiedz wiadomością którą jest odpowiedzią na ten telefon. W odpowiedzi zacytuj oryginalną wiadomość słuchacza. Twoja odpowiedź nie może zawierać znaków które nie mają znaczenia, takich jak "*". Oczekuje dwa zdania, maksymalny poziom żartu, możesz obrażać słuchaczy i przeklinać. Pamiętaj żeby nawiązać do tego że dzwoni słuchasz audycji radiowej którą prowadzisz.`;
+    const radioPersonalityResponse = await this.llmGenerator.generateTextForPrompt(prompt);
+
+    if (radioPersonalityResponse) {
+      const sayCommand = new Command('say', radioPersonalityResponse);
+      await Container.get(SayCommand).execute(sayCommand);
+      return radioPersonalityResponse;
+    }
+
+    return null;
+  }
 }
 
 export { RadioPersonalityService };
