@@ -1,6 +1,6 @@
 enum LLMPromptType {
-  NewSongStartedPlaying,
-  ListenerCalling,
+  NewSongStartedPlaying = 'NewSongStartedPlaying',
+  ListenerCalling = 'ListenerCalling',
 }
 
 interface LLMPrompt {
