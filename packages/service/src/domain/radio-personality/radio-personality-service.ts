@@ -3,14 +3,14 @@ import { SayCommand } from '@service/domain/commands/processors/say-command';
 import { LLMGenerator } from '@service/infrastructure/llm-generator';
 import Container, { Service } from 'typedi';
 import { Song } from '@service/domain/songs/song';
-import { RadioPersonalityPromptService } from './radio-personality-prompt-service';
-import { RadioPersonalityPromptType } from './radio-personality-prompt';
+import { LLMPromptsService } from '@service/domain/llm-prompts/llm-prompts-service';
+import { LLMPromptType } from '@service/domain/llm-prompts/llm-prompts';
 
 @Service()
 class RadioPersonalityService {
   private lastOnNowPlayingChangedTime: number = 0;
 
-  constructor(private llmGenerator: LLMGenerator, private radioPersonalityPromptService: RadioPersonalityPromptService) { }
+  constructor(private llmGenerator: LLMGenerator, private llmPromptsService: LLMPromptsService) { }
 
   public async onNowPlayingChanged(song: Song): Promise<void> {
     const timeNow = Date.now();
@@ -19,7 +19,7 @@ class RadioPersonalityService {
     }
     this.lastOnNowPlayingChangedTime = timeNow;
 
-    const prompt = await this.radioPersonalityPromptService.getPromptForType(RadioPersonalityPromptType.NewSongStartedPlaying);
+    const prompt = await this.llmPromptsService.getPromptForType(LLMPromptType.NewSongStartedPlaying);
     if (!prompt) {
       return;
     }
@@ -33,7 +33,7 @@ class RadioPersonalityService {
   }
 
   public async onListenerCall(listenerMessage: string): Promise<string | null> {
-    const prompt = await this.radioPersonalityPromptService.getPromptForType(RadioPersonalityPromptType.ListenerCalling);
+    const prompt = await this.llmPromptsService.getPromptForType(LLMPromptType.ListenerCalling);
     if (!prompt) {
       return null;
     }
