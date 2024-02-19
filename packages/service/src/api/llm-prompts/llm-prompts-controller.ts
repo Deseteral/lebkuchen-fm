@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { JsonController, Get, Authorized, Post, Body, CurrentUser } from 'routing-controllers';
+import { JsonController, Get, Authorized, Post, Body, CurrentUser, HttpCode, InternalServerError, OnUndefined } from 'routing-controllers';
 import { LLMPromptsService } from '@service/domain/llm-prompts/llm-prompts-service';
 import { User } from '@service/domain/users/user';
 import { LLMPromptsResponseDto } from '@service/api/llm-prompts/model/llm-prompts-response-dto';
@@ -23,6 +23,7 @@ class LLMPromptsController {
   }
 
   @Post('/')
+  @OnUndefined(201)
   async updateLLMPrompt(@Body() body: UpdateLLMPromptRequestDto, @CurrentUser() user: User): Promise<void> {
     LLMPromptsController.logger.info(`Received prompt update for ${body.type} from ${user.data.name}`);
 
@@ -30,7 +31,11 @@ class LLMPromptsController {
       throw new WrongTypeError(body.type);
     }
 
-    this.llmPromptsService.addNewPrompt(body.text, body.type as LLMPromptType);
+    const result = this.llmPromptsService.addNewPrompt(body.text, body.type as LLMPromptType);
+
+    if (!result) {
+      throw new InternalServerError('Could not save prompt update');
+    }
   }
 }
 

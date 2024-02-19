@@ -23,7 +23,7 @@ class LLMPromptsService {
     return prompts.filter(notNull);
   }
 
-  public async addNewPrompt(text: string, type: LLMPromptType): Promise<void> {
+  public async addNewPrompt(text: string, type: LLMPromptType): Promise<LLMPrompt | null> {
     const prompt: LLMPrompt = {
       text,
       type,
@@ -33,9 +33,11 @@ class LLMPromptsService {
     try {
       this.llmPromptsRepository.insert(prompt);
       LLMPromptsService.logger.info(`Added new prompt for type "${type}", text: "${text}".`);
+      return prompt;
     } catch (err) {
       LLMPromptsService.logger.error('Error while adding new prompt');
       LLMPromptsService.logger.withError(err as Error);
+      return null;
     }
   }
 }
