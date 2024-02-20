@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { JsonController, Get, Authorized, Post, Body, CurrentUser, HttpCode, InternalServerError, OnUndefined } from 'routing-controllers';
+import { JsonController, Get, Authorized, Post, Body, CurrentUser, InternalServerError, OnUndefined } from 'routing-controllers';
 import { LLMPromptsService } from '@service/domain/llm-prompts/llm-prompts-service';
 import { User } from '@service/domain/users/user';
 import { LLMPromptsResponseDto } from '@service/api/llm-prompts/model/llm-prompts-response-dto';
