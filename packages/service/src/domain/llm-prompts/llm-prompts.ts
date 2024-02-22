@@ -12,7 +12,12 @@ interface LLMPrompt {
   addedBy: string,
 }
 
+type LLMPromptTypeVariants = {
+  [type in LLMPromptType]: string[];
+}
+
 export {
   LLMPrompt,
   LLMPromptType,
+  LLMPromptTypeVariants,
 };
