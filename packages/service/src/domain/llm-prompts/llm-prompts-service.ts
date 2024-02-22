@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { LLMPrompt, LLMPromptType } from '@service/domain/llm-prompts/llm-prompts';
 import { LLMPromptsRepository } from '@service/domain/llm-prompts/llm-prompts-repository';
 import { notNull } from '@service/utils/utils';
+import { User } from '@service/domain/users/user';
 
 @Service()
 class LLMPromptsService {
@@ -23,13 +24,14 @@ class LLMPromptsService {
     return prompts.filter(notNull);
   }
 
-  public async addNewPrompt(text: string, type: LLMPromptType, variant: string, deprecated: boolean): Promise<LLMPrompt | null> {
+  public async addNewPrompt(text: string, type: LLMPromptType, variant: string, deprecated: boolean, user: User): Promise<LLMPrompt | null> {
     const prompt: LLMPrompt = {
       text,
       type,
       variant,
       deprecated,
       creationDate: new Date(),
+      addedBy: user.data.name,
     };
 
     try {

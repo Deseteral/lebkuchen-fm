@@ -36,6 +36,7 @@ class LLMPromptsController {
       body.type as LLMPromptType,
       body.variant,
       body.deprecated,
+      user,
     );
 
     if (!result) {
