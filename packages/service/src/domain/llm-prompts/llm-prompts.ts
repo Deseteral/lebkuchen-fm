@@ -9,6 +9,7 @@ interface LLMPrompt {
   variant: string,
   deprecated: boolean,
   creationDate: Date,
+  addedBy: string,
 }
 
 export {
