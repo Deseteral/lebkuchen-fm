@@ -31,7 +31,12 @@ class LLMPromptsController {
       throw new WrongTypeError(body.type);
     }
 
-    const result = this.llmPromptsService.addNewPrompt(body.text, body.type as LLMPromptType);
+    const result = this.llmPromptsService.addNewPrompt(
+      body.text,
+      body.type as LLMPromptType,
+      body.variant,
+      body.deprecated,
+    );
 
     if (!result) {
       throw new InternalServerError('Could not save prompt update');

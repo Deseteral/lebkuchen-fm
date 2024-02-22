@@ -23,10 +23,12 @@ class LLMPromptsService {
     return prompts.filter(notNull);
   }
 
-  public async addNewPrompt(text: string, type: LLMPromptType): Promise<LLMPrompt | null> {
+  public async addNewPrompt(text: string, type: LLMPromptType, variant: string, deprecated: boolean): Promise<LLMPrompt | null> {
     const prompt: LLMPrompt = {
       text,
       type,
+      variant,
+      deprecated,
       creationDate: new Date(),
     };
 

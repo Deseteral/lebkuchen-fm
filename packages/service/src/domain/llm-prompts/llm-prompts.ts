@@ -6,6 +6,8 @@ enum LLMPromptType {
 interface LLMPrompt {
   text: string,
   type: LLMPromptType,
+  variant: string,
+  deprecated: boolean,
   creationDate: Date,
 }
 
