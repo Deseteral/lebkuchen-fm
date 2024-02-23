@@ -3,6 +3,7 @@ import { Service } from 'typedi';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from '@service/domain/llm-prompts/llm-prompts';
 import { LLMPromptsRepository } from '@service/domain/llm-prompts/llm-prompts-repository';
 import { User } from '@service/domain/users/user';
+import { notNull } from '@service/utils/utils';
 
 @Service()
 class LLMPromptsService {
@@ -39,15 +40,18 @@ class LLMPromptsService {
   }
 
   async getActivePromptForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
-    throw new Error('Not implemented');
+    return this.llmPromptsRepository.findOneByTypeVariantNotDeprecatedOrderByDateDesc(type, variant);
   }
 
   async getAllPromptsForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt[]> {
-    throw new Error('Not implemented');
+    return this.llmPromptsRepository.findAllByTypeVariantOrderByDateDesc(type, variant);
   }
 
   async getActivePromptsForType(type: LLMPromptType): Promise<LLMPrompt[]> {
-    throw new Error('Not implemented');
+    const typeVariants = await this.getTypeVariants();
+    const variants = typeVariants[type];
+    const prompts = await Promise.all(variants.map((variant) => this.getActivePromptForTypeVariant(type, variant)));
+    return prompts.filter(notNull);
   }
 
   async getRandomActivePromptForType(type: LLMPromptType): Promise<LLMPrompt | null> {
