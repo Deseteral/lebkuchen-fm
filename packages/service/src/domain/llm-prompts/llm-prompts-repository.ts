@@ -9,6 +9,15 @@ class LLMPromptsRepository extends Repository<LLMPrompt> {
     super('llm-prompts', storage);
   }
 
+  async findAllVariantsByType(type: LLMPromptType): Promise<string[]> {
+    const result = await this.collection.aggregate([
+      { $match: { type } },
+      { $group: { _id: { variant: '$variant' } } },
+    ]).toArray();
+
+    return result.map((doc) => doc._id.variant);
+  }
+
   async findOneByTypeOrderByDateDesc(type: LLMPromptType): Promise<LLMPrompt | null> {
     const array = await this.collection.find({ type }).sort({ creationDate: -1 }).limit(1).toArray();
     return array[0] || null;

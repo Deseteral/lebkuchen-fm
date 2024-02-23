@@ -32,7 +32,10 @@ class LLMPromptsService {
   }
 
   async getTypeVariants(): Promise<LLMPromptTypeVariants> {
-    throw new Error('Not implemented');
+    return {
+      [LLMPromptType.NewSongStartedPlaying]: await this.llmPromptsRepository.findAllVariantsByType(LLMPromptType.NewSongStartedPlaying),
+      [LLMPromptType.ListenerCalling]: await this.llmPromptsRepository.findAllVariantsByType(LLMPromptType.ListenerCalling),
+    };
   }
 
   async getActivePromptForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
@@ -48,7 +51,13 @@ class LLMPromptsService {
   }
 
   async getRandomActivePromptForType(type: LLMPromptType): Promise<LLMPrompt | null> {
-    throw new Error('Not implemented');
+    const prompts = await this.getActivePromptsForType(type);
+
+    if (prompts.length === 0) {
+      return null;
+    }
+
+    return prompts.randomShuffle()[0];
   }
 }
 
