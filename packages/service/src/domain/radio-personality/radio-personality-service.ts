@@ -19,7 +19,7 @@ class RadioPersonalityService {
     }
     this.lastOnNowPlayingChangedTime = timeNow;
 
-    const prompt = await this.llmPromptsService.getPromptForType(LLMPromptType.NewSongStartedPlaying);
+    const prompt = await this.llmPromptsService.getRandomActivePromptForType(LLMPromptType.NewSongStartedPlaying);
     if (!prompt) {
       return;
     }
@@ -33,7 +33,7 @@ class RadioPersonalityService {
   }
 
   public async onListenerCall(listenerMessage: string): Promise<string | null> {
-    const prompt = await this.llmPromptsService.getPromptForType(LLMPromptType.ListenerCalling);
+    const prompt = await this.llmPromptsService.getRandomActivePromptForType(LLMPromptType.ListenerCalling);
     if (!prompt) {
       return null;
     }

@@ -39,23 +39,38 @@ class LLMPromptsController {
 
   @Get('/info')
   async getInfo(): Promise<LLMPromptsInfoResponseDto> {
-    throw new Error('Not implemented yet');
+    const variants = await this.llmPromptsService.getTypeVariants();
+    return {
+      variants,
+    };
   }
 
   @Get('/:type/:variant')
   async getPrompts(
-    @Param('type') type: string,
+    @Param('type') rawType: string,
     @Param('variant') variant: string,
     @QueryParam('active') active: boolean,
   ): Promise<LLMPromptsResponseDto> {
-    this.validateTypeParam(type);
-    throw new Error('Not implemented yet');
+    const type = this.validateTypeParam(rawType);
+
+    if (active) {
+      const prompt = await this.llmPromptsService.getActivePromptForTypeVariant(type, variant);
+      return {
+        prompts: prompt ? [prompt] : [],
+      };
+    }
+
+    const prompts = await this.llmPromptsService.getAllPromptsForTypeVariant(type, variant);
+    return {
+      prompts,
+    };
   }
 
-  private validateTypeParam(type: string): void {
+  private validateTypeParam(type: string): LLMPromptType {
     if (!Object.values(LLMPromptType).includes(type as LLMPromptType)) {
       throw new WrongTypeError(type);
     }
+    return type as LLMPromptType;
   }
 }
 

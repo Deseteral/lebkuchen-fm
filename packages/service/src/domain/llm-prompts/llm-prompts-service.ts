@@ -1,8 +1,7 @@
 import { Logger } from '@service/infrastructure/logger';
 import { Service } from 'typedi';
-import { LLMPrompt, LLMPromptType } from '@service/domain/llm-prompts/llm-prompts';
+import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from '@service/domain/llm-prompts/llm-prompts';
 import { LLMPromptsRepository } from '@service/domain/llm-prompts/llm-prompts-repository';
-import { notNull } from '@service/utils/utils';
 import { User } from '@service/domain/users/user';
 
 @Service()
@@ -10,19 +9,6 @@ class LLMPromptsService {
   private static logger = new Logger('radio-personality-prompt-service');
 
   constructor(private llmPromptsRepository: LLMPromptsRepository) { }
-
-  public async getPromptForType(type: LLMPromptType): Promise<LLMPrompt | null> {
-    return this.llmPromptsRepository.findOneByTypeOrderByDateDesc(type);
-  }
-
-  public async getAllPrompts(): Promise<LLMPrompt[]> {
-    const prompts = await Promise.all(
-      Object.values(LLMPromptType)
-        .map((type: LLMPromptType) => this.getPromptForType(type)),
-    );
-
-    return prompts.filter(notNull);
-  }
 
   public async addNewPrompt(text: string, type: LLMPromptType, variant: string, deprecated: boolean, user: User): Promise<LLMPrompt | null> {
     const prompt: LLMPrompt = {
@@ -43,6 +29,26 @@ class LLMPromptsService {
       LLMPromptsService.logger.withError(err as Error);
       return null;
     }
+  }
+
+  async getTypeVariants(): Promise<LLMPromptTypeVariants> {
+    throw new Error('Not implemented');
+  }
+
+  async getActivePromptForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
+    throw new Error('Not implemented');
+  }
+
+  async getAllPromptsForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt[]> {
+    throw new Error('Not implemented');
+  }
+
+  async getActivePromptsForType(type: LLMPromptType): Promise<LLMPrompt[]> {
+    throw new Error('Not implemented');
+  }
+
+  async getRandomActivePromptForType(type: LLMPromptType): Promise<LLMPrompt | null> {
+    throw new Error('Not implemented');
   }
 }
 
