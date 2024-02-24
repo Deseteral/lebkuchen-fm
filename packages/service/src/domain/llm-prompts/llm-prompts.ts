@@ -5,6 +5,7 @@ enum LLMPromptType {
 
 interface LLMPrompt {
   text: string,
+  temperatureOverride: (number | null),
   type: LLMPromptType,
   variant: string,
   deprecated: boolean,

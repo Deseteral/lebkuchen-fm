@@ -1,7 +1,8 @@
-import { GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from '@google/generative-ai';
+import { GenerationConfig, GoogleGenerativeAI, HarmBlockThreshold, HarmCategory, SafetySetting } from '@google/generative-ai';
 import { Configuration } from '@service/infrastructure/configuration';
 import { Service } from 'typedi';
 import { Logger } from '@service/infrastructure/logger';
+import { LLMPrompt } from '@service/domain/llm-prompts/llm-prompts';
 
 @Service()
 class LLMGenerator {
@@ -13,7 +14,13 @@ class LLMGenerator {
     this.ai = new GoogleGenerativeAI(this.configuration.GEMINI_TOKEN);
   }
 
-  async generateTextForPrompt(prompt: string): Promise<string | null> {
+  async generateTextForPrompt(prompt: LLMPrompt): Promise<string | null> {
+    const generationConfig: GenerationConfig = {};
+
+    if (prompt.temperatureOverride) {
+      generationConfig.temperature = prompt.temperatureOverride;
+    }
+
     const safetySettings: SafetySetting[] = [
       {
         category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
@@ -32,10 +39,11 @@ class LLMGenerator {
         threshold: HarmBlockThreshold.BLOCK_NONE,
       },
     ];
-    const model = this.ai.getGenerativeModel({ model: 'gemini-pro', safetySettings });
+
+    const model = this.ai.getGenerativeModel({ model: 'gemini-pro', generationConfig, safetySettings });
 
     try {
-      const result = await model.generateContent(prompt);
+      const result = await model.generateContent(prompt.text);
       return result.response.text();
     } catch (err) {
       LLMGenerator.logger.withError(err as Error);
