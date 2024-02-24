@@ -60,7 +60,7 @@ function Window({ startPosition, title, children }: WindowProps): React.JSX.Elem
     >
       <div className={styles.title} onMouseDown={dragMouseDown}>
         {title}
-        <button className={styles.close} onClick={onClose}>X</button>
+        <button type="button" className={styles.close} onClick={onClose}>X</button>
       </div>
       <div className={styles.content}>
         {children}
