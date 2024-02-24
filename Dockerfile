@@ -25,6 +25,7 @@ FROM base as deps
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=packages/service/package.json,target=packages/service/package.json \
     --mount=type=bind,source=packages/client/package.json,target=packages/client/package.json \
+    --mount=type=bind,source=packages/client-beta/package.json,target=packages/client-beta/package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/root/.yarn \
     yarn install --production --frozen-lockfile
@@ -38,6 +39,7 @@ FROM deps as build
 RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=packages/service/package.json,target=packages/service/package.json \
     --mount=type=bind,source=packages/client/package.json,target=packages/client/package.json \
+    --mount=type=bind,source=packages/client-beta/package.json,target=packages/client-beta/package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/root/.yarn \
     yarn install --frozen-lockfile

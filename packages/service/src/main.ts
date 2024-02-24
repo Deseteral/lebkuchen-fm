@@ -76,7 +76,15 @@ async function main(): Promise<void> {
 
   // Static files for web client frontend
   const pathToStaticFiles = path.join(__dirname, 'public');
+  const pathToBetaFiles = path.join(__dirname, 'public-beta');
+
   app.use(express.static(pathToStaticFiles, { extensions: ['html'] }));
+  app.use(express.static(pathToBetaFiles, { extensions: ['html'] }));
+
+  // client beta app
+  app.use('/beta', (_: express.Request, res: express.Response) => {
+    res.sendFile(path.join(pathToBetaFiles, 'index.html'), (err) => res.status(err ? 404 : 200).end());
+  });
 
   // For remaining (unhandled by the service) paths send client app, and let it handle that case
   app.all('*', (_: express.Request, res: express.Response) => {
