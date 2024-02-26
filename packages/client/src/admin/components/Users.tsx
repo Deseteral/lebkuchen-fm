@@ -78,7 +78,7 @@ function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
       <div>Currently logged in users count: {loggedInPlayerIds.length}</div>
       <ul>
         {userList.map((userData) => (
-          <li>
+          <li key={userData.name}>
             <UserName online={loggedInPlayerIds.includes(userData.name)}>
               {`> ${userData.name}`}
             </UserName>
