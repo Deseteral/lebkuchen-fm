@@ -11,9 +11,10 @@ class LLMPromptsService {
 
   constructor(private llmPromptsRepository: LLMPromptsRepository) { }
 
-  public async addNewPrompt(text: string, type: LLMPromptType, variant: string, deprecated: boolean, user: User): Promise<LLMPrompt | null> {
+  public async addNewPrompt(text: string, temperatureOverride: (number | null), type: LLMPromptType, variant: string, deprecated: boolean, user: User): Promise<LLMPrompt | null> {
     const prompt: LLMPrompt = {
       text,
+      temperatureOverride,
       type,
       variant,
       deprecated,

@@ -5,6 +5,7 @@ import Container, { Service } from 'typedi';
 import { Song } from '@service/domain/songs/song';
 import { LLMPromptsService } from '@service/domain/llm-prompts/llm-prompts-service';
 import { LLMPromptType } from '@service/domain/llm-prompts/llm-prompts';
+import { LLMGeneratorQuery } from '@service/domain/llm-prompts/llm-generator-query';
 
 @Service()
 class RadioPersonalityService {
@@ -24,8 +25,14 @@ class RadioPersonalityService {
       return;
     }
 
-    const promptText = prompt.text.replaceAll('{{currentSongName}}', song.name);
-    const radioPersonalityResponse = await this.llmGenerator.generateTextForPrompt(promptText);
+    const query: LLMGeneratorQuery = {
+      prompt,
+      variables: [
+        ['currentSongName', song.name],
+      ],
+    };
+
+    const radioPersonalityResponse = await this.llmGenerator.generateTextForQuery(query);
     if (radioPersonalityResponse) {
       const sayCommand = new Command('say', radioPersonalityResponse);
       await Container.get(SayCommand).execute(sayCommand);
@@ -38,9 +45,14 @@ class RadioPersonalityService {
       return null;
     }
 
-    const promptText = prompt.text.replaceAll('{{listenerMessage}}', listenerMessage);
-    const radioPersonalityResponse = await this.llmGenerator.generateTextForPrompt(promptText);
+    const query: LLMGeneratorQuery = {
+      prompt,
+      variables: [
+        ['listenerMessage', listenerMessage],
+      ],
+    };
 
+    const radioPersonalityResponse = await this.llmGenerator.generateTextForQuery(query);
     if (radioPersonalityResponse) {
       const sayCommand = new Command('say', radioPersonalityResponse);
       await Container.get(SayCommand).execute(sayCommand);

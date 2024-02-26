@@ -26,6 +26,7 @@ class LLMPromptsController {
 
     const result = this.llmPromptsService.addNewPrompt(
       body.text,
+      body.temperatureOveride,
       body.type as LLMPromptType,
       body.variant,
       body.deprecated,
