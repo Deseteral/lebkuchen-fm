@@ -1,7 +1,7 @@
 import { UserData } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
-import { addNewUser } from '../services/add-user-service';
+import { addNewUser } from '../admin-service';
 import { Section } from './Section';
 
 const UserName = styled.code<{ online: boolean }>`

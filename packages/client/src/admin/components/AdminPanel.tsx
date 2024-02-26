@@ -4,7 +4,7 @@ import { AdminEventData, Log, UserData } from 'lebkuchen-fm-service';
 import { AppContainer } from './AppContainer';
 import { Users } from './Users';
 import { Logs } from './Logs';
-import { getUserList } from '../services/get-user-list';
+import { getUserList } from '../admin-service';
 
 function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
