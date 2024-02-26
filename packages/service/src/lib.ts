@@ -10,6 +10,8 @@ import type { Song } from './domain/songs/song';
 import type { XSound } from './domain/x-sounds/x-sound';
 import type { Log } from './infrastructure/logger';
 import type { AdminEventData } from './event-stream/model/admin-events';
+import type { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from './domain/llm-prompts/llm-prompts';
+import type { LLMPromptsInfoResponseDto } from './api/llm-prompts/model/llm-prompts-info-response-dto';
 
 export {
   SpeedControl,
@@ -25,4 +27,8 @@ export {
   UsersResponseDto,
   AddUserRequestDto,
   HttpError,
+  LLMPrompt,
+  LLMPromptType,
+  LLMPromptTypeVariants,
+  LLMPromptsInfoResponseDto,
 };
