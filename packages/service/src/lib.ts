@@ -12,6 +12,7 @@ import type { Log } from './infrastructure/logger';
 import type { AdminEventData } from './event-stream/model/admin-events';
 import type { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from './domain/llm-prompts/llm-prompts';
 import type { LLMPromptsInfoResponseDto } from './api/llm-prompts/model/llm-prompts-info-response-dto';
+import type { LLMPromptsResponseDto } from './api/llm-prompts/model/llm-prompts-response-dto';
 
 export {
   SpeedControl,
@@ -31,4 +32,5 @@ export {
   LLMPromptType,
   LLMPromptTypeVariants,
   LLMPromptsInfoResponseDto,
+  LLMPromptsResponseDto,
 };

@@ -1,20 +1,28 @@
 import * as React from 'react';
-import { LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
+import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
 import { Section } from './Section';
-import { getPromptTypeVariants } from '../admin-service';
+import { getPrompts, getPromptTypeVariants } from '../admin-service';
 
 function Prompts() {
   const [typeVariants, setTypeVariants] = React.useState<LLMPromptTypeVariants | null>(null);
   const [selectedType, setSelectedType] = React.useState<string | null>(null);
   const [selectedVariant, setSelectedVariant] = React.useState<string | null>(null);
+  const [prompts, setPrompts] = React.useState<LLMPrompt[]>([]);
 
-  const changeVariant = (variant: string) => {
+  const changeVariant = (variant: string, type: string) => {
     setSelectedVariant(variant);
+    getPrompts(type, variant).then((p) => setPrompts(p));
   };
 
   const changeType = (type: string, variants: LLMPromptTypeVariants) => {
     setSelectedType(type);
-    changeVariant(variants[type as LLMPromptType][0]);
+    const firstVariant = variants[type as LLMPromptType][0];
+    if (firstVariant) {
+      changeVariant(firstVariant, type);
+    } else {
+      setSelectedVariant(null);
+      setPrompts([]);
+    }
   };
 
   const changeTypeVariants = (variants: LLMPromptTypeVariants) => {
@@ -30,7 +38,7 @@ function Prompts() {
   return (
     <Section header="Prompts">
       {!typeVariants && <div>Loading</div>}
-      {typeVariants && selectedType && selectedVariant && (
+      {typeVariants && selectedType && (
         <div>
           <select value={selectedType} onChange={(e) => changeType(e.target.value, typeVariants)}>
             {Object.keys(typeVariants).map((type) => (
@@ -38,11 +46,22 @@ function Prompts() {
             ))}
           </select>
 
-          <select value={selectedVariant} onChange={(e) => changeVariant(e.target.value)}>
-            {typeVariants[selectedType as LLMPromptType].map((variant) => (
-              <option value={variant} key={variant}>{variant}</option>
+          {selectedVariant && (
+            <select value={selectedVariant} onChange={(e) => changeVariant(e.target.value, selectedType)}>
+              {typeVariants[selectedType as LLMPromptType].map((variant) => (
+                <option value={variant} key={variant}>{variant}</option>
+              ))}
+            </select>
+          )}
+
+          <div>
+            {prompts.map((prompt) => (
+              <div>
+                <div>{prompt.text}</div>
+                <hr />
+              </div>
             ))}
-          </select>
+          </div>
         </div>
       )}
     </Section>
