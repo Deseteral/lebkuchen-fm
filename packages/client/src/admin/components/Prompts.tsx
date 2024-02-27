@@ -27,15 +27,6 @@ const Button = styled.button`
   }
 `;
 
-const Dropdown = styled.select`
-    background-image: url(data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%23DFDFDF'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='gray'/%3E%3Cpath fill='silver' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23000'/%3E%3C/svg%3E);
-    background-position: top 2px right 2px;
-    background-repeat: no-repeat;
-    border-radius: 0;
-    padding-right: 32px;
-    position: relative;
-`;
-
 const PromptTextfield = styled.textarea`
   width: 550px;
   height: 250px;
@@ -97,11 +88,11 @@ function Prompts() {
       {typeVariants && selectedType && (
         <div>
           <EditorToolbar>
-            <Dropdown value={selectedType} onChange={(e) => changeType(e.target.value, typeVariants)}>
+            <select value={selectedType} onChange={(e) => changeType(e.target.value, typeVariants)}>
               {Object.keys(typeVariants).map((type) => (
                 <option value={type} key={type}>{type}</option>
               ))}
-            </Dropdown>
+            </select>
 
             {selectedVariant && (
               <select value={selectedVariant} onChange={(e) => changeVariant(e.target.value, selectedType)}>
