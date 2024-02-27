@@ -1,7 +1,12 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
 import { Section } from './Section';
 import { getPrompts, getPromptTypeVariants } from '../admin-service';
+
+const PromptText = styled.div`
+  font-style: italic;
+`;
 
 function Prompts() {
   const [typeVariants, setTypeVariants] = React.useState<LLMPromptTypeVariants | null>(null);
@@ -57,8 +62,10 @@ function Prompts() {
           <div>
             {prompts.map((prompt) => (
               <div>
-                <div>{prompt.text}</div>
                 <hr />
+                <div>{prompt.creationDate}, added by {prompt.addedBy}</div>
+                <div>is deprecated: {prompt.deprecated.toString()}, temperature override: {prompt.temperatureOverride || 'no'}</div>
+                <PromptText>{prompt.text}</PromptText>
               </div>
             ))}
           </div>
