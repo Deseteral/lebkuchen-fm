@@ -27,7 +27,9 @@ function playSong(song: (Song | null), time = 0) {
       time,
     };
 
-    emitter.emit<Song>('songChanged', song);
+    if (time === 0) {
+      emitter.emit<Song>('songChanged', song);
+    }
 
     player.load(song.youtubeId, state.isPlaying);
   } else {
