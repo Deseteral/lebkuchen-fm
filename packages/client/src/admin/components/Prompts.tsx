@@ -136,7 +136,7 @@ function Prompts() {
 
   React.useEffect(() => {
     getPromptTypeVariants().then((variants) => changeTypeVariants(variants));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Section header="Prompts">
