@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import styled from 'styled-components';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
@@ -44,6 +45,33 @@ const PromptTextfield = styled.textarea`
   outline: none;
 `;
 
+const EditorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-top: 4px;
+`;
+
+const Input = styled.input`
+  margin-right: 8px;
+  appearance: none;
+  border: none;
+  border-radius: 0;
+  height: 21px;
+  background-color: #fff;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px grey, inset -2px -2px #dfdfdf, inset 2px 2px #0a0a0a;
+  padding: 3px 4px;
+  font-family: sans-serif;
+  font-size: 13px;
+  outline: none;
+`;
+
 const PromptText = styled.div`
   font-style: italic;
 `;
@@ -54,9 +82,19 @@ function Prompts() {
   const [selectedVariant, setSelectedVariant] = React.useState<string | null>(null);
   const [prompts, setPrompts] = React.useState<LLMPrompt[]>([]);
 
+  const [editorText, setEditorText] = React.useState<string>('');
+  const [editorIsDeprecated, setEditorIsDeprecated] = React.useState<boolean>(false);
+  const [editorTempOverride, setEditorTempOverride] = React.useState<string>('');
+
+  const changePrompts = (p: LLMPrompt[]) => {
+    setPrompts(p);
+    setEditorText(p[0]?.text || '');
+    setEditorIsDeprecated(p[0]?.deprecated || false);
+  };
+
   const changeVariant = (variant: string, type: string) => {
     setSelectedVariant(variant);
-    getPrompts(type, variant).then((p) => setPrompts(p));
+    getPrompts(type, variant).then((p) => changePrompts(p));
   };
 
   const changeType = (type: string, variants: LLMPromptTypeVariants) => {
@@ -66,7 +104,7 @@ function Prompts() {
       changeVariant(firstVariant, type);
     } else {
       setSelectedVariant(null);
-      setPrompts([]);
+      changePrompts([]);
     }
   };
 
@@ -106,7 +144,22 @@ function Prompts() {
           </EditorToolbar>
 
           {currentPrompt && (
-            <PromptTextfield value={currentPrompt.text} />
+            <EditorContainer>
+              <PromptTextfield value={editorText} onChange={(e) => setEditorText(e.target.value)} />
+              <Row>
+                <label>
+                  <input type="checkbox" checked={editorIsDeprecated} onChange={() => setEditorIsDeprecated((prev) => !prev)} />
+                  Is deprecated
+                </label>
+                <label>
+                  temperature override:
+                  <Input value={editorTempOverride} onChange={(e) => setEditorTempOverride(e.target.value)} placeholder="default" />
+                </label>
+              </Row>
+              <Row>
+                <Button>Add new prompt</Button>
+              </Row>
+            </EditorContainer>
           )}
 
           <div>
