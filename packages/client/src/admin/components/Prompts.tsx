@@ -1,9 +1,10 @@
+/* eslint-disable no-alert */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import * as React from 'react';
 import styled from 'styled-components';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
 import { Section } from './Section';
-import { getPrompts, getPromptTypeVariants } from '../admin-service';
+import { addNewUser, getPrompts, getPromptTypeVariants } from '../admin-service';
 
 const EditorToolbar = styled.div`
   display: flex;
@@ -114,11 +115,21 @@ function Prompts() {
     changeType(type, variants);
   };
 
+  const addNewVariant = () => {
+    if (!typeVariants || !selectedType) return;
+
+    const variantName = window.prompt('Enter variant name');
+    if (!variantName) return;
+
+    const tv = [...typeVariants[selectedType as LLMPromptType], variantName];
+    setTypeVariants({ ...typeVariants, [selectedType]: tv });
+    setSelectedVariant(variantName);
+    changePrompts([]);
+  };
+
   React.useEffect(() => {
     getPromptTypeVariants().then((variants) => changeTypeVariants(variants));
   }, []);
-
-  const currentPrompt = prompts[0];
 
   return (
     <Section header="Prompts">
@@ -140,10 +151,10 @@ function Prompts() {
               </select>
             )}
 
-            <Button>Add new variant</Button>
+            <Button onClick={addNewVariant}>Add new variant</Button>
           </EditorToolbar>
 
-          {currentPrompt && (
+          {selectedVariant && (
             <EditorContainer>
               <PromptTextfield value={editorText} onChange={(e) => setEditorText(e.target.value)} />
               <Row>
