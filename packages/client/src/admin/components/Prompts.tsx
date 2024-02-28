@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
 import { Section } from './Section';
-import { addNewPrompt, addNewUser, getPrompts, getPromptTypeVariants } from '../admin-service';
+import { addNewPrompt, getPrompts, getPromptTypeVariants } from '../admin-service';
 
 const EditorToolbar = styled.div`
   display: flex;
