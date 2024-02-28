@@ -30,7 +30,7 @@
     "react-router-dom": "6.2.2",
     "socket.io-client": "4.5.2",
     "styled-components": "5.2.0",
-    "yt-player": "3.4.3"
+    "yt-player": "3.6.1"
   },
   "devDependencies": {
     "@deseteral/eslint-config": "6.0.1",
@@ -40,7 +40,7 @@
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.13",
     "@types/styled-components": "5.1.24",
-    "@types/yt-player": "3.4.2",
+    "@types/yt-player": "3.5.4",
     "@vitejs/plugin-react": "2.1.0",
     "buffer": "6.0.3",
     "cssnano": "5.0.8",

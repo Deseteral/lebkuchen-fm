@@ -106,7 +106,9 @@ function rewindBy(time: number) {
 }
 
 function initialize(playerContainerDomId: string) {
-  player = new YTPlayer(`#${playerContainerDomId}`);
+  player = new YTPlayer(`#${playerContainerDomId}`, {
+    host: 'https://www.youtube-nocookie.com',
+  });
 
   PlayerStateService.on('playerStateReplaced', () => {
     const state = PlayerStateService.getState();
