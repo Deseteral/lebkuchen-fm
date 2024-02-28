@@ -1,4 +1,4 @@
-import type { AddUserRequestDto, LLMPrompt, LLMPromptsInfoResponseDto, LLMPromptsResponseDto, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
+import type { AddUserRequestDto, LLMPrompt, LLMPromptsInfoResponseDto, LLMPromptsResponseDto, LLMPromptTypeVariants, UpdateLLMPromptRequestDto } from 'lebkuchen-fm-service';
 import { UserData, UsersResponseDto } from 'lebkuchen-fm-service';
 
 export async function getUserList(): Promise<UserData[]> {
@@ -28,4 +28,15 @@ export async function getPrompts(type: string, variant: string): Promise<LLMProm
   const res = await fetch(`/api/llm-prompts/${type}/${variant}`);
   const data: LLMPromptsResponseDto = await res.json();
   return data.prompts;
+}
+
+export async function addNewPrompt(type: string, variant: string, text: string, deprecated: boolean, temperatureOveride: (number | null)): Promise<void> {
+  const data: UpdateLLMPromptRequestDto = { type, variant, text, deprecated, temperatureOveride };
+  const options: RequestInit = {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { 'Content-Type': 'application/json' },
+  };
+
+  await fetch('/api/llm-prompts', options);
 }

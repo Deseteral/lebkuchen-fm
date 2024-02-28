@@ -4,7 +4,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { LLMPrompt, LLMPromptType, LLMPromptTypeVariants } from 'lebkuchen-fm-service';
 import { Section } from './Section';
-import { addNewUser, getPrompts, getPromptTypeVariants } from '../admin-service';
+import { addNewPrompt, addNewUser, getPrompts, getPromptTypeVariants } from '../admin-service';
 
 const EditorToolbar = styled.div`
   display: flex;
@@ -91,6 +91,7 @@ function Prompts() {
     setPrompts(p);
     setEditorText(p[0]?.text || '');
     setEditorIsDeprecated(p[0]?.deprecated || false);
+    setEditorTempOverride(p[0]?.temperatureOverride?.toString() || '');
   };
 
   const changeVariant = (variant: string, type: string) => {
@@ -115,7 +116,7 @@ function Prompts() {
     changeType(type, variants);
   };
 
-  const addNewVariant = () => {
+  const onAddNewVariant = () => {
     if (!typeVariants || !selectedType) return;
 
     const variantName = window.prompt('Enter variant name');
@@ -125,6 +126,12 @@ function Prompts() {
     setTypeVariants({ ...typeVariants, [selectedType]: tv });
     setSelectedVariant(variantName);
     changePrompts([]);
+  };
+
+  const onAddNewPrompt = () => {
+    if (!selectedType || !selectedVariant) return;
+    addNewPrompt(selectedType, selectedVariant, editorText, editorIsDeprecated, parseFloat(editorTempOverride) || null);
+    getPromptTypeVariants().then((variants) => changeTypeVariants(variants));
   };
 
   React.useEffect(() => {
@@ -151,7 +158,7 @@ function Prompts() {
               </select>
             )}
 
-            <Button onClick={addNewVariant}>Add new variant</Button>
+            <Button onClick={onAddNewVariant}>Add new variant</Button>
           </EditorToolbar>
 
           {selectedVariant && (
@@ -168,14 +175,14 @@ function Prompts() {
                 </label>
               </Row>
               <Row>
-                <Button>Add new prompt</Button>
+                <Button onClick={onAddNewPrompt}>Add new prompt</Button>
               </Row>
             </EditorContainer>
           )}
 
           <div>
             {prompts.map((prompt) => (
-              <div>
+              <div key={`${prompt.type}-${prompt.variant}-${prompt.creationDate}`}>
                 <hr />
                 <div>{prompt.creationDate}, added by {prompt.addedBy}</div>
                 <div>is deprecated: {prompt.deprecated.toString()}, temperature: {prompt.temperatureOverride || ''}</div>
