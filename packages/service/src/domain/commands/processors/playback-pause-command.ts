@@ -2,53 +2,47 @@ import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
-import { SayEvent } from '@service/event-stream/model/events';
+import { PlayerPauseEvent } from '@service/event-stream/model/events';
 import { PlayerEventStream } from '@service/event-stream/player-event-stream';
-import Container, { Service } from 'typedi';
+import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
-class SayCommand extends CommandProcessor {
-  async execute(command: Command): Promise<CommandProcessingResponse> {
-    const text = command.rawArgs;
+class PauseCommand extends CommandProcessor {
+  constructor(private playerEventStream: PlayerEventStream) {
+    super();
+  }
 
-    if (!text) throw new Error('You have to provide message text');
-
-    const eventMessage: SayEvent = {
-      id: 'SayEvent',
-      text,
-    };
-
-    Container.get(PlayerEventStream).sendToEveryone(eventMessage);
+  async execute(_: Command): Promise<CommandProcessingResponse> {
+    const event: PlayerPauseEvent = { id: 'PauseEvent' };
+    this.playerEventStream.sendToEveryone(event);
 
     return new CommandProcessingResponseBuilder()
-      .fromMarkdown(`_"${text}"_`)
+      .fromMarkdown('⏸️')
       .build();
   }
 
   get key(): string {
-    return 'say';
+    return 'playback-pause';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'pause';
   }
 
   get helpMessage(): string {
-    return 'Prosi spikera o odczytanie wiadomości';
+    return 'Zatrzymuje bieżący film';
   }
 
   get exampleUsages(): string[] {
     return [
-      'to jest moja fantastyczna wiadomość',
+      '',
     ];
   }
 
   get parameters(): CommandParameters {
-    return new CommandParametersBuilder()
-      .withRequired('message')
-      .build();
+    return new CommandParametersBuilder().buildEmpty();
   }
 }
 
-export { SayCommand };
+export { PauseCommand as PlayPauseCommand };

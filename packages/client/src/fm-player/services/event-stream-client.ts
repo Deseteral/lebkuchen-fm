@@ -39,8 +39,12 @@ function connect(): (() => void) {
         SpeechService.say(eventData.text);
         break;
 
-      case 'PlayPauseEvent':
-        YouTubePlayerService.playPause();
+      case 'PauseEvent':
+        YouTubePlayerService.pause();
+        break;
+
+      case 'ResumeEvent':
+        YouTubePlayerService.resume();
         break;
 
       case 'SkipEvent': {
@@ -72,6 +76,10 @@ function connect(): (() => void) {
       default:
         break;
     }
+  });
+
+  YouTubePlayerService.onSongChanged((song) => {
+    client.emit('SongChanged', song);
   });
 
   return function disconnect() {

@@ -54,15 +54,15 @@ class RewindCommand extends CommandProcessor {
   }
 
   get key(): string {
-    return 'rewind';
+    return 'playback-rewind';
   }
 
   get shortKey(): (string | null) {
-    return null;
+    return 'rewind';
   }
 
   get helpMessage(): string {
-    return 'Przewija filmik do podanego czasu lub o podany czas(modyfikatory +/-)';
+    return 'Przewija odtwarzane wideo do podanego czasu lub o podany czas(modyfikatory +/-)';
   }
 
   get exampleUsages(): string[] {

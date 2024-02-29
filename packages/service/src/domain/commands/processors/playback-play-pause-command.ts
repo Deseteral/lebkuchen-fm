@@ -2,23 +2,14 @@ import { Command } from '@service/domain/commands/model/command';
 import { CommandProcessingResponse, CommandProcessingResponseBuilder } from '@service/domain/commands/model/command-processing-response';
 import { CommandParameters, CommandParametersBuilder, CommandProcessor } from '@service/domain/commands/model/command-processor';
 import { RegisterCommand } from '@service/domain/commands/registry/register-command';
-import { PlayPauseEvent } from '@service/event-stream/model/events';
-import { PlayerEventStream } from '@service/event-stream/player-event-stream';
 import { Service } from 'typedi';
 
 @RegisterCommand
 @Service()
 class PlayPauseCommand extends CommandProcessor {
-  constructor(private playerEventStream: PlayerEventStream) {
-    super();
-  }
-
   async execute(_: Command): Promise<CommandProcessingResponse> {
-    const event: PlayPauseEvent = { id: 'PlayPauseEvent' };
-    this.playerEventStream.sendToEveryone(event);
-
     return new CommandProcessingResponseBuilder()
-      .fromMarkdown('⏯')
+      .fromMarkdown(this.helpMessage)
       .build();
   }
 
@@ -31,7 +22,7 @@ class PlayPauseCommand extends CommandProcessor {
   }
 
   get helpMessage(): string {
-    return 'Odtwarza/zatrzymuje bieżący film';
+    return '`@Deprecated` użyj bardziej precyzyjnych komend `resume`/`pause`';
   }
 
   get exampleUsages(): string[] {

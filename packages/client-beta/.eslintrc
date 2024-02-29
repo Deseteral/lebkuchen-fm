@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "@deseteral/eslint-config/typescript",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "ignorePatterns": ["dist", ".eslintrc"],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "max-len": "off",
+    "no-console": "off"
+  }
+}

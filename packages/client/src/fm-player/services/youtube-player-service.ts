@@ -1,5 +1,6 @@
 import { Song, SpeedControl } from 'lebkuchen-fm-service';
 import YTPlayer from 'yt-player';
+import mitt, { Emitter, Handler } from 'mitt';
 import * as PlayerStateService from './player-state-service';
 
 let player: YTPlayer;
@@ -16,6 +17,8 @@ const ytPlayerStateUpdateQueue: YTPlayerStateUpdateQueue = {
   time: null,
 };
 
+const emitter: Emitter = mitt();
+
 function playSong(song: (Song | null), time = 0) {
   if (song) {
     const state = PlayerStateService.getState();
@@ -23,6 +26,10 @@ function playSong(song: (Song | null), time = 0) {
       song,
       time,
     };
+
+    if (time === 0) {
+      emitter.emit<Song>('songChanged', song);
+    }
 
     player.load(song.youtubeId, state.isPlaying);
   } else {
@@ -37,15 +44,15 @@ function playNextSong() {
   done();
 }
 
-function playPause() {
-  const { isPlaying } = PlayerStateService.getState();
-  if (isPlaying) {
-    player.pause();
-  } else {
-    player.play();
-  }
+function pause() {
+  player.pause();
+  PlayerStateService.getState().isPlaying = false;
+  done();
+}
 
-  PlayerStateService.getState().isPlaying = !isPlaying;
+function resume() {
+  player.play();
+  PlayerStateService.getState().isPlaying = true;
   done();
 }
 
@@ -99,7 +106,9 @@ function rewindBy(time: number) {
 }
 
 function initialize(playerContainerDomId: string) {
-  player = new YTPlayer(`#${playerContainerDomId}`);
+  player = new YTPlayer(`#${playerContainerDomId}`, {
+    host: 'https://www.youtube-nocookie.com',
+  });
 
   PlayerStateService.on('playerStateReplaced', () => {
     const state = PlayerStateService.getState();
@@ -153,12 +162,18 @@ function initialize(playerContainerDomId: string) {
   });
 }
 
+function onSongChanged(callback: Handler<Song>) {
+  emitter.on('songChanged', callback);
+}
+
 export {
   initialize,
-  playPause,
+  resume,
+  pause,
   playNextSong,
   setVolume,
   setSpeed,
   rewindTo,
   rewindBy,
+  onSongChanged,
 };

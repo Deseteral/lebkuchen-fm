@@ -1,5 +1,5 @@
 import { Service } from 'typedi';
-import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser, InternalServerError, QueryParam } from 'routing-controllers';
+import { Controller, BodyParam, Post, Get, UploadedFile, ContentType, Authorized, CurrentUser, InternalServerError, QueryParam, HttpCode } from 'routing-controllers';
 import { MissingRequriedFieldsError } from '@service/api/x-sounds/model/missing-required-fields-error';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import { XSoundsService } from '@service/domain/x-sounds/x-sounds-service';
@@ -35,6 +35,7 @@ class XSoundsController {
   }
 
   @Post('/')
+  @HttpCode(201)
   async addXSound(
     @UploadedFile('soundFile') soundFile: any,
     @BodyParam('soundName') soundName: string,

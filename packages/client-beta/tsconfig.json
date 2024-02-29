@@ -7,24 +7,27 @@
     "esModuleInterop": true,
     "noUnusedLocals": true,
     "noImplicitAny": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "declarationDir": "build/types",
     "declaration": true,
     "strict": true,
     "jsx": "react",
-    "target": "es2022",
-    "module": "CommonJS",
-    "sourceMap": true,
+    "target": "es2018",
+    "moduleResolution": "node",
     "lib": [
       "DOM",
-      "es2022"
+      "es2018"
     ],
-    "outDir": "build",
-    "declarationDir": "build/types",
+    "types": [
+      "react",
+      "jest"
+    ],
     "baseUrl": ".",
     "paths": {
       "@service/*": [
-        "./src/*"
+        "../service/src/*"
+      ],
+      "*": [
+        "node_modules/*"
       ],
     },
     "skipLibCheck": true
@@ -34,7 +37,6 @@
   ],
   "exclude": [
     "node_modules",
-    "build",
-    "config"
+    "build"
   ]
 }

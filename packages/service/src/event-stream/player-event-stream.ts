@@ -1,5 +1,5 @@
 import SocketIO from 'socket.io';
-import { Inject, Service } from 'typedi';
+import Container, { Inject, Service } from 'typedi';
 import mitt, { Emitter } from 'mitt';
 import {
   PlayerStateUpdateEvent,
@@ -10,6 +10,8 @@ import {
 import { Logger } from '@service/infrastructure/logger';
 import { PlayerState, makeDefaultPlayerState } from '@service/domain/player-state/player-state';
 import { extractSessionFromIncomingMessage } from '@service/utils/utils';
+import { Song } from '@service/domain/songs/song';
+import { RadioPersonalityService } from '@service/domain/radio-personality/radio-personality-service';
 
 @Service()
 class PlayerEventStream {
@@ -63,6 +65,10 @@ class PlayerEventStream {
 
     this.sendPlayerState(socket);
     this.emitter.emit('playerConnectionChange');
+
+    socket.on('SongChanged', (song: Song) => {
+      Container.get(RadioPersonalityService).onNowPlayingChanged(song);
+    });
 
     socket.on('disconnect', () => {
       PlayerEventStream.logger.info('User disconnected from event stream on /player namespace');
