@@ -1,7 +1,7 @@
 import { UserData } from 'lebkuchen-fm-service';
 import * as React from 'react';
 import styled from 'styled-components';
-import { addNewUser } from '../services/add-user-service';
+import { addNewUser } from '../admin-service';
 import { Section } from './Section';
 
 const UserName = styled.code<{ online: boolean }>`
@@ -78,7 +78,7 @@ function Users({ loggedInPlayerIds, userList, onUserAdded }: UsersProps) {
       <div>Currently logged in users count: {loggedInPlayerIds.length}</div>
       <ul>
         {userList.map((userData) => (
-          <li>
+          <li key={userData.name}>
             <UserName online={loggedInPlayerIds.includes(userData.name)}>
               {`> ${userData.name}`}
             </UserName>

@@ -4,7 +4,8 @@ import { AdminEventData, Log, UserData } from 'lebkuchen-fm-service';
 import { AppContainer } from './AppContainer';
 import { Users } from './Users';
 import { Logs } from './Logs';
-import { getUserList } from '../services/get-user-list';
+import { getUserList } from '../admin-service';
+import { Prompts } from './Prompts';
 
 function AdminPanel() {
   const [loggerHistory, setLoggerHistory] = React.useState<Log[]>([]);
@@ -49,6 +50,7 @@ function AdminPanel() {
         userList={userList}
         onUserAdded={() => refreshUserList()}
       />
+      <Prompts />
     </AppContainer>
   );
 }
