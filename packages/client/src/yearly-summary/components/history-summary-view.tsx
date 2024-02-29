@@ -2,10 +2,11 @@ import * as React from 'react';
 import { HistorySummary } from '@service/domain/history/history-summary';
 
 export interface HistorySummaryViewProps {
+  year: string,
   historySummary: HistorySummary,
 }
 
-export function HistorySummaryView({ historySummary }: HistorySummaryViewProps) {
+export function HistorySummaryView({ year, historySummary }: HistorySummaryViewProps) {
   return (
     <div className="summary-view">
       <h2>Played {historySummary.totalSongPlayCount} songs</h2>
@@ -21,7 +22,7 @@ export function HistorySummaryView({ historySummary }: HistorySummaryViewProps) 
 
           <tbody>
             {historySummary.mostPopularSongs.slice(0, 10).map((songPopularity) => (
-              <tr key={songPopularity.song.youtubeId}>
+              <tr key={`${year}-${songPopularity.song.youtubeId}-${songPopularity.playCount}`}>
                 <td className="yearly-summary-td">
                   <a href={`https://www.youtube.com/watch?v=${songPopularity.song.youtubeId}`} target="_blank" rel="noreferrer">
                     {songPopularity.song.name}
