@@ -14,6 +14,10 @@ class SongsService {
     return this.repository.findByName(name);
   }
 
+  async getByYoutubeId(youtubeId: string): Promise<Song | null> {
+    return this.repository.findByYoutubeId(youtubeId);
+  }
+
   async getAll(): Promise<Song[]> {
     return this.repository.findAllOrderedByTimesPlayedDesc();
   }

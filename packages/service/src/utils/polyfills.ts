@@ -23,12 +23,17 @@ Array.prototype.countOccurrences = function countOccurrences<T>(): Map<T, number
   return this.reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
 };
 
+Array.prototype.unique = function unique<T>(): T[] { // eslint-disable-line no-extend-native
+  return Array.from(new Set(this));
+};
+
 declare global {
   interface Array<T> {
     last(): T,
     randomShuffle(): T[],
     isEmpty(): boolean,
     countOccurrences(): Map<T, number>,
+    unique(): T[],
   }
 
   interface String {
