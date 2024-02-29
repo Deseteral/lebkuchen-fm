@@ -48,7 +48,7 @@ export function YearlySummary() {
 
       {isLoading && <div>Loading...</div>}
 
-      {!!historySummary && !!selectedYearOption && (
+      {!isLoading && !!historySummary && !!selectedYearOption && (
         <HistorySummaryView year={selectedYearOption} historySummary={historySummary} />
       )}
 
