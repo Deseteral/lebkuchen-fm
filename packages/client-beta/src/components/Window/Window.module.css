@@ -1,20 +1,22 @@
 .window {
   position: absolute;
   width: 500px;
-  height: 500px;
-}
+  box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);}
 
 .title {
+  position: relative;
   display: flex;
+  cursor: grab;
   justify-content: space-between;
-  padding: 5px;
-  cursor: move;
   background-color: mediumpurple;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 1.2rem;
 }
 
 .content {
   padding: 5px;
-  height: 450px;
+  min-height: 450px;
   background-color: #f1f1f1;
   opacity: 0.9;
 }

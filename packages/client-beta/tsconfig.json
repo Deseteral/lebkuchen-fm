@@ -26,9 +26,12 @@
       "@service/*": [
         "../service/src/*"
       ],
+      "@components/*": [
+        "./src/components/*"
+      ],
       "*": [
         "node_modules/*"
-      ],
+      ]
     },
     "skipLibCheck": true
   },
