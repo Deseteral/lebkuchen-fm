@@ -70,7 +70,7 @@ function XSoundUploadForm(_: XSoundUploadFormProps): JSX.Element {
     const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       displayMessage(`Added new sound ${JSON.stringify(data)}`);
     } else {
       const errorData: HttpError = data;
