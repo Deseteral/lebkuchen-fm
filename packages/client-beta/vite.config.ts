@@ -16,6 +16,9 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     dedupe: ['react', 'react-dom'],
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components'),
+    },
   },
   server: {
     port: 9090,

@@ -1,0 +1,21 @@
+.app {
+  display: flex;
+  Flex-direction: column;
+  align-items: center;
+  width: max-content;
+  padding: 5px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: white;
+}
+
+.app:focus {
+  outline: 2px dotted mediumpurple;
+  /* border: 1px solid black; */
+}
+
+.icon {
+  width: 64px;
+  heigh: 64px;
+}

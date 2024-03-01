@@ -1,22 +1,44 @@
-import React, { MouseEvent, useRef } from 'react';
+import React, { MouseEvent, ReactPortal, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Window.module.css';
+import { useWindowsContext } from '../../common/windows-context';
 
 interface WindowProps {
+  children: React.ReactElement | React.ReactElement[];
   startPosition: {
-    x: number,
-    y: number
-  },
-  title: string,
-  children: React.ReactElement
+    x: number;
+    y: number;
+  };
+  title: string;
+  close: () => void;
 }
 
-function Window({ startPosition, title, children }: WindowProps): React.JSX.Element {
+function Window({ startPosition, title, close, children }: WindowProps): ReactPortal {
+  const { windows, cleanWindow } = useWindowsContext();
   const windowRef = useRef<HTMLDivElement>(null);
+  const UUIDRef = useRef(crypto.randomUUID());
 
+  let { x, y } = startPosition;
   let nextX = 0;
   let nextY = 0;
-  let { x } = startPosition;
-  let { y } = startPosition;
+
+  useEffect(() => {
+    const UUID = UUIDRef.current;
+    windows.push({
+      id: UUID,
+      ref: windowRef,
+    });
+
+    return () => cleanWindow(UUID);
+  }, [windows, cleanWindow]);
+
+  const moveWindowToFront = () => {
+    if (windowRef.current) {
+      const parent = windowRef.current.parentNode;
+      parent?.removeChild(windowRef.current);
+      parent?.appendChild(windowRef.current);
+    }
+  };
 
   const closeDragElement = () => {
     document.onmouseup = null;
@@ -32,40 +54,43 @@ function Window({ startPosition, title, children }: WindowProps): React.JSX.Elem
     if (windowRef.current) {
       windowRef.current.style.top = `${windowRef.current.offsetTop - nextY}px`;
       windowRef.current.style.left = `${windowRef.current.offsetLeft - nextX}px`;
-      windowRef.current.style.zIndex = '1000';
     }
   };
 
   const dragMouseDown = (e: MouseEvent) => {
     e.preventDefault();
+    moveWindowToFront();
     x = e.clientX;
     y = e.clientY;
     document.onmouseup = closeDragElement;
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+    // @ts-ignore
     document.onmousemove = elementDrag;
   };
 
-  const onClose = () => {
-    if (windowRef.current) {
-      windowRef.current.style.display = 'none';
-    }
+  const closeWindow = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    close();
   };
 
-  return (
+  // @ts-ignore
+  return createPortal(
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
     <div
       className={styles.window}
       ref={windowRef}
+      onClick={moveWindowToFront}
       style={{ top: startPosition.y, left: startPosition.x }}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <div className={styles.title} onMouseDown={dragMouseDown}>
-        {title}
-        <button type="button" className={styles.close} onClick={onClose}>X</button>
+        <p>{title}</p>
+        <button type="button" className={styles.close} onMouseDown={closeWindow}>
+          X
+        </button>
       </div>
-      <div className={styles.content}>
-        {children}
-      </div>
-    </div>
+      <div className={styles.content}>{children}</div>
+    </div>,
+    document.getElementById('windows')!,
   );
 }
 
