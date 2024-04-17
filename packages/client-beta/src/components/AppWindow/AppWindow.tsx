@@ -24,17 +24,27 @@ function AppWindow(props: AppWindowProps) {
     y = props.startPosition?.y || y;
   })
 
-  const moveWindowToFront = () => {
+  const getBiggestZIndex = () => {
+    let biggestZIndex = 0;
     if (windowRef) {
       const parent = windowRef.parentNode;
       const allWindows = parent?.childNodes! as NodeListOf<HTMLElement>;
-      let biggestZIndex = 0;
       Array.from(allWindows).forEach(window => {
         if(+window.style.zIndex > biggestZIndex) {
           biggestZIndex = +window.style.zIndex
         }
       })
-      windowRef.style.zIndex = `${biggestZIndex + 1}`;
+    }
+
+    return biggestZIndex;
+  }
+  const moveWindowToFront = () => {
+    if (windowRef) {
+      const currentZIndex = windowRef.style.zIndex
+      const biggestZIndex = getBiggestZIndex();
+      if (biggestZIndex > +currentZIndex) {
+       windowRef.style.zIndex = `${getBiggestZIndex() + 1}`;
+      }
     }
   };
 
@@ -77,6 +87,8 @@ function AppWindow(props: AppWindowProps) {
         el.className = styles.window;
         el.style.top = `${y}px`;
         el.style.left = `${x}px`;
+        el.style.zIndex = `${getBiggestZIndex() + 1}`;
+        windowRef.addEventListener('click', moveWindowToFront);
       }}
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
