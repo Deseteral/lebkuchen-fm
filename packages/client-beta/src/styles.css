@@ -6,14 +6,5 @@
 
 body {
   background-image: url('../public/bg.png');
-}
-
-.desktop {
-  height: 100vh;
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  padding: 15px;
-  gap: 15px;
+  background-color: #6261a1;
 }

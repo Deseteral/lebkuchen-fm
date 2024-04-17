@@ -1,7 +1,14 @@
 .window {
   position: absolute;
+  display: flex;
+  flex-direction: column;
   width: 500px;
-  box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);}
+  min-width: 250px;
+  min-height: 100px;
+  box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);
+  resize: both;
+  overflow: auto;
+}
 
 .title {
   position: relative;
@@ -15,10 +22,10 @@
 }
 
 .content {
-  padding: 5px;
-  min-height: 450px;
+  overflow: scroll;
+  overflow-x: hidden;
+  height: 100%;
   background-color: #f1f1f1;
-  opacity: 0.9;
 }
 
 .close {

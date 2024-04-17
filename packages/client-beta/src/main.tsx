@@ -1,22 +1,15 @@
-import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'solid-js/web';
+import { Router, Route } from '@solidjs/router';
 import './styles.css';
-import { Soundboard } from './apps/Soundboard/Soundboard';
+import { Desktop } from './views/Desktop/Desktop';
+import { Login } from './views/Login/Login';
 
-function Desktop() {
-  // React.useEffect(() => {
-  // checkLoginStateAndRedirect();
-  // }, []);
-
-  return (
-    <main className="desktop">
-      <Soundboard />
-      <Soundboard />
-      <Soundboard />
-      <Soundboard />
-    </main>
-  );
-}
-
-const root = createRoot(document.getElementById('root')!);
-root.render(<Desktop />);
+render(() => (
+  <Router>
+    {/* these two first routes for local dev purpose */}
+    <Route path="/" component={Desktop} />
+    <Route path="/login" component={Login} />
+    <Route path="/beta" component={Desktop} />
+    <Route path="/beta/login" component={Login} />
+  </Router>
+), document.getElementById('root')!);

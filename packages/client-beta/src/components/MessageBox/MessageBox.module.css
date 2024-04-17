@@ -1,0 +1,67 @@
+.box * {
+  font-family: tahoma;
+  font-size: 12px;
+}
+
+.box {
+  position: absolute;
+  z-index: 2;
+  background-color: #ffffe1;
+  width: max-content;
+  height: max-content;
+  border: 1px solid black;
+  border-radius: 15px;
+  color: black;
+}
+
+.box::before {
+  content: '';
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  background: #ffffe1;
+  border: 1px solid black;
+  border-bottom: 1px solid #ffffe1;
+  border-top-left-radius: 100%;
+}
+
+.box.errorBox {
+  top: 75px;
+  left: 50px;
+}
+
+.box.errorBox::before {
+  top: -17px;
+  left: 30px;
+}
+
+.box.hintBox {
+  top: 75px;
+  right: 0px;
+  padding: 15px;
+}
+
+.box.hintBox::before {
+  top: -17px;
+  right: 20px;
+}
+
+.header {
+  display: flex;
+  padding: 0 15px 0 0;
+  align-items: center;
+  font-weight: bold;
+}
+
+.errorIcon {
+  width: 50px;
+  height: 50px;
+}
+
+.message {
+  padding: 0 15px 15px 15px;
+}
+
+.politeMessage {
+  padding-top: 10px;
+}

@@ -1,21 +1,14 @@
-.app {
-  display: flex;
-  Flex-direction: column;
-  align-items: center;
-  width: max-content;
-  padding: 5px;
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  max-height: 550px;
+  background-color: #f1f1f1;
+  justify-content: center;
+  gap: 10px;
+}
+
+.button {
+  margin: 5px;
   cursor: pointer;
-  border: none;
-  background: none;
-  color: white;
-}
-
-.app:focus {
-  outline: 2px dotted mediumpurple;
-  /* border: 1px solid black; */
-}
-
-.icon {
-  width: 64px;
-  height: 64px;
+  border-radius: 5px;
 }
