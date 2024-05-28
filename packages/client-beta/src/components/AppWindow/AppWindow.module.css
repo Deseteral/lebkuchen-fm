@@ -1,0 +1,36 @@
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  min-width: 250px;
+  min-height: 100px;
+  box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);
+  resize: both;
+  overflow: auto;
+}
+
+.title {
+  position: relative;
+  display: flex;
+  cursor: grab;
+  justify-content: space-between;
+  background-color: mediumpurple;
+  padding: 5px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.content {
+  overflow: scroll;
+  overflow-x: hidden;
+  height: 100%;
+  background-color: #f1f1f1;
+}
+
+.close {
+  color: white;
+  cursor: pointer;
+  border: none;
+  background-color: rebeccapurple;
+}

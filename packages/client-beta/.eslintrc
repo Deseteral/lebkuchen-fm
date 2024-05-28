@@ -1,14 +1,27 @@
 {
-  "extends": [
-    "@deseteral/eslint-config/typescript",
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:react-hooks/recommended"
+  "plugins": [
+    "solid"
   ],
-  "ignorePatterns": ["dist", ".eslintrc"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:solid/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "es2020": true
+  },
+  "ignorePatterns": [
+    "dist",
+    ".eslintrc"
+  ],
   "parser": "@typescript-eslint/parser",
   "rules": {
-    "max-len": "off",
-    "no-console": "off"
+    "@typescript-eslint/ban-ts-comment": "off",
+    "quotes": [ "error", "single", { "avoidEscape": true } ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
   }
 }

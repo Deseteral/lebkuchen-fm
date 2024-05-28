@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import solid from 'vite-plugin-solid';
+// @ts-ignore
 import path from 'path';
 
-// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   root: 'src',
   build: {
@@ -13,9 +13,12 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react()],
+  plugins: [solid()],
   resolve: {
     dedupe: ['react', 'react-dom'],
+    alias: {
+      '@components': path.resolve(__dirname, 'src/components'),
+    },
   },
   server: {
     port: 9090,
@@ -26,7 +29,8 @@ export default defineConfig({
         changeOrigin: true,
       },
       '^/api/.*': {
-        target: 'http://localhost:9000/',
+        // target: 'http://localhost:9000/',
+        target: 'https://lebkuchen-fm.fly.dev',
         changeOrigin: true,
       },
     },
