@@ -44,8 +44,8 @@
   text-align: center;
 }
 
-.windowsLogo {
-  width: 250px;
+.logo {
+  width: 450px;
 }
 
 @media (width <=786px) {

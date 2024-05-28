@@ -7,6 +7,7 @@ import styles from './Soundboard.module.css';
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
   const [xsounds, setXsounds] = createSignal([]);
+  const audioClient = new Audio();
   let buttonRef!: HTMLButtonElement;
   const toggleWindow = () => {
     setShowWindow((prev: boolean) => !prev);
@@ -14,6 +15,11 @@ function Soundboard() {
       buttonRef.blur();
     }
   };
+
+  function playXSoundLocally(url: string) {
+    audioClient.src = url;
+    audioClient.play();
+  }
 
   createEffect(() => {
     fetch('/api/x-sounds')
@@ -34,9 +40,9 @@ function Soundboard() {
           <h4>soundboard</h4>
           <div class={styles.container}>
             {xsounds() &&
-              xsounds().map((xsound: XSound, idx: number) => (
-                <button class={styles.button}>
-                  {idx + 1}. {xsound.name}
+              xsounds().map((xsound: XSound) => (
+                <button class={styles.button} onClick={() => playXSoundLocally(xsound.url)}>
+                  {xsound.name}
                 </button>
               ))}
           </div>

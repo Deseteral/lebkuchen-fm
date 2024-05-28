@@ -28,7 +28,7 @@ function AppWindow(props: AppWindowProps) {
     let biggestZIndex = 0;
     if (windowRef) {
       const parent = windowRef.parentNode;
-      const allWindows = parent?.childNodes! as NodeListOf<HTMLElement>;
+      const allWindows = parent?.childNodes as NodeListOf<HTMLElement>;
       Array.from(allWindows).forEach(window => {
         if(+window.style.zIndex > biggestZIndex) {
           biggestZIndex = +window.style.zIndex

@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import styles from './Login.module.css';
 import shutdownIcon from '../../../public/shutdownIcon.png';
-import windowsLogo from '../../../public/windows.png';
-import chess from '../../../public/chess.webp';
-import frog from '../../../public/frog.webp';
+import logo from '../../../public/logo.svg';
+import rock from '../../../public/rock-stop.png';
+import cowboy from '../../../public/cowboy.png';
 import arrow from '../../../public/arrow.png';
 import hint from '../../../public/hint.png';
 import { createSignal } from 'solid-js';
@@ -85,7 +85,7 @@ function Login() {
       <header class={styles.header} />
       <main class={styles.main} onClick={() => setSelectedUser(null)}>
         <div class={styles.mainLeft}>
-          <img class={styles.windowsLogo} src={windowsLogo} />
+          <img class={styles.logo} src={logo} />
           <p class={styles.mainLeftText}>To begin, click your user name</p>
         </div>
         <div class={styles.verticalLine} />
@@ -95,7 +95,7 @@ function Login() {
             class={userClassNames('admin')}
             onClick={selectUser}
           >
-            <img class={styles.avatar} src={chess} />
+            <img class={styles.avatar} src={rock} />
             <div class={styles.userContent}>
               <span class={styles.username}>Administrator</span>
               {selectedUser() === 'admin' && (
@@ -121,7 +121,7 @@ function Login() {
             class={userClassNames('guest')}
             onClick={selectUser}
           >
-            <img class={styles.avatar} src={frog} />
+            <img class={styles.avatar} src={cowboy} />
             <div class={styles.userContent}>
               <span class={styles.username}>{username || 'Guest'}</span>
               {selectedUser() === 'guest' && (
