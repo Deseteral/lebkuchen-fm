@@ -29,8 +29,7 @@ export default defineConfig({
         changeOrigin: true,
       },
       '^/api/.*': {
-        // target: 'http://localhost:9000/',
-        target: 'https://lebkuchen-fm.fly.dev',
+        target: 'http://localhost:9000/',
         changeOrigin: true,
       },
     },

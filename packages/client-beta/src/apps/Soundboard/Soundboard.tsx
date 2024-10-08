@@ -2,6 +2,7 @@ import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createEffect, createSignal } from 'solid-js';
 import { XSound } from '@service/domain/x-sounds/x-sound';
+import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
 
 function Soundboard() {
@@ -30,13 +31,13 @@ function Soundboard() {
   return (
     <>
       <DesktopIcon
-        label="Soundboard.exe"
-        imgSrc="https://cdn2.iconfinder.com/data/icons/gadgets-and-devices/48/60-512.png"
+        label='Soundboard.exe'
+        imgSrc={soundboardIcon}
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
       />
       {showWindow() && (
-        <AppWindow title="LebkuchenFM Soundboard" close={() => setShowWindow(false)}>
+        <AppWindow title='LebkuchenFM Soundboard' close={() => setShowWindow(false)}>
           <h4>soundboard</h4>
           <div class={styles.container}>
             {xsounds() &&
