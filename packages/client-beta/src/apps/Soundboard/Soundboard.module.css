@@ -1,0 +1,20 @@
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 100px);
+  max-height: 550px;
+  background-color: #f1f1f1;
+  justify-content: center;
+  gap: 10px;
+}
+
+.button {
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: ease-in-out 0.1s;
+}
+
+.button:hover {
+  background-color: mediumpurple;
+  color: white;
+}
