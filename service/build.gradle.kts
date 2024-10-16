@@ -8,12 +8,12 @@ plugins {
     id("com.ncorti.ktfmt.gradle").version("0.20.1")
 }
 
-group = "xyz.deseteral"
+group = "xyz.lebkuchenfm"
 
 version = "0.0.1"
 
 application {
-    mainClass.set("xyz.deseteral.ApplicationKt")
+    mainClass.set("xyz.lebkuchenfm.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")

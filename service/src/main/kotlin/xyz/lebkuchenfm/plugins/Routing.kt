@@ -1,4 +1,4 @@
-package xyz.deseteral.plugins
+package xyz.lebkuchenfm.plugins
 
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
