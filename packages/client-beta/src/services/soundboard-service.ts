@@ -1,5 +1,17 @@
 import { XSound } from '@service/domain/x-sounds/x-sound';
 
+export async function getXSounds() {
+  return fetch('/api/x-sounds')
+    .then((res) => res.json())
+    .then((res) => res.sounds);
+}
+
+export async function getXSoundsTags() {
+  return fetch('/api/x-sounds/tags')
+    .then((res) => res.json())
+    .then((res) => res.tags);
+}
+
 export function soundMatchesPhrase(sound: XSound, phrase: string) {
   const { name, tags = [] } = sound;
   const tagsAndNameJoinedString = [name, ...tags].join(' ').toLowerCase();
@@ -21,4 +33,3 @@ export function soundsSorting(phrase: string) {
     return a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }) || b.timesPlayed - a.timesPlayed;
   };
 }
-

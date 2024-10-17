@@ -4,7 +4,7 @@ import { createEffect, createSignal, For } from 'solid-js';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
-import { soundMatchesPhrase, soundsSorting } from '../../services/sounds-filtering';
+import { getXSounds, getXSoundsTags, soundMatchesPhrase, soundsSorting } from '../../services/soundboard-service';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -26,21 +26,18 @@ function Soundboard() {
   }
 
   createEffect(() => {
-    fetch('/api/x-sounds')
-      .then((res) => res.json())
-      .then((res) => {
-        setXsounds(res.sounds);
-        setFilteredXSounds(res.sounds);
-      });
+    getXSounds().then((sounds) => {
+      setXsounds(sounds);
+      setFilteredXSounds(sounds);
+    });
 
-    fetch('/api/x-sounds/tags')
-      .then((res) => res.json())
-      .then((res) => setTags(res.tags));
+    getXSoundsTags().then((tags) => {
+      setTags(tags);
+    });
   });
 
-
   const onSearchChange = (e: Event) => {
-    const phrase = (e.target as HTMLInputElement).value;
+    const value = (e.target as HTMLInputElement).value;
     const name = (e.target as HTMLInputElement).name;
 
     if(name === 'phrase') {
@@ -51,8 +48,8 @@ function Soundboard() {
 
     setFilteredXSounds(
       xsounds()
-        .filter((sound: XSound) => soundMatchesPhrase(sound, phrase))
-        .sort(soundsSorting(phrase)),
+        .filter((sound: XSound) => soundMatchesPhrase(sound, value))
+        .sort(soundsSorting(value)),
     );
   };
 
@@ -67,8 +64,8 @@ function Soundboard() {
       {showWindow() && (
         <AppWindow title='Soundboard' close={() => setShowWindow(false)}>
           <h4 class={styles.title}>Search</h4>
-          <input class={styles.search} type='text' placeholder='phrase' name="phrase" onInput={onSearchChange} />
-          <input list='tags' class={styles.search} type='text' placeholder='tags' name="tags" onInput={onSearchChange} />
+          <input class={styles.search} type='text' placeholder='phrase' name='phrase' onInput={onSearchChange} />
+          <input list='tags' class={styles.search} type='text' placeholder='tags' name='tags' onInput={onSearchChange} />
           <datalist id='tags'>
             <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
           </datalist>
