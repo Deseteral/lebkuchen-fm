@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.infrastructure
+package xyz.lebkuchenfm.external.storage
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
@@ -8,27 +8,24 @@ import io.ktor.server.config.ApplicationConfig
 
 // TODO: Error handling.
 object MongoDatabaseClient {
-    lateinit var mongoClient: MongoClient
+    lateinit var client: MongoClient
 
     private const val CONNECTION_STRING_PROPERTY_PATH = "storage.mongodb.connectionString"
     private const val DEFAULT_CONNECTION_STRING = "mongodb://localhost:27017"
     private const val DATABASE_NAME = "lebkuchen-fm"
 
     fun getDatabase(config: ApplicationConfig): MongoDatabase {
-        if (!::mongoClient.isInitialized) {
-            mongoClient = connectToMongo(config)
+        if (!MongoDatabaseClient::client.isInitialized) {
+            client = connectToMongo(config)
         }
-        return mongoClient.getDatabase(DATABASE_NAME)
+        return client.getDatabase(DATABASE_NAME)
     }
 
     private fun connectToMongo(config: ApplicationConfig): MongoClient {
         val mongoConnectionString =
-            config.propertyOrNull(CONNECTION_STRING_PROPERTY_PATH)?.getString()
-                ?: DEFAULT_CONNECTION_STRING
+            config.propertyOrNull(CONNECTION_STRING_PROPERTY_PATH)?.getString() ?: DEFAULT_CONNECTION_STRING
         val clientSettings =
-            MongoClientSettings.builder()
-                .applyConnectionString(ConnectionString(mongoConnectionString))
-                .build()
+            MongoClientSettings.builder().applyConnectionString(ConnectionString(mongoConnectionString)).build()
         return MongoClient.create(clientSettings)
     }
 }

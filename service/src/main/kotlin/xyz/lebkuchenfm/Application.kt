@@ -7,7 +7,7 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import xyz.lebkuchenfm.infrastructure.MongoDatabaseClient
+import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
