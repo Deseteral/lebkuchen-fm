@@ -4,7 +4,12 @@ import { createEffect, createSignal, For } from 'solid-js';
 import { XSound } from '@service/domain/x-sounds/x-sound';
 import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
-import { getXSounds, getXSoundsTags, soundMatchesPhrase, soundsSorting } from '../../services/soundboard-service';
+import {
+  getXSounds,
+  getXSoundsTags,
+  soundMatchesPhrase,
+  soundsSorting,
+} from '../../services/soundboard-service';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -40,9 +45,9 @@ function Soundboard() {
     const value = (e.target as HTMLInputElement).value;
     const name = (e.target as HTMLInputElement).name;
 
-    if(name === 'phrase') {
+    if (name === 'phrase') {
       (document.getElementsByName('tags')[0] as HTMLInputElement).value = '';
-    } else if(name === 'tags') {
+    } else if (name === 'tags') {
       (document.getElementsByName('phrase')[0] as HTMLInputElement).value = '';
     }
 
@@ -56,17 +61,30 @@ function Soundboard() {
   return (
     <>
       <DesktopIcon
-        label='Soundboard.exe'
+        label="Soundboard.exe"
         imgSrc={soundboardIcon}
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
       />
       {showWindow() && (
-        <AppWindow title='Soundboard' close={() => setShowWindow(false)}>
+        <AppWindow title="Soundboard" close={() => setShowWindow(false)}>
           <h4 class={styles.title}>Search</h4>
-          <input class={styles.search} type='text' placeholder='phrase' name='phrase' onInput={onSearchChange} />
-          <input list='tags' class={styles.search} type='text' placeholder='tags' name='tags' onInput={onSearchChange} />
-          <datalist id='tags'>
+          <input
+            class={styles.search}
+            type="text"
+            placeholder="phrase"
+            name="phrase"
+            onInput={onSearchChange}
+          />
+          <input
+            list="tags"
+            class={styles.search}
+            type="text"
+            placeholder="tags"
+            name="tags"
+            onInput={onSearchChange}
+          />
+          <datalist id="tags">
             <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
           </datalist>
           <h4 class={styles.title}>Sounds</h4>
