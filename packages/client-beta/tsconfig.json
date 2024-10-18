@@ -18,21 +18,12 @@
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@service/*": [
-        "../service/src/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "*": [
-        "node_modules/*"
-      ]
+      "@service/*": ["../service/src/*"],
+      "@components/*": ["./src/components/*"],
+      "*": ["node_modules/*"]
     },
     "skipLibCheck": true
   },
-  "include": [ "src" ],
-  "exclude": [
-    "node_modules",
-    "build"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules", "build"]
 }

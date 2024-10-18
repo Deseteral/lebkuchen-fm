@@ -22,28 +22,28 @@ function AppWindow(props: AppWindowProps) {
   createEffect(() => {
     x = props.startPosition?.x || x;
     y = props.startPosition?.y || y;
-  })
+  });
 
   const getBiggestZIndex = () => {
     let biggestZIndex = 0;
     if (windowRef) {
       const parent = windowRef.parentNode;
       const allWindows = parent?.childNodes as NodeListOf<HTMLElement>;
-      Array.from(allWindows).forEach(window => {
-        if(+window.style.zIndex > biggestZIndex) {
-          biggestZIndex = +window.style.zIndex
+      Array.from(allWindows).forEach((window) => {
+        if (+window.style.zIndex > biggestZIndex) {
+          biggestZIndex = +window.style.zIndex;
         }
-      })
+      });
     }
 
     return biggestZIndex;
-  }
+  };
   const moveWindowToFront = () => {
     if (windowRef) {
-      const currentZIndex = windowRef.style.zIndex
+      const currentZIndex = windowRef.style.zIndex;
       const biggestZIndex = getBiggestZIndex();
       if (biggestZIndex > +currentZIndex) {
-       windowRef.style.zIndex = `${getBiggestZIndex() + 1}`;
+        windowRef.style.zIndex = `${getBiggestZIndex() + 1}`;
       }
     }
   };
@@ -93,7 +93,9 @@ function AppWindow(props: AppWindowProps) {
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
         <p>{props.title}</p>
-        <button type="button" class={styles.close} onClick={closeWindow}>x</button>
+        <button type="button" class={styles.close} onClick={closeWindow}>
+          x
+        </button>
       </div>
       <div class={styles.content}>{props.children}</div>
     </Portal>

@@ -18,3 +18,19 @@
   background-color: mediumpurple;
   color: white;
 }
+
+.title {
+  padding: 10px;
+}
+
+.search {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.noResults {
+  text-align: center;
+  padding: 10px;
+}
