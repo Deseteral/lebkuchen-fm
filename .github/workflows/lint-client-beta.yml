@@ -1,9 +1,14 @@
-name: Build
+name: Lint Client Beta
 
-on: [push]
+on:
+  push:
+    paths:
+      - 'packages/client-beta/**'
+  pull_request:
+    paths:
+      - 'packages/client-beta/**'
 
-jobs:
-  build:
+  lint-client-beta:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -12,5 +17,5 @@ jobs:
       with:
         node-version: 18.x
     - run: yarn install --frozen-lockfile
-    - run: yarn run build
-    - run: yarn test
+    - run: yarn lint:client-beta
+    - run: yarn format:check:client-beta

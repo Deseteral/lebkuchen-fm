@@ -22,6 +22,8 @@
     "test": "yarn workspace lebkuchen-fm-service test && yarn workspace lebkuchen-fm-client test",
     "clean": "yarn workspace lebkuchen-fm-service clean && yarn workspace lebkuchen-fm-client clean",
     "clean:deps": "rm -rf ./node_modules ./packages/**/node_modules",
+    "lint:client-beta": "yarn workspace lebkuchen-fm-client-beta lint",
+    "format:check:client-beta": "yarn workspace lebkuchen-fm-client-beta format:check",
     "fm": "./scripts/fm.sh"
   }
 }
