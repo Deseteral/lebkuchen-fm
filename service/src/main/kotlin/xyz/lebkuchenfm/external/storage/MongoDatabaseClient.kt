@@ -11,7 +11,6 @@ object MongoDatabaseClient {
     lateinit var client: MongoClient
 
     private const val CONNECTION_STRING_PROPERTY_PATH = "storage.mongodb.connectionString"
-    private const val DEFAULT_CONNECTION_STRING = "mongodb://localhost:27017"
     private const val DATABASE_NAME = "lebkuchen-fm"
 
     fun getDatabase(config: ApplicationConfig): MongoDatabase {
@@ -23,7 +22,7 @@ object MongoDatabaseClient {
 
     private fun connectToMongo(config: ApplicationConfig): MongoClient {
         val mongoConnectionString =
-            config.propertyOrNull(CONNECTION_STRING_PROPERTY_PATH)?.getString() ?: DEFAULT_CONNECTION_STRING
+            config.property(CONNECTION_STRING_PROPERTY_PATH).getString()
         val clientSettings =
             MongoClientSettings.builder().applyConnectionString(ConnectionString(mongoConnectionString)).build()
         return MongoClient.create(clientSettings)

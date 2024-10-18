@@ -7,4 +7,4 @@ ktor:
 
 storage:
   mongodb:
-    connectionString: $MONGODB_URI
+    connectionString: "$MONGODB_URL:mongodb://localhost:27017"
