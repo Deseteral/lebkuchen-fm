@@ -8,6 +8,7 @@ on:
     paths:
       - 'packages/client-beta/**'
 
+jobs:
   lint-client-beta:
     runs-on: ubuntu-latest
     steps:
