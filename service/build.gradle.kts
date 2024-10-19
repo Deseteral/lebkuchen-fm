@@ -23,8 +23,6 @@ application {
 repositories { mavenCentral() }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-resources-jvm")
     implementation("io.ktor:ktor-server-host-common-jvm")
