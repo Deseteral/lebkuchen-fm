@@ -1,0 +1,10 @@
+ktor:
+  application:
+    modules:
+      - xyz.lebkuchenfm.ApplicationKt.module
+  deployment:
+    port: "$PORT:8080"
+
+storage:
+  mongodb:
+    connectionString: "$MONGODB_URL:mongodb://localhost:27017"
