@@ -17,6 +17,8 @@ import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.storage.FileStorage
 import xyz.lebkuchenfm.external.storage.Storage
+import java.io.File
+import java.util.UUID
 
 fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
     route("/x-sounds") {
@@ -25,6 +27,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             val response = XSoundsResponse(sounds.map { it.toResponse() })
             call.respond(response)
         }
+
         get("/tags") {
 
         }
@@ -32,7 +35,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         post {
             var soundName = ""
             var tagsString = ""
-            var fileName = ""
+            var fileName = UUID.randomUUID().toString()
             val multipartData = call.receiveMultipart()
             var fileBytes: ByteArray? = null
 
@@ -40,14 +43,16 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "soundName") {
+                            // TODO: check if soundName provided and valid
                             soundName = part.value
                         } else if (part.name == "tags") {
+                            // TODO: parse tags
                             tagsString = part.value
                         }
                     }
 
                     is PartData.FileItem -> {
-                        fileName = part.originalFileName as String
+                        part.originalFileName?.let { fileName = it }
                         fileBytes = part.provider().readRemaining().readByteArray()
                     }
 
@@ -56,13 +61,11 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 part.dispose()
             }
 
-            // TODO: check if file name is present
-            // TODO: validate soundname
-            // TODO: extract file extension
 
             fileBytes?.let { bytes ->
                 val storage = FileStorage()
-                val result = storage.uploadFile(Storage.XSound, soundName, bytes)
+                val extension = File(fileName).extension.takeIf { it.isNotBlank() }.run { ".$this" }
+                val result = storage.uploadFile(Storage.XSound, "$soundName$extension" , bytes)
                 if (result.isSuccess) {
                     call.respondText("$fileName is uploaded as '$soundName' with tags: $tagsString")
                     // TODO: save file url to mongo

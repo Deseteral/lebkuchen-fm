@@ -10,6 +10,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -84,10 +85,9 @@ class FileStorage {
             "path" to JsonPrimitive(uploadedFile.path_display),
             "settings" to JsonObject(mapOf(
                 "access" to JsonPrimitive("viewer"),
-                "allow_download" to JsonPrimitive(true),
                 "audience" to JsonPrimitive("public"),
-                "requested_visibility" to JsonPrimitive("public")
-            ))
+                "allow_download" to JsonPrimitive(true),
+                ))
         ))
 
         val sharingResponse: HttpResponse = client.post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings") {
@@ -101,9 +101,14 @@ class FileStorage {
         val sharedFile: DropboxShareResponse = jsonParser.decodeFromString(sharingResponse.bodyAsText())
 
         println("upload status: ${uploadResponse.status}")
-        println("sharing url: ${sharedFile.url}")
 
-        // TODO: Change format of url to dl.dropbox.com
-        return Result.success(FileUploadResult(sharedFile.url))
+        val url = URLBuilder(sharedFile.url).apply {
+            this.host = "dl.dropboxusercontent.com"
+            this.parameters.remove("dl")
+        }.buildString()
+
+        println("obtained url: ${sharedFile.url}")
+        println("sharing url: $url")
+        return Result.success(FileUploadResult(url))
     }
 }
