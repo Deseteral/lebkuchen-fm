@@ -1,5 +1,3 @@
-@file:Suppress("ktlint:standard:property-naming")
-
 val kotlin_version: String by project
 val logback_version: String by project
 val mongo_driver_version: String by project
@@ -8,7 +6,7 @@ plugins {
     kotlin("jvm") version "2.0.21"
     id("io.ktor.plugin") version "3.0.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    id("com.ncorti.ktfmt.gradle").version("0.20.1")
 }
 
 group = "xyz.lebkuchenfm"
@@ -39,4 +37,13 @@ dependencies {
 
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+ktfmt {
+    kotlinLangStyle()
+    maxWidth.set(120)
+    blockIndent.set(4)
+    continuationIndent.set(4)
+    removeUnusedImports.set(true)
+    manageTrailingCommas.set(true)
 }

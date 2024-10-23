@@ -6,12 +6,11 @@ import kotlin.test.Test
 
 class ApplicationTest {
     @Test
-    fun testRoot() =
-        testApplication {
-            client.get("/").apply {
-                // TODO: Tests to be done later.
-                // assertEquals(HttpStatusCode.OK, status)
-                // assertEquals("Hello World!", bodyAsText())
-            }
+    fun testRoot() = testApplication {
+        client.get("/").apply {
+            // TODO: Tests to be done later.
+            // assertEquals(HttpStatusCode.OK, status)
+            // assertEquals("Hello World!", bodyAsText())
         }
+    }
 }
