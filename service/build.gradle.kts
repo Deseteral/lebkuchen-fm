@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:property-naming")
+
 val kotlin_version: String by project
 val logback_version: String by project
 val mongo_driver_version: String by project
