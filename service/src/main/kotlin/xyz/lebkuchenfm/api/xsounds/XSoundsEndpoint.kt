@@ -18,9 +18,14 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
     }
 }
 
-@Serializable data class XSoundsResponse(val sounds: List<XSoundResponse>)
+@Serializable
+data class XSoundsResponse(val sounds: List<XSoundResponse>)
 
-@Serializable data class XSoundResponse(val id: String, val name: String)
+@Serializable
+data class XSoundResponse(
+    val id: String,
+    val name: String,
+)
 
 fun XSound.toResponse(): XSoundResponse {
     return XSoundResponse(id = this.id, name = this.name)

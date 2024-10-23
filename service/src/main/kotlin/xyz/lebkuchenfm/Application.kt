@@ -9,8 +9,8 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.storage.repos.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
+import xyz.lebkuchenfm.external.storage.repos.XSoundsMongoRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
