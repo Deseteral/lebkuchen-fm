@@ -18,7 +18,6 @@ import io.ktor.http.contentType
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFile
 import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFileResponse
@@ -26,16 +25,6 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFileSettings
 import xyz.lebkuchenfm.external.storage.dropbox.models.TokenInfo
 import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileArgs
 import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileResponse
-
-@Serializable
-@Suppress( "PropertyName")
-data class DropboxUploadResponse(
-    val id: String,
-    val name: String,
-    val path_display: String,
-    val path_lower: String,
-)
-
 
 data class FileUploadResult(
     val publicUrl: String
