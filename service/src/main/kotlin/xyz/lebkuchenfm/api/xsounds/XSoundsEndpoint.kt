@@ -14,15 +14,8 @@ import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.storage.FileStorage
-import xyz.lebkuchenfm.external.storage.Storage
-import java.io.File
-import java.util.UUID
 
-fun Route.xSoundsRouting(
-    xSoundsService: XSoundsService,
-    fileStorage: FileStorage,
-) {
+fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
     route("/x-sounds") {
         get {
             val sounds = xSoundsService.getAllXSounds()
@@ -36,9 +29,9 @@ fun Route.xSoundsRouting(
         post {
             var soundName = ""
             var tags: List<String> = emptyList()
-            var fileName = UUID.randomUUID().toString()
-            val multipartData = call.receiveMultipart()
             var fileBytes: ByteArray? = null
+
+            val multipartData = call.receiveMultipart()
 
             multipartData.forEachPart { part ->
                 when (part) {
@@ -52,7 +45,6 @@ fun Route.xSoundsRouting(
                     }
 
                     is PartData.FileItem -> {
-                        part.originalFileName?.let { fileName = it }
                         fileBytes = part.provider().readRemaining().readByteArray()
                     }
 
@@ -62,16 +54,9 @@ fun Route.xSoundsRouting(
             }
 
             fileBytes?.let { bytes ->
-                val extension = File(fileName).extension.takeIf { it.isNotBlank() }.run { ".$this" }
-                val result = fileStorage.uploadFile(Storage.XSound, "$soundName$extension", bytes).getOrNull()
-                if (result != null) {
-                    // TODO: pass authenticated user name
-                    val newSound = XSound(name = soundName, url = result.publicUrl, addedBy = "beta_dev", tags = tags)
-                    xSoundsService.addNewXSound(newSound)
-                    call.respond(HttpStatusCode.Created, "Created {${newSound.name}: ${newSound.url}}")
-                } else {
-                    call.respond(HttpStatusCode.InternalServerError)
-                }
+                // TODO: pass authenticated user name as "addedBy"
+                xSoundsService.addNewXSound(soundName, tags, bytes)
+                call.respond(HttpStatusCode.Created)
             }
         }
     }

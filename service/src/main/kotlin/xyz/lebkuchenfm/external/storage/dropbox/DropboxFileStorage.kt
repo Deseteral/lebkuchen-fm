@@ -1,8 +1,8 @@
-package xyz.lebkuchenfm.external.storage
+package xyz.lebkuchenfm.external.storage.dropbox
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -26,47 +26,27 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.TokenInfo
 import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileArgs
 import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileResponse
 
-data class FileUploadResult(
-    val publicUrl: String,
-)
-
-sealed class Storage {
-    data object XSound : Storage()
-
-    class Custom(
-        val path: String,
-    ) : Storage()
-}
-
-class FileStorage(private val config: ApplicationConfig) {
+class DropboxFileStorage(config: ApplicationConfig) {
     private val client = prepareClient()
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
     private val refreshToken = config.property(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH).getString()
     private val appKey = config.property(DROPBOX_APP_KEY_PROPERTY_PATH).getString()
     private val appSecret = config.property(DROPBOX_APP_SECRET_PROPERTY_PATH).getString()
 
-    companion object {
-        const val DROPBOX_REFRESH_TOKEN_PROPERTY_PATH = "storage.dropbox.refreshToken"
-        const val DROPBOX_APP_KEY_PROPERTY_PATH = "storage.dropbox.appKey"
-        const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.appSecret"
-    }
-
+    /**
+     * [path] should contain destination folder, file name and its extension
+     * [bytes] contains file content data
+     * @return url on which raw file may be obtained
+     */
     suspend fun uploadFile(
-        storage: Storage,
-        name: String,
+        path: String,
         bytes: ByteArray,
-    ): Result<FileUploadResult> {
+    ): String {
         if (bearerTokenStorage.isEmpty()) {
             getInitialTokens()
         }
 
-        val path =
-            when (storage) {
-                is Storage.XSound -> "/lebkuchenFM/x-sounds/"
-                is Storage.Custom -> storage.path
-            }
-
-        val args = UploadFileArgs("$path$name", "add", false, false)
+        val args = UploadFileArgs(path, "add", false, false)
         val argsString = Json.encodeToString(UploadFileArgs.serializer(), args)
 
         val uploadFile: UploadFileResponse =
@@ -85,15 +65,13 @@ class FileStorage(private val config: ApplicationConfig) {
                 contentType(ContentType.Application.Json)
             }.body()
 
-        val url =
+        val resourceUrl =
             URLBuilder(sharedFile.url).apply {
                 this.host = "dl.dropboxusercontent.com"
                 this.parameters.remove("dl")
             }.buildString()
 
-        println("obtained url: ${sharedFile.url}")
-        println("sharing url: $url")
-        return Result.success(FileUploadResult(url))
+        return resourceUrl
     }
 
     private fun getRefreshTokenRequestBody() =
@@ -108,7 +86,7 @@ class FileStorage(private val config: ApplicationConfig) {
 
     private suspend fun getInitialTokens() {
         val tokenInfo: TokenInfo =
-            HttpClient(CIO) {
+            HttpClient(OkHttp) {
                 install(ContentNegotiation) { json() }
             }.post("https://api.dropbox.com/oauth2/token") {
                 setBody(getRefreshTokenRequestBody())
@@ -119,7 +97,7 @@ class FileStorage(private val config: ApplicationConfig) {
     }
 
     private fun prepareClient(): HttpClient {
-        return HttpClient(CIO) {
+        return HttpClient(OkHttp) {
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
             install(Auth) {
                 bearer {
@@ -144,5 +122,11 @@ class FileStorage(private val config: ApplicationConfig) {
                 }
             }
         }
+    }
+
+    private companion object {
+        const val DROPBOX_REFRESH_TOKEN_PROPERTY_PATH = "storage.dropbox.auth.refreshToken"
+        const val DROPBOX_APP_KEY_PROPERTY_PATH = "storage.dropbox.auth.appKey"
+        const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.auth.appSecret"
     }
 }
