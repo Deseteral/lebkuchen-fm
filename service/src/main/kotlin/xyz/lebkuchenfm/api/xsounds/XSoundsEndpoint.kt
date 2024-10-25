@@ -20,7 +20,7 @@ import xyz.lebkuchenfm.external.storage.Storage
 import java.io.File
 import java.util.UUID
 
-fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
+fun Route.xSoundsRouting(xSoundsService: XSoundsService, fileStorage: FileStorage) {
     route("/x-sounds") {
         get {
             val sounds = xSoundsService.getAllXSounds()
@@ -61,11 +61,9 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 part.dispose()
             }
 
-
             fileBytes?.let { bytes ->
-                val storage = FileStorage()
                 val extension = File(fileName).extension.takeIf { it.isNotBlank() }.run { ".$this" }
-                val result = storage.uploadFile(Storage.XSound, "$soundName$extension" , bytes)
+                val result = fileStorage.uploadFile(Storage.XSound, "$soundName$extension" , bytes)
                 if (result.isSuccess) {
                     call.respondText("$fileName is uploaded as '$soundName' with tags: $tagsString")
                     // TODO: save file url to mongo
