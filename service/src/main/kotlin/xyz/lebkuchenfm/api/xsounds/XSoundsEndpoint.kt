@@ -55,8 +55,8 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
 
             fileBytes?.let { bytes ->
                 // TODO: pass authenticated user name as "addedBy"
-                xSoundsService.addNewXSound(soundName, tags, bytes)
-                call.respond(HttpStatusCode.Created)
+                val sound = xSoundsService.addNewXSound(soundName, tags, bytes)
+                call.respond(HttpStatusCode.Created, "New sound ${sound.name} at ${sound.url}")
             }
         }
     }
