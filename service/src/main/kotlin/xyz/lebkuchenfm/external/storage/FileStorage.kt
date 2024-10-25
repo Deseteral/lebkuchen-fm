@@ -27,18 +27,18 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileArgs
 import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileResponse
 
 data class FileUploadResult(
-    val publicUrl: String
+    val publicUrl: String,
 )
 
 sealed class Storage {
     data object XSound : Storage()
+
     class Custom(
-        val path: String
+        val path: String,
     ) : Storage()
 }
 
 class FileStorage(private val config: ApplicationConfig) {
-
     private val client = prepareClient()
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
     private val refreshToken = config.property(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH).getString()
@@ -51,57 +51,69 @@ class FileStorage(private val config: ApplicationConfig) {
         const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.appSecret"
     }
 
-    suspend fun uploadFile(storage: Storage, name: String, bytes: ByteArray): Result<FileUploadResult> {
+    suspend fun uploadFile(
+        storage: Storage,
+        name: String,
+        bytes: ByteArray,
+    ): Result<FileUploadResult> {
         if (bearerTokenStorage.isEmpty()) {
             getInitialTokens()
         }
 
-        val path = when (storage) {
-            is Storage.XSound -> "/lebkuchenFM/x-sounds/"
-            is Storage.Custom -> storage.path
-        }
+        val path =
+            when (storage) {
+                is Storage.XSound -> "/lebkuchenFM/x-sounds/"
+                is Storage.Custom -> storage.path
+            }
 
         val args = UploadFileArgs("$path$name", "add", false, false)
         val argsString = Json.encodeToString(UploadFileArgs.serializer(), args)
 
-        val uploadFile: UploadFileResponse = client.post("https://content.dropboxapi.com/2/files/upload") {
-            setBody(bytes)
-            contentType(ContentType.Application.OctetStream)
-            accept(ContentType.Application.Json)
-            headers {
-                append("Dropbox-API-Arg", argsString)
-            }
-        }.body()
+        val uploadFile: UploadFileResponse =
+            client.post("https://content.dropboxapi.com/2/files/upload") {
+                setBody(bytes)
+                contentType(ContentType.Application.OctetStream)
+                accept(ContentType.Application.Json)
+                headers {
+                    append("Dropbox-API-Arg", argsString)
+                }
+            }.body()
 
-        val sharedFile: ShareFileResponse = client.post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings") {
-            setBody(ShareFile(uploadFile.pathDisplay, ShareFileSettings("viewer", "public", true )))
-            contentType(ContentType.Application.Json)
-        }.body()
+        val sharedFile: ShareFileResponse =
+            client.post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings") {
+                setBody(ShareFile(uploadFile.pathDisplay, ShareFileSettings("viewer", "public", true)))
+                contentType(ContentType.Application.Json)
+            }.body()
 
-        val url = URLBuilder(sharedFile.url).apply {
-            this.host = "dl.dropboxusercontent.com"
-            this.parameters.remove("dl")
-        }.buildString()
+        val url =
+            URLBuilder(sharedFile.url).apply {
+                this.host = "dl.dropboxusercontent.com"
+                this.parameters.remove("dl")
+            }.buildString()
 
         println("obtained url: ${sharedFile.url}")
         println("sharing url: $url")
         return Result.success(FileUploadResult(url))
     }
 
-    private fun getRefreshTokenRequestBody() = FormDataContent(parameters {
-        append("refresh_token", refreshToken)
-        append("client_id", appKey)
-        append("client_secret", appSecret)
-        append("grant_type", "refresh_token")
-    })
+    private fun getRefreshTokenRequestBody() =
+        FormDataContent(
+            parameters {
+                append("refresh_token", refreshToken)
+                append("client_id", appKey)
+                append("client_secret", appSecret)
+                append("grant_type", "refresh_token")
+            },
+        )
 
     private suspend fun getInitialTokens() {
-        val tokenInfo: TokenInfo = HttpClient(CIO) {
-            install(ContentNegotiation) { json() }
-        }.post("https://api.dropbox.com/oauth2/token") {
-            setBody( getRefreshTokenRequestBody() )
-            contentType(ContentType.Application.FormUrlEncoded)
-        }.body()
+        val tokenInfo: TokenInfo =
+            HttpClient(CIO) {
+                install(ContentNegotiation) { json() }
+            }.post("https://api.dropbox.com/oauth2/token") {
+                setBody(getRefreshTokenRequestBody())
+                contentType(ContentType.Application.FormUrlEncoded)
+            }.body()
 
         bearerTokenStorage.add(BearerTokens(tokenInfo.accessToken, refreshToken))
     }
@@ -116,14 +128,17 @@ class FileStorage(private val config: ApplicationConfig) {
                     }
                     sendWithoutRequest { true }
                     refreshTokens {
-                        val tokenInfo: TokenInfo = client.post("https://api.dropbox.com/oauth2/token") {
-                            markAsRefreshTokenRequest()
-                            setBody(getRefreshTokenRequestBody())
-                            accept(ContentType.Application.Json)
-                            contentType(ContentType.Application.FormUrlEncoded)
-                        }.body()
+                        val tokenInfo: TokenInfo =
+                            client.post("https://api.dropbox.com/oauth2/token") {
+                                markAsRefreshTokenRequest()
+                                setBody(getRefreshTokenRequestBody())
+                                accept(ContentType.Application.Json)
+                                contentType(ContentType.Application.FormUrlEncoded)
+                            }.body()
                         bearerTokenStorage.clear()
-                        bearerTokenStorage.add(BearerTokens(accessToken = tokenInfo.accessToken, refreshToken = refreshToken))
+                        bearerTokenStorage.add(
+                            BearerTokens(accessToken = tokenInfo.accessToken, refreshToken = refreshToken),
+                        )
                         bearerTokenStorage.last()
                     }
                 }

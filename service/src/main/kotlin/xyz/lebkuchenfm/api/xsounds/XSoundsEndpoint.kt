@@ -20,7 +20,10 @@ import xyz.lebkuchenfm.external.storage.Storage
 import java.io.File
 import java.util.UUID
 
-fun Route.xSoundsRouting(xSoundsService: XSoundsService, fileStorage: FileStorage) {
+fun Route.xSoundsRouting(
+    xSoundsService: XSoundsService,
+    fileStorage: FileStorage,
+) {
     route("/x-sounds") {
         get {
             val sounds = xSoundsService.getAllXSounds()
@@ -29,7 +32,6 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService, fileStorage: FileStorag
         }
 
         get("/tags") {
-
         }
 
         post {
@@ -63,7 +65,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService, fileStorage: FileStorag
 
             fileBytes?.let { bytes ->
                 val extension = File(fileName).extension.takeIf { it.isNotBlank() }.run { ".$this" }
-                val result = fileStorage.uploadFile(Storage.XSound, "$soundName$extension" , bytes)
+                val result = fileStorage.uploadFile(Storage.XSound, "$soundName$extension", bytes)
                 if (result.isSuccess) {
                     call.respondText("$fileName is uploaded as '$soundName' with tags: $tagsString")
                     // TODO: save file url to mongo
@@ -71,8 +73,6 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService, fileStorage: FileStorag
                     call.respond(HttpStatusCode.InternalServerError)
                 }
             }
-
-
         }
     }
 }

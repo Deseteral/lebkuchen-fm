@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
 data class ShareFileSettings(
     val access: String,
     val audience: String,
-    @SerialName("allow_download") val allowDownload: Boolean
+    @SerialName("allow_download") val allowDownload: Boolean,
 )
 
 @Serializable
 data class ShareFile(
     val path: String,
-    val settings: ShareFileSettings
+    val settings: ShareFileSettings,
 )
 
 @Serializable

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class UploadFileArgs (
+data class UploadFileArgs(
     val path: String,
     val mode: String,
     val autorename: Boolean,
@@ -12,7 +12,7 @@ data class UploadFileArgs (
 )
 
 @Serializable
-data class UploadFileResponse (
+data class UploadFileResponse(
     val id: String,
     val name: String,
     @SerialName("path_display") val pathDisplay: String,
