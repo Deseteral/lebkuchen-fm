@@ -5,15 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ShareFileSettings(
-    @SerialName("access") val access: String,
-    @SerialName("audience") val audience: String,
+    val access: String,
+    val audience: String,
     @SerialName("allow_download") val allowDownload: Boolean
 )
 
 @Serializable
 data class ShareFile(
-    @SerialName("path") val path: String,
-    @SerialName("settings") val settings: ShareFileSettings
+    val path: String,
+    val settings: ShareFileSettings
 )
 
 @Serializable
