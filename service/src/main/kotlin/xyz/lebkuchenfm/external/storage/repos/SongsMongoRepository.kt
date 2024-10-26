@@ -29,15 +29,6 @@ data class SongEntity(
     val trimEndSeconds: Int?,
     val timesPlayed: Int,
 ) {
-    constructor(song: Song) : this(
-        id = null,
-        name = song.name,
-        youtubeId = song.youtubeId,
-        trimStartSeconds = song.trimStartSeconds,
-        trimEndSeconds = song.trimEndSeconds,
-        timesPlayed = song.timesPlayed,
-    )
-
     fun toDomain(): Song {
         return Song(
             name = this.name,
