@@ -19,4 +19,8 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         repository.insert(readySound)
         return readySound
     }
+
+    suspend fun findAllUniqueTags(): List<String> {
+        return repository.findAllUniqueTags()
+    }
 }
