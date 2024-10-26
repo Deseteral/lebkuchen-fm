@@ -53,7 +53,6 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
                     project,
                 ),
             ).first()
-        println(result)
         return result.tagsSet
     }
 }
