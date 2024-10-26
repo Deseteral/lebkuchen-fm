@@ -15,7 +15,7 @@ jobs:
         - uses: superfly/flyctl-actions/setup-flyctl@master
         - name: Deploy on production
           if: github.ref == 'refs/heads/main'
-          run: flyctl deploy --remote-only --no-cache --app lebkuchen-fm
+          run: flyctl deploy --remote-only --no-cache --depot=false --app lebkuchen-fm
         - name: Deploy on dev
           if: github.ref != 'refs/heads/main'
-          run: flyctl deploy --remote-only --no-cache --app lebkuchen-fm-dev
+          run: flyctl deploy --remote-only --no-cache --depot=false --app lebkuchen-fm-dev
