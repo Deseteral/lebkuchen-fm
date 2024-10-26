@@ -12,7 +12,6 @@ import io.ktor.server.routing.route
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -55,8 +54,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             fileBytes?.let { bytes ->
                 // TODO: pass authenticated user name as "addedBy"
                 val sound = xSoundsService.addNewXSound(soundName, tags, bytes)
-                val response = Json.encodeToString(XSoundResponse.serializer(), sound.toResponse())
-                call.respond(HttpStatusCode.Created, response)
+                call.respond(HttpStatusCode.Created, sound.toResponse())
             }
         }
     }
