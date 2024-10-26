@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.external.storage.repos
 
+import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -10,9 +12,21 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
+    private val sortByName = Sorts.ascending(XSound::name.name)
 
-    override suspend fun findAll(): List<XSound> {
-        return collection.find().map { it.toDomain() }.toList()
+    override suspend fun findAllOrderByNameAsc(): List<XSound> {
+        return collection
+            .find()
+            .sort(sortByName)
+            .map { it.toDomain() }.toList()
+    }
+
+    override suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound> {
+        val filter = eq(XSound::tags.name, tag)
+        return collection
+            .find(filter)
+            .sort(sortByName)
+            .map { it.toDomain() }.toList()
     }
 
     override suspend fun insert(sound: XSound) {
