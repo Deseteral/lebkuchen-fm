@@ -16,7 +16,7 @@ import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
-class XSoundsMongoRepository(private val database: MongoDatabase) : XSoundsRepository {
+class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
     private val sortByName = Sorts.ascending(XSound::name.name)
 
