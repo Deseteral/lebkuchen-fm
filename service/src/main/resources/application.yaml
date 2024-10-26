@@ -14,4 +14,4 @@ storage:
       appKey: "$DROPBOX_APP_KEY"
       appSecret: "$DROPBOX_APP_SECRET"
     paths:
-      xSounds: "$DROPBOX_X_SOUNDS_PATH:/lebkuchenFM/x-sounds/"
+      xSounds: "$DROPBOX_X_SOUNDS_PATH:/x-sounds/"
