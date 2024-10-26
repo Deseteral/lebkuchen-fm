@@ -15,3 +15,6 @@ storage:
       appSecret: "$DROPBOX_SECRET"
     paths:
       xSounds: "$DROPBOX_X_SOUNDS_PATH:/xsounds/"
+
+youtube:
+  apiKey: "$YOUTUBE_API_KEY"

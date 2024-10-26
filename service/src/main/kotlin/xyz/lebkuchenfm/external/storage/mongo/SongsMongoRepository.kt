@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.storage.repos
+package xyz.lebkuchenfm.external.storage.mongo
 
 import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoDatabase

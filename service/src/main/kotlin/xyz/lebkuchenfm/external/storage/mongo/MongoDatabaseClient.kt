@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.storage
+package xyz.lebkuchenfm.external.storage.mongo
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
