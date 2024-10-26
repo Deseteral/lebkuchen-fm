@@ -63,7 +63,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         get("/tags") {
-            val response = XSoundsTagsResponse(xSoundsService.getAllUniqueTags())
+            val response = XSoundsTagsResponse(xSoundsService.findAllUniqueTags())
             call.respond(HttpStatusCode.OK, response)
         }
     }

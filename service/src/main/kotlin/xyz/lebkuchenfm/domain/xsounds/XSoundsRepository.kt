@@ -7,5 +7,5 @@ interface XSoundsRepository {
 
     suspend fun insert(sound: XSound)
 
-    suspend fun getAllUniqueTags(): List<String>
+    suspend fun findAllUniqueTags(): List<String>
 }

@@ -20,7 +20,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return readySound
     }
 
-    suspend fun getAllUniqueTags(): List<String> {
-        return repository.getAllUniqueTags()
+    suspend fun findAllUniqueTags(): List<String> {
+        return repository.findAllUniqueTags()
     }
 }

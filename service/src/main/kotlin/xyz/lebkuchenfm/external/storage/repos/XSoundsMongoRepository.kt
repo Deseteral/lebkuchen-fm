@@ -39,19 +39,20 @@ class XSoundsMongoRepository(private val database: MongoDatabase) : XSoundsRepos
         collection.insertOne(XSoundEntity(sound))
     }
 
-    override suspend fun getAllUniqueTags(): List<String> {
+    override suspend fun findAllUniqueTags(): List<String> {
         val unwind = unwind("\$${XSound::tags.name}")
-        val group =  group(null, addToSet("tagsSet", "\$${XSound::tags.name}"))
-        val project = project( Projections.include("tagsSet"))
+        val group = group(null, addToSet("tagsSet", "\$${XSound::tags.name}"))
+        val project = project(Projections.include("tagsSet"))
 
         data class Result(val tagsSet: List<String>)
-        val result = collection.aggregate<Result>(
-            listOf(
-                unwind,
-                group,
-                project
-            )
-        ).first()
+        val result =
+            collection.aggregate<Result>(
+                listOf(
+                    unwind,
+                    group,
+                    project,
+                ),
+            ).first()
         println(result)
         return result.tagsSet
     }
