@@ -14,13 +14,30 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     override suspend fun findAll(): List<XSound> {
         return collection.find().map { it.toDomain() }.toList()
     }
+
+    override suspend fun insert(sound: XSound) {
+        collection.insertOne(XSoundEntity(sound))
+    }
 }
 
 data class XSoundEntity(
-    @BsonId val id: ObjectId,
+    @BsonId val id: ObjectId? = null,
     val name: String,
+    val url: String,
+    val timesPlayed: Int,
+    val tags: List<String>,
+    val addedBy: String?,
 ) {
+    constructor(sound: XSound) : this(
+        null,
+        sound.name,
+        sound.url,
+        0,
+        sound.tags,
+        sound.addedBy,
+    )
+
     fun toDomain(): XSound {
-        return XSound(id = this.id.toString(), name = this.name)
+        return XSound(name = this.name, url = this.url, tags = this.tags, addedBy = this.addedBy)
     }
 }
