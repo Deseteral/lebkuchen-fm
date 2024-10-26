@@ -10,6 +10,7 @@ import io.ktor.server.routing.routing
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
+import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
@@ -28,7 +29,8 @@ fun Application.module() {
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
-    val commandExecutorService = CommandExecutorService()
+    val textCommandParser = TextCommandParser(environment.config.property("commandPrompt").toString())
+    val commandExecutorService = CommandExecutorService(textCommandParser)
 
     routing {
         route("/api") {

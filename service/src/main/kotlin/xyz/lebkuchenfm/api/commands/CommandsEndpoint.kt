@@ -17,7 +17,7 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
             val text = call.receive<TextCommandRequest>().text
             logger.info { "Received $text command from TODO USERNAME" }
 
-            val processingResult = commandExecutorService.processFromText(text)
+            val processingResult = commandExecutorService.executeFromText(text)
 
             val response = TextCommandResponse(textResponse = processingResult.message.markdown)
             call.respond(response)

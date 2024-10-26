@@ -15,3 +15,5 @@ storage:
       appSecret: "$DROPBOX_SECRET"
     paths:
       xSounds: "$DROPBOX_X_SOUNDS_PATH:/xsounds/"
+
+commandPrompt: "$COMMAND_PROMPT:/fm"
