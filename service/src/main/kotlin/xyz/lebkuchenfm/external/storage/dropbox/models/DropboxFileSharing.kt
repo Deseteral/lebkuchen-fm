@@ -4,19 +4,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ShareFileSettings(
+data class DropboxFileSharingSettings(
     val access: String,
     val audience: String,
     @SerialName("allow_download") val allowDownload: Boolean,
 )
 
 @Serializable
-data class ShareFile(
+data class DropboxFileSharing(
     val path: String,
-    val settings: ShareFileSettings,
+    val settings: DropboxFileSharingSettings,
 )
 
 @Serializable
-data class ShareFileResponse(
+data class DropboxFileSharingResponse(
     val url: String,
 )

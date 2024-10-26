@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.external.storage.dropbox
 
 import io.ktor.server.config.ApplicationConfig
 import xyz.lebkuchenfm.domain.xsounds.XSoundsFileRepository
+import java.nio.file.Paths
 
 class XSoundsDropboxFileRepository(
     private val fileStorage: DropboxFileStorage,
@@ -13,8 +14,8 @@ class XSoundsDropboxFileRepository(
         soundName: String,
         byteArray: ByteArray,
     ): String {
-        val path = "$storageFolderPath$soundName.mp3"
-        val url = fileStorage.uploadFile(path, byteArray)
+        val path = Paths.get(storageFolderPath, "$soundName.mp3")
+        val url = fileStorage.uploadFile(path.toString(), byteArray)
         return url
     }
 

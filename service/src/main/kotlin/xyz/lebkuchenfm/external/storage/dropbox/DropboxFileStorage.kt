@@ -19,12 +19,12 @@ import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.json.Json
-import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFile
-import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFileResponse
-import xyz.lebkuchenfm.external.storage.dropbox.models.ShareFileSettings
-import xyz.lebkuchenfm.external.storage.dropbox.models.TokenInfo
-import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileArgs
-import xyz.lebkuchenfm.external.storage.dropbox.models.UploadFileResponse
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharing
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharingResponse
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharingSettings
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadArgs
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadResponse
+import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxTokenInfo
 
 class DropboxFileStorage(config: ApplicationConfig) {
     private val client = prepareClient()
@@ -34,7 +34,7 @@ class DropboxFileStorage(config: ApplicationConfig) {
     private val appSecret = config.property(DROPBOX_APP_SECRET_PROPERTY_PATH).getString()
 
     /**
-     * [path] should contain destination folder, file name and its extension
+     * [path] must contain destination folder, file name and its extension
      * [bytes] contains file content data
      * @return url on which raw file may be obtained
      */
@@ -46,10 +46,10 @@ class DropboxFileStorage(config: ApplicationConfig) {
             getInitialTokens()
         }
 
-        val args = UploadFileArgs(path, "add", false, false)
-        val argsString = Json.encodeToString(UploadFileArgs.serializer(), args)
+        val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false)
+        val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args)
 
-        val uploadFile: UploadFileResponse =
+        val uploadFile: DropboxFileUploadResponse =
             client.post("https://content.dropboxapi.com/2/files/upload") {
                 setBody(bytes)
                 contentType(ContentType.Application.OctetStream)
@@ -59,16 +59,17 @@ class DropboxFileStorage(config: ApplicationConfig) {
                 }
             }.body()
 
-        val sharedFile: ShareFileResponse =
+        val sharedFile: DropboxFileSharingResponse =
             client.post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings") {
-                setBody(ShareFile(uploadFile.pathDisplay, ShareFileSettings("viewer", "public", true)))
+                val sharingSettings = DropboxFileSharingSettings("viewer", "public", allowDownload = true)
+                setBody(DropboxFileSharing(uploadFile.pathDisplay, sharingSettings))
                 contentType(ContentType.Application.Json)
             }.body()
 
         val resourceUrl =
             URLBuilder(sharedFile.url).apply {
-                this.host = "dl.dropboxusercontent.com"
-                this.parameters.remove("dl")
+                host = "dl.dropboxusercontent.com"
+                parameters.remove("dl")
             }.buildString()
 
         return resourceUrl
@@ -85,7 +86,7 @@ class DropboxFileStorage(config: ApplicationConfig) {
         )
 
     private suspend fun getInitialTokens() {
-        val tokenInfo: TokenInfo =
+        val tokenInfo: DropboxTokenInfo =
             HttpClient(OkHttp) {
                 install(ContentNegotiation) { json() }
             }.post("https://api.dropbox.com/oauth2/token") {
@@ -106,7 +107,7 @@ class DropboxFileStorage(config: ApplicationConfig) {
                     }
                     sendWithoutRequest { true }
                     refreshTokens {
-                        val tokenInfo: TokenInfo =
+                        val tokenInfo: DropboxTokenInfo =
                             client.post("https://api.dropbox.com/oauth2/token") {
                                 markAsRefreshTokenRequest()
                                 setBody(getRefreshTokenRequestBody())

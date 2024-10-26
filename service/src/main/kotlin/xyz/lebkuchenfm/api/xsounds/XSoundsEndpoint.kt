@@ -12,6 +12,7 @@ import io.ktor.server.routing.route
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -21,9 +22,6 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             val sounds = xSoundsService.getAllXSounds()
             val response = XSoundsResponse(sounds.map { it.toResponse() })
             call.respond(response)
-        }
-
-        get("/tags") {
         }
 
         post {
@@ -37,7 +35,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 when (part) {
                     is PartData.FormItem -> {
                         if (part.name == "soundName") {
-                            // TODO: check if provided soundName is valid
+                            // TODO: `soundName` validation ((null, empty, special characters, no file extension in name))
                             soundName = part.value
                         } else if (part.name == "tags") {
                             tags = part.value.split(',').map { it.trim() }
@@ -45,6 +43,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                     }
 
                     is PartData.FileItem -> {
+                        // TODO: handle "no file" error
                         fileBytes = part.provider().readRemaining().readByteArray()
                     }
 
@@ -56,7 +55,8 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             fileBytes?.let { bytes ->
                 // TODO: pass authenticated user name as "addedBy"
                 val sound = xSoundsService.addNewXSound(soundName, tags, bytes)
-                call.respond(HttpStatusCode.Created, "New sound ${sound.name} at ${sound.url}")
+                val response = Json.encodeToString(XSoundResponse.serializer(), sound.toResponse())
+                call.respond(HttpStatusCode.Created, response)
             }
         }
     }

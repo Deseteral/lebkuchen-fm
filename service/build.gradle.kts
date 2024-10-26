@@ -29,6 +29,7 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp")
     implementation("io.ktor:ktor-client-auth")
     implementation("io.ktor:ktor-client-content-negotiation")
+
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-resources-jvm")
     implementation("io.ktor:ktor-server-host-common-jvm")
