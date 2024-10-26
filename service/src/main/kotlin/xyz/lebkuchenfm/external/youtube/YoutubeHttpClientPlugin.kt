@@ -8,7 +8,7 @@ import io.ktor.http.HttpHeaders.Accept
 import io.ktor.http.URLProtocol
 import io.ktor.server.plugins.MissingRequestParameterException
 
-val YoutubeHttpPlugin =
+val YoutubeHttpClientPlugin =
     createClientPlugin("YoutubeApiKeyPlugin", ::YoutubeHttpPluginConfig) {
         val apiKey = pluginConfig.apiKey
         val host = pluginConfig.host

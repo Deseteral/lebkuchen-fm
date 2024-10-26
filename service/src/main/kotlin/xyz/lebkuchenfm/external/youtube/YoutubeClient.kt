@@ -13,12 +13,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 class YoutubeClient(config: ApplicationConfig) {
-    private val client: HttpClient by lazy { prepareHttpClient() }
+    private val youtubeClient: HttpClient by lazy { prepareHttpClient() }
     private val apiKey: String by lazy { config.property("youtube.apiKey").getString() }
 
     suspend fun getVideoName(id: String): String {
         val response: YoutubeVideosResponse =
-            client.get("/videos") {
+            youtubeClient.get("/videos") {
                 parameters {
                     parameter("id", id)
                     parameter("part", "snippet")
@@ -32,7 +32,7 @@ class YoutubeClient(config: ApplicationConfig) {
 
     private fun prepareHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
-            install(YoutubeHttpPlugin) {
+            install(YoutubeHttpClientPlugin) {
                 apiKey = this@YoutubeClient.apiKey
             }
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
