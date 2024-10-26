@@ -1,8 +1,14 @@
 package xyz.lebkuchenfm.external.storage.repos
 
+import com.mongodb.client.model.Accumulators.addToSet
+import com.mongodb.client.model.Aggregates.group
+import com.mongodb.client.model.Aggregates.project
+import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
@@ -31,6 +37,23 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
     override suspend fun insert(sound: XSound) {
         collection.insertOne(XSoundEntity(sound))
+    }
+
+    override suspend fun findAllUniqueTags(): List<String> {
+        val unwind = unwind("\$${XSound::tags.name}")
+        val group = group(null, addToSet("tagsSet", "\$${XSound::tags.name}"))
+        val project = project(Projections.include("tagsSet"))
+
+        data class Result(val tagsSet: List<String>)
+        val result =
+            collection.aggregate<Result>(
+                listOf(
+                    unwind,
+                    group,
+                    project,
+                ),
+            ).first()
+        return result.tagsSet
     }
 }
 
