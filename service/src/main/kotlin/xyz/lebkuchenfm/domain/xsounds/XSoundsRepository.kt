@@ -6,4 +6,6 @@ interface XSoundsRepository {
     suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound>
 
     suspend fun insert(sound: XSound)
+
+    suspend fun getAllUniqueTags(): List<String>
 }

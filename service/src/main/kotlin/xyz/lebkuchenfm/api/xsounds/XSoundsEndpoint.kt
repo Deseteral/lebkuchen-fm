@@ -61,8 +61,16 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 call.respond(HttpStatusCode.Created, sound.toResponse())
             }
         }
+
+        get("/tags") {
+            val response = XSoundsTagsResponse(xSoundsService.getAllUniqueTags())
+            call.respond(HttpStatusCode.OK, response)
+        }
     }
 }
+
+@Serializable
+data class XSoundsTagsResponse(val tags: List<String>)
 
 @Serializable
 data class XSoundsResponse(val sounds: List<XSoundResponse>)
