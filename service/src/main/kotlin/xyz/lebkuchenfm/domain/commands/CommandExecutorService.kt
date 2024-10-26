@@ -11,12 +11,13 @@ class CommandExecutorService(private val parser: TextCommandParser) {
     }
 
     fun executeFromText(text: String): CommandProcessingResult {
-        val command = try {
-            parser.parseFromText(text)
-        } catch (ex: Exception) {
-            logger.error(ex) { "Could not parse command \"$text\"." }
-            null
-        }
+        val command =
+            try {
+                parser.parseFromText(text)
+            } catch (ex: Exception) {
+                logger.error(ex) { "Could not parse command \"$text\"." }
+                null
+            }
 
         return command?.let { execute(it) }
             ?: CommandProcessingResult.fromMarkdown("Wystąpił błąd podczas procesowania komendy.")
