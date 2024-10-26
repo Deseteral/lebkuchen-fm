@@ -2,7 +2,7 @@ package xyz.lebkuchenfm.domain.xsounds
 
 class XSoundsService(private val repository: XSoundsRepository, private val fileRepository: XSoundsFileRepository) {
     suspend fun getAllXSounds(): List<XSound> {
-        return repository.findAll()
+        return repository.findAllOrderByNameAsc()
     }
 
     suspend fun getAllXSoundsWithTag(tag: String): List<XSound> {

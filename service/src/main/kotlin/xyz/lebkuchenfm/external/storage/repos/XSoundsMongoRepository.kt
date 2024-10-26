@@ -12,17 +12,20 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
+    private val sortByName = Sorts.ascending(XSound::name.name)
 
-    override suspend fun findAll(): List<XSound> {
-        return collection.find().map { it.toDomain() }.toList()
+    override suspend fun findAllOrderByNameAsc(): List<XSound> {
+        return collection
+            .find()
+            .sort(sortByName)
+            .map { it.toDomain() }.toList()
     }
 
     override suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound> {
         val filter = eq(XSound::tags.name, tag)
-        val sort = Sorts.ascending(XSound::name.name)
         return collection
             .find(filter)
-            .sort(sort)
+            .sort(sortByName)
             .map { it.toDomain() }.toList()
     }
 
