@@ -18,7 +18,11 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
     route("/x-sounds") {
         get {
-            val sounds = xSoundsService.getAllXSounds()
+            val sounds: List<XSound> =
+                call.request.queryParameters["tag"]?.let { tag ->
+                    xSoundsService.getAllXSoundsWithTag(tag)
+                } ?: xSoundsService.getAllXSounds()
+
             val response = XSoundsResponse(sounds.map { it.toResponse() })
             call.respond(response)
         }

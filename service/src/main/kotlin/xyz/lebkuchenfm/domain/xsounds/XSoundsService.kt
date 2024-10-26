@@ -5,6 +5,10 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findAll()
     }
 
+    suspend fun getAllXSoundsWithTag(tag: String): List<XSound> {
+        return repository.findAllByTagOrderByNameAsc(tag)
+    }
+
     suspend fun addNewXSound(
         soundName: String,
         tags: List<String>,
