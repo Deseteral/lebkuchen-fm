@@ -7,11 +7,14 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
+import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
+import xyz.lebkuchenfm.external.storage.repos.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.repos.XSoundsMongoRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -26,9 +29,13 @@ fun Application.module() {
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
+    val songsRepository = SongsMongoRepository(database)
+    val songsService = SongsService(songsRepository)
+
     routing {
         route("/api") {
             xSoundsRouting(xSoundsService)
+            songsRouting(songsService)
         }
         staticResources("/", "static")
     }

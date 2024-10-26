@@ -18,7 +18,7 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
-    private val sortByName = Sorts.ascending(XSound::name.name)
+    private val sortByName = Sorts.ascending(XSoundEntity::name.name)
 
     override suspend fun findAllOrderByNameAsc(): List<XSound> {
         return collection
