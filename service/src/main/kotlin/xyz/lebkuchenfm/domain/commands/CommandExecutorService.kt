@@ -12,12 +12,11 @@ class CommandExecutorService(
     private val registry: CommandProcessorRegistry,
 ) {
     private fun execute(command: Command): CommandProcessingResult {
-        val processor =
-            try {
-                registry.getProcessorByKey(command.key)
-            } catch (ex: CommandDoesNotExistException) {
-                return ex.toCommandProcessingResult()
-            }
+        val processor = try {
+            registry.getProcessorByKey(command.key)
+        } catch (ex: CommandDoesNotExistException) {
+            return ex.toCommandProcessingResult()
+        }
 
         return try {
             processor.execute(command)
@@ -28,13 +27,12 @@ class CommandExecutorService(
     }
 
     fun executeFromText(text: String): CommandProcessingResult {
-        val command =
-            try {
-                parser.parseFromText(text)
-            } catch (ex: LebkuchenException) {
-                logger.error(ex) { "Could not parse command \"$text\"." }
-                return ex.toCommandProcessingResult()
-            }
+        val command = try {
+            parser.parseFromText(text)
+        } catch (ex: LebkuchenException) {
+            logger.error(ex) { "Could not parse command \"$text\"." }
+            return ex.toCommandProcessingResult()
+        }
 
         return execute(command)
     }

@@ -14,16 +14,15 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
         shortKey = null,
         helpMessage = "Puszcza szalony dźwięk!",
         exampleUsages = listOf("airhorn"),
-        parameters =
-        CommandParameters(
-            parameters =
-            listOf(
+        parameters = CommandParameters(
+            parameters = listOf(
                 CommandParameters.RequiredCommandParameter("sound-name"),
             ),
         ),
     ) {
     override fun execute(command: Command): CommandProcessingResult {
-        val soundName = command.rawArgs!! // TODO: Error handling for null case. ?: throw new Error ('Podaj nazwę dźwięku');
+        // TODO: Error handling for null case. ?: throw new Error ('Podaj nazwę dźwięku');
+        val soundName = command.rawArgs!!
         val xSound = xSoundsService.getByName(soundName)
 
         val playXSoundEvent = PlayXSoundEvent(
