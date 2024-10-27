@@ -11,17 +11,12 @@ class CommandProcessorRegistry(processors: List<CommandProcessor>) {
         val mutableCommandsMap = mutableMapOf<String, CommandProcessor>()
         for (definition in processors) {
             mutableCommandsMap[definition.key] = definition
-
-            if (definition.shortKey != null) {
-                mutableCommandsMap[definition.shortKey] = definition
-            }
+            definition.shortKey?.let { mutableCommandsMap[it] = definition }
 
             logger.info { "Initialized ${definition.key} command" }
         }
         commands = mutableCommandsMap.toMap()
     }
 
-    fun getProcessorByKey(key: String): CommandProcessor? {
-        return commands[key]
-    }
+    fun getProcessorByKey(key: String): CommandProcessor? = commands[key]
 }

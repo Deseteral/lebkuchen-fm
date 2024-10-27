@@ -27,7 +27,7 @@ class CommandExecutorService(
         val command = try {
             parser.parseFromText(text)
         } catch (ex: Exception) {
-            logger.error(ex) { "Could not parse command \"$text\"." }
+            logger.error(ex) { "Could not parse command '$text'." }
             return CommandProcessingResult.fromMultilineMarkdown(
                 ex.message ?: "Could not parse command `$text`.",
                 "For more information checkout `$commandPrompt help`.",
