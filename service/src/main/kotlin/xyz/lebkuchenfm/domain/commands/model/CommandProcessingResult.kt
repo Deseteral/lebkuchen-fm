@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.domain.commands
+package xyz.lebkuchenfm.domain.commands.model
 
 data class CommandProcessingResult(
     val message: CommandProcessingResultMessage,

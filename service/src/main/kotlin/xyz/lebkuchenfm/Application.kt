@@ -11,7 +11,9 @@ import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
+import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
+import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
@@ -36,7 +38,13 @@ fun Application.module() {
     val songsService = SongsService(songsRepository)
 
     val textCommandParser = TextCommandParser(environment.config.property("commandPrompt").toString())
-    val commandExecutorService = CommandExecutorService(textCommandParser)
+    val commandProcessorRegistry =
+        CommandProcessorRegistry(
+            listOf(
+                XCommandProcessor(),
+            ),
+        )
+    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
 
     routing {
         route("/api") {
