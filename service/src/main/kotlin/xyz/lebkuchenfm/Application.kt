@@ -17,8 +17,8 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
-import xyz.lebkuchenfm.external.storage.mongo.SongsMongoRepository
-import xyz.lebkuchenfm.external.storage.mongo.XSoundsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)

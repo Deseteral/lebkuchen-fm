@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.storage.mongo
+package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
@@ -45,14 +45,10 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         val project = project(Projections.include("tagsSet"))
 
         data class Result(val tagsSet: List<String>)
-        val result =
-            collection.aggregate<Result>(
-                listOf(
-                    unwind,
-                    group,
-                    project,
-                ),
-            ).first()
+
+        val result = collection.aggregate<Result>(
+            listOf(unwind, group, project),
+        ).first()
         return result.tagsSet
     }
 }

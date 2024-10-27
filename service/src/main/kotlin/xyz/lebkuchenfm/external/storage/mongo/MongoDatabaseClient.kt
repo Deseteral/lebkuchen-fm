@@ -21,10 +21,8 @@ object MongoDatabaseClient {
     }
 
     private fun connectToMongo(config: ApplicationConfig): MongoClient {
-        val mongoConnectionString =
-            config.property(CONNECTION_STRING_PROPERTY_PATH).getString()
-        val clientSettings =
-            MongoClientSettings.builder().applyConnectionString(ConnectionString(mongoConnectionString)).build()
+        val mongoConnectionString = ConnectionString(config.property(CONNECTION_STRING_PROPERTY_PATH).getString())
+        val clientSettings = MongoClientSettings.builder().applyConnectionString(mongoConnectionString).build()
         return MongoClient.create(clientSettings)
     }
 }
