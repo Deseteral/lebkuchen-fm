@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.LebkuchenException
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 
@@ -11,15 +12,17 @@ class CommandExecutorService(
     private val registry: CommandProcessorRegistry,
 ) {
     private fun execute(command: Command): CommandProcessingResult {
-        val processor =
+        val processor = try {
             registry.getProcessorByKey(command.key)
-                ?: return CommandProcessingResult.fromMarkdown("Komenda ${command.key} nie istnieje.")
+        } catch (ex: CommandDoesNotExistException) {
+            return ex.toCommandProcessingResult()
+        }
 
         return try {
             processor.execute(command)
-        } catch (ex: Exception) {
-            // TODO: Handle errors.
-            return CommandProcessingResult.fromMarkdown("Popsuło się.")
+        } catch (ex: LebkuchenException) {
+            logger.error(ex) { "There was a problem when executing $command." }
+            return ex.toCommandProcessingResult()
         }
     }
 
@@ -27,12 +30,11 @@ class CommandExecutorService(
         val command =
             try {
                 parser.parseFromText(text)
-            } catch (ex: Exception) {
+            } catch (ex: LebkuchenException) {
                 logger.error(ex) { "Could not parse command \"$text\"." }
-                null
+                return ex.toCommandProcessingResult()
             }
 
-        return command?.let { execute(it) }
-            ?: CommandProcessingResult.fromMarkdown("Wystąpił błąd podczas procesowania komendy.")
+        return execute(command)
     }
 }
