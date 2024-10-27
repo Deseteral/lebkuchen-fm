@@ -14,17 +14,16 @@ import kotlinx.serialization.json.Json
 
 class YoutubeClient(config: ApplicationConfig) {
     private val youtubeClient: HttpClient by lazy { prepareHttpClient() }
-    private val apiKey: String by lazy { config.property("youtube.apiKey").getString() }
+    private val apiKey: String? by lazy { config.propertyOrNull("youtube.apiKey")?.getString() }
 
     suspend fun getVideoName(id: String): String {
-        val response: YoutubeVideosResponse =
-            youtubeClient.get("/videos") {
-                parameters {
-                    parameter("id", id)
-                    parameter("part", "snippet")
-                    parameter("filer", "id")
-                }
-            }.body()
+        val response: YoutubeVideosResponse = youtubeClient.get("/videos") {
+            parameters {
+                parameter("id", id)
+                parameter("part", "snippet")
+                parameter("filer", "id")
+            }
+        }.body()
 
         val video = response.items.first()
         return video.snippet.title
