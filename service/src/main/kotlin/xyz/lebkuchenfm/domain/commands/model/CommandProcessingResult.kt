@@ -12,7 +12,7 @@ data class CommandProcessingResult(
             return CommandProcessingResult(message = CommandProcessingResultMessage(markdown))
         }
 
-        fun fromMultilineMarkdown(vararg markdownLines: List<String>): CommandProcessingResult {
+        fun fromMultilineMarkdown(vararg markdownLines: String): CommandProcessingResult {
             return fromMarkdown(markdownLines.joinToString(separator = "\n"))
         }
     }
