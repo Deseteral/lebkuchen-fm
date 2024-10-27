@@ -40,13 +40,14 @@ fun Application.module() {
 
     val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
 
-    val textCommandParser = TextCommandParser(environment.config.property("commandPrompt").toString())
+    val commandPrompt = environment.config.property("commandPrompt").getString()
+    val textCommandParser = TextCommandParser(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
         ),
     )
-    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
+    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
 
     routing {
         route("/api") {

@@ -21,8 +21,7 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
         ),
     ) {
     override fun execute(command: Command): CommandProcessingResult {
-        // TODO: Error handling for null case. ?: throw new Error ('Podaj nazwę dźwięku');
-        val soundName = command.rawArgs!!
+        val soundName = requireNotNull(command.rawArgs) { "You have to provide sound name." }
         val xSound = xSoundsService.getByName(soundName)
 
         val playXSoundEvent = PlayXSoundEvent(
@@ -32,6 +31,6 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
         eventStream.sendToEveryone(playXSoundEvent)
         xSoundsService.incrementPlayCount(xSound.name)
 
-        return CommandProcessingResult.fromMarkdown("Played $soundName sound.") // TODO: i18n.
+        return CommandProcessingResult.fromMarkdown("Played $soundName sound.")
     }
 }

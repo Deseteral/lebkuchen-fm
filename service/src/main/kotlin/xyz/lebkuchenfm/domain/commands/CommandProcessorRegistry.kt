@@ -1,7 +1,6 @@
 package xyz.lebkuchenfm.domain.commands
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import xyz.lebkuchenfm.domain.LebkuchenException
 
 private val logger = KotlinLogging.logger {}
 
@@ -22,13 +21,7 @@ class CommandProcessorRegistry(processors: List<CommandProcessor>) {
         commands = mutableCommandsMap.toMap()
     }
 
-    fun getProcessorByKey(key: String): CommandProcessor {
-        return commands[key] ?: throw CommandDoesNotExistException(key)
+    fun getProcessorByKey(key: String): CommandProcessor? {
+        return commands[key]
     }
 }
-
-class CommandDoesNotExistException(commandKey: String) : LebkuchenException(
-    "Command $commandKey does not exist.",
-    // TODO: i18n.
-    "Komenda $commandKey nie istnieje.",
-)
