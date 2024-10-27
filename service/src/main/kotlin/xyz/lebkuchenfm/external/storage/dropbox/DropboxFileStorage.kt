@@ -38,10 +38,7 @@ class DropboxFileStorage(config: ApplicationConfig) {
      * [bytes] contains file content data
      * @return url on which raw file may be obtained
      */
-    suspend fun uploadFile(
-        path: String,
-        bytes: ByteArray,
-    ): String {
+    suspend fun uploadFile(path: String, bytes: ByteArray): String {
         if (bearerTokenStorage.isEmpty()) {
             getInitialTokens()
         }
@@ -75,15 +72,14 @@ class DropboxFileStorage(config: ApplicationConfig) {
         return resourceUrl
     }
 
-    private fun getRefreshTokenRequestBody() =
-        FormDataContent(
-            parameters {
-                append("refresh_token", refreshToken)
-                append("client_id", appKey)
-                append("client_secret", appSecret)
-                append("grant_type", "refresh_token")
-            },
-        )
+    private fun getRefreshTokenRequestBody() = FormDataContent(
+        parameters {
+            append("refresh_token", refreshToken)
+            append("client_id", appKey)
+            append("client_secret", appSecret)
+            append("grant_type", "refresh_token")
+        },
+    )
 
     private suspend fun getInitialTokens() {
         val tokenInfo: DropboxTokenInfo =
