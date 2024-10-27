@@ -46,28 +46,27 @@ class DropboxFileStorage(config: ApplicationConfig) {
         val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false)
         val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args)
 
-        val uploadFile: DropboxFileUploadResponse =
-            client.post("https://content.dropboxapi.com/2/files/upload") {
-                setBody(bytes)
-                contentType(ContentType.Application.OctetStream)
-                accept(ContentType.Application.Json)
-                headers {
-                    append("Dropbox-API-Arg", argsString)
-                }
-            }.body()
+        val uploadFile: DropboxFileUploadResponse = client.post("https://content.dropboxapi.com/2/files/upload") {
+            setBody(bytes)
+            contentType(ContentType.Application.OctetStream)
+            accept(ContentType.Application.Json)
+            headers {
+                append("Dropbox-API-Arg", argsString)
+            }
+        }.body()
 
-        val sharedFile: DropboxFileSharingResponse =
-            client.post("https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings") {
-                val sharingSettings = DropboxFileSharingSettings("viewer", "public", allowDownload = true)
-                setBody(DropboxFileSharing(uploadFile.pathDisplay, sharingSettings))
-                contentType(ContentType.Application.Json)
-            }.body()
+        val sharedFile: DropboxFileSharingResponse = client.post(
+            "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings",
+        ) {
+            val sharingSettings = DropboxFileSharingSettings("viewer", "public", allowDownload = true)
+            setBody(DropboxFileSharing(uploadFile.pathDisplay, sharingSettings))
+            contentType(ContentType.Application.Json)
+        }.body()
 
-        val resourceUrl =
-            URLBuilder(sharedFile.url).apply {
-                host = "dl.dropboxusercontent.com"
-                parameters.remove("dl")
-            }.buildString()
+        val resourceUrl = URLBuilder(sharedFile.url).apply {
+            host = "dl.dropboxusercontent.com"
+            parameters.remove("dl")
+        }.buildString()
 
         return resourceUrl
     }
@@ -82,13 +81,12 @@ class DropboxFileStorage(config: ApplicationConfig) {
     )
 
     private suspend fun getInitialTokens() {
-        val tokenInfo: DropboxTokenInfo =
-            HttpClient(OkHttp) {
-                install(ContentNegotiation) { json() }
-            }.post("https://api.dropbox.com/oauth2/token") {
-                setBody(getRefreshTokenRequestBody())
-                contentType(ContentType.Application.FormUrlEncoded)
-            }.body()
+        val tokenInfo: DropboxTokenInfo = HttpClient(OkHttp) {
+            install(ContentNegotiation) { json() }
+        }.post("https://api.dropbox.com/oauth2/token") {
+            setBody(getRefreshTokenRequestBody())
+            contentType(ContentType.Application.FormUrlEncoded)
+        }.body()
 
         bearerTokenStorage.add(BearerTokens(tokenInfo.accessToken, refreshToken))
     }
@@ -103,13 +101,12 @@ class DropboxFileStorage(config: ApplicationConfig) {
                     }
                     sendWithoutRequest { true }
                     refreshTokens {
-                        val tokenInfo: DropboxTokenInfo =
-                            client.post("https://api.dropbox.com/oauth2/token") {
-                                markAsRefreshTokenRequest()
-                                setBody(getRefreshTokenRequestBody())
-                                accept(ContentType.Application.Json)
-                                contentType(ContentType.Application.FormUrlEncoded)
-                            }.body()
+                        val tokenInfo: DropboxTokenInfo = client.post("https://api.dropbox.com/oauth2/token") {
+                            markAsRefreshTokenRequest()
+                            setBody(getRefreshTokenRequestBody())
+                            accept(ContentType.Application.Json)
+                            contentType(ContentType.Application.FormUrlEncoded)
+                        }.body()
                         bearerTokenStorage.clear()
                         bearerTokenStorage.add(
                             BearerTokens(accessToken = tokenInfo.accessToken, refreshToken = refreshToken),
