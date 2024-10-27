@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.storage.repos
+package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
