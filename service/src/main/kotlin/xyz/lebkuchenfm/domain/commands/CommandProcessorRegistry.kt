@@ -27,7 +27,8 @@ class CommandProcessorRegistry(processors: List<CommandProcessor>) {
     }
 }
 
-class CommandDoesNotExistException(commandKey: String): LebkuchenException(
+class CommandDoesNotExistException(commandKey: String) : LebkuchenException(
     "Command $commandKey does not exist.",
-    "Komenda $commandKey nie istnieje.", // TODO: i18n.
+    // TODO: i18n.
+    "Komenda $commandKey nie istnieje.",
 )

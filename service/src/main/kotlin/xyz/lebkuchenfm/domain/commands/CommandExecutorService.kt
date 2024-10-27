@@ -12,11 +12,12 @@ class CommandExecutorService(
     private val registry: CommandProcessorRegistry,
 ) {
     private fun execute(command: Command): CommandProcessingResult {
-        val processor = try {
-            registry.getProcessorByKey(command.key)
-        } catch (ex: CommandDoesNotExistException) {
-            return ex.toCommandProcessingResult()
-        }
+        val processor =
+            try {
+                registry.getProcessorByKey(command.key)
+            } catch (ex: CommandDoesNotExistException) {
+                return ex.toCommandProcessingResult()
+            }
 
         return try {
             processor.execute(command)

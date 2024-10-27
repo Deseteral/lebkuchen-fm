@@ -28,12 +28,16 @@ class TextCommandParser(private val commandPrompt: String) {
 class UnparsableCommandException(message: String, userMessage: String) : LebkuchenException(message, userMessage) {
     // TODO: i18n.
     companion object {
-        fun missingRequiredComponents(prompt: String) = UnparsableCommandException(
-            "Text must contain prompt and command key to be a valid command.",
-            "Twoja komenda musi wykonywać jakąś akcję. Sprawdź `$prompt help` aby dowiedzieć się więcej.",
-        )
+        fun missingRequiredComponents(prompt: String) =
+            UnparsableCommandException(
+                "Text must contain prompt and command key to be a valid command.",
+                "Twoja komenda musi wykonywać jakąś akcję. Sprawdź `$prompt help` aby dowiedzieć się więcej.",
+            )
 
-        fun badPrompt(expectedPrompt: String, receivedPrompt: String) = UnparsableCommandException(
+        fun badPrompt(
+            expectedPrompt: String,
+            receivedPrompt: String,
+        ) = UnparsableCommandException(
             "First token must be the command prompt. Expected $expectedPrompt, got $receivedPrompt.",
             "Musisz użyć `$expectedPrompt`, aby wykonać komendę.",
         )
