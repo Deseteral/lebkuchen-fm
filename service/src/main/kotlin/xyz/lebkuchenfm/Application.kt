@@ -17,11 +17,11 @@ import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.DummyEventStream
-import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
-import xyz.lebkuchenfm.external.storage.repos.SongsMongoRepository
-import xyz.lebkuchenfm.external.storage.repos.XSoundsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
+import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
