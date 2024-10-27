@@ -20,11 +20,12 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findAllUniqueTags()
     }
 
-    fun getByName(soundName: String): XSound {
-        TODO("Not implemented")
+    fun getByName(soundName: String): XSound? {
+        // TODO: Actually implement.
+        return null
     }
 
     fun incrementPlayCount(name: String) {
-        TODO("Not implemented")
+        // TODO: Implement.
     }
 }

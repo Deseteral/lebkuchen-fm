@@ -4,6 +4,7 @@ val kotlin_version: String by project
 val logback_version: String by project
 val kotlin_logging_version: String by project
 val mongo_driver_version: String by project
+val kotlin_result_version: String by project
 
 plugins {
     kotlin("jvm") version "2.0.21"
@@ -41,6 +42,8 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic:$logback_version")
     implementation("io.github.oshai:kotlin-logging-jvm:$kotlin_logging_version")
+
+    implementation("com.michael-bull.kotlin-result:kotlin-result:$kotlin_result_version")
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
 
