@@ -16,6 +16,7 @@ import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
+import xyz.lebkuchenfm.external.DummyEventStream
 import xyz.lebkuchenfm.external.storage.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
@@ -37,11 +38,13 @@ fun Application.module() {
     val songsRepository = SongsMongoRepository(database)
     val songsService = SongsService(songsRepository)
 
+    val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
+
     val textCommandParser = TextCommandParser(environment.config.property("commandPrompt").toString())
     val commandProcessorRegistry =
         CommandProcessorRegistry(
             listOf(
-                XCommandProcessor(),
+                XCommandProcessor(xSoundsService, eventStream),
             ),
         )
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
