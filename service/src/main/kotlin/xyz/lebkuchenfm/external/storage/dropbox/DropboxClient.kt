@@ -49,14 +49,14 @@ class DropboxClient(config: ApplicationConfig) {
         val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false)
         val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args)
 
-        val uploadFile: DropboxFileUploadResponse = client.post(API_FILE_UPLOAD) {
+        val uploadFile: DropboxFileUploadResponse = client.post(API_FILE_UPLOAD_URL) {
             setBody(bytes)
             contentType(ContentType.Application.OctetStream)
             accept(ContentType.Application.Json)
             headers { append("Dropbox-API-Arg", argsString) }
         }.body()
 
-        val sharedFile: DropboxFileSharingResponse = client.post(API_FILE_SHARING) {
+        val sharedFile: DropboxFileSharingResponse = client.post(API_FILE_SHARING_URL) {
             val sharingSettings = DropboxFileSharingSettings("viewer", "public", allowDownload = true)
             setBody(DropboxFileSharing(uploadFile.pathDisplay, sharingSettings))
             contentType(ContentType.Application.Json)
@@ -98,7 +98,7 @@ class DropboxClient(config: ApplicationConfig) {
 
     private val tokenPostRequest: HttpRequestBuilder.() -> Unit = {
         attributes.put(AuthCircuitBreaker, Unit)
-        url(API_OAUTH_TOKEN)
+        url(API_OAUTH_TOKEN_URL)
         accept(ContentType.Application.Json)
         contentType(ContentType.Application.FormUrlEncoded)
         setBody(
@@ -115,9 +115,9 @@ class DropboxClient(config: ApplicationConfig) {
 
     private companion object {
         const val DL_DROPBOX_HOST = "dl.dropboxusercontent.com"
-        const val API_FILE_UPLOAD = "https://content.dropboxapi.com/2/files/upload"
-        const val API_OAUTH_TOKEN = "https://api.dropbox.com/oauth2/token"
-        const val API_FILE_SHARING = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
+        const val API_FILE_UPLOAD_URL = "https://content.dropboxapi.com/2/files/upload"
+        const val API_OAUTH_TOKEN_URL = "https://api.dropbox.com/oauth2/token"
+        const val API_FILE_SHARING_URL = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
         const val DROPBOX_REFRESH_TOKEN_PROPERTY_PATH = "storage.dropbox.auth.refreshToken"
         const val DROPBOX_APP_KEY_PROPERTY_PATH = "storage.dropbox.auth.appKey"
         const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.auth.appSecret"
