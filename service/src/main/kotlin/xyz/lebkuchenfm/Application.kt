@@ -19,8 +19,8 @@ import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.DummyEventStream
+import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
@@ -43,7 +43,7 @@ fun Application.module() {
     val songsService = SongsService(songsRepository)
 
     val youtubeClient = YoutubeClient(environment.config)
-    
+
     val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
 
     val commandPrompt = environment.config.property("commandPrompt").getString()

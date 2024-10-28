@@ -17,6 +17,6 @@ storage:
       xSounds: "$DROPBOX_X_SOUNDS_PATH:/xsounds/"
 
 youtube:
-  apiKey: "$YOUTUBE_API_KEY"
-  
+  apiKey: "$YOUTUBE_API_KEY:"
+
 commandPrompt: "$COMMAND_PROMPT:/fm"
