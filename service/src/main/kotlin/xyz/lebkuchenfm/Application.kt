@@ -20,7 +20,7 @@ import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.DummyEventStream
-import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
+import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
@@ -33,7 +33,7 @@ fun Application.module() {
     install(ContentNegotiation) { json() }
 
     val database = MongoDatabaseClient.getDatabase(environment.config)
-    val dropboxClient = DropboxClient(environment.config)
+    val dropboxClient = DropboxFileStorage(environment.config)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)

@@ -26,7 +26,7 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadArgs
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadResponse
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxTokenInfo
 
-class DropboxClient(config: ApplicationConfig) {
+class DropboxFileStorage(config: ApplicationConfig) {
     private val client = prepareClient()
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
     private val refreshToken = config.property(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH).getString()

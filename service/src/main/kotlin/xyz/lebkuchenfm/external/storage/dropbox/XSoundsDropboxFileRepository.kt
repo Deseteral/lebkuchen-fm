@@ -5,7 +5,7 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsFileRepository
 import java.nio.file.Paths
 
 class XSoundsDropboxFileRepository(
-    private val dropboxClient: DropboxClient,
+    private val dropboxClient: DropboxFileStorage,
     config: ApplicationConfig,
 ) : XSoundsFileRepository {
     private val storageFolderPath = config.property(DROPBOX_X_SOUND_PATH_PROPERTY_PATH).getString()
