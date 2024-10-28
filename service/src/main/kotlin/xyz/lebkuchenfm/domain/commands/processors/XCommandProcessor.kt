@@ -15,7 +15,7 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
     CommandProcessor(
         key = "x",
         shortKey = null,
-        helpMessage = "Puszcza szalony dźwięk!",
+        helpMessage = "Plays a crazy sound!",
         exampleUsages = listOf("airhorn"),
         parameters = CommandParameters(
             parameters = listOf(
