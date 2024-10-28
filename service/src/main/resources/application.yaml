@@ -18,3 +18,5 @@ storage:
 
 youtube:
   apiKey: "$YOUTUBE_API_KEY"
+  
+commandPrompt: "$COMMAND_PROMPT:/fm"
