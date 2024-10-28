@@ -19,4 +19,13 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     suspend fun findAllUniqueTags(): List<String> {
         return repository.findAllUniqueTags()
     }
+
+    fun getByName(soundName: String): XSound? {
+        // TODO: Actually implement.
+        return null
+    }
+
+    fun incrementPlayCount(name: String) {
+        // TODO: Implement.
+    }
 }

@@ -11,7 +11,7 @@ object MongoDatabaseClient {
     lateinit var client: MongoClient
 
     private const val CONNECTION_STRING_PROPERTY_PATH = "storage.mongodb.connectionString"
-    private const val DATABASE_NAME = "lebkuchen-fm"
+    private const val DATABASE_NAME = "lebkuchen-fm" // TODO: This should be configurable.
 
     fun getDatabase(config: ApplicationConfig): MongoDatabase {
         if (!MongoDatabaseClient::client.isInitialized) {

@@ -7,13 +7,19 @@ import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
+import xyz.lebkuchenfm.domain.commands.CommandExecutorService
+import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
+import xyz.lebkuchenfm.domain.commands.TextCommandParser
+import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
+import xyz.lebkuchenfm.external.DummyEventStream
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxFileStorage
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
+import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 
@@ -32,10 +38,22 @@ fun Application.module() {
     val songsRepository = SongsMongoRepository(database)
     val songsService = SongsService(songsRepository)
 
+    val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
+
+    val commandPrompt = environment.config.property("commandPrompt").getString()
+    val textCommandParser = TextCommandParser(commandPrompt)
+    val commandProcessorRegistry = CommandProcessorRegistry(
+        listOf(
+            XCommandProcessor(xSoundsService, eventStream),
+        ),
+    )
+    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
+
     routing {
         route("/api") {
             xSoundsRouting(xSoundsService)
             songsRouting(songsService)
+            commandsRouting(commandExecutorService)
         }
         staticResources("/", "static")
     }
