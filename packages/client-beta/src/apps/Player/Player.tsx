@@ -2,6 +2,7 @@ import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import circlePlayIcon from '../../icons/circle-play-regular.svg';
 import { createSignal } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
+import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -14,7 +15,6 @@ function Player() {
     }
   };
 
-  console.log(buttonRef);
   return (
     <>
       <DesktopIcon
@@ -25,8 +25,8 @@ function Player() {
       />
       {showWindow() && (
         <AppWindow title="Plejer" close={closeWindow}>
-          <div>
-            <h1>Player</h1>
+          <div style={{ height: '500px', width: '800px' }}>
+            <YouTubePlayer />
           </div>
         </AppWindow>
       )}

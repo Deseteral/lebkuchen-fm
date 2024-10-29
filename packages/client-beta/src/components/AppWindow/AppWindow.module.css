@@ -2,7 +2,6 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  width: 500px;
   min-width: 250px;
   min-height: 100px;
   box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);

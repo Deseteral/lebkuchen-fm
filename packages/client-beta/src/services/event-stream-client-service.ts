@@ -1,28 +1,52 @@
-import { io } from 'socket.io-client';
-import { EventData } from 'lebkuchen-fm-service';
-import mitt from 'mitt';
+import mitt, { type Handler } from 'mitt';
+import { type LocalEventData, type LocalEvents } from '../types/local-events';
 
-type DisconnectedCallback = () => void;
+class EventStreamClient {
+  private static emitter = mitt();
 
-const emmiter = mitt();
+  static subscribe<T extends LocalEvents>(eventId: T['eventData']['id'], callback: (event: T) => void): void;
+  // static subscribe<T extends LocalEventData>(eventId: T['id'], callback: (eventData: T) => void): void;
 
-function connect(): DisconnectedCallback {
-  const client = io('/api/player');
+  static subscribe(eventId: string, callback: (event: LocalEvents | LocalEventData) => void) {
+    EventStreamClient.emitter.on(
+      eventId,
+      callback as Handler,
+    );
+  }
 
-  client.on('connect', () => console.log('Connected to event stream WebSocket'));
-
-  client.on('message', (eventData: EventData) => {
-    emmiter.emit(eventData.id, eventData);
-  });
-
-
-  return function disconnect() {
-    client.disconnect();
+  static unsubscribe(eventId: string, callback: (eventData: LocalEvents) => void) {
+    EventStreamClient.emitter.off(
+      eventId,
+      callback as Handler,
+    );
   }
 }
 
 
-export {
-  connect,
-  emmiter,
+
+const emitter  = mitt();
+
+function subscribe(eventId: string, callback: (eventData: LocalEvents) => void) {
+  emitter.on(
+    eventId,
+    callback as Handler,
+  );
+}
+
+function unsubscribe(eventId: string, callback: (eventData: LocalEvents) => void) {
+  emitter.off(
+    eventId,
+    callback as Handler,
+  );
+}
+
+function broadcast(eventId: string, eventData: LocalEvents) {
+  emitter.emit(eventId, eventData);
+}
+
+export { EventStreamClient };
+export const EventStreamClientService = {
+  subscribe,
+  unsubscribe,
+  broadcast,
 }

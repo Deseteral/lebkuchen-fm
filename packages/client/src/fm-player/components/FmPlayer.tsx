@@ -23,6 +23,7 @@ function FmPlayer() {
 
     PlayerStateService.onStateChange((nextState?: PlayerState) => {
       if (!nextState) return;
+      console.log('dostałem nowy stan', nextState);
       setPlayerState({
         currentlyPlaying: nextState.currentlyPlaying,
         queue: nextState.queue,

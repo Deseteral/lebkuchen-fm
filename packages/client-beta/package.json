@@ -14,7 +14,10 @@
   "dependencies": {
     "@solidjs/router": "0.13.0",
     "lebkuchen-fm-service": "*",
-    "solid-js": "1.8.15"
+    "mitt": "3.0.1",
+    "socket.io-client": "4.8.1",
+    "solid-js": "1.8.15",
+    "yt-player": "3.6.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "7.7.0",
