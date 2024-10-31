@@ -29,7 +29,7 @@ class YoutubeClient(config: ApplicationConfig) {
 
     suspend fun getVideoName(id: String): Result<String, YoutubeClientError> {
         if (apiKey == null) {
-            logger.warn { "Missing Youtube API key" }
+            logger.warn { "Missing Youtube API key." }
             return Err(YoutubeClientError.ApiKeyMissing)
         }
 
@@ -42,7 +42,7 @@ class YoutubeClient(config: ApplicationConfig) {
         }
 
         if (response.status != HttpStatusCode.OK) {
-            logger.error { "YoutubeClient failed with status: ${response.status} \n ${response.request.url}" }
+            logger.error { "YoutubeClient failed with status: ${response.status} \n ${response.request.url}." }
             return Err(YoutubeClientError.UnknownError)
         }
 
