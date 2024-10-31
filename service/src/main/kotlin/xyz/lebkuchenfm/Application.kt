@@ -66,8 +66,12 @@ fun Application.module() {
         route("/test") {
             get {
                 call.request.queryParameters["youtubeId"]?.let { youtubeId ->
-                    val videoName = youtubeClient.getVideoName(youtubeId)
-                    call.respond(HttpStatusCode.OK, videoName)
+                    val result = youtubeClient.getVideoName(youtubeId)
+                    if (result.isOk) {
+                        call.respond(HttpStatusCode.OK, result.value)
+                    } else {
+                        call.respond(HttpStatusCode.InternalServerError, result.error.toString())
+                    }
                 }
             }
         }
