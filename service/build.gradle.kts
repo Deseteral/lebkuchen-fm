@@ -47,6 +47,8 @@ dependencies {
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
 
+    implementation("dev.kord:kord-core:0.15.0")
+
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
