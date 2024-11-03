@@ -14,7 +14,7 @@ import { Search } from './Search';
 import { UsersButton } from './UsersButton';
 
 function FmPlayer() {
-  const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
+  const [playerState, setPlayerState] = React.useState<PlayerState>(PlayerStateService.getState());
   const [showNowPlaying, setShowNowPlaying] = React.useState<boolean>(true);
 
   React.useEffect(() => {
@@ -23,7 +23,6 @@ function FmPlayer() {
 
     PlayerStateService.onStateChange((nextState?: PlayerState) => {
       if (!nextState) return;
-      console.log('dostałem nowy stan', nextState);
       setPlayerState({
         currentlyPlaying: nextState.currentlyPlaying,
         queue: nextState.queue,
@@ -34,15 +33,13 @@ function FmPlayer() {
     return () => eventStreamDisconnect();
   }, []);
 
-  if (playerState === null) return (<div />);
-
   return (
     <div className="relative">
       <SongsQueue playerState={playerState} />
       <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col items-start gap-4 overflow-x-visible">
         <Search />
         <RandomSongButton />
-        {playerState && !showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
+        {!showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
         <SkipSongButton />
         <UsersButton />
       </div>
