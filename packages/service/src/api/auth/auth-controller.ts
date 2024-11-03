@@ -1,11 +1,11 @@
 import { Service } from 'typedi';
-import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get, OnUndefined } from 'routing-controllers';
-import { AuthRequestDto } from '@service/lib';
+import { Post, Body, JsonController, UnauthorizedError, Session, Authorized, Get, OnUndefined, UseBefore } from 'routing-controllers';
 import { RequestSession } from '@service/api/request-session';
 import { LoggedInResponseDto } from '@service/api/auth/model/logged-in-response-dto';
 import { Session as ExpressSession } from 'express-session';
 import { StatusCodes } from 'http-status-codes';
 import { AuthService } from '@service/domain/auth/auth-service';
+import bodyParser from 'body-parser';
 
 @Service()
 @JsonController('/api/auth')
@@ -27,7 +27,8 @@ class AuthController {
 
   @Post('/')
   @OnUndefined(StatusCodes.OK)
-  async auth(@Body() authData: AuthRequestDto, @Session() session: RequestSession): Promise<void> {
+  @UseBefore(bodyParser.urlencoded())
+  async auth(@Body() authData: AuthForm, @Session() session: RequestSession): Promise<void> {
     const { username, password } = authData;
 
     try {
@@ -45,6 +46,11 @@ class AuthController {
       session.destroy(() => resolve());
     });
   }
+}
+
+interface AuthForm {
+  username: string;
+  password: string;
 }
 
 export { AuthController };

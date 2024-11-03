@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "0.2.1",
+    "body-parser": "1.20.3",
     "class-transformer": "0.5.1",
     "class-validator": "0.13.2",
     "compression": "1.7.4",
