@@ -16,16 +16,15 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
-import io.ktor.server.sessions.SessionStorageMemory
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
-import xyz.lebkuchenfm.domain.auth.UserSession
-import xyz.lebkuchenfm.api.auth.authRouting
 import kotlinx.coroutines.launch
+import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
+import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
@@ -33,6 +32,7 @@ import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.DummyEventStream
+import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
@@ -48,8 +48,7 @@ fun Application.module() {
 
     install(Sessions) {
         val days30 = 30 * 24 * 60 * 60 * 1000L
-        // TODO: In-memory storage is temporary. We have to implement a custom storage using Mongo.
-        cookie<UserSession>("user_session", SessionStorageMemory()) {
+        cookie<UserSession>("user_session", SessionStorageMongo()) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = days30
             // TODO: The cookie should be signed, I guess?
