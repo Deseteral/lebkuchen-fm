@@ -44,8 +44,6 @@ import xyz.lebkuchenfm.external.youtube.YoutubeClient
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
-    install(ContentNegotiation) { json() }
-
     install(Sessions) {
         val days30 = 30 * 24 * 60 * 60 * 1000L
         cookie<UserSession>("user_session", SessionStorageMongo()) {
@@ -108,6 +106,8 @@ fun Application.module() {
     val discordClient = DiscordClient(environment.config, commandExecutorService)
 
     launch { discordClient.start() }
+
+    install(ContentNegotiation) { json() }
 
     routing {
         // TODO: This route should be secured using auth-session and auth-bearer when the whole auth flow is done.
