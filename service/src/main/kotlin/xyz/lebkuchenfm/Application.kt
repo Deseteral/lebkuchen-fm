@@ -44,41 +44,7 @@ import xyz.lebkuchenfm.external.youtube.YoutubeClient
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
-    install(Sessions) {
-        val days30 = 30 * 24 * 60 * 60 * 1000L
-        cookie<UserSession>("user_session", SessionStorageMongo()) {
-            cookie.path = "/"
-            cookie.maxAgeInSeconds = days30
-            // TODO: The cookie should be signed, I guess?
-        }
-    }
-
-    // TODO: Move ktor specific stuff after our app init.
     val authService = AuthService()
-
-    install(Authentication) {
-        form("auth-form") {
-            userParamName = "username"
-            passwordParamName = "password"
-            validate { credentials ->
-                authService.authenticateWithCredentials(credentials.name, credentials.password)
-            }
-            challenge {
-                call.respond(HttpStatusCode.Unauthorized)
-            }
-        }
-        session<UserSession>("auth-session") {
-            validate { session -> session }
-            challenge {
-                call.respond(HttpStatusCode.Unauthorized)
-            }
-        }
-        bearer("auth-bearer") {
-            authenticate { tokenCredential ->
-                authService.authenticateWithApiToken(tokenCredential.token)
-            }
-        }
-    }
 
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
@@ -108,6 +74,39 @@ fun Application.module() {
     launch { discordClient.start() }
 
     install(ContentNegotiation) { json() }
+
+    install(Sessions) {
+        val days30 = 30 * 24 * 60 * 60 * 1000L
+        cookie<UserSession>("user_session", SessionStorageMongo()) {
+            cookie.path = "/"
+            cookie.maxAgeInSeconds = days30
+            // TODO: The cookie should be signed, I guess?
+        }
+    }
+
+    install(Authentication) {
+        form("auth-form") {
+            userParamName = "username"
+            passwordParamName = "password"
+            validate { credentials ->
+                authService.authenticateWithCredentials(credentials.name, credentials.password)
+            }
+            challenge {
+                call.respond(HttpStatusCode.Unauthorized)
+            }
+        }
+        session<UserSession>("auth-session") {
+            validate { session -> session }
+            challenge {
+                call.respond(HttpStatusCode.Unauthorized)
+            }
+        }
+        bearer("auth-bearer") {
+            authenticate { tokenCredential ->
+                authService.authenticateWithApiToken(tokenCredential.token)
+            }
+        }
+    }
 
     routing {
         // TODO: This route should be secured using auth-session and auth-bearer when the whole auth flow is done.
