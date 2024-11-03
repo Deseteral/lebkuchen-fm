@@ -5,7 +5,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.AuthenticationStrategy
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.auth.form
@@ -20,9 +19,7 @@ import io.ktor.server.routing.routing
 import io.ktor.server.sessions.SessionStorageMemory
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
-import xyz.lebkuchenfm.api.auth.UserSession
+import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.api.auth.authRouting
 import kotlinx.coroutines.launch
 import xyz.lebkuchenfm.api.commands.commandsRouting

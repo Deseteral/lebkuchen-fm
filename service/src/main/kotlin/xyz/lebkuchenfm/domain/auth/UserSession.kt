@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.api.auth
+package xyz.lebkuchenfm.domain.auth
 
 import kotlinx.serialization.Serializable
 
