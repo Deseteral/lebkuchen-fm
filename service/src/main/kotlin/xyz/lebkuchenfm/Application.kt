@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
+import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
@@ -46,8 +47,8 @@ fun Application.module() {
     install(ContentNegotiation) { json() }
 
     install(Sessions) {
-        // TODO: In-memory storage is temporary. We have to implement a custom storage using Mongo.
         val days30 = 30 * 24 * 60 * 60 * 1000L
+        // TODO: In-memory storage is temporary. We have to implement a custom storage using Mongo.
         cookie<UserSession>("user_session", SessionStorageMemory()) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = days30
@@ -55,17 +56,15 @@ fun Application.module() {
         }
     }
 
+    // TODO: Move ktor specific stuff after our app init.
+    val authService = AuthService()
+
     install(Authentication) {
         form("auth-form") {
             userParamName = "username"
             passwordParamName = "password"
             validate { credentials ->
-                // TODO: Actually validate the credentials.
-                if (credentials.name == "admin" && credentials.password == "test") {
-                    UserSession(credentials.name)
-                } else {
-                    null
-                }
+                authService.authenticateWithCredentials(credentials.name, credentials.password)
             }
             challenge {
                 call.respond(HttpStatusCode.Unauthorized)
@@ -79,11 +78,7 @@ fun Application.module() {
         }
         bearer("auth-bearer") {
             authenticate { tokenCredential ->
-                if (tokenCredential.token == "1234") {
-                    UserSession("admin")
-                } else {
-                    null
-                }
+                authService.authenticateWithApiToken(tokenCredential.token)
             }
         }
     }
