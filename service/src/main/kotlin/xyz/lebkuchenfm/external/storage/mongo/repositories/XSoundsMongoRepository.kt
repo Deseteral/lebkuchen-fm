@@ -58,7 +58,7 @@ data class XSoundEntity(
     val name: String,
     val url: String,
     val timesPlayed: Int,
-    val tags: List<String>,
+    val tags: List<String>?,
     val addedBy: String?,
 ) {
     constructor(sound: XSound) : this(
@@ -71,6 +71,6 @@ data class XSoundEntity(
     )
 
     fun toDomain(): XSound {
-        return XSound(name = this.name, url = this.url, tags = this.tags, addedBy = this.addedBy)
+        return XSound(name = this.name, url = this.url, tags = this.tags ?: emptyList(), addedBy = this.addedBy)
     }
 }
