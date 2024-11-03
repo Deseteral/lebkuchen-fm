@@ -1,10 +1,11 @@
 @file:Suppress("ktlint:standard:property-naming")
 
+val kord_version: String by project
+val kotlin_logging_version: String by project
+val kotlin_result_version: String by project
 val kotlin_version: String by project
 val logback_version: String by project
-val kotlin_logging_version: String by project
 val mongo_driver_version: String by project
-val kotlin_result_version: String by project
 
 plugins {
     kotlin("jvm") version "2.0.21"
@@ -47,7 +48,7 @@ dependencies {
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
 
-    implementation("dev.kord:kord-core:0.15.0")
+    implementation("dev.kord:kord-core:$kord_version")
 
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
