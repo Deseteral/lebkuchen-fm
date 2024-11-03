@@ -44,8 +44,11 @@ fun Application.module() {
 
     install(Sessions) {
         // TODO: In-memory storage is temporary. We have to implement a custom storage in Mongo.
+        val days30 = 30 * 24 * 60 * 60 * 1000L
         cookie<UserSession>("user_session", SessionStorageMemory()) {
             cookie.path = "/"
+            cookie.maxAgeInSeconds = days30
+            // TODO: The cookie should be signed, I guess?
         }
     }
 
@@ -122,6 +125,7 @@ fun Application.module() {
                 }
             }
         }
+
         staticResources("/", "static")
     }
 }
