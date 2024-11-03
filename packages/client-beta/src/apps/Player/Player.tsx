@@ -18,20 +18,18 @@ function Player() {
   return (
     <>
       <DesktopIcon
-        label="Player.exe"
+        label="Player"
         imgSrc={circlePlayIcon}
-        buttonRef={(el: HTMLButtonElement) => buttonRef = el}
+        buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
       />
       {showWindow() && (
-        <AppWindow title="Plejer" close={closeWindow}>
-          <div style={{ height: '500px', width: '800px' }}>
-            <YouTubePlayer />
-          </div>
+        <AppWindow title="LebkuchenFM Player" close={closeWindow}>
+          <YouTubePlayer />
         </AppWindow>
       )}
     </>
-  )
+  );
 }
 
 export { Player };

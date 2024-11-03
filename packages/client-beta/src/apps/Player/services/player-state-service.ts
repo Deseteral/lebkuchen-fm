@@ -1,55 +1,54 @@
 import type { PlayerState } from '../../../types/player-state';
-import {
-  LocalEventTypes,
-  type LocalPlayerStateUpdateEvent,
-} from '../../../types/local-events';
-import { EventStreamClientService } from '../../../services/event-stream-client-service';
+import { LocalEventTypes, type LocalPlayerStateUpdateEvent } from '../../../types/local-events';
+import { EventStreamClient } from '../../../services/event-stream-client';
 
-let playerState: PlayerState = {
+const DEFAULT_PLAYER_STATE: PlayerState = {
   currentlyPlaying: null,
   queue: [],
   isPlaying: true,
   volume: 100,
 };
 
-function change(newPlayerState: Partial<PlayerState>, propagateEvent: boolean = true): PlayerState {
-  playerState = {
-    ...playerState,
-    ...newPlayerState,
+class PlayerStateService {
+  private static playerState: PlayerState = {
+    ...DEFAULT_PLAYER_STATE,
   };
+  private static debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  if (propagateEvent) {
-    debouncedSendLocalPlayerStateUpdateEvent();
+  static get(): PlayerState {
+    return { ...PlayerStateService.playerState };
   }
 
-  return playerState;
-}
+  static change(newPlayerState: Partial<PlayerState>, propagateEvent: boolean = true): PlayerState {
+    PlayerStateService.playerState = {
+      ...PlayerStateService.playerState,
+      ...newPlayerState,
+    };
 
-function get(): PlayerState {
-  return { ...playerState };
-}
+    if (propagateEvent) {
+      PlayerStateService.debouncedSendLocalPlayerStateUpdateEvent();
+    }
 
-
-let debounceTimeout: ReturnType<typeof setTimeout> | null;
-
-function debouncedSendLocalPlayerStateUpdateEvent(): void {
-  if (debounceTimeout) {
-    clearTimeout(debounceTimeout);
+    return PlayerStateService.playerState;
   }
 
-  debounceTimeout = setTimeout(() => {
-    sendLocalPlayerStateUpdateEvent();
-    debounceTimeout = null;
-  }, 50);
+  private static debouncedSendLocalPlayerStateUpdateEvent(): void {
+    if (PlayerStateService.debounceTimeout) {
+      clearTimeout(PlayerStateService.debounceTimeout);
+    }
+
+    PlayerStateService.debounceTimeout = setTimeout(() => {
+      PlayerStateService.sendLocalPlayerStateUpdateEvent();
+      PlayerStateService.debounceTimeout = null;
+    }, 50);
+  }
+
+  private static sendLocalPlayerStateUpdateEvent(): void {
+    const id = LocalEventTypes.LOCAL_PLAYER_STATE_UPDATE;
+    const eventData: LocalPlayerStateUpdateEvent = { id, state: PlayerStateService.playerState };
+
+    EventStreamClient.broadcast<LocalPlayerStateUpdateEvent>(id, { eventData });
+  }
 }
 
-function sendLocalPlayerStateUpdateEvent(): void {
-  const id = LocalEventTypes.LOCAL_PLAYER_STATE_UPDATE;
-  const eventData: LocalPlayerStateUpdateEvent = { id, state: playerState };
-  EventStreamClientService.broadcast(id, { eventData });
-}
-
-export const PlayerStateService = {
-  change,
-  get,
-}
+export { PlayerStateService };

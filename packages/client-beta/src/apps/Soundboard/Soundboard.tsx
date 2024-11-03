@@ -67,35 +67,41 @@ function Soundboard() {
         toggleWindow={toggleWindow}
       />
       {showWindow() && (
-        <AppWindow title="Soundboard" close={() => setShowWindow(false)}>
-          <h4 class={styles.title}>Search</h4>
-          <input
-            class={styles.search}
-            type="text"
-            placeholder="phrase"
-            name="phrase"
-            onInput={onSearchChange}
-          />
-          <input
-            list="tags"
-            class={styles.search}
-            type="text"
-            placeholder="tags"
-            name="tags"
-            onInput={onSearchChange}
-          />
-          <datalist id="tags">
-            <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
-          </datalist>
-          <h4 class={styles.title}>Sounds</h4>
-          {filteredXSounds().length === 0 && <p class={styles.noResults}>No result</p>}
-          <div class={styles.container}>
-            {filteredXSounds() &&
-              filteredXSounds().map((xsound: XSound) => (
-                <button class={styles.button} onClick={() => playXSoundLocally(xsound.url)}>
-                  {xsound.name}
-                </button>
-              ))}
+        <AppWindow
+          title="Soundboard"
+          close={() => setShowWindow(false)}
+          startSize={{ width: '600px', height: '600px' }}
+        >
+          <div>
+            <h4 class={styles.title}>Search</h4>
+            <input
+              class={styles.search}
+              type="text"
+              placeholder="phrase"
+              name="phrase"
+              onInput={onSearchChange}
+            />
+            <input
+              list="tags"
+              class={styles.search}
+              type="text"
+              placeholder="tags"
+              name="tags"
+              onInput={onSearchChange}
+            />
+            <datalist id="tags">
+              <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
+            </datalist>
+            <h4 class={styles.title}>Sounds</h4>
+            {filteredXSounds().length === 0 && <p class={styles.noResults}>No result</p>}
+            <div class={styles.container}>
+              {filteredXSounds() &&
+                filteredXSounds().map((xsound: XSound) => (
+                  <button class={styles.button} onClick={() => playXSoundLocally(xsound.url)}>
+                    {xsound.name}
+                  </button>
+                ))}
+            </div>
           </div>
         </AppWindow>
       )}

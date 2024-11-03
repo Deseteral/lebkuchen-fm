@@ -1,8 +1,6 @@
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fill, 100px);
-  width: 500px;
-  max-height: 550px;
   background-color: #f1f1f1;
   justify-content: center;
   gap: 10px;

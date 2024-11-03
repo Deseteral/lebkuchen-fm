@@ -16,8 +16,4 @@ function skipSong() {
   runCommand('/fmdev skip 1');
 }
 
-export {
-  playRandomSongFromHistory,
-  skipSong,
-  runCommand,
-}
+export { playRandomSongFromHistory, skipSong, runCommand };

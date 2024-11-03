@@ -12,14 +12,9 @@ interface LocalPlayerStateUpdateEvent {
 
 type LocalEventData = EventData | LocalPlayerStateUpdateEvent;
 
-type LocalEvents = {
-  eventData: LocalEventData;
+type LocalEvents<T extends LocalEventData = LocalEventData> = {
+  eventData: T;
   sendResponse?: (...args: unknown[]) => void;
-}
-
-export {
-  LocalEventTypes,
-  type LocalEventData,
-  type LocalPlayerStateUpdateEvent,
-  type LocalEvents,
 };
+
+export { LocalEventTypes, type LocalEventData, type LocalPlayerStateUpdateEvent, type LocalEvents };
