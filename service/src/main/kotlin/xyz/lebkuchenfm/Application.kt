@@ -32,8 +32,6 @@ import xyz.lebkuchenfm.external.youtube.YoutubeClient
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
-    install(ContentNegotiation) { json() }
-
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
 
@@ -60,6 +58,8 @@ fun Application.module() {
     val discordClient = DiscordClient(environment.config, commandExecutorService)
 
     launch { discordClient.start() }
+
+    install(ContentNegotiation) { json() }
 
     routing {
         route("/api") {
