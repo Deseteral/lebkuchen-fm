@@ -59,7 +59,9 @@ fun Application.module() {
 
     launch { discordClient.start() }
 
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json()
+    }
 
     routing {
         route("/api") {
