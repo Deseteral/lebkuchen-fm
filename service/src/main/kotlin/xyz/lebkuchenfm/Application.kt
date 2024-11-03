@@ -5,11 +5,15 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.AuthenticationStrategy
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.bearer
 import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
@@ -45,7 +49,7 @@ fun Application.module() {
     install(ContentNegotiation) { json() }
 
     install(Sessions) {
-        // TODO: In-memory storage is temporary. We have to implement a custom storage in Mongo.
+        // TODO: In-memory storage is temporary. We have to implement a custom storage using Mongo.
         val days30 = 30 * 24 * 60 * 60 * 1000L
         cookie<UserSession>("user_session", SessionStorageMemory()) {
             cookie.path = "/"
@@ -72,12 +76,19 @@ fun Application.module() {
         }
         session<UserSession>("auth-session") {
             validate { session -> session }
-            skipWhen { call -> call.sessions.get<UserSession>() != null }
             challenge {
                 call.respond(HttpStatusCode.Unauthorized)
             }
         }
-        // TODO: We should add another auth handler for API Token header.
+        bearer("auth-bearer") {
+            authenticate { tokenCredential ->
+                if (tokenCredential.token == "1234") {
+                    UserSession("admin")
+                } else {
+                    null
+                }
+            }
+        }
     }
 
     val database = MongoDatabaseClient.getDatabase(environment.config)
@@ -108,15 +119,22 @@ fun Application.module() {
     launch { discordClient.start() }
 
     routing {
-        // TODO: This route should be using authenticate("auth-session") when the whole auth flow is done.
-        // authenticate("auth-session") {
+        // TODO: This route should be secured using auth-session and auth-bearer when the whole auth flow is done.
         route("/api") {
             authRouting()
             xSoundsRouting(xSoundsService)
             songsRouting(songsService)
             commandsRouting(commandExecutorService)
         }
-        // }
+
+        // TODO: Remove me.
+        authenticate("auth-session") {
+            authenticate("auth-bearer") {
+                get("/auth-test") {
+                    call.respondText { "You are authenticated!" }
+                }
+            }
+        }
 
         // TODO: remove me
         route("/test") {
