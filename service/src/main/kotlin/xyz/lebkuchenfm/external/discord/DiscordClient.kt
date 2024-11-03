@@ -39,6 +39,10 @@ class DiscordClient(config: ApplicationConfig, private val commandExecutorServic
             return
         }
 
+        if (this::kord.isInitialized) {
+            return
+        }
+
         kord = Kord(token)
 
         kord.events
