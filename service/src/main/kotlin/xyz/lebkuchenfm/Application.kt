@@ -73,7 +73,9 @@ fun Application.module() {
 
     launch { discordClient.start() }
 
-    install(ContentNegotiation) { json() }
+    install(ContentNegotiation) {
+        json()
+    }
 
     install(Sessions) {
         val days30 = 30 * 24 * 60 * 60 * 1000L
