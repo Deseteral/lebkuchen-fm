@@ -70,7 +70,6 @@ fun Application.module() {
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
 
     val discordClient = DiscordClient(environment.config, commandExecutorService)
-
     launch { discordClient.start() }
 
     install(ContentNegotiation) {
