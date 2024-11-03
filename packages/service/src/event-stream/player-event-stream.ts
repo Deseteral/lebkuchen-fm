@@ -66,6 +66,10 @@ class PlayerEventStream {
     this.sendPlayerState(socket);
     this.emitter.emit('playerConnectionChange');
 
+    socket.on('PlayerStateRequestEvent', () => {
+      this.requestAndSendPlayerState(socket);
+    });
+
     socket.on('SongChanged', (songChangedEvent: SongChangedEvent) => {
       const { song } = songChangedEvent;
       Container.get(RadioPersonalityService).onNowPlayingChanged(song);
