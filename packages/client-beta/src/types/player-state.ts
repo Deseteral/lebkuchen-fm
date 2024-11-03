@@ -15,14 +15,10 @@ interface CurrentlyPlaying {
 }
 
 interface PlayerState {
-  currentlyPlaying: (CurrentlyPlaying | null);
+  currentlyPlaying: CurrentlyPlaying | null;
   queue: Song[];
   isPlaying: boolean;
   volume: number;
 }
 
-export {
-  PlayerState,
-  Song,
-  CurrentlyPlaying,
-};
+export { PlayerState, Song, CurrentlyPlaying };

@@ -18,10 +18,7 @@ class EventStreamClient {
     EventStreamClient.emitter.off(eventId, callback as Handler);
   }
 
-  static broadcast<T extends LocalEventData>(
-    eventId: T['id'],
-    eventData: LocalEvents<T>,
-  ): void {
+  static broadcast<T extends LocalEventData>(eventId: T['id'], eventData: LocalEvents<T>): void {
     EventStreamClient.emitter.emit(eventId, eventData);
   }
 }
