@@ -40,6 +40,7 @@ import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
+import kotlin.time.Duration.Companion.days
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -77,10 +78,9 @@ fun Application.module() {
     }
 
     install(Sessions) {
-        val days30 = 30 * 24 * 60 * 60 * 1000L
         cookie<UserSession>("user_session", SessionStorageMongo()) {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = days30
+            cookie.maxAgeInSeconds = 30.days.inWholeSeconds
             // TODO: The cookie should be signed, I guess?
         }
     }
