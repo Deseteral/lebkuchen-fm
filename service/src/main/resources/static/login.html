@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+<!--TODO: This is for testing purposes only. Eventually the login form will be provided by the frontend app.-->
+<form action="/api/auth" method="POST">
+  <p>
+    Username:
+    <input type="text" name="username"/>
+  </p>
+  <p>
+    Password:
+    <input type="password" name="password"/>
+  </p>
+  <p>
+    <button>Login</button>
+  </p>
+</form>
+<script>
+  document.querySelector('button').addEventListener('click', (e) => {
+    e.preventDefault();
+    const form = document.querySelector('form');
+    const body = new URLSearchParams(new FormData(form));
+    fetch(form.action, { method: "POST", body }).then(res => {
+      if (res.status === 401) {
+        alert("Wrong username or password.");
+      } else if (res.status === 200) {
+        window.location.href = "/";
+      } else {
+        alert("Something went wrong.");
+      }
+    });
+  });
+</script>
+</body>
+</html>
