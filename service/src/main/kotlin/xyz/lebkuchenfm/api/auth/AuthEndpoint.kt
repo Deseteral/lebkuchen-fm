@@ -43,9 +43,3 @@ data class LoggedInResponse(
     val username: String,
     val apiToken: String,
 )
-
-@Serializable
-data class AuthRequest(
-    val username: String,
-    val password: String,
-)
