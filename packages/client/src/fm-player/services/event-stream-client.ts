@@ -24,7 +24,6 @@ function connect(): (() => void) {
 
       case 'PlayerStateRequestEvent': {
         const state = PlayerStateService.getState();
-        console.log('PlayerStateRequestEvent wysyłam:', JSON.parse(JSON.stringify(state)));
         sendResponse(state);
       } break;
 

@@ -21,14 +21,12 @@ export default defineConfig({
     port: 9090,
     proxy: {
       '/socket.io': {
-        // target: 'http://localhost:9000/socket.io',
-        target: 'https://lebkuchen-fm-dev.fly.dev/socket.io',
+        target: 'http://localhost:9000/socket.io',
         ws: true,
         changeOrigin: true,
       },
       '^/api/.*': {
-        // target: 'http://localhost:9000/',
-        target: 'https://lebkuchen-fm-dev.fly.dev/',
+        target: 'http://localhost:9000/',
         changeOrigin: true,
       },
     },
