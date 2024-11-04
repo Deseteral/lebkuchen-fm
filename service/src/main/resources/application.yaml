@@ -7,7 +7,7 @@ ktor:
 
 storage:
   mongodb:
-    connectionString: "$MONGODB_URL:mongodb://localhost:27017"
+    connectionString: "$MONGODB_URI:mongodb://localhost:27017"
   dropbox:
     auth:
       refreshToken: "$DROPBOX_REFRESH_TOKEN"
