@@ -22,7 +22,9 @@ class TextCommandParser(private val commandPrompt: String) {
             return Err(CommandParsingError.IncorrectPrompt)
         }
         if (tokens.size < 2) {
-            logger.error { "Text must contain at least prompt and command key to be a valid command. Received '$text'." }
+            logger.error {
+                "Text must contain at least prompt and command key to be a valid command. Received '$text'."
+            }
             return Err(CommandParsingError.RequiredTokensMissing)
         }
 

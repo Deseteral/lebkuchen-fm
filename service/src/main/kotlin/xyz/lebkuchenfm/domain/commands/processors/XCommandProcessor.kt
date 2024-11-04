@@ -29,7 +29,7 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
             ?: return error("You have to provide sound name.", logger)
 
         val xSound = runBlocking { xSoundsService.getByName(soundName) }
-                ?: return error("Sound '$soundName' does not exist.", logger)
+            ?: return error("Sound '$soundName' does not exist.", logger)
 
         eventStream.sendToEveryone(PlayXSoundEvent(soundUrl = xSound.url))
         xSoundsService.incrementPlayCount(xSound.name)

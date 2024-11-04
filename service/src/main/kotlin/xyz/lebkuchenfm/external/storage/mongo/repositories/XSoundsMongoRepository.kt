@@ -54,7 +54,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 
     override suspend fun findByName(name: String): XSound? {
-        return collection.find(eq(XSound::name.name, name)).firstOrNull()?.toDomain();
+        return collection.find(eq(XSound::name.name, name)).firstOrNull()?.toDomain()
     }
 }
 

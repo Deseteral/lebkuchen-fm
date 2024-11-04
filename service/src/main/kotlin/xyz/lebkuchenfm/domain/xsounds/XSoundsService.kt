@@ -21,7 +21,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     }
 
     suspend fun getByName(soundName: String): XSound? {
-        return repository.findByName(soundName);
+        return repository.findByName(soundName)
     }
 
     fun incrementPlayCount(name: String) {
