@@ -4,5 +4,6 @@ data class XSound(
     val name: String,
     val url: String,
     val addedBy: String?,
+    val timesPlayed: Int,
     val tags: List<String>,
 )

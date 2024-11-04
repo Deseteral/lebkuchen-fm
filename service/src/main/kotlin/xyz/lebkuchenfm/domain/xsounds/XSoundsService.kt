@@ -11,7 +11,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
 
     suspend fun addNewXSound(soundName: String, tags: List<String>, bytes: ByteArray): XSound {
         val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes)
-        val readySound = XSound(name = soundName, url = fileUrl, tags = tags, addedBy = null)
+        val readySound = XSound(name = soundName, url = fileUrl, tags = tags, timesPlayed = 0, addedBy = null)
         repository.insert(readySound)
         return readySound
     }
@@ -24,7 +24,10 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findByName(soundName)
     }
 
-    fun incrementPlayCount(name: String) {
-        // TODO: Implement.
+    suspend fun incrementPlayCount(soundName: String) {
+        val xSound = this.getByName(soundName)
+        xSound?.let {
+            repository.replace(it.copy(timesPlayed = it.timesPlayed + 1))
+        }
     }
 }

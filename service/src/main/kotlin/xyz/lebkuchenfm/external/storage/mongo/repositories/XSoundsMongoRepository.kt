@@ -29,7 +29,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 
     override suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound> {
-        val filter = eq(XSound::tags.name, tag)
+        val filter = eq(XSoundEntity::tags.name, tag)
         return collection
             .find(filter)
             .sort(sortByName)
@@ -38,6 +38,10 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
     override suspend fun insert(sound: XSound) {
         collection.insertOne(XSoundEntity(sound))
+    }
+
+    override suspend fun replace(sound: XSound) {
+        collection.replaceOne(eq(XSoundEntity::name.name, sound.name), XSoundEntity(sound))
     }
 
     override suspend fun findAllUniqueTags(): List<String> {
@@ -70,12 +74,16 @@ data class XSoundEntity(
         null,
         sound.name,
         sound.url,
-        0,
+        sound.timesPlayed,
         sound.tags,
         sound.addedBy,
     )
 
-    fun toDomain(): XSound {
-        return XSound(name = this.name, url = this.url, tags = this.tags ?: emptyList(), addedBy = this.addedBy)
-    }
+    fun toDomain(): XSound = XSound(
+        name = this.name,
+        url = this.url,
+        tags = this.tags ?: emptyList(),
+        timesPlayed = this.timesPlayed,
+        addedBy = this.addedBy,
+    )
 }
