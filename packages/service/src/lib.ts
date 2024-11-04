@@ -2,7 +2,6 @@ import type { HttpError } from 'routing-controllers';
 import type { AddUserRequestDto } from './api/users/model/add-user-request-dto';
 import type { UsersResponseDto } from './api/users/model/users-response-dto';
 import type { UserData } from './domain/users/user';
-import type { AuthRequestDto } from './api/auth/model/auth-request-dto';
 import type { EventData, SpeedControl } from './event-stream/model/events';
 import type { PlayerState } from './domain/player-state/player-state';
 import { makeDefaultPlayerState } from './domain/player-state/player-state';
@@ -24,7 +23,6 @@ export {
   XSound,
   Log,
   AdminEventData,
-  AuthRequestDto,
   UserData,
   UsersResponseDto,
   AddUserRequestDto,
