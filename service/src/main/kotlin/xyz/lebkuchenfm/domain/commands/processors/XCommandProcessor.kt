@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.runBlocking
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.model.Command
@@ -27,8 +28,8 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
         val soundName = command.rawArgs
             ?: return error("You have to provide sound name.", logger)
 
-        val xSound = xSoundsService.getByName(soundName)
-            ?: return error("Sound '$soundName' does not exist.", logger)
+        val xSound = runBlocking { xSoundsService.getByName(soundName) }
+                ?: return error("Sound '$soundName' does not exist.", logger)
 
         eventStream.sendToEveryone(PlayXSoundEvent(soundUrl = xSound.url))
         xSoundsService.incrementPlayCount(xSound.name)

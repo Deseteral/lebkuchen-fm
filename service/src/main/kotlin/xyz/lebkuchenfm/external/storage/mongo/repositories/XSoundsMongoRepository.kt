@@ -9,6 +9,7 @@ import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
@@ -50,6 +51,10 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             listOf(unwind, group, project),
         ).first()
         return result.tagsSet
+    }
+
+    override suspend fun findByName(name: String): XSound? {
+        return collection.find(eq(XSound::name.name, name)).firstOrNull()?.toDomain();
     }
 }
 
