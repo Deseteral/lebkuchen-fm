@@ -7,5 +7,9 @@ interface XSoundsRepository {
 
     suspend fun insert(sound: XSound)
 
+    suspend fun incrementPlayCount(soundName: String): XSound?
+
     suspend fun findAllUniqueTags(): List<String>
+
+    suspend fun findByName(name: String): XSound?
 }

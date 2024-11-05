@@ -23,7 +23,7 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
             ),
         ),
     ) {
-    override fun execute(command: Command): CommandProcessingResult {
+    override suspend fun execute(command: Command): CommandProcessingResult {
         val soundName = command.rawArgs
             ?: return error("You have to provide sound name.", logger)
 
@@ -31,7 +31,7 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
             ?: return error("Sound '$soundName' does not exist.", logger)
 
         eventStream.sendToEveryone(PlayXSoundEvent(soundUrl = xSound.url))
-        xSoundsService.incrementPlayCount(xSound.name)
+        xSoundsService.markAsPlayed(xSound.name)
 
         return CommandProcessingResult.fromMarkdown("Played $soundName sound.")
     }

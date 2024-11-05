@@ -11,7 +11,7 @@ abstract class CommandProcessor(
     val exampleUsages: List<String>,
     val parameters: CommandParameters,
 ) {
-    abstract fun execute(command: Command): CommandProcessingResult
+    abstract suspend fun execute(command: Command): CommandProcessingResult
 
     fun error(markdown: String, logger: KLogger, message: String? = null): CommandProcessingResult {
         logger.error { message ?: markdown }
