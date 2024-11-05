@@ -27,7 +27,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     suspend fun incrementPlayCount(soundName: String) {
         val xSound = this.getByName(soundName)
         xSound?.let {
-            repository.replace(it.copy(timesPlayed = it.timesPlayed + 1))
+            repository.incrementPlayCount(it)
         }
     }
 }

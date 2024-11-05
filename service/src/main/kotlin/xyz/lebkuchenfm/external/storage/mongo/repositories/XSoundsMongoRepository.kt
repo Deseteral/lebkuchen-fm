@@ -7,6 +7,7 @@ import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -40,10 +41,6 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         collection.insertOne(XSoundEntity(sound))
     }
 
-    override suspend fun replace(sound: XSound) {
-        collection.replaceOne(eq(XSoundEntity::name.name, sound.name), XSoundEntity(sound))
-    }
-
     override suspend fun findAllUniqueTags(): List<String> {
         val unwind = unwind("\$${XSound::tags.name}")
         val group = group(null, addToSet("tagsSet", "\$${XSound::tags.name}"))
@@ -59,6 +56,10 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
     override suspend fun findByName(name: String): XSound? {
         return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
+    }
+
+    override suspend fun incrementPlayCount(sound: XSound) {
+        collection.findOneAndUpdate(eq(XSoundEntity::name.name, sound.name), Updates.inc(XSoundEntity::timesPlayed.name, 1))
     }
 }
 
