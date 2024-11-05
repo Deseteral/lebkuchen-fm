@@ -58,11 +58,11 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun incrementPlayCount(sound: XSound) {
-        collection.findOneAndUpdate(
-            eq(XSoundEntity::name.name, sound.name),
+    override suspend fun incrementPlayCount(soundName: String): XSound? {
+        return collection.findOneAndUpdate(
+            eq(XSoundEntity::name.name, soundName),
             inc(XSoundEntity::timesPlayed.name, 1),
-        )
+        )?.toDomain()
     }
 }
 
