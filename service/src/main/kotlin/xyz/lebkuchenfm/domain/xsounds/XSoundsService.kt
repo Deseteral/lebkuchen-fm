@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.domain.xsounds
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 class XSoundsService(private val repository: XSoundsRepository, private val fileRepository: XSoundsFileRepository) {
     suspend fun getAllXSounds(): List<XSound> {
         return repository.findAllOrderByNameAsc()
@@ -25,7 +29,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     }
 
     suspend fun markAsPlayed(soundName: String) {
-        repository.incrementPlayCount(soundName)?.also { 
+        repository.incrementPlayCount(soundName) ?: run {
             logger.error { "Could not increment play count for sound $soundName" }
         }
     }
