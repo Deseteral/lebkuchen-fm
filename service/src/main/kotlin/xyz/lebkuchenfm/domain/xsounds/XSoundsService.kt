@@ -25,6 +25,8 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     }
 
     suspend fun markAsPlayed(soundName: String) {
-        repository.incrementPlayCount(soundName)
+        repository.incrementPlayCount(soundName)?.also { 
+            logger.error { "Could not increment play count for sound $soundName" }
+        }
     }
 }
