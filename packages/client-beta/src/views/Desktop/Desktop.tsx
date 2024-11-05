@@ -12,8 +12,6 @@ function Desktop() {
   return (
     <main class={styles.desktop}>
       <Soundboard />
-      <Soundboard />
-      <Soundboard />
       <Player />
     </main>
   );
