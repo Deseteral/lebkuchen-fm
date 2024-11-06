@@ -19,8 +19,10 @@ import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
+import xyz.lebkuchenfm.api.songs.SongResponse
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
@@ -28,6 +30,7 @@ import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
+import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -66,6 +69,7 @@ fun Application.module() {
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
+            SongRandomCommandProcessor(songsService, eventStream),
         ),
     )
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
@@ -130,6 +134,17 @@ fun Application.module() {
         // TODO: remove me
         route("/test") {
             get {
+                call.request.queryParameters["randomQt"]?.let {
+                    val result = songsService.getRandomAvailableSongs(
+                        it.toInt(),
+                        call.request.queryParameters["randomPhrase"],
+                    )
+
+                    @Serializable data class SongResponse(val name: String)
+
+                    @Serializable data class SongsResponse(val songs: List<SongResponse>)
+                    call.respond(SongsResponse(songs = result.map { song -> SongResponse(song.name) }))
+                }
                 call.request.queryParameters["youtubeId"]?.let { youtubeId ->
                     val result = youtubeClient.getVideoName(youtubeId)
                     if (result.isOk) {
