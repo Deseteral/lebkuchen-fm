@@ -28,6 +28,7 @@ import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
+import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -63,11 +64,15 @@ fun Application.module() {
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
+    val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
+            helpCommandProcessor,
         ),
     )
+    helpCommandProcessor.setCommandRegistry(commandProcessorRegistry)
+
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
 
     val discordClient = DiscordClient(environment.config, commandExecutorService)
