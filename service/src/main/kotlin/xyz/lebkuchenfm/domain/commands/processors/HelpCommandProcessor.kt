@@ -6,6 +6,7 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
+import java.util.concurrent.ConcurrentHashMap
 
 private val logger = KotlinLogging.logger {}
 
@@ -118,7 +119,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
     private class LazyMap<K, V>(
         private val compute: (K) -> V,
     ) {
-        private val map = mutableMapOf<K, V>()
+        private val map = ConcurrentHashMap<K, V>()
 
         operator fun get(key: K): V? = map.getOrPut(key) { compute(key) }
     }
