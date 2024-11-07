@@ -51,11 +51,11 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         // TODO: filter only embeddable
 
-        eventStream.sendToEveryone(QueueSongsEvent(songs.map { it.youtubeId }))
+        eventStream.sendToEveryone(QueueSongsEvent(songs = songs))
 
         songs.forEach { songsService.incrementPlayCount(it.youtubeId) }
 
-        val songNames = songs.map { it.name }.joinToString(", ")
+        val songNames = songs.joinToString(", ") { it.name }
         val message = "Queued $songNames."
         return CommandProcessingResult.fromMarkdown(message)
     }
