@@ -6,6 +6,7 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 import xyz.lebkuchenfm.domain.eventstream.EventStream
+import xyz.lebkuchenfm.domain.eventstream.QueueSongsEvent
 import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsService
 
@@ -16,8 +17,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
         key = "song-queue",
         shortKey = "q",
         helpMessage = """
-            Adds a song from the database to the queue,
-            and if it is not there,
+            Adds a song from the database to the queue, and if it is not there,
             treats the phrase as a YouTube video ID or YouTube playlist ID.
         """.trimIndent(),
         exampleUsages = listOf(
@@ -34,8 +34,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
     override suspend fun execute(command: Command): CommandProcessingResult {
         val videoOrPlaylistId = command.rawArgs.orEmpty()
         if (videoOrPlaylistId.isEmpty()) {
-            logger.error { "Missing video or playlist id." }
-            return CommandProcessingResult.fromMarkdown("Please provide correct video or playlist id.")
+            error("Missing exact song name or youtube's video/playlist id.", logger)
         }
 
         val songs = mutableListOf<Song>()
@@ -47,17 +46,14 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
         // TODO: handle playlist
 
         if (songs.isEmpty()) {
-            logger.error { "There are no songs to queue!" }
-            return CommandProcessingResult.fromMarkdown("Could not queue any song.")
+            return error("Could not queue any song.", logger)
         }
 
         // TODO: filter only embeddable
 
-        // TODO: send event stream
+        eventStream.sendToEveryone(QueueSongsEvent(songs.map { it.youtubeId }))
 
-        songs.forEach { song ->
-            songsService.incrementPlayCount(song.youtubeId)
-        }
+        songs.forEach { songsService.incrementPlayCount(it.youtubeId) }
 
         val songNames = songs.map { it.name }.joinToString(", ")
         val message = "Queued $songNames."
