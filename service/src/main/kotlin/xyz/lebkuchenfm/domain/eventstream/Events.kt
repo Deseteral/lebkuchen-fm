@@ -13,6 +13,5 @@ data class PlayXSoundEvent(
 
 data class QueueSongsEvent(
     override val id: String = "AddSongsToQueueEvent",
-    // TODO: consider separate type for event stream
     val songs: List<Song>,
 ) : Event
