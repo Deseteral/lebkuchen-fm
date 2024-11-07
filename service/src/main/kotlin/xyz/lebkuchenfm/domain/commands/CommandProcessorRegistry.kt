@@ -19,5 +19,5 @@ class CommandProcessorRegistry(processors: List<CommandProcessor>) {
     }
 
     fun getProcessorByKey(key: String): CommandProcessor? = commands[key]
-    fun getRegistry() = commands
+    fun getCommandsKeys() = commands.keys
 }

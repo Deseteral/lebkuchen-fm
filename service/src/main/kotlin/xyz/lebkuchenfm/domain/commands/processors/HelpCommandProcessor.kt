@@ -30,32 +30,25 @@ class HelpCommandProcessor(private val commandPrompt: String) :
 
     override suspend fun execute(command: Command): CommandProcessingResult {
         val commandName = command.rawArgs
-        return commandName?.let { helpWithCommand(it) }
-            ?: helpWithoutCommand()
+        return commandName?.let { resultByCommand[it] } ?: generalHelpResult
     }
 
-    private fun helpWithCommand(commandName: String): CommandProcessingResult {
-        val command = commandsRegistry.getProcessorByKey(commandName)
-            ?: return error("No such command: $commandName", logger)
-
-        val exampleText = command.exampleUsages
-            .map { usage -> "  $commandPrompt $commandName $usage" }
-            .joinToString("\n")
-
-        return CommandProcessingResult.fromMultilineMarkdown(
-            "```",
-            this.getCommandWithParamsLine(command),
-            "",
-            "> ${command.helpMessage}",
-            "",
-            "Examples:",
-            exampleText,
-            "```",
-        )
+    private val uniqueCommands: List<CommandProcessor> by lazy {
+        commandsRegistry.getCommandsKeys()
+            .filter { it == commandsRegistry.getProcessorByKey(it)?.key }
+            .mapNotNull { commandsRegistry.getProcessorByKey(it) }
+            .sortedBy { it.key }
     }
 
-    private fun helpWithoutCommand(): CommandProcessingResult {
-        val uniqueCommands = getUniqueCommands()
+    private val resultByCommand = LazyMap<String, CommandProcessingResult> { commandName ->
+        getHelpForCommand(commandName)
+    }
+
+    private val generalHelpResult: CommandProcessingResult by lazy {
+        getGeneralHelp()
+    }
+
+    private fun getGeneralHelp(): CommandProcessingResult {
         val groups = mutableMapOf<String, MutableList<String>>()
 
         uniqueCommands.forEach { command ->
@@ -75,6 +68,26 @@ class HelpCommandProcessor(private val commandPrompt: String) :
             "",
             "Commands:",
             groupsText,
+            "```",
+        )
+    }
+
+    private fun getHelpForCommand(commandName: String): CommandProcessingResult {
+        val command = commandsRegistry.getProcessorByKey(commandName)
+            ?: return error("No such command: $commandName", logger)
+
+        val exampleText = command.exampleUsages
+            .map { usage -> "  $commandPrompt $commandName $usage" }
+            .joinToString("\n")
+
+        return CommandProcessingResult.fromMultilineMarkdown(
+            "```",
+            this.getCommandWithParamsLine(command),
+            "",
+            "> ${command.helpMessage}",
+            "",
+            "Examples:",
+            exampleText,
             "```",
         )
     }
@@ -102,10 +115,11 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         return "${key}$shortKeyFragment"
     }
 
-    private fun getUniqueCommands(): List<CommandProcessor> {
-        return commandsRegistry.getRegistry().keys
-            .filter { it == commandsRegistry.getProcessorByKey(it)?.key }
-            .mapNotNull { commandsRegistry.getProcessorByKey(it) }
-            .sortedBy { it.key }
+    private class LazyMap<K, V>(
+        private val compute: (K) -> V,
+    ) {
+        private val map = mutableMapOf<K, V>()
+
+        operator fun get(key: K): V? = map.getOrPut(key) { compute(key) }
     }
 }
