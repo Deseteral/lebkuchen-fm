@@ -19,3 +19,5 @@ jobs:
         - name: Deploy on dev
           if: github.ref != 'refs/heads/main'
           run: flyctl deploy --remote-only --no-cache --depot=false --app lebkuchen-fm-dev
+        - name: Deploy beta
+          run: flyctl deploy --remote-only --no-cache --depot=false --app lebkuchen-fm-beta --config ./fly.beta.toml
