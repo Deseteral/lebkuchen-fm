@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.domain.xsounds
 
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
+
 class XSoundsService(private val repository: XSoundsRepository, private val fileRepository: XSoundsFileRepository) {
     suspend fun getAllXSounds(): List<XSound> {
         return repository.findAllOrderByNameAsc()
@@ -11,7 +15,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
 
     suspend fun addNewXSound(soundName: String, tags: List<String>, bytes: ByteArray): XSound {
         val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes)
-        val readySound = XSound(name = soundName, url = fileUrl, tags = tags, addedBy = null)
+        val readySound = XSound(name = soundName, url = fileUrl, tags = tags, timesPlayed = 0, addedBy = null)
         repository.insert(readySound)
         return readySound
     }
@@ -20,12 +24,13 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findAllUniqueTags()
     }
 
-    fun getByName(soundName: String): XSound? {
-        // TODO: Actually implement.
-        return null
+    suspend fun getByName(soundName: String): XSound? {
+        return repository.findByName(soundName)
     }
 
-    fun incrementPlayCount(name: String) {
-        // TODO: Implement.
+    suspend fun markAsPlayed(soundName: String) {
+        repository.incrementPlayCount(soundName) ?: run {
+            logger.error { "Could not increment play count for sound $soundName" }
+        }
     }
 }

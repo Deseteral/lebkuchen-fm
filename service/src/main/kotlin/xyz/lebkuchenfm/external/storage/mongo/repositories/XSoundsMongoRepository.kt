@@ -7,8 +7,10 @@ import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
+import com.mongodb.client.model.Updates.inc
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
@@ -28,7 +30,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 
     override suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound> {
-        val filter = eq(XSound::tags.name, tag)
+        val filter = eq(XSoundEntity::tags.name, tag)
         return collection
             .find(filter)
             .sort(sortByName)
@@ -51,6 +53,17 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         ).first()
         return result.tagsSet
     }
+
+    override suspend fun findByName(name: String): XSound? {
+        return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
+    }
+
+    override suspend fun incrementPlayCount(soundName: String): XSound? {
+        return collection.findOneAndUpdate(
+            eq(XSoundEntity::name.name, soundName),
+            inc(XSoundEntity::timesPlayed.name, 1),
+        )?.toDomain()
+    }
 }
 
 data class XSoundEntity(
@@ -65,12 +78,16 @@ data class XSoundEntity(
         null,
         sound.name,
         sound.url,
-        0,
+        sound.timesPlayed,
         sound.tags,
         sound.addedBy,
     )
 
-    fun toDomain(): XSound {
-        return XSound(name = this.name, url = this.url, tags = this.tags ?: emptyList(), addedBy = this.addedBy)
-    }
+    fun toDomain(): XSound = XSound(
+        name = this.name,
+        url = this.url,
+        tags = this.tags ?: emptyList(),
+        timesPlayed = this.timesPlayed,
+        addedBy = this.addedBy,
+    )
 }
