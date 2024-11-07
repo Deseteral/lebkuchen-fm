@@ -1,10 +1,13 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
+
+private val logger = KotlinLogging.logger {}
 
 class HelpCommandProcessor(private val commandPrompt: String) :
     CommandProcessor(
@@ -33,7 +36,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
 
     private fun helpWithCommand(commandName: String): CommandProcessingResult {
         val command = commandsRegistry.getProcessorByKey(commandName)
-            ?: return CommandProcessingResult.fromMarkdown("No such command: $commandName")
+            ?: return error("No such command: $commandName", logger)
 
         val exampleText = command.exampleUsages
             .map { usage -> "  $commandPrompt $commandName $usage" }
@@ -82,9 +85,10 @@ class HelpCommandProcessor(private val commandPrompt: String) :
 
         val paramsText = parameters.parameters
             .map { param ->
+                val joinedParams = param.names.joinToString(" | ")
                 when (param.required) {
-                    true -> "<${param.names.joinToString(" | ")}>"
-                    false -> "[${param.names.joinToString(" | ")}]"
+                    true -> "<$joinedParams>"
+                    false -> "[$joinedParams]"
                 }
             }.joinToString { parameters.delimiter ?: "" }
 
