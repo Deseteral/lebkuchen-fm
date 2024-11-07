@@ -2,16 +2,12 @@ package xyz.lebkuchenfm.domain.eventstream
 
 import xyz.lebkuchenfm.domain.songs.Song
 
-sealed interface Event {
-    val id: String
-}
+sealed interface Event
 
 data class PlayXSoundEvent(
-    override val id: String = "PlayXSoundEvent",
     val soundUrl: String,
 ) : Event
 
 data class QueueSongsEvent(
-    override val id: String = "AddSongsToQueueEvent",
     val songs: List<Song>,
 ) : Event
