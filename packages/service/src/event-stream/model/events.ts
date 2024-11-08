@@ -61,6 +61,11 @@ export interface RewindEvent {
   modifier: number | null,
 }
 
+export interface SongChangedEvent {
+  id: 'SongChanged',
+  song: Song,
+}
+
 export interface ConnectedUsersEvent {
   id: 'ConnectedUsersEvent',
   connectedUsers: string[],
@@ -79,4 +84,5 @@ export type EventData =
   | ChangeVolumeEvent
   | ReplaceQueueEvent
   | RewindEvent
-  | ConnectedUsersEvent;
+  | ConnectedUsersEvent
+  | SongChangedEvent;

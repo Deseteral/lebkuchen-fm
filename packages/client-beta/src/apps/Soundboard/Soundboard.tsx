@@ -67,7 +67,11 @@ function Soundboard() {
         toggleWindow={toggleWindow}
       />
       {showWindow() && (
-        <AppWindow title="Soundboard" close={() => setShowWindow(false)}>
+        <AppWindow
+          title="Soundboard"
+          close={() => setShowWindow(false)}
+          startSize={{ width: '600px', height: '600px' }}
+        >
           <h4 class={styles.title}>Search</h4>
           <input
             class={styles.search}
