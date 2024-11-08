@@ -77,9 +77,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         val command = commandsRegistry.getProcessorByKey(commandName)
             ?: return error("No such command: $commandName", logger)
 
-        val exampleText = command.exampleUsages
-            .map { usage -> "  $commandPrompt $commandName $usage" }
-            .joinToString("\n")
+        val exampleText = command.exampleUsages.joinToString("\n") { usage -> "  $commandPrompt $commandName $usage" }
 
         return CommandProcessingResult.fromMultilineMarkdown(
             "```",
@@ -97,14 +95,13 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         val key = definition.key
         val parameters = definition.parameters
 
-        val paramsText = parameters.parameters
-            .map { param ->
-                val joinedParams = param.names.joinToString(" | ")
-                when (param.required) {
-                    true -> "<$joinedParams>"
-                    false -> "[$joinedParams]"
-                }
-            }.joinToString { parameters.delimiter ?: "" }
+        val paramsText = parameters.parameters.joinToString(parameters.delimiter ?: "") { param ->
+            val joinedParams = param.names.joinToString(" | ")
+            when (param.required) {
+                true -> "<$joinedParams>"
+                false -> "[$joinedParams]"
+            }
+        }
 
         return "$key $paramsText"
     }
