@@ -21,7 +21,7 @@ abstract class CommandProcessor(
 
 class CommandParameters(
     val parameters: List<CommandParameter>,
-    val delimiter: String? = null,
+    val delimiter: String = " ",
 ) {
     abstract class CommandParameter(
         val required: Boolean,

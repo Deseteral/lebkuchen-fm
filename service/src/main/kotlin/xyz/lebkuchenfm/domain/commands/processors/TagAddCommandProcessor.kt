@@ -20,10 +20,11 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
                 CommandParameters.RequiredCommandParameter("tag-name"),
                 CommandParameters.RequiredCommandParameter("sound-name"),
             ),
+            delimiter = "|",
         ),
     ) {
     override suspend fun execute(command: Command): CommandProcessingResult {
-        val args = command.getArgsByDelimiter("|")
+        val args = command.getArgsByDelimiter(this.parameters.delimiter)
         if (args.size != 2) {
             return error("You have to provide tag-name|sound-name in the arguments", logger)
         }
