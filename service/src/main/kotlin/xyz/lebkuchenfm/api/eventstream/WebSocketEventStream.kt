@@ -24,6 +24,7 @@ fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
         eventStream.addConnection(connection)
 
         for (frame in incoming) {
+            // TODO: This does not work yet, but I fix it when there are actual events coming from the client.
             val event = converter?.deserialize(call.request.headers.suitableCharset(), typeInfo<Event>(), frame)
             println(event)
         }

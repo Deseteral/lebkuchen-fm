@@ -10,14 +10,14 @@ sealed interface EventDto {
 
 fun Event.mapToDto(): EventDto = when (this) {
     is Event.PlayXSound -> PlayXSoundEventDto(this)
-    is Event.QueueSongs -> QueueSongsEventDto(this)
+    is Event.QueueSongs -> AddSongsToQueueEventDto(this)
 }
 
 @Serializable
 data class PlayXSoundEventDto(
     val soundUrl: String,
 ) : EventDto {
-    override val id = "PlayXSound"
+    override val id = "PlayXSoundEvent"
 
     constructor(event: Event.PlayXSound) : this(
         soundUrl = event.soundUrl,
@@ -25,10 +25,10 @@ data class PlayXSoundEventDto(
 }
 
 @Serializable
-data class QueueSongsEventDto(
+data class AddSongsToQueueEventDto(
     val songs: List<SongDto>,
 ) : EventDto {
-    override val id = "QueueSongs"
+    override val id = "AddSongsToQueueEvent"
 
     constructor(event: Event.QueueSongs) : this(
         songs = event.songs.map { SongDto(it.name, it.youtubeId) },
