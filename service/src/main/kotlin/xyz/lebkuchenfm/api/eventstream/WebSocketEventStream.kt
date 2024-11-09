@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.api
+package xyz.lebkuchenfm.api.eventstream
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.suitableCharset
@@ -9,13 +9,14 @@ import io.ktor.util.reflect.typeInfo
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.ClassDiscriminatorMode
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import java.util.Collections
+
+class Connection(val session: DefaultWebSocketSession)
 
 fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
     webSocket("/event-stream") {
@@ -30,8 +31,6 @@ fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
         eventStream.removeConnection(connection)
     }
 }
-
-class Connection(val session: DefaultWebSocketSession)
 
 private val logger = KotlinLogging.logger {}
 
@@ -61,42 +60,4 @@ class WebSocketEventStream : EventStream {
         connections.remove(connection)
         logger.info { "User TODO disconnected from WebSockets event stream." }
     }
-}
-
-@Serializable
-sealed interface EventDto {
-    val id: String
-}
-
-@Serializable
-data class PlayXSoundEventDto(
-    val soundUrl: String,
-) : EventDto {
-    override val id = "PlayXSound"
-
-    constructor(event: Event.PlayXSound) : this(
-        soundUrl = event.soundUrl,
-    )
-}
-
-@Serializable
-data class QueueSongsEventDto(
-    val songs: List<SongDto>,
-) : EventDto {
-    override val id = "QueueSongs"
-
-    constructor(event: Event.QueueSongs) : this(
-        songs = event.songs.map { SongDto(it.name, it.youtubeId) },
-    )
-
-    @Serializable
-    data class SongDto(
-        val name: String,
-        val youtubeId: String,
-    )
-}
-
-fun Event.mapToDto(): EventDto = when (this) {
-    is Event.PlayXSound -> PlayXSoundEventDto(this)
-    is Event.QueueSongs -> QueueSongsEventDto(this)
 }
