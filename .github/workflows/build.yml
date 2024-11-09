@@ -3,18 +3,14 @@ name: Build
 on: [push]
 
 jobs:
-  runtime_versions:
-    strategy:
-      matrix:
-        node-version: [18.x]
-        jdk-version: [23]
-
   build-v2:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
+      with:
+        node-version: 18.x
     - run: yarn install --frozen-lockfile
     - run: yarn run build
     - run: yarn test
@@ -28,13 +24,15 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: ${{ matrix.jdk-version }}
+          java-version: 23
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
 
       - name: Build backend service
         run: ./gradlew build
