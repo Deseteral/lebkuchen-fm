@@ -41,8 +41,8 @@ import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
+import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
-import xyz.lebkuchenfm.external.youtube.YoutubeRepository
 import kotlin.time.Duration.Companion.days
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -59,8 +59,8 @@ fun Application.module() {
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val songsRepository = SongsMongoRepository(database)
-    val youtubeSongsRepository = YoutubeRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeSongsRepository)
+    val youtubeRepository = YouTubeDataRepository(youtubeClient)
+    val songsService = SongsService(songsRepository, youtubeRepository)
 
     val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
 

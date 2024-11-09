@@ -1,9 +1,9 @@
 package xyz.lebkuchenfm.external.youtube
 
 import com.github.michaelbull.result.get
-import xyz.lebkuchenfm.domain.songs.YoutubeSongsRepository
+import xyz.lebkuchenfm.domain.songs.YouTubeRepository
 
-class YoutubeRepository(private val youtubeClient: YoutubeClient) : YoutubeSongsRepository {
+class YouTubeDataRepository(private val youtubeClient: YoutubeClient) : YouTubeRepository {
     override suspend fun findSongNameByYoutubeId(youtubeId: String): String? {
         return youtubeClient.getVideoName(youtubeId).get()
     }
