@@ -34,7 +34,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
     override suspend fun execute(command: Command): CommandProcessingResult {
         val videoOrPlaylistId = command.rawArgs.orEmpty()
         if (videoOrPlaylistId.isEmpty()) {
-            error("Missing exact song name or youtube's video/playlist id.", logger)
+            return error("Missing exact song name or youtube's video/playlist id.", logger)
         }
 
         val songs = mutableListOf<Song>()
@@ -51,9 +51,9 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         // TODO: filter only embeddable
 
-        eventStream.sendToEveryone(QueueSongsEvent(songs = songs))
+        eventStream.sendToEveryone(QueueSongsEvent(songs))
 
-        songs.forEach { songsService.incrementPlayCount(it.youtubeId) }
+        songs.forEach { songsService.incrementPlayCount(it) }
 
         val songNames = songs.joinToString(", ") { it.name }
         val message = "Queued $songNames."

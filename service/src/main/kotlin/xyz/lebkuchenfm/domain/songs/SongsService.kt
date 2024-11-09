@@ -8,8 +8,8 @@ class SongsService(private val repository: SongsRepository, private val youtubeC
         return repository.findAllOrderByNameAsc()
     }
 
-    suspend fun incrementPlayCount(youtubeId: String): Song? {
-        return repository.incrementYoutubePlayCount(youtubeId)
+    suspend fun incrementPlayCount(song: Song): Song? {
+        return repository.incrementPlayCountByName(song.name)
     }
 
     suspend fun getSongByNameWithYouTubeIdFallback(nameOrYouTubeId: String): Song? {
@@ -24,13 +24,9 @@ class SongsService(private val repository: SongsRepository, private val youtubeC
     }
 
     private suspend fun createNewSong(youtubeId: String, songName: String? = null): Song? {
-        val name = songName ?: youtubeClient.getVideoName(youtubeId).get()
-        if (name == null) {
-            return null
-        }
-
-        val newSong = Song(name, youtubeId, 0, null, null)
-        repository.insert(newSong)
-        return newSong
+        val name = songName ?: youtubeClient.getVideoName(youtubeId).get() ?: return null
+        val newSong = Song(name, youtubeId, timesPlayed = 0, trimStartSeconds = null, trimEndSeconds = null)
+        val inserted = repository.insert(newSong)
+        return if (inserted)  { newSong } else { null }
     }
 }

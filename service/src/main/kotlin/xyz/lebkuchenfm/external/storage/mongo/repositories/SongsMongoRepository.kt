@@ -16,8 +16,8 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     private val collection = database.getCollection<SongEntity>("songs")
     private val sortByName = Sorts.ascending(SongEntity::name.name)
 
-    override suspend fun insert(song: Song) {
-        collection.insertOne(SongEntity(song))
+    override suspend fun insert(song: Song): Boolean {
+        return collection.insertOne(SongEntity(song)).wasAcknowledged()
     }
 
     override suspend fun findAllOrderByNameAsc(): List<Song> {
@@ -35,9 +35,9 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
         return collection.find(eq(SongEntity::youtubeId.name, youtubeId)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun incrementYoutubePlayCount(youtubeId: String): Song? {
+    override suspend fun incrementPlayCountByName(name: String): Song? {
         return collection.findOneAndUpdate(
-            eq(SongEntity::youtubeId.name, youtubeId),
+            eq(SongEntity::name.name, name),
             inc(SongEntity::timesPlayed.name, 1),
         )?.toDomain()
     }
