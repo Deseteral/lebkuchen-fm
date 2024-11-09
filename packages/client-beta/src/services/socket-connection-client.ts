@@ -21,9 +21,11 @@ class SocketConnectionClient {
       (event): void => {
         console.log('Received event from event stream', event);
 
-        const eventData = JSON.parse(event.data);
-        console.log(eventData)
         // EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
+        const eventData = SocketConnectionClient.parseEventMessage(event.data);
+        if (!eventData) {
+          return;
+        }
       },
     );
 
@@ -57,6 +59,15 @@ class SocketConnectionClient {
   private static getWebSocketUrl(): string {
     let protocol = (window.location.protocol === "https:") ? 'wss:' : 'ws:';
     return `${protocol}//${window.location.host}/api/event-stream`;
+  }
+
+  private static parseEventMessage(data: any): (LocalEvents['eventData'] | null) {
+    try {
+      return JSON.parse(data);
+    } catch (err) {
+      console.log('Could not parse WebSocket event stream message.', err)
+      return null;
+    }
   }
 }
 
