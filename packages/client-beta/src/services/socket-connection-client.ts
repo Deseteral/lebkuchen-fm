@@ -26,11 +26,11 @@ class SocketConnectionClient {
           return;
         }
 
-        const sendResponse: SendResponseCallback = (e) => {
+        const sendResponse: SendResponseCallback = (responseEvent => {
           const responseId = `${eventData.id}-response`;
           // TODO: This is messing up with the types. Consult with the frontend masters how to handle that.
           // @ts-ignore
-          SocketConnectionClient.sendSocketMessage(responseId, e);
+          SocketConnectionClient.sendSocketMessage(responseId, responseEvent);
         };
 
         EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
