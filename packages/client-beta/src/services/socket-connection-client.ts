@@ -5,11 +5,11 @@ type SendResponseCallback = (...args: unknown[]) => void;
 
 // TODO: Implement reconnecting logic when socket disconnects.
 class SocketConnectionClient {
-  private static client: WebSocket | null;
+  private static client: WebSocket | null = null;
 
   static initializeConnection(): void {
     if (!SocketConnectionClient.client) {
-      SocketConnectionClient.client = new WebSocket(SocketConnectionClient.webSocketUrl());
+      SocketConnectionClient.client = new WebSocket(SocketConnectionClient.getWebSocketUrl());
     }
 
     SocketConnectionClient.client.addEventListener('open', () =>
@@ -28,29 +28,33 @@ class SocketConnectionClient {
     );
 
     SocketConnectionClient.client.addEventListener('close', () => {
-      console.log('Disconnected by server from WebSocket event stream');
-
       SocketConnectionClient.client = null;
+      console.log('Disconnected by server from WebSocket event stream');
     });
   }
 
   static disconnect(): void {
-    if (SocketConnectionClient.client) {
-      console.log('Disconnected from WebSocket event stream');
-
-      // SocketConnectionClient.client.disconnect();
-      SocketConnectionClient.client = null;
+    if (!SocketConnectionClient.client) {
+      console.warn('Could not disconnect WebSocket because it is not initialized.')
+      return;
     }
+
+    SocketConnectionClient.client.close();
+    SocketConnectionClient.client = null;
+    console.log('Disconnected from WebSocket event stream');
   }
 
   static sendSocketMessage<T extends LocalEventData>(messageId: T['id'], messageData: T): void {
-    console.log('Sending message to event stream', { messageId, messageData });
-    if (SocketConnectionClient.client) {
-      SocketConnectionClient.client.send(JSON.stringify(messageData))
+    if (!SocketConnectionClient.client) {
+      console.warn('Could not send WebSocket message because it is not initialized.')
+      return;
     }
+
+    SocketConnectionClient.client.send(JSON.stringify(messageData))
+    console.log('Sent message to event stream', { messageId, messageData });
   }
 
-  private static webSocketUrl() {
+  private static getWebSocketUrl(): string {
     let protocol = (window.location.protocol === "https:") ? 'wss:' : 'ws:';
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
