@@ -24,14 +24,13 @@ class SongsService(private val songsRepository: SongsRepository, private val you
 
     private suspend fun createNewSong(youtubeId: String, songName: String? = null): Song? {
         val youtubeVideo = youtubeRepository.findVideoById(youtubeId) ?: return null
-        val newSong =
-            Song(
-                name = songName ?: youtubeVideo.name,
-                youtubeId = youtubeVideo.id,
-                timesPlayed = 0,
-                trimStartSeconds = null,
-                trimEndSeconds = null,
-            )
+        val newSong = Song(
+            name = songName ?: youtubeVideo.name,
+            youtubeId = youtubeVideo.id,
+            timesPlayed = 0,
+            trimStartSeconds = null,
+            trimEndSeconds = null,
+        )
         val inserted = songsRepository.insert(newSong)
         return if (inserted) {
             newSong
