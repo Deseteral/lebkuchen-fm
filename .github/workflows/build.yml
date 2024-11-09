@@ -3,7 +3,7 @@ name: Build
 on: [push]
 
 jobs:
-  build-v2:
+  build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           node-version: 18.x
 
       - name: Build backend service
-        run: ./gradlew build
+        run: ./service/gradlew build
 
       - name: Install client dependencies
         run: yarn install --frozen-lockfile
