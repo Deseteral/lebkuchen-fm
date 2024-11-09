@@ -16,25 +16,22 @@ class SocketConnectionClient {
       console.log('Connected to event stream WebSocket'),
     );
 
-    SocketConnectionClient.client.addEventListener(
-      'message',
-      (event): void => {
-        console.log('Received event from event stream', event);
+    SocketConnectionClient.client.addEventListener('message', (event): void => {
+      console.log('Received event from event stream', event);
 
-        const eventData = SocketConnectionClient.parseEventMessage(event.data);
-        if (!eventData) {
-          return;
-        }
+      const eventData = SocketConnectionClient.parseEventMessage(event.data);
+      if (!eventData) {
+        return;
+      }
 
-        const sendResponse: SendResponseCallback = (e) => {
-          const responseId = `${eventData.id}-response`;
-          // @ts-ignore
-          SocketConnectionClient.sendSocketMessage(responseId, e);
-        };
+      const sendResponse: SendResponseCallback = (e) => {
+        const responseId = `${eventData.id}-response`;
+        // @ts-ignore
+        SocketConnectionClient.sendSocketMessage(responseId, e);
+      };
 
-        EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
-      },
-    );
+      EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
+    });
 
     SocketConnectionClient.client.addEventListener('close', () => {
       SocketConnectionClient.client = null;
@@ -44,7 +41,7 @@ class SocketConnectionClient {
 
   static disconnect(): void {
     if (!SocketConnectionClient.client) {
-      console.log('Could not disconnect WebSocket because it is not initialized.')
+      console.log('Could not disconnect WebSocket because it is not initialized.');
       return;
     }
 
@@ -55,24 +52,24 @@ class SocketConnectionClient {
 
   static sendSocketMessage<T extends LocalEventData>(messageId: T['id'], messageData: T): void {
     if (!SocketConnectionClient.client) {
-      console.log('Could not send WebSocket message because it is not initialized.')
+      console.log('Could not send WebSocket message because it is not initialized.');
       return;
     }
 
-    SocketConnectionClient.client.send(JSON.stringify(messageData))
+    SocketConnectionClient.client.send(JSON.stringify(messageData));
     console.log('Sent message to event stream', { messageId, messageData });
   }
 
   private static getWebSocketUrl(): string {
-    let protocol = (window.location.protocol === "https:") ? 'wss:' : 'ws:';
+    let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
 
-  private static parseEventMessage(data: any): (LocalEvents['eventData'] | null) {
+  private static parseEventMessage(data: any): LocalEvents['eventData'] | null {
     try {
       return JSON.parse(data);
     } catch (err) {
-      console.log('Could not parse WebSocket event stream message.', err)
+      console.log('Could not parse WebSocket event stream message.', err);
       return null;
     }
   }
