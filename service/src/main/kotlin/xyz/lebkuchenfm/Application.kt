@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -18,7 +19,9 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
+import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
@@ -112,6 +115,10 @@ fun Application.module() {
                 authService.authenticateWithApiToken(tokenCredential.token)
             }
         }
+    }
+
+    install(WebSockets) {
+        contentConverter = KotlinxWebsocketSerializationConverter(Json)
     }
 
     routing {
