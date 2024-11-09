@@ -14,7 +14,7 @@ import { Search } from './Search';
 import { UsersButton } from './UsersButton';
 
 function FmPlayer() {
-  const [playerState, setPlayerState] = React.useState<PlayerState>(PlayerStateService.getState());
+  const [playerState, setPlayerState] = React.useState<PlayerState | null>(null);
   const [showNowPlaying, setShowNowPlaying] = React.useState<boolean>(true);
 
   React.useEffect(() => {
@@ -33,6 +33,8 @@ function FmPlayer() {
     return () => eventStreamDisconnect();
   }, []);
 
+  if (playerState === null) return (<div />);
+
   return (
     <div className="relative">
       <SongsQueue playerState={playerState} />
@@ -45,7 +47,7 @@ function FmPlayer() {
       </div>
       <SoundBoardWidget />
       <YouTubePlayer />
-      {showNowPlaying && <NowPlaying playerState={playerState} onClose={() => setShowNowPlaying(false)} />}
+      {playerState && !showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
     </div>
   );
 }
