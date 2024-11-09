@@ -67,7 +67,7 @@ fun Application.module() {
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
-            TagAddCommandProcessor(xSoundsService, eventStream)
+            TagAddCommandProcessor(xSoundsService),
         ),
     )
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)

@@ -33,4 +33,12 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
             logger.error { "Could not increment play count for sound $soundName" }
         }
     }
+
+    suspend fun addTagToXSound(soundName: String, tag: String): XSound? {
+        val xSound = repository.addTagToXSound(soundName, tag)
+        if (xSound == null) {
+            logger.error { "Could not add tag $tag for sound $soundName" }
+        }
+        return xSound
+    }
 }

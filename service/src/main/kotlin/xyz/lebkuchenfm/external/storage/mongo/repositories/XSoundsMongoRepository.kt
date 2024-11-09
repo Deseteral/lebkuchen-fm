@@ -7,6 +7,7 @@ import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
+import com.mongodb.client.model.Updates
 import com.mongodb.client.model.Updates.inc
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.first
@@ -56,6 +57,13 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
     override suspend fun findByName(name: String): XSound? {
         return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
+    }
+
+    override suspend fun addTagToXSound(name: String, tag: String): XSound? {
+        return collection.findOneAndUpdate(
+            eq(XSoundEntity::name.name, name),
+            Updates.addToSet(XSoundEntity::tags.name, tag),
+        )?.toDomain()
     }
 
     override suspend fun incrementPlayCount(soundName: String): XSound? {

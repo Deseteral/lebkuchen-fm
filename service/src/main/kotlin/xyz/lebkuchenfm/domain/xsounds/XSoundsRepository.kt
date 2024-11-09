@@ -12,4 +12,6 @@ interface XSoundsRepository {
     suspend fun findAllUniqueTags(): List<String>
 
     suspend fun findByName(name: String): XSound?
+
+    suspend fun addTagToXSound(name: String, tag: String): XSound?
 }
