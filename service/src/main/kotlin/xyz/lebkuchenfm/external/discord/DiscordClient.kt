@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.external.discord
 
 import dev.kord.common.entity.PresenceStatus
 import dev.kord.core.Kord
+import dev.kord.core.behavior.reply
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
@@ -53,7 +54,9 @@ class DiscordClient(config: ApplicationConfig, private val commandExecutorServic
             .filter { it.author?.isBot == false }
             .onEach {
                 val result = commandExecutorService.executeFromText(it.content)
-                it.channel.createMessage(result.message.markdown)
+                it.reply {
+                    content = result.message.markdown
+                }
             }
             .launchIn(kord)
 

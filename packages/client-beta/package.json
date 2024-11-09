@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "test": "yarn run lint && yarn run format:check",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -14,13 +15,18 @@
   "dependencies": {
     "@solidjs/router": "0.13.0",
     "lebkuchen-fm-service": "*",
-    "solid-js": "1.8.15"
+    "mitt": "3.0.1",
+    "socket.io-client": "4.8.1",
+    "solid-js": "1.8.15",
+    "yt-player": "3.6.1"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "7.7.0",
     "@typescript-eslint/parser": "7.1.1",
     "clsx": "2.1.0",
     "eslint": "8.56.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-prettier": "5.2.1",
     "eslint-plugin-solid": "0.13.1",
     "prettier": "3.3.3",
     "typescript": "5.2.2",

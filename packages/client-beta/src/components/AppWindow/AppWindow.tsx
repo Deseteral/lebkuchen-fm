@@ -8,6 +8,10 @@ interface AppWindowProps {
     x: number;
     y: number;
   };
+  startSize?: {
+    width?: string;
+    height?: string;
+  };
   title: string;
   close: () => void;
 }
@@ -88,6 +92,12 @@ function AppWindow(props: AppWindowProps) {
         el.style.top = `${y}px`;
         el.style.left = `${x}px`;
         el.style.zIndex = `${getBiggestZIndex() + 1}`;
+        if (props.startSize?.height) {
+          el.style.height = props.startSize.height;
+        }
+        if (props.startSize?.width) {
+          el.style.width = props.startSize.width;
+        }
         windowRef.addEventListener('click', moveWindowToFront);
       }}
     >

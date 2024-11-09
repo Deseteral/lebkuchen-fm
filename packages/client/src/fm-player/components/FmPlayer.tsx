@@ -3,7 +3,6 @@ import { PlayerState } from 'lebkuchen-fm-service';
 import { YouTubePlayer } from './YouTubePlayer';
 import * as EventStreamClient from '../services/event-stream-client';
 import * as SpeechService from '../services/speech-service';
-import { NowPlaying } from './NowPlaying/NowPlaying';
 import * as PlayerStateService from '../services/player-state-service';
 import { SongsQueue } from './SongsQueue/SongsQueue';
 import { SoundBoardWidget } from './SoundBoardWidget';
@@ -41,13 +40,13 @@ function FmPlayer() {
       <div className="absolute left-3 top-1/2 -translate-y-1/2 flex flex-col items-start gap-4 overflow-x-visible">
         <Search />
         <RandomSongButton />
-        {playerState && !showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
+        {!showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
         <SkipSongButton />
         <UsersButton />
       </div>
       <SoundBoardWidget />
       <YouTubePlayer />
-      {showNowPlaying && <NowPlaying playerState={playerState} onClose={() => setShowNowPlaying(false)} />}
+      {playerState && !showNowPlaying && <ShowNowPlayingButton onClick={() => setShowNowPlaying(true)} />}
     </div>
   );
 }

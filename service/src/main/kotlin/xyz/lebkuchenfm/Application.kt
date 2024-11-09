@@ -29,6 +29,8 @@ import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -40,6 +42,7 @@ import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
+import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
 import kotlin.time.Duration.Companion.days
 
@@ -50,26 +53,31 @@ fun Application.module() {
 
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
+    val youtubeClient = YoutubeClient(environment.config)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val songsRepository = SongsMongoRepository(database)
-    val songsService = SongsService(songsRepository)
-
-    val youtubeClient = YoutubeClient(environment.config)
+    val youtubeRepository = YouTubeDataRepository(youtubeClient)
+    val songsService = SongsService(songsRepository, youtubeRepository)
 
     val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
+    val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
             TagAddCommandProcessor(xSoundsService),
+            SongQueueCommandProcessor(songsService, eventStream),
+            helpCommandProcessor,
         ),
     )
+    helpCommandProcessor.setCommandRegistry(commandProcessorRegistry)
+
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
 
     val discordClient = DiscordClient(environment.config, commandExecutorService)
@@ -125,20 +133,6 @@ fun Application.module() {
             authenticate("auth-bearer") {
                 get("/auth-test") {
                     call.respondText { "You are authenticated!" }
-                }
-            }
-        }
-
-        // TODO: remove me
-        route("/test") {
-            get {
-                call.request.queryParameters["youtubeId"]?.let { youtubeId ->
-                    val result = youtubeClient.getVideoName(youtubeId)
-                    if (result.isOk) {
-                        call.respond(HttpStatusCode.OK, result.value)
-                    } else {
-                        call.respond(HttpStatusCode.InternalServerError, result.error.toString())
-                    }
                 }
             }
         }
