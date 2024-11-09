@@ -1,32 +1,29 @@
 package xyz.lebkuchenfm.domain.songs
 
-import com.github.michaelbull.result.get
-import xyz.lebkuchenfm.external.youtube.YoutubeClient
-
-class SongsService(private val repository: SongsRepository, private val youtubeClient: YoutubeClient) {
+class SongsService(private val songsRepository: SongsRepository, private val youtubeRepository: YoutubeSongsRepository) {
     suspend fun getAllSongs(): List<Song> {
-        return repository.findAllOrderByNameAsc()
+        return songsRepository.findAllOrderByNameAsc()
     }
 
     suspend fun incrementPlayCount(song: Song): Song? {
-        return repository.incrementPlayCountByName(song.name)
+        return songsRepository.incrementPlayCountByName(song.name)
     }
 
     suspend fun getSongByNameWithYouTubeIdFallback(nameOrYouTubeId: String): Song? {
-        val foundByName = repository.findByName(nameOrYouTubeId)
+        val foundByName = songsRepository.findByName(nameOrYouTubeId)
         foundByName?.let { return it }
 
         val maybeYoutubeId = nameOrYouTubeId.split(" ").firstOrNull()
 
-        return maybeYoutubeId?.let {
-            repository.findByYoutubeId(it) ?: createNewSong(it)
+        return maybeYoutubeId?.let { youtubeId ->
+            songsRepository.findByYoutubeId(youtubeId) ?: createNewSong(youtubeId)
         }
     }
 
     private suspend fun createNewSong(youtubeId: String, songName: String? = null): Song? {
-        val name = songName ?: youtubeClient.getVideoName(youtubeId).get() ?: return null
+        val name = songName ?: youtubeRepository.findSongNameByYoutubeId(youtubeId) ?: return null
         val newSong = Song(name, youtubeId, timesPlayed = 0, trimStartSeconds = null, trimEndSeconds = null)
-        val inserted = repository.insert(newSong)
+        val inserted = songsRepository.insert(newSong)
         return if (inserted)  { newSong } else { null }
     }
 }

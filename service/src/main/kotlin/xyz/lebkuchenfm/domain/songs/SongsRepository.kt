@@ -7,3 +7,7 @@ interface SongsRepository {
     suspend fun findByYoutubeId(youtubeId: String): Song?
     suspend fun incrementPlayCountByName(name: String): Song?
 }
+
+interface YoutubeSongsRepository {
+    suspend fun findSongNameByYoutubeId(youtubeId: String): String?
+}
