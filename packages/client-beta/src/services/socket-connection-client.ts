@@ -61,7 +61,7 @@ class SocketConnectionClient {
   }
 
   private static getWebSocketUrl(): string {
-    let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
 
