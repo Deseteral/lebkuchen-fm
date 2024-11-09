@@ -21,11 +21,18 @@ class SocketConnectionClient {
       (event): void => {
         console.log('Received event from event stream', event);
 
-        // EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
         const eventData = SocketConnectionClient.parseEventMessage(event.data);
         if (!eventData) {
           return;
         }
+
+        const sendResponse: SendResponseCallback = (e) => {
+          const responseId = `${eventData.id}-response`;
+          // @ts-ignore
+          SocketConnectionClient.sendSocketMessage(responseId, e);
+        };
+
+        EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
       },
     );
 
