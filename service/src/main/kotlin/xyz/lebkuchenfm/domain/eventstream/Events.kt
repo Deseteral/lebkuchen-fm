@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.domain.eventstream
 
-sealed interface Event
-
-data class PlayXSoundEvent(
-    val soundUrl: String,
-) : Event
+sealed interface Event {
+    data class PlayXSound(
+        val soundUrl: String,
+    ) : Event
+}

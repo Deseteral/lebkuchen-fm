@@ -22,8 +22,10 @@ import io.ktor.server.sessions.cookie
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.api.WebSocketEventStream
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
+import xyz.lebkuchenfm.api.eventStreamRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
@@ -35,7 +37,6 @@ import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.DummyEventStream
 import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
@@ -63,7 +64,7 @@ fun Application.module() {
 
     val youtubeClient = YoutubeClient(environment.config)
 
-    val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
+    val eventStream = WebSocketEventStream()
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
@@ -128,6 +129,7 @@ fun Application.module() {
             xSoundsRouting(xSoundsService)
             songsRouting(songsService)
             commandsRouting(commandExecutorService)
+            eventStreamRouting(eventStream)
         }
 
         // TODO: Remove me.
