@@ -7,7 +7,7 @@ sealed interface Event {
         val soundUrl: String,
     ) : Event
 
-    data class QueueSongsEvent(
+    data class QueueSongs(
         val songs: List<Song>,
     ) : Event
 }
