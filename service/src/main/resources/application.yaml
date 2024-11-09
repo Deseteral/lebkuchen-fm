@@ -10,9 +10,9 @@ storage:
     connectionString: "$MONGODB_URI:mongodb://localhost:27017"
   dropbox:
     auth:
-      refreshToken: "$DROPBOX_REFRESH_TOKEN"
-      appKey: "$DROPBOX_CLIENT_ID"
-      appSecret: "$DROPBOX_SECRET"
+      refreshToken: $?DROPBOX_REFRESH_TOKEN
+      appKey: $?DROPBOX_CLIENT_ID
+      appSecret: $?DROPBOX_SECRET
     paths:
       xSounds: "$DROPBOX_X_SOUNDS_PATH:/xsounds/"
 

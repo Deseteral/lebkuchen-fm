@@ -1,5 +1,8 @@
 package xyz.lebkuchenfm.external.storage.dropbox
-
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -29,21 +32,33 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadArgs
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileUploadResponse
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxTokenInfo
 
+private val logger = KotlinLogging.logger {}
+
 class DropboxClient(config: ApplicationConfig) {
     private val client by lazy { authorizedClient }
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
-    private val refreshToken = config.property(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH).getString()
-    private val appKey = config.property(DROPBOX_APP_KEY_PROPERTY_PATH).getString()
-    private val appSecret = config.property(DROPBOX_APP_SECRET_PROPERTY_PATH).getString()
+    private val refreshToken by lazy { config.propertyOrNull(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH)?.getString() }
+    private val appKey by lazy { config.propertyOrNull(DROPBOX_APP_KEY_PROPERTY_PATH)?.getString() }
+    private val appSecret by lazy { config.propertyOrNull(DROPBOX_APP_SECRET_PROPERTY_PATH)?.getString() }
 
     /**
      * [path] must contain destination folder, file name and its extension
      * [bytes] contains file content data
      * @return url on which raw file may be obtained
      */
-    suspend fun uploadFile(path: String, bytes: ByteArray): String {
+    suspend fun uploadFile(path: String, bytes: ByteArray): Result<String, DropboxClientError> {
+        if (refreshToken == null || appKey == null || appSecret == null) {
+            logger.warn { "Tried to use dropbox client but config is missing." }
+            return Err(DropboxClientError.ClientConfigMissing)
+        }
+
         if (bearerTokenStorage.isEmpty()) {
-            getInitialTokens()
+            try {
+                getInitialTokens()
+            } catch (e: Exception) {
+                logger.error { e.message }
+                return Err(DropboxClientError.AuthorizationError)
+            }
         }
 
         val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false)
@@ -67,7 +82,7 @@ class DropboxClient(config: ApplicationConfig) {
             parameters.remove("dl")
         }.buildString()
 
-        return resourceUrl
+        return Ok(resourceUrl)
     }
 
     private suspend fun getInitialTokens() {
@@ -104,9 +119,9 @@ class DropboxClient(config: ApplicationConfig) {
         setBody(
             FormDataContent(
                 parameters {
-                    append("refresh_token", refreshToken)
-                    append("client_id", appKey)
-                    append("client_secret", appSecret)
+                    refreshToken?.let { append("refresh_token", it) }
+                    appKey?.let { append("client_id", it) }
+                    appSecret?.let { append("client_secret", it) }
                     append("grant_type", "refresh_token")
                 },
             ),
@@ -121,5 +136,10 @@ class DropboxClient(config: ApplicationConfig) {
         const val DROPBOX_REFRESH_TOKEN_PROPERTY_PATH = "storage.dropbox.auth.refreshToken"
         const val DROPBOX_APP_KEY_PROPERTY_PATH = "storage.dropbox.auth.appKey"
         const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.auth.appSecret"
+    }
+
+    sealed interface DropboxClientError {
+        data object ClientConfigMissing : DropboxClientError
+        data object AuthorizationError : DropboxClientError
     }
 }
