@@ -1,6 +1,5 @@
 package xyz.lebkuchenfm.api
 
-import dev.kord.core.entity.StageInstance
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.suitableCharset
 import io.ktor.server.routing.Route
@@ -9,8 +8,10 @@ import io.ktor.server.websocket.webSocket
 import io.ktor.util.reflect.typeInfo
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.ClassDiscriminatorMode
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
@@ -33,13 +34,21 @@ fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
 class Connection(val session: DefaultWebSocketSession)
 
 private val logger = KotlinLogging.logger {}
+
 class WebSocketEventStream : EventStream {
     private val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
 
+    @OptIn(ExperimentalSerializationApi::class)
+    private val json = Json {
+        encodeDefaults = true
+        classDiscriminatorMode = ClassDiscriminatorMode.NONE
+    }
+
     override suspend fun sendToEveryone(event: Event) {
         connections.forEach {
-            val data = Json.encodeToString(event.mapper())
-            it.session.send(Frame.Text(data))
+            val dto = event.mapToDto()
+            val text = json.encodeToString(dto)
+            it.session.send(Frame.Text(text))
         }
     }
 
@@ -55,11 +64,39 @@ class WebSocketEventStream : EventStream {
 }
 
 @Serializable
-data class PlayXSoundEventDto(val soundUrl: String)
+sealed interface EventDto {
+    val id: String
+}
 
-fun Event.mapper(): String {
-    val event = when (this) {
-        is Event.PlayXSound -> PlayXSoundEventDto(soundUrl)
-    }
-    return Json.encodeToString(event)
+@Serializable
+data class PlayXSoundEventDto(
+    val soundUrl: String,
+) : EventDto {
+    override val id = "PlayXSound"
+
+    constructor(event: Event.PlayXSound) : this(
+        soundUrl = event.soundUrl,
+    )
+}
+
+@Serializable
+data class QueueSongsEventDto(
+    val songs: List<SongDto>,
+) : EventDto {
+    override val id = "QueueSongs"
+
+    constructor(event: Event.QueueSongs) : this(
+        songs = event.songs.map { SongDto(it.name, it.youtubeId) },
+    )
+
+    @Serializable
+    data class SongDto(
+        val name: String,
+        val youtubeId: String,
+    )
+}
+
+fun Event.mapToDto(): EventDto = when (this) {
+    is Event.PlayXSound -> PlayXSoundEventDto(this)
+    is Event.QueueSongs -> QueueSongsEventDto(this)
 }
