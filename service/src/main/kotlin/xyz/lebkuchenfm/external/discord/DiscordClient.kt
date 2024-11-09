@@ -14,7 +14,9 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
+import xyz.lebkuchenfm.domain.commands.ExecutionContext
 
 private val logger = KotlinLogging.logger {}
 class DiscordClient(config: ApplicationConfig, private val commandExecutorService: CommandExecutorService) {
@@ -53,7 +55,9 @@ class DiscordClient(config: ApplicationConfig, private val commandExecutorServic
             .filter { it.content.startsWith(commandPrompt) }
             .filter { it.author?.isBot == false }
             .onEach {
-                val result = commandExecutorService.executeFromText(it.content)
+                // TODO: Get user by Discord ID.
+                val context = ExecutionContext(UserSession(name = "FAKE USER TODO"))
+                val result = commandExecutorService.executeFromText(it.content, context)
                 it.reply {
                     content = result.message.markdown
                 }

@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
+import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 import java.util.concurrent.ConcurrentHashMap
@@ -29,7 +30,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         this.commandsRegistry = registry
     }
 
-    override suspend fun execute(command: Command): CommandProcessingResult {
+    override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val commandName = command.rawArgs
         return commandName?.let { resultByCommand[it] } ?: generalHelpResult
     }
