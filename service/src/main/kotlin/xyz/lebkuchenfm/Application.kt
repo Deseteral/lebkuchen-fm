@@ -135,20 +135,6 @@ fun Application.module() {
             }
         }
 
-        // TODO: remove me
-        route("/test") {
-            get {
-                call.request.queryParameters["youtubeId"]?.let { youtubeId ->
-                    val result = youtubeClient.getVideoName(youtubeId)
-                    if (result.isOk) {
-                        call.respond(HttpStatusCode.OK, result.value)
-                    } else {
-                        call.respond(HttpStatusCode.InternalServerError, result.error.toString())
-                    }
-                }
-            }
-        }
-
         staticResources("/", "static")
     }
 }
