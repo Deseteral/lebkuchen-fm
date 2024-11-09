@@ -6,11 +6,11 @@ import {
   PlayerStateRequestEvent,
   EventData,
   ConnectedUsersEvent,
-  SongChangedEvent,
 } from '@service/event-stream/model/events';
 import { Logger } from '@service/infrastructure/logger';
 import { PlayerState, makeDefaultPlayerState } from '@service/domain/player-state/player-state';
 import { extractSessionFromIncomingMessage } from '@service/utils/utils';
+import { Song } from '@service/domain/songs/song';
 import { RadioPersonalityService } from '@service/domain/radio-personality/radio-personality-service';
 
 @Service()
@@ -66,12 +66,7 @@ class PlayerEventStream {
     this.sendPlayerState(socket);
     this.emitter.emit('playerConnectionChange');
 
-    socket.on('PlayerStateRequestEvent', () => {
-      this.requestAndSendPlayerState(socket);
-    });
-
-    socket.on('SongChanged', (songChangedEvent: SongChangedEvent) => {
-      const { song } = songChangedEvent;
+    socket.on('SongChanged', (song: Song) => {
       Container.get(RadioPersonalityService).onNowPlayingChanged(song);
     });
 
