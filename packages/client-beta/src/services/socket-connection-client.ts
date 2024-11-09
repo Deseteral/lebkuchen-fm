@@ -3,7 +3,7 @@ import { EventStreamClient } from './event-stream-client';
 
 type SendResponseCallback = (...args: unknown[]) => void;
 
-// TODO: Implement reconnecting logic when socket disconnects.
+// TODO: Implement reconnecting logic when socket disconnects (or maybe not - we have to discuss it).
 class SocketConnectionClient {
   private static client: WebSocket | null = null;
 
@@ -16,22 +16,26 @@ class SocketConnectionClient {
       console.log('Connected to event stream WebSocket'),
     );
 
-    SocketConnectionClient.client.addEventListener('message', (event): void => {
-      console.log('Received event from event stream', event);
+    SocketConnectionClient.client.addEventListener(
+      'message',
+      (event: MessageEvent<string>): void => {
+        console.log('Received event from event stream', event);
 
-      const eventData = SocketConnectionClient.parseEventMessage(event.data);
-      if (!eventData) {
-        return;
-      }
+        const eventData = SocketConnectionClient.parseEventMessage(event.data);
+        if (!eventData) {
+          return;
+        }
 
-      const sendResponse: SendResponseCallback = (e) => {
-        const responseId = `${eventData.id}-response`;
-        // @ts-ignore
-        SocketConnectionClient.sendSocketMessage(responseId, e);
-      };
+        const sendResponse: SendResponseCallback = (e) => {
+          const responseId = `${eventData.id}-response`;
+          // TODO: This is messing up with the types. Consult with the frontend masters how to handle that.
+          // @ts-ignore
+          SocketConnectionClient.sendSocketMessage(responseId, e);
+        };
 
-      EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
-    });
+        EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
+      },
+    );
 
     SocketConnectionClient.client.addEventListener('close', () => {
       SocketConnectionClient.client = null;
@@ -65,7 +69,7 @@ class SocketConnectionClient {
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
 
-  private static parseEventMessage(data: any): LocalEvents['eventData'] | null {
+  private static parseEventMessage(data: string): LocalEvents['eventData'] | null {
     try {
       return JSON.parse(data);
     } catch (err) {
