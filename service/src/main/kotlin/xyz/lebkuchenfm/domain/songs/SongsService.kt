@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.domain.songs
 
+import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
+
 class SongsService(private val songsRepository: SongsRepository, private val youtubeRepository: YouTubeRepository) {
     suspend fun getAllSongs(): List<Song> {
         return songsRepository.findAllOrderByNameAsc()
@@ -21,8 +23,15 @@ class SongsService(private val songsRepository: SongsRepository, private val you
     }
 
     private suspend fun createNewSong(youtubeId: String, songName: String? = null): Song? {
-        val name = songName ?: youtubeRepository.findSongNameByYoutubeId(youtubeId) ?: return null
-        val newSong = Song(name, youtubeId, timesPlayed = 0, trimStartSeconds = null, trimEndSeconds = null)
+        val youtubeVideo = youtubeRepository.findVideoById(youtubeId) ?: return null
+        val newSong =
+            Song(
+                name = songName ?: youtubeVideo.name,
+                youtubeId = youtubeVideo.id,
+                timesPlayed = 0,
+                trimStartSeconds = null,
+                trimEndSeconds = null,
+            )
         val inserted = songsRepository.insert(newSong)
         return if (inserted) {
             newSong
