@@ -19,14 +19,14 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener(
       'message',
       (event: MessageEvent<string>): void => {
-        console.log('Received event from event stream', event);
-
         const eventData = SocketConnectionClient.parseEventMessage(event.data);
         if (!eventData) {
           return;
         }
 
-        const sendResponse: SendResponseCallback = (responseEvent => {
+        console.log('Received event from event stream', eventData);
+
+        const sendResponse: SendResponseCallback = (responseEvent) => {
           const responseId = `${eventData.id}-response`;
           // TODO: This is messing up with the types. Consult with the frontend masters how to handle that.
           // @ts-ignore
