@@ -1,5 +1,5 @@
 ARG NODE_VERSION=18
-ARG JDK_VERSION=23
+ARG JDK_VERSION=21
 
 ################################################################################
 # Stage 1: Build client application
