@@ -35,7 +35,7 @@ class SocketConnectionClient {
 
   static disconnect(): void {
     if (!SocketConnectionClient.client) {
-      console.warn('Could not disconnect WebSocket because it is not initialized.')
+      console.log('Could not disconnect WebSocket because it is not initialized.')
       return;
     }
 
@@ -46,7 +46,7 @@ class SocketConnectionClient {
 
   static sendSocketMessage<T extends LocalEventData>(messageId: T['id'], messageData: T): void {
     if (!SocketConnectionClient.client) {
-      console.warn('Could not send WebSocket message because it is not initialized.')
+      console.log('Could not send WebSocket message because it is not initialized.')
       return;
     }
 
