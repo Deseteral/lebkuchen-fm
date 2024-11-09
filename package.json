@@ -13,17 +13,15 @@
     "start": "node packages/service/build/main.js",
     "start:client": "yarn workspace lebkuchen-fm-client dev",
     "start:client-beta": "yarn workspace lebkuchen-fm-client-beta dev",
-    "build": "yarn clean && yarn build:service && yarn build:client && yarn build:client-beta && yarn copy:client && yarn copy:client-beta",
+    "build": "yarn clean && yarn build:service && yarn build:client && yarn copy:client",
     "build:service": "yarn workspace lebkuchen-fm-service build",
     "build:client": "yarn workspace lebkuchen-fm-client build",
     "build:client-beta": "yarn workspace lebkuchen-fm-client-beta build",
     "copy:client": "mkdir -p packages/service/build/public && cp -r packages/client/dist/* packages/service/build/public/",
-    "copy:client-beta": "mkdir -p packages/service/build/public-beta && cp -r packages/client-beta/dist/* packages/service/build/public-beta/",
     "test": "yarn workspace lebkuchen-fm-service test && yarn workspace lebkuchen-fm-client test",
+    "test:client-beta": "yarn workspace lebkuchen-fm-client-beta test",
     "clean": "yarn workspace lebkuchen-fm-service clean && yarn workspace lebkuchen-fm-client clean",
     "clean:deps": "rm -rf ./node_modules ./packages/**/node_modules",
-    "lint:client-beta": "yarn workspace lebkuchen-fm-client-beta lint",
-    "format:check:client-beta": "yarn workspace lebkuchen-fm-client-beta format:check",
     "fm": "./scripts/fm.sh"
   }
 }
