@@ -35,7 +35,8 @@ jobs:
           node-version: 18.x
 
       - name: Build backend service
-        run: ./service/gradlew build
+        working-directory: ./service
+        run: ./gradlew build
 
       - name: Install client dependencies
         run: yarn install --frozen-lockfile
