@@ -14,3 +14,35 @@ jobs:
     - run: yarn install --frozen-lockfile
     - run: yarn run build
     - run: yarn test
+
+  build-v3:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18.x
+
+      - name: Build backend service
+        working-directory: ./service
+        run: ./gradlew build
+
+      - name: Install client dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build client
+        run: yarn run build:client-beta
+
+      - name: Test client
+        run: yarn run test:client-beta
