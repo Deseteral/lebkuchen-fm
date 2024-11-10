@@ -1,11 +1,6 @@
 package xyz.lebkuchenfm.api.eventstream
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.serialization.suitableCharset
-import io.ktor.server.routing.Route
-import io.ktor.server.websocket.converter
-import io.ktor.server.websocket.webSocket
-import io.ktor.util.reflect.typeInfo
 import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.Frame
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -17,21 +12,6 @@ import xyz.lebkuchenfm.domain.eventstream.EventStream
 import java.util.Collections
 
 class Connection(val session: DefaultWebSocketSession)
-
-fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
-    webSocket("/event-stream") {
-        val connection = Connection(this)
-        eventStream.addConnection(connection)
-
-        for (frame in incoming) {
-            // TODO: This does not work yet, but I fix it when there are actual events coming from the client.
-            val event = converter?.deserialize(call.request.headers.suitableCharset(), typeInfo<Event>(), frame)
-            println(event)
-        }
-
-        eventStream.removeConnection(connection)
-    }
-}
 
 private val logger = KotlinLogging.logger {}
 
