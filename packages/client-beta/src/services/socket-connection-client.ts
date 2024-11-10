@@ -1,50 +1,80 @@
-import { io, type Socket } from 'socket.io-client';
 import { type LocalEventData, type LocalEvents } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
 
 type SendResponseCallback = (...args: unknown[]) => void;
 
+// TODO: Implement reconnecting logic when socket disconnects (or maybe not - we have to discuss it).
 class SocketConnectionClient {
-  private static client: Socket | null = null;
+  private static client: WebSocket | null = null;
 
-  static initializeConnection(url: string = '/api/player'): void {
+  static initializeConnection(): void {
     if (!SocketConnectionClient.client) {
-      SocketConnectionClient.client = io(url);
+      SocketConnectionClient.client = new WebSocket(SocketConnectionClient.getWebSocketUrl());
     }
 
-    SocketConnectionClient.client.on('connect', () =>
+    SocketConnectionClient.client.addEventListener('open', () =>
       console.log('Connected to event stream WebSocket'),
     );
 
-    SocketConnectionClient.client.on(
+    SocketConnectionClient.client.addEventListener(
       'message',
-      (eventData: LocalEvents['eventData'], sendResponse: SendResponseCallback): void => {
+      (event: MessageEvent<string>): void => {
+        const eventData = SocketConnectionClient.parseEventMessage(event.data);
+        if (!eventData) {
+          return;
+        }
+
         console.log('Received event from event stream', eventData);
+
+        const sendResponse: SendResponseCallback = (responseEvent) => {
+          const responseId = `${eventData.id}-response`;
+          // TODO: This is messing up with the types. Consult with the frontend masters how to handle that.
+          // @ts-ignore
+          SocketConnectionClient.sendSocketMessage(responseId, responseEvent);
+        };
 
         EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
       },
     );
 
-    SocketConnectionClient.client.on('disconnect', (reason: Socket.DisconnectReason) => {
-      console.log('Disconnected by server from WebSocket event stream', { reason });
-
+    SocketConnectionClient.client.addEventListener('close', () => {
       SocketConnectionClient.client = null;
+      console.log('Disconnected by server from WebSocket event stream');
     });
   }
 
   static disconnect(): void {
-    if (SocketConnectionClient.client) {
-      console.log('Disconnected from WebSocket event stream');
-
-      SocketConnectionClient.client.disconnect();
-      SocketConnectionClient.client = null;
+    if (!SocketConnectionClient.client) {
+      console.log('Could not disconnect WebSocket because it is not initialized.');
+      return;
     }
+
+    SocketConnectionClient.client.close();
+    SocketConnectionClient.client = null;
+    console.log('Disconnected from WebSocket event stream');
   }
 
   static sendSocketMessage<T extends LocalEventData>(messageId: T['id'], messageData: T): void {
-    console.log('Sending message to event stream', { messageId, messageData });
-    if (SocketConnectionClient.client) {
-      SocketConnectionClient.client.emit(messageId, messageData);
+    if (!SocketConnectionClient.client) {
+      console.log('Could not send WebSocket message because it is not initialized.');
+      return;
+    }
+
+    SocketConnectionClient.client.send(JSON.stringify(messageData));
+    console.log('Sent message to event stream', { messageId, messageData });
+  }
+
+  private static getWebSocketUrl(): string {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    return `${protocol}//${window.location.host}/api/event-stream`;
+  }
+
+  private static parseEventMessage(data: string): LocalEvents['eventData'] | null {
+    try {
+      return JSON.parse(data);
+    } catch (err) {
+      console.log('Could not parse WebSocket event stream message.', err);
+      return null;
     }
   }
 }

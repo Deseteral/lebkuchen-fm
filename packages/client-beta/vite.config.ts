@@ -23,15 +23,12 @@ export default defineConfig({
   server: {
     port: 9090,
     proxy: {
-      '/socket.io': {
-        target: 'http://localhost:9000/socket.io',
+      '/api/event-stream': {
+        target: 'ws://localhost:8080',
         ws: true,
         changeOrigin: true,
       },
-      '^/api/.*': {
-        target: 'http://localhost:9000/',
-        changeOrigin: true,
-      },
+      '/api': 'http://localhost:8080',
     },
   },
 });
