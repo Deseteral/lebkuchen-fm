@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.xsounds
 
+import com.github.michaelbull.result.Result
 import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -34,11 +35,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         }
     }
 
-    suspend fun addTagToXSound(soundName: String, tag: String): XSound? {
-        val xSound = repository.addTagToXSound(soundName, tag)
-        if (xSound == null) {
-            logger.error { "Could not add tag $tag for sound $soundName" }
-        }
-        return xSound
+    suspend fun addTagToXSound(soundName: String, tag: String): Result<XSound, AddXTagToXSoundError> {
+        return repository.addTagToXSound(soundName, tag)
     }
 }

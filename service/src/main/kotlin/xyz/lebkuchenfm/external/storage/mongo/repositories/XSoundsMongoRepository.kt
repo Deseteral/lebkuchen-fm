@@ -1,5 +1,8 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
 import com.mongodb.client.model.Aggregates.project
@@ -16,6 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import xyz.lebkuchenfm.domain.xsounds.AddXTagToXSoundError
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
@@ -59,11 +63,20 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun addTagToXSound(name: String, tag: String): XSound? {
-        return collection.findOneAndUpdate(
-            eq(XSoundEntity::name.name, name),
-            Updates.addToSet(XSoundEntity::tags.name, tag),
-        )?.toDomain()
+    override suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddXTagToXSoundError> {
+        val xSound = try {
+            collection.findOneAndUpdate(
+                eq(XSoundEntity::name.name, name),
+                Updates.addToSet(XSoundEntity::tags.name, tag),
+            )
+        } catch (e: Exception) {
+            return Err(AddXTagToXSoundError.UnknownError)
+        }
+
+        if (xSound == null) {
+            return Err(AddXTagToXSoundError.SoundDoesNotExist)
+        }
+        return Ok(xSound.toDomain())
     }
 
     override suspend fun incrementPlayCount(soundName: String): XSound? {
