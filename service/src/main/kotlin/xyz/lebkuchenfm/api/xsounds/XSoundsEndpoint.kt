@@ -64,7 +64,6 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             }
 
             fileBytes?.let { bytes ->
-                // TODO: pass authenticated user name as "addedBy"
                 xSoundsService.addNewXSound(soundName, tags, bytes, session)
                     .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
                     .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
