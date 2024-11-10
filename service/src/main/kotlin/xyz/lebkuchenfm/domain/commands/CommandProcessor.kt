@@ -19,13 +19,10 @@ abstract class CommandProcessor(
     }
 
     val Command.args: List<String>
-        get() {
-            if (this.rawArgs == null) return listOf()
-            return if (parameters.delimiter != null) {
-                this.getArgsByDelimiter(parameters.delimiter)
-            } else {
-                listOf(this.rawArgs)
-            }
+        get() = if (parameters.delimiter != null) {
+            getArgsByDelimiter(parameters.delimiter)
+        } else {
+            listOfNotNull(rawArgs)
         }
 }
 
