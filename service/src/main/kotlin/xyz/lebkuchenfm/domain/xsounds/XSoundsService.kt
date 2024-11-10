@@ -5,6 +5,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.get
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.UserSession
 
 private val logger = KotlinLogging.logger {}
 
@@ -22,10 +23,21 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         data object DataBaseError : NewSoundError
     }
 
-    suspend fun addNewXSound(soundName: String, tags: List<String>, bytes: ByteArray): Result<XSound, NewSoundError> {
+    suspend fun addNewXSound(
+        soundName: String,
+        tags: List<String>,
+        bytes: ByteArray,
+        userSession: UserSession,
+    ): Result<XSound, NewSoundError> {
         val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes).get()
             ?: return Err(NewSoundError.FileStorageError)
-        val readySound = XSound(name = soundName, url = fileUrl, tags = tags, timesPlayed = 0, addedBy = null)
+        val readySound = XSound(
+            name = soundName,
+            url = fileUrl,
+            tags = tags,
+            timesPlayed = 0,
+            addedBy = userSession.name,
+        )
         val insertResult = repository.insert(readySound)
         return insertResult.mapError {
             logger.error { it }

@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -18,9 +19,13 @@ import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
+import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
+import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
+import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
@@ -33,7 +38,6 @@ import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.DummyEventStream
 import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
@@ -62,7 +66,7 @@ fun Application.module() {
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
     val songsService = SongsService(songsRepository, youtubeRepository)
 
-    val eventStream = DummyEventStream() // TODO: To be replaced with actual WebSocket implementation.
+    val eventStream = WebSocketEventStream()
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
@@ -117,6 +121,10 @@ fun Application.module() {
         }
     }
 
+    install(WebSockets) {
+        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+    }
+
     routing {
         // TODO: This route should be secured using auth-session and auth-bearer when the whole auth flow is done.
         route("/api") {
@@ -124,6 +132,7 @@ fun Application.module() {
             xSoundsRouting(xSoundsService)
             songsRouting(songsService)
             commandsRouting(commandExecutorService)
+            eventStreamRouting(eventStream)
         }
 
         // TODO: Remove me.

@@ -13,7 +13,10 @@ class XSoundsDropboxFileRepository(
 ) : XSoundsFileRepository {
     private val storageFolderPath = config.property(DROPBOX_X_SOUND_PATH_PROPERTY_PATH).getString()
 
-    override suspend fun uploadXSoundFile(soundName: String, byteArray: ByteArray): Result<String, UploadXSoundFileError> {
+    override suspend fun uploadXSoundFile(
+        soundName: String,
+        byteArray: ByteArray,
+    ): Result<String, UploadXSoundFileError> {
         val path = Paths.get(storageFolderPath, "$soundName.mp3")
         val result = dropboxClient.uploadFile(path.toString(), byteArray)
         return result.mapError { UploadXSoundFileError.FileCouldNotBeSaved }

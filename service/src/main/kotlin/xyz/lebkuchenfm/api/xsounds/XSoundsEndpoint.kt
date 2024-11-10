@@ -14,6 +14,7 @@ import io.ktor.server.routing.route
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
+import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -29,6 +30,11 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
+            // TODO: Get UserSession from request when the endpoints get authorization.
+            val session = UserSession("FAKE USER TODO")
+            // val session = call.sessions.get<UserSession>()
+            // checkNotNull(session)
+
             var soundName = ""
             var tags: List<String> = emptyList()
             var fileBytes: ByteArray? = null
@@ -59,7 +65,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
 
             fileBytes?.let { bytes ->
                 // TODO: pass authenticated user name as "addedBy"
-                xSoundsService.addNewXSound(soundName, tags, bytes)
+                xSoundsService.addNewXSound(soundName, tags, bytes, session)
                     .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
                     .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
             }

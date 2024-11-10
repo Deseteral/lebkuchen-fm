@@ -3,10 +3,11 @@ package xyz.lebkuchenfm.domain.commands.processors
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
+import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.eventstream.QueueSongsEvent
 import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsService
 
@@ -31,7 +32,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
             ),
         ),
     ) {
-    override suspend fun execute(command: Command): CommandProcessingResult {
+    override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val videoOrPlaylistId = command.rawArgs.orEmpty()
         if (videoOrPlaylistId.isEmpty()) {
             return error("Missing exact song name or youtube's video/playlist id.", logger)
@@ -51,7 +52,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         // TODO: filter only embeddable
 
-        eventStream.sendToEveryone(QueueSongsEvent(songs))
+        eventStream.sendToEveryone(Event.QueueSongs(songs))
 
         songs.forEach { songsService.incrementPlayCount(it) }
 
