@@ -24,7 +24,7 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
         ),
     ) {
     override suspend fun execute(command: Command): CommandProcessingResult {
-        val args = command.getArgsByDelimiter(this.parameters.delimiter)
+        val args = command.args
         if (args.size != 2) {
             return error("You have to provide tag-name|sound-name in the arguments", logger)
         }

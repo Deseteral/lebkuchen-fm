@@ -17,11 +17,21 @@ abstract class CommandProcessor(
         logger.error { message ?: markdown }
         return CommandProcessingResult.fromMarkdown(markdown)
     }
+
+    val Command.args: List<String>
+        get() {
+            if (this.rawArgs == null) return listOf()
+            return if (parameters.delimiter != null) {
+                this.getArgsByDelimiter(parameters.delimiter)
+            } else {
+                listOf(this.rawArgs)
+            }
+        }
 }
 
 class CommandParameters(
     val parameters: List<CommandParameter>,
-    val delimiter: String = " ",
+    val delimiter: String? = null,
 ) {
     abstract class CommandParameter(
         val required: Boolean,
