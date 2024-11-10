@@ -16,7 +16,7 @@ class Connection(val session: DefaultWebSocketSession)
 private val logger = KotlinLogging.logger {}
 
 class WebSocketEventStream : EventStream {
-    private val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+    private val connections = Collections.synchronizedSet<Connection>(LinkedHashSet())
 
     @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
