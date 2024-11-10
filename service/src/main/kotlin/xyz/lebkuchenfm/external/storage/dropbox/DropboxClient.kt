@@ -46,7 +46,7 @@ class DropboxClient(config: ApplicationConfig) {
     /**
      * [path] must contain destination folder, file name and its extension
      * [bytes] contains file content data
-     * @return url on which raw file may be obtained
+     * @return file download link url
      */
     suspend fun uploadFile(path: String, bytes: ByteArray): Result<String, DropboxClientError> {
         if (refreshToken == null || appKey == null || appSecret == null) {
