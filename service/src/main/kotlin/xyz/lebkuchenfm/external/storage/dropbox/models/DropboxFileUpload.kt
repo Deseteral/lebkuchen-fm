@@ -9,6 +9,7 @@ data class DropboxFileUploadArgs(
     val mode: String,
     val autorename: Boolean,
     val mute: Boolean,
+    @SerialName("strict_conflict") val strictConflict: Boolean,
 )
 
 @Serializable
