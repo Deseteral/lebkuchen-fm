@@ -2,19 +2,25 @@ import type { PlayerState } from './player-state';
 import type { EventData } from '@service/event-stream/model/events';
 
 enum LocalEventTypes {
-  LOCAL_PLAYER_STATE_UPDATE = 'LocalPlayerStateUpdate',
+  LocalPlayerStateUpdate = 'LocalPlayerStateUpdate',
+  PlayerStateRequestEventResponse = 'PlayerStateRequestEventResponse',
 }
 
 interface LocalPlayerStateUpdateEvent {
-  id: LocalEventTypes.LOCAL_PLAYER_STATE_UPDATE;
+  id: LocalEventTypes.LocalPlayerStateUpdate;
   state: PlayerState;
 }
 
-type LocalEventData = EventData | LocalPlayerStateUpdateEvent;
+interface PlayerStateRequestEventResponse {
+  id: LocalEventTypes.PlayerStateRequestEventResponse;
+  state: PlayerState;
+}
 
-type LocalEvents<T extends LocalEventData = LocalEventData> = {
-  eventData: T;
-  sendResponse?: (...args: unknown[]) => void;
+type LocalEvent = EventData | LocalPlayerStateUpdateEvent | PlayerStateRequestEventResponse;
+
+export {
+  LocalEventTypes,
+  type LocalEvent,
+  type LocalPlayerStateUpdateEvent,
+  type PlayerStateRequestEventResponse,
 };
-
-export { LocalEventTypes, type LocalEventData, type LocalPlayerStateUpdateEvent, type LocalEvents };

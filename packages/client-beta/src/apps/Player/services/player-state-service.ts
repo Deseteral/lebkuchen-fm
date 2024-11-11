@@ -44,10 +44,10 @@ class PlayerStateService {
   }
 
   private static sendLocalPlayerStateUpdateEvent(): void {
-    const id = LocalEventTypes.LOCAL_PLAYER_STATE_UPDATE;
+    const id = LocalEventTypes.LocalPlayerStateUpdate;
     const eventData: LocalPlayerStateUpdateEvent = { id, state: PlayerStateService.playerState };
 
-    EventStreamClient.broadcast<LocalPlayerStateUpdateEvent>(id, { eventData });
+    EventStreamClient.broadcast<LocalPlayerStateUpdateEvent>(id, eventData);
   }
 }
 

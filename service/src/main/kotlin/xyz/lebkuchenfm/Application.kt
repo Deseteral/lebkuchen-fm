@@ -122,7 +122,11 @@ fun Application.module() {
     }
 
     install(WebSockets) {
-        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        val webSocketJsonConverter = Json {
+            encodeDefaults = true
+            classDiscriminator = "id"
+        }
+        contentConverter = KotlinxWebsocketSerializationConverter(webSocketJsonConverter)
     }
 
     routing {
