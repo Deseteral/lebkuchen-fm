@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import xyz.lebkuchenfm.domain.xsounds.AddXTagToXSoundError
+import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 
@@ -63,18 +63,18 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         return collection.find(eq(XSoundEntity::name.name, name)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddXTagToXSoundError> {
+    override suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddTagToXSoundError> {
         val xSound = try {
             collection.findOneAndUpdate(
                 eq(XSoundEntity::name.name, name),
                 Updates.addToSet(XSoundEntity::tags.name, tag),
             )
         } catch (e: Exception) {
-            return Err(AddXTagToXSoundError.UnknownError)
+            return Err(AddTagToXSoundError.UnknownError)
         }
 
         if (xSound == null) {
-            return Err(AddXTagToXSoundError.SoundDoesNotExist)
+            return Err(AddTagToXSoundError.SoundDoesNotExist)
         }
         return Ok(xSound.toDomain())
     }

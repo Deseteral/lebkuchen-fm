@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.xsounds
 
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.auth.UserSession
 
@@ -47,7 +48,18 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         }
     }
 
-    suspend fun addTagToXSound(soundName: String, tag: String): Result<XSound, AddXTagToXSoundError> {
+    sealed interface AddTagError {
+        data object SoundDoesNotExist : AddTagError
+        data object UnknownError : AddTagError
+    }
+
+    suspend fun addTagToXSound(soundName: String, tag: String): Result<XSound, AddTagError> {
         return repository.addTagToXSound(soundName, tag)
+            .mapError { err ->
+                when (err) {
+                    is AddTagToXSoundError.SoundDoesNotExist -> AddTagError.SoundDoesNotExist
+                    is AddTagToXSoundError.UnknownError -> AddTagError.UnknownError
+                }
+            }
     }
 }

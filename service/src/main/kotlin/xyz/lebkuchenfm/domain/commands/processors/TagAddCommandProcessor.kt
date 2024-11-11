@@ -5,10 +5,11 @@ import com.github.michaelbull.result.map
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
+import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
-import xyz.lebkuchenfm.domain.xsounds.AddXTagToXSoundError
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
+import xyz.lebkuchenfm.domain.xsounds.XSoundsService.AddTagError
 
 private val logger = KotlinLogging.logger {}
 
@@ -26,7 +27,7 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
             delimiter = "|",
         ),
     ) {
-    override suspend fun execute(command: Command): CommandProcessingResult {
+    override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val args = command.args
         if (args.size != 2) {
             return error(
@@ -44,8 +45,8 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
             .getOrElse { err ->
                 error(
                     when (err) {
-                        AddXTagToXSoundError.SoundDoesNotExist -> "Sound $soundName doesn't exist"
-                        AddXTagToXSoundError.UnknownError -> "Couldn't add $tagName to $soundName sound"
+                        AddTagError.SoundDoesNotExist -> "Sound $soundName doesn't exist."
+                        AddTagError.UnknownError -> "Couldn't add $tagName to $soundName sound."
                     },
                     logger,
                 )

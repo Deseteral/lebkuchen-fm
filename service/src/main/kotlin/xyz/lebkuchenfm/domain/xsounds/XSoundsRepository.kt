@@ -15,10 +15,10 @@ interface XSoundsRepository {
 
     suspend fun findByName(name: String): XSound?
 
-    suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddXTagToXSoundError>
+    suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddTagToXSoundError>
 }
 
-sealed class AddXTagToXSoundError {
-    data object SoundDoesNotExist : AddXTagToXSoundError()
-    data object UnknownError : AddXTagToXSoundError()
+sealed class AddTagToXSoundError {
+    data object SoundDoesNotExist : AddTagToXSoundError()
+    data object UnknownError : AddTagToXSoundError()
 }
