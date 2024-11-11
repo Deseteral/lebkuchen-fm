@@ -11,7 +11,7 @@ COPY ./yarn.lock .
 COPY ./packages ./packages
 
 RUN yarn install
-RUN yarn run build
+RUN yarn run build:client-beta
 
 ################################################################################
 # Stage 2: Cache Gradle dependencies
