@@ -1,7 +1,5 @@
-import { type LocalEventData, type LocalEvents } from '../types/local-events';
+import { type LocalEvent } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
-
-type SendResponseCallback = (...args: unknown[]) => void;
 
 // TODO: Implement reconnecting logic when socket disconnects (or maybe not - we have to discuss it).
 class SocketConnectionClient {
@@ -25,15 +23,7 @@ class SocketConnectionClient {
         }
 
         console.log('Received event from event stream', eventData);
-
-        const sendResponse: SendResponseCallback = (responseEvent) => {
-          const responseId = `${eventData.id}-response`;
-          // TODO: This is messing up with the types. Consult with the frontend masters how to handle that.
-          // @ts-ignore
-          SocketConnectionClient.sendSocketMessage(responseId, responseEvent);
-        };
-
-        EventStreamClient.broadcast(eventData.id, { eventData, sendResponse });
+        EventStreamClient.broadcast(eventData.id, eventData);
       },
     );
 
@@ -54,7 +44,7 @@ class SocketConnectionClient {
     console.log('Disconnected from WebSocket event stream');
   }
 
-  static sendSocketMessage<T extends LocalEventData>(messageId: T['id'], messageData: T): void {
+  static sendSocketMessage<T extends LocalEvent>(messageId: T['id'], messageData: T): void {
     if (!SocketConnectionClient.client) {
       console.log('Could not send WebSocket message because it is not initialized.');
       return;
@@ -69,7 +59,7 @@ class SocketConnectionClient {
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
 
-  private static parseEventMessage(data: string): LocalEvents['eventData'] | null {
+  private static parseEventMessage(data: string): LocalEvent | null {
     try {
       return JSON.parse(data);
     } catch (err) {
