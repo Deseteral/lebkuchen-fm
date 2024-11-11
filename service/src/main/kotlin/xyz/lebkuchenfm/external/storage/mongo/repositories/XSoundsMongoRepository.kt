@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
 import com.mongodb.client.model.Aggregates.project
@@ -17,6 +21,7 @@ import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
+import xyz.lebkuchenfm.domain.xsounds.XSoundsRepositoryError
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
@@ -37,8 +42,20 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             .map { it.toDomain() }.toList()
     }
 
-    override suspend fun insert(sound: XSound) {
-        collection.insertOne(XSoundEntity(sound))
+    override suspend fun insert(sound: XSound): Result<XSound, XSoundsRepositoryError> {
+        return try {
+            if (collection.insertOne(XSoundEntity(sound)).wasAcknowledged()) {
+                Ok(sound)
+            } else {
+                Err(XSoundsRepositoryError.UnknownError)
+            }
+        } catch (e: MongoWriteException) {
+            if (e.code == 11000) {
+                Err(XSoundsRepositoryError.SoundAlreadyExists)
+            } else {
+                Err((XSoundsRepositoryError.UnknownError))
+            }
+        }
     }
 
     override suspend fun findAllUniqueTags(): List<String> {

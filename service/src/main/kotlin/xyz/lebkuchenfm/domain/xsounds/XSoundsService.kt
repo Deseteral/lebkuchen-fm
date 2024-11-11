@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.domain.xsounds
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.get
+import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.auth.UserSession
 
@@ -14,13 +18,19 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findAllByTagOrderByNameAsc(tag)
     }
 
+    sealed interface NewSoundError {
+        data object FileStorageError : NewSoundError
+        data object DatabaseError : NewSoundError
+    }
+
     suspend fun addNewXSound(
         soundName: String,
         tags: List<String>,
         bytes: ByteArray,
         userSession: UserSession,
-    ): XSound {
-        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes)
+    ): Result<XSound, NewSoundError> {
+        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes).get()
+            ?: return Err(NewSoundError.FileStorageError)
         val readySound = XSound(
             name = soundName,
             url = fileUrl,
@@ -28,8 +38,11 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
             timesPlayed = 0,
             addedBy = userSession.name,
         )
-        repository.insert(readySound)
-        return readySound
+        val insertResult = repository.insert(readySound)
+        return insertResult.mapError {
+            logger.error { it }
+            NewSoundError.DatabaseError
+        }
     }
 
     suspend fun findAllUniqueTags(): List<String> {
