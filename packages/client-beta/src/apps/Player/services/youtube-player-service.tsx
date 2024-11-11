@@ -14,9 +14,9 @@ import type {
   SkipEvent,
   SongChangedEvent,
 } from '@service/event-stream/model/events';
-import { type LocalEvents } from '../../../types/local-events';
 import { PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
+import { LocalEventTypes, PlayerStateRequestEventResponse } from '../../../types/local-events';
 
 class YoutubePlayerService {
   private static player: YouTubePlayer;
@@ -90,9 +90,7 @@ class YoutubePlayerService {
   }
 
   // Socket event handlers
-  private static playerStateUpdateEventHandler({
-    eventData,
-  }: LocalEvents<PlayerStateUpdateEvent>): void {
+  private static playerStateUpdateEventHandler(eventData: PlayerStateUpdateEvent): void {
     const { state } = eventData;
     PlayerStateService.change({
       queue: state.queue,
@@ -109,9 +107,7 @@ class YoutubePlayerService {
     }
   }
 
-  private static addSongsToQueueEventHandler({
-    eventData,
-  }: LocalEvents<AddSongsToQueueEvent>): void {
+  private static addSongsToQueueEventHandler(eventData: AddSongsToQueueEvent): void {
     const { songs } = eventData;
     const playerState = PlayerStateService.get();
     const prevLength = playerState.queue.length;
@@ -130,17 +126,17 @@ class YoutubePlayerService {
     }
   }
 
-  private static playerStateRequestEventHandler({
-    sendResponse,
-  }: LocalEvents<PlayerStateRequestEvent>): void {
-    if (sendResponse) {
-      const playerState = PlayerStateService.get();
-      console.log('Local PlayerState requested:', playerState);
-      sendResponse(playerState);
-    }
+  private static playerStateRequestEventHandler(): void {
+    const id = LocalEventTypes.PlayerStateRequestEventResponse;
+    const playerState = PlayerStateService.get();
+    console.log('Local PlayerState requested:', playerState);
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>(id, {
+      id,
+      state: playerState,
+    });
   }
 
-  private static skipEventHandler({ eventData }: LocalEvents<SkipEvent>): void {
+  private static skipEventHandler(eventData: SkipEvent): void {
     const { skipAll, amount } = eventData;
     const amountToSkip = skipAll ? Infinity : amount - 1;
     const { queue } = PlayerStateService.get();
@@ -161,7 +157,7 @@ class YoutubePlayerService {
     PlayerStateService.change({ isPlaying: true });
   }
 
-  private static changeSpeedEventHandler({ eventData }: LocalEvents<ChangeSpeedEvent>): void {
+  private static changeSpeedEventHandler(eventData: ChangeSpeedEvent): void {
     const { nextSpeed } = eventData;
 
     switch (nextSpeed) {
@@ -185,7 +181,7 @@ class YoutubePlayerService {
     }
   }
 
-  private static changeVolumeEventHandler({ eventData }: LocalEvents<ChangeVolumeEvent>): void {
+  private static changeVolumeEventHandler(eventData: ChangeVolumeEvent): void {
     const { isRelative, nextVolume } = eventData;
     const { volume } = PlayerStateService.get();
 
@@ -207,12 +203,12 @@ class YoutubePlayerService {
     }
   }
 
-  private static replaceQueueEventHandler({ eventData }: LocalEvents<ReplaceQueueEvent>): void {
+  private static replaceQueueEventHandler(eventData: ReplaceQueueEvent): void {
     const { songs } = eventData;
     PlayerStateService.change({ queue: songs });
   }
 
-  private static revindEventHandler({ eventData }: LocalEvents<RewindEvent>): void {
+  private static revindEventHandler(eventData: RewindEvent): void {
     const { modifier, time } = eventData;
 
     if (modifier) {

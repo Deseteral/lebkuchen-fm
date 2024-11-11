@@ -13,16 +13,16 @@ class CommandExecutorService(
     private val registry: CommandProcessorRegistry,
     private val commandPrompt: String,
 ) {
-    private suspend fun execute(command: Command): CommandProcessingResult {
+    private suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val processor = registry.getProcessorByKey(command.key)
             ?: return CommandProcessingResult.fromMarkdown("Command ${command.key} does not exist.")
 
-        return processor.execute(command)
+        return processor.execute(command, context)
     }
 
-    suspend fun executeFromText(text: String): CommandProcessingResult {
+    suspend fun executeFromText(text: String, context: ExecutionContext): CommandProcessingResult {
         return parser.parseFromText(text)
-            .map { execute(it) }
+            .map { execute(it, context) }
             .getOrElse { err ->
                 logger.error { "Could not parse command '$text'." }
                 CommandProcessingResult.fromMultilineMarkdown(
