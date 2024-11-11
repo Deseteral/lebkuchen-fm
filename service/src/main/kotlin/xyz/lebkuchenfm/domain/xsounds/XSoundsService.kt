@@ -20,7 +20,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
 
     sealed interface NewSoundError {
         data object FileStorageError : NewSoundError
-        data object DataBaseError : NewSoundError
+        data object DatabaseError : NewSoundError
     }
 
     suspend fun addNewXSound(
@@ -41,7 +41,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         val insertResult = repository.insert(readySound)
         return insertResult.mapError {
             logger.error { it }
-            NewSoundError.DataBaseError
+            NewSoundError.DatabaseError
         }
     }
 
