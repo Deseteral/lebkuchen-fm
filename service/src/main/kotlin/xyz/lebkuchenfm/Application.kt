@@ -35,6 +35,7 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -74,6 +75,7 @@ fun Application.module() {
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
+            TagAddCommandProcessor(xSoundsService),
             SongQueueCommandProcessor(songsService, eventStream),
             helpCommandProcessor,
         ),

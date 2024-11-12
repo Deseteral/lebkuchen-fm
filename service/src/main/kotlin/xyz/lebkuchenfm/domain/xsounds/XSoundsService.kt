@@ -58,4 +58,19 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
             logger.error { "Could not increment play count for sound $soundName" }
         }
     }
+
+    sealed interface AddTagError {
+        data object SoundDoesNotExist : AddTagError
+        data object UnknownError : AddTagError
+    }
+
+    suspend fun addTagToXSound(soundName: String, tag: String): Result<XSound, AddTagError> {
+        return repository.addTagToXSound(soundName, tag)
+            .mapError { err ->
+                when (err) {
+                    is AddTagToXSoundError.SoundDoesNotExist -> AddTagError.SoundDoesNotExist
+                    is AddTagToXSoundError.UnknownError -> AddTagError.UnknownError
+                }
+            }
+    }
 }

@@ -17,6 +17,13 @@ abstract class CommandProcessor(
         logger.error { message ?: markdown }
         return CommandProcessingResult.fromMarkdown(markdown)
     }
+
+    val Command.args: List<String>
+        get() = if (parameters.delimiter != null) {
+            getArgsByDelimiter(parameters.delimiter)
+        } else {
+            listOfNotNull(rawArgs)
+        }
 }
 
 class CommandParameters(
