@@ -7,7 +7,7 @@ interface XSoundsRepository {
 
     suspend fun findAllByTagOrderByNameAsc(tag: String): List<XSound>
 
-    suspend fun insert(sound: XSound)
+    suspend fun insert(sound: XSound): Result<XSound, XSoundsRepositoryError>
 
     suspend fun incrementPlayCount(soundName: String): XSound?
 
@@ -21,4 +21,9 @@ interface XSoundsRepository {
 sealed class AddTagToXSoundError {
     data object SoundDoesNotExist : AddTagToXSoundError()
     data object UnknownError : AddTagToXSoundError()
+}
+
+sealed class XSoundsRepositoryError {
+    data object SoundAlreadyExists : XSoundsRepositoryError()
+    data object UnknownError : XSoundsRepositoryError()
 }

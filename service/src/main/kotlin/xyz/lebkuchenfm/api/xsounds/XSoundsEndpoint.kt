@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.api.xsounds
 
+import com.github.michaelbull.result.onFailure
+import com.github.michaelbull.result.onSuccess
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
@@ -62,8 +64,9 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             }
 
             fileBytes?.let { bytes ->
-                val sound = xSoundsService.addNewXSound(soundName, tags, bytes, session)
-                call.respond(HttpStatusCode.Created, sound.toResponse())
+                xSoundsService.addNewXSound(soundName, tags, bytes, session)
+                    .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
+                    .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
             }
         }
 
