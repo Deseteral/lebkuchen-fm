@@ -39,13 +39,13 @@ class TagRemoveCommandProcessor(private val xSoundsService: XSoundsService) :
         }
         val (tagName, soundName) = args
 
-        return xSoundsService.addTagToXSound(soundName, tagName)
+        return xSoundsService.removeTagFromXSound(soundName, tagName)
             .map { CommandProcessingResult.fromMarkdown("Removed $tagName from $soundName sound.") }
             .getOrElse { err ->
                 error(
                     when (err) {
-                        XSoundsService.AddTagError.SoundDoesNotExist -> "Sound $soundName doesn't exist."
-                        XSoundsService.AddTagError.UnknownError -> "Couldn't remove $tagName from $soundName sound."
+                        XSoundsService.RemoveTagError.SoundDoesNotExist -> "Sound $soundName doesn't exist."
+                        XSoundsService.RemoveTagError.UnknownError -> "Couldn't remove $tagName from $soundName sound."
                     },
                     logger,
                 )
