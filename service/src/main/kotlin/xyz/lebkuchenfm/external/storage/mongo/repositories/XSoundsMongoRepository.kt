@@ -20,10 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
-import xyz.lebkuchenfm.domain.xsounds.XSound
-import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
-import xyz.lebkuchenfm.domain.xsounds.XSoundsRepositoryError
+import xyz.lebkuchenfm.domain.xsounds.*
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
@@ -89,6 +86,24 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
         if (xSound == null) {
             return Err(AddTagToXSoundError.SoundDoesNotExist)
+        }
+        return Ok(xSound.toDomain())
+    }
+
+    // create a function based on addTagToXSound that will remove tag from XSound
+
+    override suspend fun removeTagFromXSound(name: String, tag: String): Result<XSound, RemoveTagFromXSoundError> {
+        val xSound = try {
+            collection.findOneAndUpdate(
+                eq(XSoundEntity::name.name, name),
+                Updates.pull(XSoundEntity::tags.name, tag),
+            )
+        } catch (e: Exception) {
+            return Err(RemoveTagFromXSoundError.UnknownError)
+        }
+
+        if (xSound == null) {
+            return Err(RemoveTagFromXSoundError.SoundDoesNotExist)
         }
         return Ok(xSound.toDomain())
     }

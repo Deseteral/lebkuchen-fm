@@ -33,10 +33,7 @@ import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
-import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
-import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
-import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
-import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.*
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.SessionStorageMongo
@@ -78,6 +75,7 @@ fun Application.module() {
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
             TagAddCommandProcessor(xSoundsService),
+            TagRemoveCommandProcessor(xSoundsService),
             SongQueueCommandProcessor(songsService, eventStream),
             helpCommandProcessor,
         ),
