@@ -1,14 +1,24 @@
 package xyz.lebkuchenfm.domain.songs
 
+import kotlinx.datetime.Clock
+import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.domain.history.HistoryEntry
+import xyz.lebkuchenfm.domain.history.HistoryRepository
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
 
-class SongsService(private val songsRepository: SongsRepository, private val youtubeRepository: YouTubeRepository) {
+class SongsService(
+    private val songsRepository: SongsRepository,
+    private val youtubeRepository: YouTubeRepository,
+    private val historyRepository: HistoryRepository
+) {
     suspend fun getAllSongs(): List<Song> {
         return songsRepository.findAllOrderByNameAsc()
     }
 
-    suspend fun incrementPlayCount(song: Song): Song? {
-        return songsRepository.incrementPlayCountByName(song.name)
+    suspend fun incrementPlayCount(song: Song, userSession: UserSession): Song? {
+        return songsRepository.incrementPlayCountByName(song.name)?.also {
+            historyRepository.insert(HistoryEntry(Clock.System.now(), it.name, userSession.name))
+        }
     }
 
     suspend fun getSongByNameWithYouTubeIdFallback(nameOrYouTubeId: String): Song? {

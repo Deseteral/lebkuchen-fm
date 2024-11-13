@@ -50,6 +50,7 @@ dependencies {
     implementation("com.michael-bull.kotlin-result:kotlin-result:$kotlin_result_version")
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
+    implementation("org.mongodb:bson-kotlinx:$mongo_driver_version")
 
     implementation("dev.kord:kord-core:$kord_version")
 

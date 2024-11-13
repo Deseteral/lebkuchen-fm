@@ -54,7 +54,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         eventStream.sendToEveryone(Event.QueueSongs(songs))
 
-        songs.forEach { songsService.incrementPlayCount(it) }
+        songs.forEach { songsService.incrementPlayCount(it, context.session) }
 
         val songNames = songs.joinToString(", ") { it.name }
         val message = "Queued $songNames."

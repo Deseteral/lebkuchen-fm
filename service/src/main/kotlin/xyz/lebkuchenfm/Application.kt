@@ -44,6 +44,7 @@ import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
+import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
@@ -64,8 +65,9 @@ fun Application.module() {
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val songsRepository = SongsMongoRepository(database)
+    val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository)
+    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
 
     val eventStream = WebSocketEventStream()
 
