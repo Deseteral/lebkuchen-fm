@@ -3,12 +3,15 @@ package xyz.lebkuchenfm.external.storage.mongo.repositories
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.mongodb.ErrorCategory
 import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
 import com.mongodb.client.model.Aggregates.project
 import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
@@ -28,6 +31,12 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsRepositoryError
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
     private val sortByName = Sorts.ascending(XSoundEntity::name.name)
+
+    suspend fun createUniqueIndex() {
+        val index = Indexes.ascending(XSoundEntity::name.name)
+        val options = IndexOptions().unique(true).name("unique_name")
+        collection.createIndex(index, options)
+    }
 
     override suspend fun findAllOrderByNameAsc(): List<XSound> {
         return collection
@@ -52,7 +61,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
                 Err(XSoundsRepositoryError.UnknownError)
             }
         } catch (e: MongoWriteException) {
-            if (e.code == 11000) {
+            if (e.error.category == ErrorCategory.DUPLICATE_KEY) {
                 Err(XSoundsRepositoryError.SoundAlreadyExists)
             } else {
                 Err((XSoundsRepositoryError.UnknownError))

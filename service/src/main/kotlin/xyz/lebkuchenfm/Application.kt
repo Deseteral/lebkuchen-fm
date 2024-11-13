@@ -63,6 +63,9 @@ fun Application.module() {
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
+    launch {
+        xSoundsRepository.createUniqueIndex()
+    }
 
     val songsRepository = SongsMongoRepository(database)
     val historyRepository = HistoryMongoRepository(database)
