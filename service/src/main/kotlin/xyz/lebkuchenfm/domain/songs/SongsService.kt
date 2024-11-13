@@ -9,7 +9,7 @@ import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
 class SongsService(
     private val songsRepository: SongsRepository,
     private val youtubeRepository: YouTubeRepository,
-    private val historyRepository: HistoryRepository
+    private val historyRepository: HistoryRepository,
 ) {
     suspend fun getAllSongs(): List<Song> {
         return songsRepository.findAllOrderByNameAsc()
