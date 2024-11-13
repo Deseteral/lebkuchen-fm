@@ -21,6 +21,7 @@ import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
@@ -63,7 +64,7 @@ fun Application.module() {
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
-    launch {
+    runBlocking {
         xSoundsRepository.createUniqueIndex()
     }
 
