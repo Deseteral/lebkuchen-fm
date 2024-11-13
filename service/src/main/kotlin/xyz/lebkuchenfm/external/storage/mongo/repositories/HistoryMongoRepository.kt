@@ -23,7 +23,7 @@ class HistoryMongoRepository(database: MongoDatabase) : HistoryRepository {
                 Err(HistoryRepositoryError.UnknownError)
             }
         } catch (e: MongoWriteException) {
-            Err((HistoryRepositoryError.UnknownError))
+            Err(HistoryRepositoryError.UnknownError)
         }
     }
 }
