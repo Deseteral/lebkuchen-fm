@@ -29,12 +29,12 @@ class HistoryMongoRepository(database: MongoDatabase) : HistoryRepository {
 }
 
 @Serializable
-data class HistoryEntity(
+private data class HistoryEntity(
     @Contextual val date: Instant,
     val youtubeId: String,
     val user: String?,
 )
 
-fun HistoryEntry.toEntity(): HistoryEntity {
+private fun HistoryEntry.toEntity(): HistoryEntity {
     return HistoryEntity(this.date, this.youtubeId, this.user)
 }
