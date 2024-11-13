@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
+import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates.inc
@@ -33,6 +34,15 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
 
     override suspend fun findByYoutubeId(youtubeId: String): Song? {
         return collection.find(eq(SongEntity::youtubeId.name, youtubeId)).firstOrNull()?.toDomain()
+    }
+
+    override suspend fun findRandom(limit: Int, phrase: String): List<Song> {
+        return if (phrase.isNotBlank()) {
+            // TODO: handle text search
+            collection.aggregate(listOf(Aggregates.sample(limit))).map { it.toDomain() }.toList()
+        } else {
+            collection.aggregate(listOf(Aggregates.sample(limit))).map { it.toDomain() }.toList()
+        }
     }
 
     override suspend fun incrementPlayCountByName(name: String): Song? {
