@@ -16,8 +16,13 @@ interface XSoundsRepository {
     suspend fun findByName(name: String): XSound?
 
     suspend fun addTagToXSound(name: String, tag: String): Result<XSound, AddTagToXSoundError>
+    suspend fun removeTagFromXSound(name: String, tag: String): Result<XSound, RemoveTagFromXSoundError>
 }
 
+sealed class RemoveTagFromXSoundError {
+    data object SoundDoesNotExist : RemoveTagFromXSoundError()
+    data object UnknownError : RemoveTagFromXSoundError()
+}
 sealed class AddTagToXSoundError {
     data object SoundDoesNotExist : AddTagToXSoundError()
     data object UnknownError : AddTagToXSoundError()
