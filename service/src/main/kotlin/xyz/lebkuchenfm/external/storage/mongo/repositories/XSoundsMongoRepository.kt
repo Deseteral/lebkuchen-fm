@@ -103,8 +103,6 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         return Ok(xSound.toDomain())
     }
 
-    // create a function based on addTagToXSound that will remove tag from XSound
-
     override suspend fun removeTagFromXSound(name: String, tag: String): Result<XSound, RemoveTagFromXSoundError> {
         val xSound = try {
             collection.findOneAndUpdate(
