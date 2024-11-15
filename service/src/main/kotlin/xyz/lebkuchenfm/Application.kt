@@ -65,14 +65,16 @@ fun Application.module() {
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
-    runBlocking {
-        xSoundsRepository.createUniqueIndex()
-    }
 
     val songsRepository = SongsMongoRepository(database)
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
+
+    runBlocking {
+        xSoundsRepository.createUniqueIndex()
+        songsRepository.createTextIndex()
+    }
 
     val eventStream = WebSocketEventStream()
 

@@ -1,7 +1,10 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.mongodb.client.model.Aggregates
+import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates.inc
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -16,6 +19,11 @@ import xyz.lebkuchenfm.domain.songs.SongsRepository
 class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     private val collection = database.getCollection<SongEntity>("songs")
     private val sortByName = Sorts.ascending(SongEntity::name.name)
+
+    suspend fun createTextIndex() {
+        val options = IndexOptions().name("text_name")
+        collection.createIndex(Indexes.text(SongEntity::name.name), options)
+    }
 
     override suspend fun insert(song: Song): Boolean {
         return collection.insertOne(SongEntity(song)).wasAcknowledged()
@@ -37,12 +45,12 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     }
 
     override suspend fun findRandom(limit: Int, phrase: String): List<Song> {
-        return if (phrase.isNotBlank()) {
-            // TODO: handle text search
-            collection.aggregate(listOf(Aggregates.sample(limit))).map { it.toDomain() }.toList()
-        } else {
-            collection.aggregate(listOf(Aggregates.sample(limit))).map { it.toDomain() }.toList()
-        }
+        return collection.aggregate(
+            listOfNotNull(
+                Aggregates.match(Filters.text(phrase)).takeIf { phrase.isNotBlank() },
+                Aggregates.sample(limit),
+            ),
+        ).map { it.toDomain() }.toList()
     }
 
     override suspend fun incrementPlayCountByName(name: String): Song? {
