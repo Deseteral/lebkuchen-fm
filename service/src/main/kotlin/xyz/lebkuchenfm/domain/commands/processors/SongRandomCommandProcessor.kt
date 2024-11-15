@@ -63,7 +63,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
         return listOfNotNull(
             "Queued $queuedCount$requestAmountMessage:",
             *songsToQueue.take(MAX_TITLES_IN_MESSAGE).map { "- _${it.name}_" }.toTypedArray(),
-            "...and others.".takeIf { queuedCount > requestedAmount },
+            "...and others.".takeIf { queuedCount > MAX_TITLES_IN_MESSAGE },
         )
     }
 
