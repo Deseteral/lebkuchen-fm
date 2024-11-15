@@ -2,8 +2,8 @@ package xyz.lebkuchenfm.api.eventstream
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import xyz.lebkuchenfm.domain.DefaultStateProvider
 import xyz.lebkuchenfm.domain.eventstream.Event
-import kotlin.random.Random
 
 @Serializable
 sealed interface EventDto
@@ -11,6 +11,8 @@ sealed interface EventDto
 fun Event.mapToDto(): EventDto = when (this) {
     is Event.PlayXSound -> PlayXSoundEventDto(this)
     is Event.QueueSongs -> AddSongsToQueueEventDto(this)
+    is Event.PlayerStateRequest -> PlayerStateRequestEventDto(this)
+    is Event.PlayerStateUpdate<*> -> PlayerStateUpdateEventDto(this)
 }
 
 @Serializable
@@ -41,37 +43,50 @@ data class AddSongsToQueueEventDto(
 
 @Serializable
 @SerialName("PlayerStateRequestEvent")
-data object PlayerStateRequestEventDto : EventDto
+data class PlayerStateRequestEventDto(
+    val requestId: String,
+) : EventDto {
+    constructor(event: Event.PlayerStateRequest) : this(event.requestId.toString())
+}
 
-// TODO: Default data is just for testing. Remove later.
+@Serializable
+data class PlayerStateDto(
+    val currentlyPlaying: CurrentlyPlayingDto?,
+    val queue: List<SongDto>,
+    val isPlaying: Boolean,
+    val volume: Int,
+) {
+    @Serializable
+    data class CurrentlyPlayingDto(
+        val song: SongDto,
+        val time: Int,
+    )
+
+    @Serializable
+    data class SongDto(
+        val name: String,
+        val youtubeId: String,
+    )
+}
+
 @Serializable
 @SerialName("PlayerStateUpdateEvent")
 data class PlayerStateUpdateEventDto(
-    val state: PlayerState = PlayerState(),
+    val state: PlayerStateDto,
 ) : EventDto {
-    @Serializable
-    data class PlayerState(
-        val currentlyPlaying: CurrentlyPlaying? = CurrentlyPlaying(
-            song = SongDto(
-                "Baba na rowerze",
-                "78ruW28aHsM",
-            ),
-            time = Random.nextInt(20, 120),
-        ),
-        val queue: List<SongDto> = emptyList(),
-        val isPlaying: Boolean = true,
-        val volume: Int = 100,
-    ) {
-        @Serializable
-        data class CurrentlyPlaying(
-            val song: SongDto,
-            val time: Int,
-        )
+    constructor(event: Event.PlayerStateUpdate<*>) : this(
+        if (event.state is PlayerStateDto) event.state else throw IllegalArgumentException(),
+    )
+}
 
-        @Serializable
-        data class SongDto(
-            val name: String,
-            val youtubeId: String,
-        )
-    }
+@Serializable
+@SerialName("PlayerStateDonationEvent")
+data class PlayerStateDonationEventDto(
+    val requestId: String,
+    val state: PlayerStateDto,
+) : EventDto
+
+object DefaultPlayerStateDtoProvider : DefaultStateProvider<PlayerStateDto> {
+    override fun getDefaultState() =
+        PlayerStateDto(currentlyPlaying = null, queue = emptyList(), isPlaying = false, volume = 100)
 }

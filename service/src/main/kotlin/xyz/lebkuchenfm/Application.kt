@@ -24,10 +24,12 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
+import xyz.lebkuchenfm.api.eventstream.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
+import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
@@ -70,6 +72,8 @@ fun Application.module() {
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
 
     val eventStream = WebSocketEventStream()
+
+    val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
@@ -140,7 +144,7 @@ fun Application.module() {
             xSoundsRouting(xSoundsService)
             songsRouting(songsService)
             commandsRouting(commandExecutorService)
-            eventStreamRouting(eventStream)
+            eventStreamRouting(eventStream, playerStateSynchronizer)
         }
 
         // TODO: Remove me.
