@@ -23,7 +23,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
-import xyz.lebkuchenfm.domain.xsounds.*
+import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
+import xyz.lebkuchenfm.domain.xsounds.RemoveTagFromXSoundError
+import xyz.lebkuchenfm.domain.xsounds.XSound
+import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
+import xyz.lebkuchenfm.domain.xsounds.XSoundsRepositoryError
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
