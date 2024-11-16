@@ -38,6 +38,6 @@ class PlayerStateSynchronizer<StateT>(
     }
 }
 
-interface DefaultStateProvider<T> {
-    fun getDefaultState(): T
+interface DefaultStateProvider<StateT> {
+    fun getDefaultState(): StateT
 }
