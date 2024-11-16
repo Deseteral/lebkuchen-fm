@@ -1,5 +1,5 @@
 import type { PlayerState } from './player-state';
-import type { EventData } from '@service/event-stream/model/events';
+import {EventData} from "./event-data";
 
 enum LocalEventTypes {
   LocalPlayerStateUpdate = 'LocalPlayerStateUpdate',
