@@ -17,7 +17,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
     CommandProcessor(
         key = "song-random",
         shortKey = "random",
-        helpMessage = "Queue random songs from the history. May return less songs than requested",
+        helpMessage = "Queue random songs from the history. May return less songs than requested.",
         exampleUsages = listOf("", "3", "britney", "3 britney"),
         parameters = CommandParameters(
             parameters = listOf(
