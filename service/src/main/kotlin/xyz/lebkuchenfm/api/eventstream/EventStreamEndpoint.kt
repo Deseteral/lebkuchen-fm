@@ -25,6 +25,7 @@ fun Route.eventStreamRouting(
                 converter.deserialize(call.request.headers.suitableCharset(), typeInfo<EventDto>(), frame)
             } catch (ex: SerializationException) {
                 // TODO: Add logging for unknown event types.
+                println("Oh snap! Can't parse event!")
                 continue
             }
 
