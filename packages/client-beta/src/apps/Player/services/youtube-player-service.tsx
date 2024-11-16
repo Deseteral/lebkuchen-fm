@@ -57,6 +57,8 @@ class YoutubePlayerService {
     YoutubePlayerService.player.on('unplayable', YoutubePlayerService.playNextSong);
 
     YoutubePlayerService.subscribeToSocketEvents();
+
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({ id: 'PlayerStateRequestEvent' });
   }
 
   // prettier-ignore
@@ -126,12 +128,12 @@ class YoutubePlayerService {
     }
   }
 
-  private static playerStateRequestEventHandler(): void {
-    const id = LocalEventTypes.PlayerStateRequestEventResponse;
+  private static playerStateRequestEventHandler(event: PlayerStateRequestDonationEvent): void {
     const playerState = PlayerStateService.get();
     console.log('Local PlayerState requested:', playerState);
-    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>(id, {
-      id,
+    SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
+      id: 'PlayerStateDonationEvent',
+      requestId: event.requestId,
       state: playerState,
     });
   }
