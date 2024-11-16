@@ -11,16 +11,10 @@ interface LocalPlayerStateUpdateEvent {
   state: PlayerState;
 }
 
-interface PlayerStateRequestEventResponse {
-  id: LocalEventTypes.PlayerStateRequestEventResponse;
-  state: PlayerState;
-}
-
-type LocalEvent = EventData | LocalPlayerStateUpdateEvent | PlayerStateRequestEventResponse;
+type LocalEvent = EventData | LocalPlayerStateUpdateEvent;
 
 export {
   LocalEventTypes,
   type LocalEvent,
   type LocalPlayerStateUpdateEvent,
-  type PlayerStateRequestEventResponse,
 };
