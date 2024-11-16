@@ -51,7 +51,7 @@ data class PlayerStateDto(
     @Serializable
     data class CurrentlyPlayingDto(
         val song: SongDto,
-        val time: Int,
+        val time: Double,
     )
 
     @Serializable
