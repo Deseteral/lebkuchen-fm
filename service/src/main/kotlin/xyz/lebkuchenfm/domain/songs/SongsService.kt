@@ -15,6 +15,10 @@ class SongsService(
         return songsRepository.findAllOrderByNameAsc()
     }
 
+    suspend fun getRandomSongs(limit: Int, phrase: String): List<Song> {
+        return songsRepository.findRandom(limit, phrase)
+    }
+
     suspend fun incrementPlayCount(song: Song, userSession: UserSession): Song? {
         return songsRepository.incrementPlayCountByName(song.name)?.also {
             historyRepository.insert(HistoryEntry(Clock.System.now(), it.name, userSession.name))
