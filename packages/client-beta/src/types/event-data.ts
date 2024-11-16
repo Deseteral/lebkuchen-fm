@@ -1,5 +1,4 @@
-import { PlayerState } from '@service/domain/player-state/player-state';
-import { Song } from '@service/domain/songs/song';
+import {PlayerState, Song} from "./player-state";
 
 export interface PlayerStateUpdateEvent {
   id: 'PlayerStateUpdateEvent',
