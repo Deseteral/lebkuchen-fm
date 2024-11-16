@@ -6,7 +6,6 @@ const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 
 function YouTubePlayer() {
   onMount(() => {
-    SocketConnectionClient.initializeConnection();
     YoutubePlayerService.initialize(YOUTUBE_PLAYER_DOM_ID);
   });
 
