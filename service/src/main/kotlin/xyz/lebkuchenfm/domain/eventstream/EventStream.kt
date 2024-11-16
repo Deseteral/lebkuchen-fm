@@ -11,8 +11,8 @@ abstract class EventStream<T> {
     abstract suspend fun sendToOne(id: EventStreamClientId, event: Event)
 
     suspend fun sendToEveryone(event: Event, exclude: EventStreamClientId? = null) {
-        clients.keys.forEach { id ->
-            if (id == exclude) return
+        for (id in clients.keys) {
+            if (id == exclude) continue
             sendToOne(id, event)
         }
     }
