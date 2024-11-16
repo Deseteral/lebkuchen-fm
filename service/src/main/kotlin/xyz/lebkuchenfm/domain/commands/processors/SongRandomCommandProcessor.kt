@@ -52,7 +52,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
     private fun getAmountAndKeywordsFromArgs(args: List<String>): Pair<Int, String> {
         val amount: Int? = args.firstOrNull()?.toIntOrNull()
         val skip = if (amount != null) 1 else 0
-        val phrase: String = args.drop(skip).joinToString(" ")
+        val phrase = args.drop(skip).joinToString(" ")
         return (amount ?: 1) to phrase
     }
 
