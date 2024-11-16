@@ -30,7 +30,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
         val (amount, phrase) = getAmountAndKeywordsFromArgs(command.args)
 
         if (amount < 1 || amount > MAX_SONGS_IN_YOUTUBE_REQUEST) {
-            return error("Random support request of 1 to $MAX_SONGS_IN_YOUTUBE_REQUEST songs.", logger)
+            return error("This command supports between 1 and $MAX_SONGS_IN_YOUTUBE_REQUEST songs.", logger)
         }
 
         val songs = songsService.getRandomSongs(amount, phrase)
