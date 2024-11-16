@@ -23,7 +23,7 @@ class PlayerStateSynchronizer<StateT>(
             // Otherwise ask all receivers (except the one asking) to send their state back to the server.
             val requestId = UUID.randomUUID()
             responsePoints[requestId] = target
-            eventStream.sendToEveryone(Event.PlayerStateRequest(requestId), exclude = target)
+            eventStream.sendToEveryone(Event.PlayerStateRequestDonation(requestId), exclude = target)
         }
     }
 

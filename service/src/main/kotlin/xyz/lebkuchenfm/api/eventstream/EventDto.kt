@@ -11,8 +11,8 @@ sealed interface EventDto
 fun Event.mapToDto(): EventDto = when (this) {
     is Event.PlayXSound -> PlayXSoundEventDto(this)
     is Event.QueueSongs -> AddSongsToQueueEventDto(this)
-    is Event.PlayerStateRequest -> PlayerStateRequestEventDto(this)
     is Event.PlayerStateUpdate<*> -> PlayerStateUpdateEventDto(this)
+    is Event.PlayerStateRequestDonation -> PlayerStateRequestDonationEventDto(this)
 }
 
 @Serializable
@@ -42,14 +42,6 @@ data class AddSongsToQueueEventDto(
 }
 
 @Serializable
-@SerialName("PlayerStateRequestEvent")
-data class PlayerStateRequestEventDto(
-    val requestId: String,
-) : EventDto {
-    constructor(event: Event.PlayerStateRequest) : this(event.requestId.toString())
-}
-
-@Serializable
 data class PlayerStateDto(
     val currentlyPlaying: CurrentlyPlayingDto?,
     val queue: List<SongDto>,
@@ -70,6 +62,10 @@ data class PlayerStateDto(
 }
 
 @Serializable
+@SerialName("PlayerStateRequestEvent")
+data object PlayerStateRequestEventDto : EventDto
+
+@Serializable
 @SerialName("PlayerStateUpdateEvent")
 data class PlayerStateUpdateEventDto(
     val state: PlayerStateDto,
@@ -77,6 +73,14 @@ data class PlayerStateUpdateEventDto(
     constructor(event: Event.PlayerStateUpdate<*>) : this(
         if (event.state is PlayerStateDto) event.state else throw IllegalArgumentException(),
     )
+}
+
+@Serializable
+@SerialName("PlayerStateRequestDonationEvent")
+data class PlayerStateRequestDonationEventDto(
+    val requestId: String,
+) : EventDto {
+    constructor(event: Event.PlayerStateRequestDonation) : this(event.requestId.toString())
 }
 
 @Serializable

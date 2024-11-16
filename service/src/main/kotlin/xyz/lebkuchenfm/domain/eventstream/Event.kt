@@ -16,7 +16,7 @@ sealed interface Event {
         val state: T,
     ) : Event
 
-    data class PlayerStateRequest(
+    data class PlayerStateRequestDonation(
         val requestId: RequestResponseId,
     ) : Event
 }
