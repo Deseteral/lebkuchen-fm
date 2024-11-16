@@ -17,5 +17,5 @@ abstract class EventStream<T> {
         }
     }
 
-    val connectedClientsCount = clients.count()
+    val connectedClientsCount get() = clients.count()
 }
