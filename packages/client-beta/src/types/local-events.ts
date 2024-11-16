@@ -3,7 +3,6 @@ import {EventData} from "./event-data";
 
 enum LocalEventTypes {
   LocalPlayerStateUpdate = 'LocalPlayerStateUpdate',
-  PlayerStateRequestEventResponse = 'PlayerStateRequestEventResponse',
 }
 
 interface LocalPlayerStateUpdateEvent {

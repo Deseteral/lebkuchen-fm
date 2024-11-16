@@ -7,6 +7,8 @@ import type {
   ChangeVolumeEvent,
   PlayerPauseEvent,
   PlayerResumeEvent,
+  PlayerStateDonationEvent,
+  PlayerStateRequestDonationEvent,
   PlayerStateRequestEvent,
   PlayerStateUpdateEvent,
   ReplaceQueueEvent,
@@ -16,7 +18,6 @@ import type {
 } from '../../../types/event-data';
 import { PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
-import { LocalEventTypes, PlayerStateRequestEventResponse } from '../../../types/local-events';
 
 class YoutubePlayerService {
   private static player: YouTubePlayer;
@@ -63,8 +64,8 @@ class YoutubePlayerService {
     YoutubePlayerService.player.destroy();
 
     EventStreamClient.unsubscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
+    EventStreamClient.unsubscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
     EventStreamClient.unsubscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
-    EventStreamClient.unsubscribe<PlayerStateRequestEvent>('PlayerStateRequestEvent', YoutubePlayerService.playerStateRequestEventHandler);
     EventStreamClient.unsubscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
     EventStreamClient.unsubscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
     EventStreamClient.unsubscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
@@ -72,14 +73,13 @@ class YoutubePlayerService {
     EventStreamClient.unsubscribe<ChangeVolumeEvent>('ChangeVolumeEvent', YoutubePlayerService.changeVolumeEventHandler);
     EventStreamClient.unsubscribe<ReplaceQueueEvent>('ReplaceQueueEvent', YoutubePlayerService.replaceQueueEventHandler);
     EventStreamClient.unsubscribe<RewindEvent>('RewindEvent', YoutubePlayerService.revindEventHandler);
-
   }
 
   // prettier-ignore
   private static subscribeToSocketEvents(): void {
     EventStreamClient.subscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
+    EventStreamClient.subscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
     EventStreamClient.subscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
-    EventStreamClient.subscribe<PlayerStateRequestEvent>('PlayerStateRequestEvent', YoutubePlayerService.playerStateRequestEventHandler);
     EventStreamClient.subscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
     EventStreamClient.subscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
     EventStreamClient.subscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
