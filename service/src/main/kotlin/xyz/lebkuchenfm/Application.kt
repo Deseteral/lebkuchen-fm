@@ -38,6 +38,7 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
@@ -67,14 +68,16 @@ fun Application.module() {
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
-    runBlocking {
-        xSoundsRepository.createUniqueIndex()
-    }
 
     val songsRepository = SongsMongoRepository(database)
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
+
+    runBlocking {
+        xSoundsRepository.createUniqueIndex()
+        songsRepository.createTextIndex()
+    }
 
     val eventStream = WebSocketEventStream()
 
@@ -89,6 +92,7 @@ fun Application.module() {
             TagAddCommandProcessor(xSoundsService),
             TagRemoveCommandProcessor(xSoundsService),
             SongQueueCommandProcessor(songsService, eventStream),
+            SongRandomCommandProcessor(songsService, eventStream),
             helpCommandProcessor,
         ),
     )
