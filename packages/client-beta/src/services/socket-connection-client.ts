@@ -44,7 +44,7 @@ class SocketConnectionClient {
     console.log('Disconnected from WebSocket event stream');
   }
 
-  static sendSocketMessage<T extends LocalEvent>(messageId: T['id'], messageData: T): void {
+  static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
     if (!SocketConnectionClient.client) {
       console.log('Could not send WebSocket message because it is not initialized.');
       return;

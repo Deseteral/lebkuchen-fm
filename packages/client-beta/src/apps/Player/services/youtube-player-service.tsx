@@ -226,8 +226,7 @@ class YoutubePlayerService {
       });
 
       if (time === 0) {
-        const id = 'SongChanged';
-        SocketConnectionClient.sendSocketMessage<SongChangedEvent>(id, { id, song });
+        SocketConnectionClient.sendSocketMessage<SongChangedEvent>({ id: 'SongChanged', song });
       }
 
       YoutubePlayerService.player.load(song.youtubeId, true);
