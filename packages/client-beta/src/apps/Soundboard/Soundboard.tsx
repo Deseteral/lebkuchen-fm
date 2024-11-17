@@ -1,7 +1,6 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createEffect, createSignal, For } from 'solid-js';
-import { XSound } from '@service/domain/x-sounds/x-sound';
 import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
 import {
@@ -10,6 +9,7 @@ import {
   soundMatchesPhrase,
   soundsSorting,
 } from '../../services/soundboard-service';
+import { XSound } from '../../types/x-sound';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
