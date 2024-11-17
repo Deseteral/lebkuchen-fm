@@ -7,7 +7,8 @@
   border-bottom: 1px solid var(--border-color-one);
 }
 
-.rightSection, .leftSection {
+.rightSection,
+.leftSection {
   display: flex;
   gap: 8px;
   padding: 0 8px;

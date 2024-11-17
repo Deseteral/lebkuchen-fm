@@ -4,7 +4,7 @@ import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import { createSignal } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
-import {MenuBar} from "../MenuBar/MenuBar";
+import { MenuBar } from '../MenuBar/MenuBar';
 
 function Login() {
   const [login, setLogin] = createSignal('');
