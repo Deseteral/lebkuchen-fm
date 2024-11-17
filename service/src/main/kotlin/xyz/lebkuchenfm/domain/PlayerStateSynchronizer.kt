@@ -10,7 +10,7 @@ typealias RequestResponseId = UUID
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
-    private val defaultStateProvider: DefaultStateProvider<StateT>,
+    private val defaultStateProvider: DefaultPlayerStateProvider<StateT>,
 ) {
     private val responsePoints: MutableMap<RequestResponseId, EventStreamConsumerId> = ConcurrentMap()
 
@@ -38,6 +38,6 @@ class PlayerStateSynchronizer<StateT>(
     }
 }
 
-interface DefaultStateProvider<StateT> {
+interface DefaultPlayerStateProvider<StateT> {
     fun getDefaultState(): StateT
 }
