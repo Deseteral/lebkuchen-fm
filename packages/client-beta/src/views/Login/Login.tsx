@@ -4,6 +4,7 @@ import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import { createSignal } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
+import {MenuBar} from "../MenuBar/MenuBar";
 
 function Login() {
   const [login, setLogin] = createSignal('');
@@ -27,23 +28,32 @@ function Login() {
   };
 
   return (
-    <AppWindow title="Sign in" close={() => {}} startSize={{ width: '400px' }}>
-      <div class={styles.container}>
-        <h1>Sign in</h1>
-        <span class={styles.error}>{error()}</span>
-        <form onSubmit={onSubmit}>
-          <Input type="text" placeholder="Login" value={login()} onInput={onLoginChange} required />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password()}
-            onInput={onPasswordChange}
-            required
-          />
-          <Button primary>Login</Button>
-        </form>
-      </div>
-    </AppWindow>
+    <>
+      <MenuBar isUserLoggedIn={false} />
+      <AppWindow title="Sign in" close={() => {}} startSize={{ width: '400px' }}>
+        <div class={styles.container}>
+          <h1>Sign in</h1>
+          <span class={styles.error}>{error()}</span>
+          <form onSubmit={onSubmit}>
+            <Input
+              type="text"
+              placeholder="Login"
+              value={login()}
+              onInput={onLoginChange}
+              required
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password()}
+              onInput={onPasswordChange}
+              required
+            />
+            <Button primary>Login</Button>
+          </form>
+        </div>
+      </AppWindow>
+    </>
   );
 }
 

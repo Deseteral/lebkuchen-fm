@@ -18,7 +18,7 @@ function Desktop() {
 
   return (
     <>
-      <MenuBar />
+      <MenuBar isUserLoggedIn={true} />
       <main class={styles.desktop}>
         <Soundboard />
         <Player />

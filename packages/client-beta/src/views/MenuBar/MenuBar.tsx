@@ -4,12 +4,19 @@ import { TimeWidget } from './components/TimeWidget/TimeWidget';
 import { VolumeWidget } from './components/VolumeWidget/VolumeWidget';
 import { TurnOffWidget } from './components/TurnOffWidget/TurnOffWidget';
 
-function MenuBar() {
+interface MenuBarProps {
+  isUserLoggedIn: boolean;
+}
+function MenuBar(props: MenuBarProps) {
   return (
     <header class={styles.menuBar}>
       <section class={styles.leftSection}>
-        <TurnOffWidget />
-        <hr class={styles.verticalDivider} />
+        {props.isUserLoggedIn && (
+          <>
+            <TurnOffWidget />
+            <hr class={styles.verticalDivider} />
+          </>
+        )}
         <p>
           <strong>
             <i>LebkuchenFM</i>
@@ -17,8 +24,12 @@ function MenuBar() {
         </p>
       </section>
       <section class={styles.rightSection}>
-        <VolumeWidget />
-        <hr class={styles.verticalDivider} />
+        {props.isUserLoggedIn && (
+          <>
+            <VolumeWidget />
+            <hr class={styles.verticalDivider} />
+          </>
+        )}
         <DateWidget />
         <hr class={styles.verticalDivider} />
         <TimeWidget />

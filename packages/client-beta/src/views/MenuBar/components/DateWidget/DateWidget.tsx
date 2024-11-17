@@ -3,11 +3,11 @@ import { createSignal, onCleanup, onMount } from 'solid-js';
 const ONE_MINUTE = 1000;
 
 function getFormattedDate(): string {
-  return new Date().toLocaleDateString('pl-PL', {
+  return new Date().toLocaleDateString('en-US', {
     day: 'numeric',
     year: 'numeric',
     month: 'short',
-    weekday: 'short',
+    weekday: 'long',
   });
 }
 
