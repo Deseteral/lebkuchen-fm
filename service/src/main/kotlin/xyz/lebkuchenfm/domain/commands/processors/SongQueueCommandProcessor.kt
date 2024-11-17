@@ -13,7 +13,7 @@ import xyz.lebkuchenfm.domain.songs.SongsService
 
 private val logger = KotlinLogging.logger {}
 
-class SongQueueCommandProcessor(private val songsService: SongsService, private val eventStream: EventStream) :
+class SongQueueCommandProcessor(private val songsService: SongsService, private val eventStream: EventStream<*>) :
     CommandProcessor(
         key = "song-queue",
         shortKey = "q",
