@@ -1,4 +1,4 @@
-import { XSound } from '@service/domain/x-sounds/x-sound';
+import { XSound } from '../types/x-sound';
 
 export async function getXSounds() {
   return fetch('/api/x-sounds')
