@@ -40,8 +40,11 @@ data class PlayerStateUpdateEventDto(
     val state: PlayerStateDto,
 ) : EventDto {
     constructor(event: Event.PlayerStateUpdate<*>) : this(
-        // TODO: Exception message.
-        if (event.state is PlayerStateDto) event.state else throw IllegalArgumentException(),
+        if (event.state is PlayerStateDto) {
+            event.state
+        } else {
+            throw IllegalArgumentException("This event DTO can only be created with player state DTO.")
+        },
     )
 }
 
