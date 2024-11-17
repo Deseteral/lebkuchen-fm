@@ -1,5 +1,6 @@
 import { onMount, onCleanup } from 'solid-js';
 import { YoutubePlayerService } from '../../services/youtube-player-service';
+
 const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 
 function YouTubePlayer() {
