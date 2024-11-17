@@ -22,21 +22,13 @@ export default defineConfig({
   },
   server: {
     port: 9090,
-    // proxy: {
-    //   '/api/event-stream': {
-    //     target: 'ws://localhost:8080',
-    //     ws: true,
-    //     changeOrigin: true,
-    //   },
-    //   '/api': 'http://localhost:8080',
-    // },
     proxy: {
       '/api/event-stream': {
-        target: 'wss://lebkuchen-fm-dev.fly.dev',
+        target: 'ws://localhost:8080',
         ws: true,
         changeOrigin: true,
       },
-      '/api': 'https://lebkuchen-fm-dev.fly.dev',
+      '/api': 'http://localhost:8080',
     },
   },
 });

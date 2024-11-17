@@ -1,6 +1,6 @@
 import { createSignal, onCleanup, onMount } from 'solid-js';
 
-const ONE_MINUTE = 1000;
+const ONE_MINUTE = 60 * 1000;
 
 function getFormattedDate(): string {
   return new Date().toLocaleDateString('en-US', {
