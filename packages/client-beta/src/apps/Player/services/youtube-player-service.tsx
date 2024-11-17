@@ -13,7 +13,7 @@ import type {
   RewindEvent,
   SkipEvent,
   SongChangedEvent,
-} from '@service/event-stream/model/events';
+} from '../../../types/event-data';
 import { PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
 import { LocalEventTypes, PlayerStateRequestEventResponse } from '../../../types/local-events';
