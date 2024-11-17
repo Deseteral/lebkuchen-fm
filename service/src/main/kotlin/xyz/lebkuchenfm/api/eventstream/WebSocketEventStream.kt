@@ -6,31 +6,32 @@ import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.server.websocket.converter
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import java.util.Collections
-
-class Connection(val session: WebSocketServerSession)
+import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
+import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
 
-class WebSocketEventStream : EventStream {
-    private val connections = Collections.synchronizedSet<Connection>(LinkedHashSet())
+class WebSocketEventStream : EventStream<WebSocketConnection>() {
+    override suspend fun sendToOne(id: EventStreamConsumerId, event: Event) {
+        val connection = subscriptions[id] ?: return
 
-    override suspend fun sendToEveryone(event: Event) {
-        connections.forEach { connection ->
-            val dto = event.mapToDto()
-            val converter = checkNotNull(connection.session.converter)
-            val frame = converter.serialize(dto)
-            connection.session.send(frame)
-        }
+        val converter = checkNotNull(connection.session.converter)
+        val dto = event.mapToDto()
+        val frame = converter.serialize(dto)
+
+        connection.session.send(frame)
     }
 
-    fun addConnection(connection: Connection) {
-        connections += connection
+    override fun subscribe(consumer: WebSocketConnection) = super.subscribe(consumer).also {
         logger.info { "User TODO connected to WebSockets event stream." }
     }
 
-    fun removeConnection(connection: Connection) {
-        connections.remove(connection)
+    override fun unsubscribe(consumer: WebSocketConnection) = super.unsubscribe(consumer).also {
         logger.info { "User TODO disconnected from WebSockets event stream." }
     }
 }
+
+class WebSocketConnection(
+    override val id: EventStreamConsumerId = UUID.randomUUID(),
+    val session: WebSocketServerSession,
+) : EventStream.Consumer
