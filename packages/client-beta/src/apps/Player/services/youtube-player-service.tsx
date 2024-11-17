@@ -58,7 +58,9 @@ class YoutubePlayerService {
 
     YoutubePlayerService.subscribeToSocketEvents();
 
-    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({ id: 'PlayerStateRequestEvent' });
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({
+      id: 'PlayerStateRequestEvent',
+    });
   }
 
   // prettier-ignore
