@@ -13,7 +13,7 @@ function getFormattedDate(): string {
 
 function DateWidget() {
   const [date, setDate] = createSignal(getFormattedDate());
-  const [intervalId, setIntervalId] = createSignal<number>();
+  const [intervalId, setIntervalId] = createSignal<NodeJS.Timer>();
 
   onMount(() => {
     const interval = setInterval(() => {
