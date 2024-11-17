@@ -7,6 +7,10 @@ import io.ktor.server.websocket.converter
 import io.ktor.server.websocket.webSocket
 import io.ktor.util.reflect.typeInfo
 import kotlinx.serialization.SerializationException
+import xyz.lebkuchenfm.api.eventstream.models.EventDto
+import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDonationEventDto
+import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDto
+import xyz.lebkuchenfm.api.eventstream.models.PlayerStateRequestEventDto
 import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import java.util.UUID
 
