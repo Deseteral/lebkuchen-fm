@@ -3,7 +3,7 @@ package xyz.lebkuchenfm.domain.eventstream
 import io.ktor.util.collections.ConcurrentMap
 import java.util.UUID
 
-abstract class EventStream<ConsumerT : EventStreamConsumer> {
+abstract class EventStream<ConsumerT : EventStream.Consumer> {
     protected val subscriptions: MutableMap<EventStreamConsumerId, ConsumerT> = ConcurrentMap()
 
     abstract suspend fun sendToOne(id: EventStreamConsumerId, event: Event)
@@ -24,10 +24,10 @@ abstract class EventStream<ConsumerT : EventStreamConsumer> {
     }
 
     val subscriptionCount get() = subscriptions.count()
+
+    interface Consumer {
+        val id: EventStreamConsumerId
+    }
 }
 
 typealias EventStreamConsumerId = UUID
-
-interface EventStreamConsumer {
-    val id: EventStreamConsumerId
-}

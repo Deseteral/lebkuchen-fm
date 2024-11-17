@@ -7,7 +7,6 @@ import io.ktor.server.websocket.converter
 import xyz.lebkuchenfm.api.eventstream.models.mapToDto
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumer
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
 import java.util.UUID
 
@@ -36,4 +35,4 @@ class WebSocketEventStream : EventStream<WebSocketConnection>() {
 class WebSocketConnection(
     override val id: EventStreamConsumerId = UUID.randomUUID(),
     val session: WebSocketServerSession,
-) : EventStreamConsumer
+) : EventStream.Consumer
