@@ -31,7 +31,6 @@ fun Route.eventStreamRouting(eventStream: WebSocketEventStream) {
                     send(converter.serialize(PlayerStateUpdateEventDto()))
                 }
             }
-
         }
 
         eventStream.unsubscribe(connection)
