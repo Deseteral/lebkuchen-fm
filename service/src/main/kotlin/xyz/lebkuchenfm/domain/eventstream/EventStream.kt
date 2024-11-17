@@ -5,7 +5,11 @@ import java.util.UUID
 
 typealias EventStreamClientId = UUID
 
-abstract class EventStream<T> {
+interface EventStreamClient {
+    val id: EventStreamClientId
+}
+
+abstract class EventStream<T: EventStreamClient> {
     protected val clients: MutableMap<EventStreamClientId, T> = ConcurrentMap()
 
     abstract suspend fun sendToOne(id: EventStreamClientId, event: Event)
@@ -15,6 +19,14 @@ abstract class EventStream<T> {
             if (id == exclude) continue
             sendToOne(id, event)
         }
+    }
+
+    open fun addConnection(client: T) {
+        clients[client.id] = client
+    }
+
+    open fun removeConnection(client: T) {
+        clients.remove(client.id)
     }
 
     val connectedClientsCount get() = clients.count()
