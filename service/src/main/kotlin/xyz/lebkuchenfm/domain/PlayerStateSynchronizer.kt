@@ -4,15 +4,13 @@ import io.ktor.util.collections.ConcurrentMap
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
-import java.util.UUID
-
-typealias RequestHandle = UUID
+import xyz.lebkuchenfm.domain.eventstream.PlayerStateDonationRequestHandle
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
     private val defaultStateProvider: DefaultStateProvider<StateT>,
 ) {
-    private val requestHandles: MutableMap<RequestHandle, EventStreamConsumerId> = ConcurrentMap()
+    private val requestHandles: MutableMap<PlayerStateDonationRequestHandle, EventStreamConsumerId> = ConcurrentMap()
 
     suspend fun incomingStateSyncRequest(target: EventStreamConsumerId) {
         if (eventStream.subscriptionCount <= 1) {
@@ -21,13 +19,13 @@ class PlayerStateSynchronizer<StateT>(
             eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
         } else {
             // Otherwise ask all receivers (except the one asking) to send their state back to the server.
-            val handle = RequestHandle.randomUUID()
+            val handle = PlayerStateDonationRequestHandle.randomUUID()
             requestHandles[handle] = target
             eventStream.sendToEveryone(Event.PlayerStateRequestDonation(handle), exclude = target)
         }
     }
 
-    suspend fun incomingStateDonation(requestHandle: RequestHandle, state: StateT) {
+    suspend fun incomingStateDonation(requestHandle: PlayerStateDonationRequestHandle, state: StateT) {
         // If the value is missing then we've already served that state request.
         val target = requestHandles[requestHandle] ?: return
 

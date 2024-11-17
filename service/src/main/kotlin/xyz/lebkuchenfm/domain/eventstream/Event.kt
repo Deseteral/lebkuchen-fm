@@ -1,7 +1,9 @@
 package xyz.lebkuchenfm.domain.eventstream
 
-import xyz.lebkuchenfm.domain.RequestHandle
 import xyz.lebkuchenfm.domain.songs.Song
+import java.util.UUID
+
+typealias PlayerStateDonationRequestHandle = UUID
 
 sealed interface Event {
     data class PlayXSound(
@@ -17,6 +19,6 @@ sealed interface Event {
     ) : Event
 
     data class PlayerStateRequestDonation(
-        val requestHandle: RequestHandle,
+        val requestHandle: PlayerStateDonationRequestHandle,
     ) : Event
 }
