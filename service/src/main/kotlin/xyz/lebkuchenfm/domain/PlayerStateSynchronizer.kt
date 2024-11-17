@@ -6,13 +6,13 @@ import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
 import java.util.UUID
 
-typealias RequestResponseId = UUID
+typealias RequestHandle = UUID
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
     private val defaultStateProvider: DefaultStateProvider<StateT>,
 ) {
-    private val responsePoints: MutableMap<RequestResponseId, EventStreamConsumerId> = ConcurrentMap()
+    private val requestHandles: MutableMap<RequestHandle, EventStreamConsumerId> = ConcurrentMap()
 
     suspend fun incomingStateSyncRequest(target: EventStreamConsumerId) {
         if (eventStream.subscriptionCount <= 1) {
@@ -21,20 +21,20 @@ class PlayerStateSynchronizer<StateT>(
             eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
         } else {
             // Otherwise ask all receivers (except the one asking) to send their state back to the server.
-            val requestId = UUID.randomUUID()
-            responsePoints[requestId] = target
-            eventStream.sendToEveryone(Event.PlayerStateRequestDonation(requestId), exclude = target)
+            val handle = RequestHandle.randomUUID()
+            requestHandles[handle] = target
+            eventStream.sendToEveryone(Event.PlayerStateRequestDonation(handle), exclude = target)
         }
     }
 
-    suspend fun incomingStateDonation(requestId: RequestResponseId, state: StateT) {
+    suspend fun incomingStateDonation(requestHandle: RequestHandle, state: StateT) {
         // If the value is missing then we've already served that state request.
-        val target = responsePoints[requestId] ?: return
+        val target = requestHandles[requestHandle] ?: return
 
         eventStream.sendToOne(target, Event.PlayerStateUpdate(state))
 
         // The request was served so we can remove it from the list.
-        responsePoints.remove(requestId)
+        requestHandles.remove(requestHandle)
     }
 
     interface DefaultStateProvider<StateT> {

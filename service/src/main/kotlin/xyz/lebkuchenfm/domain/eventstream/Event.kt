@@ -1,6 +1,6 @@
 package xyz.lebkuchenfm.domain.eventstream
 
-import xyz.lebkuchenfm.domain.RequestResponseId
+import xyz.lebkuchenfm.domain.RequestHandle
 import xyz.lebkuchenfm.domain.songs.Song
 
 sealed interface Event {
@@ -17,6 +17,6 @@ sealed interface Event {
     ) : Event
 
     data class PlayerStateRequestDonation(
-        val requestId: RequestResponseId,
+        val requestHandle: RequestHandle,
     ) : Event
 }

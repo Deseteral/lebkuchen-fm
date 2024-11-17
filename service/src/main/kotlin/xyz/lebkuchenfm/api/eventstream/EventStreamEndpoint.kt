@@ -31,7 +31,7 @@ fun Route.eventStreamRouting(
             when (event) {
                 is PlayerStateRequestEventDto -> playerStateSynchronizer.incomingStateSyncRequest(connection.id)
                 is PlayerStateDonationEventDto -> playerStateSynchronizer.incomingStateDonation(
-                    UUID.fromString(event.requestId),
+                    UUID.fromString(event.requestHandle),
                     event.state,
                 )
             }

@@ -6,7 +6,7 @@ export interface PlayerStateRequestEvent {
 
 export interface PlayerStateRequestDonationEvent {
   id: 'PlayerStateRequestDonationEvent';
-  requestId: string;
+  requestHandle: string;
 }
 
 export interface PlayerStateUpdateEvent {
@@ -16,7 +16,7 @@ export interface PlayerStateUpdateEvent {
 
 export interface PlayerStateDonationEvent {
   id: 'PlayerStateDonationEvent';
-  requestId: string;
+  requestHandle: string;
   state: PlayerState;
 }
 

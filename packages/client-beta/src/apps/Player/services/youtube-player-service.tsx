@@ -135,7 +135,7 @@ class YoutubePlayerService {
     console.log('Local PlayerState requested:', playerState);
     SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
       id: 'PlayerStateDonationEvent',
-      requestId: event.requestId,
+      requestHandle: event.requestHandle,
       state: playerState,
     });
   }

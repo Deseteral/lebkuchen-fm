@@ -71,6 +71,7 @@ data class PlayerStateUpdateEventDto(
     val state: PlayerStateDto,
 ) : EventDto {
     constructor(event: Event.PlayerStateUpdate<*>) : this(
+        // TODO: Exception message.
         if (event.state is PlayerStateDto) event.state else throw IllegalArgumentException(),
     )
 }
@@ -78,15 +79,15 @@ data class PlayerStateUpdateEventDto(
 @Serializable
 @SerialName("PlayerStateRequestDonationEvent")
 data class PlayerStateRequestDonationEventDto(
-    val requestId: String,
+    val requestHandle: String,
 ) : EventDto {
-    constructor(event: Event.PlayerStateRequestDonation) : this(event.requestId.toString())
+    constructor(event: Event.PlayerStateRequestDonation) : this(event.requestHandle.toString())
 }
 
 @Serializable
 @SerialName("PlayerStateDonationEvent")
 data class PlayerStateDonationEventDto(
-    val requestId: String,
+    val requestHandle: String,
     val state: PlayerStateDto,
 ) : EventDto
 
