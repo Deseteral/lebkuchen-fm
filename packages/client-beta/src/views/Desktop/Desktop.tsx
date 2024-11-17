@@ -1,5 +1,5 @@
 import { Soundboard } from '../../apps/Soundboard/Soundboard';
-import { onMount } from 'solid-js';
+import { onCleanup, onMount } from 'solid-js';
 import { checkLoginStateAndRedirect } from '../../services/user-account-service';
 import styles from './Desktop.module.css';
 import { Player } from '../../apps/Player/Player';
@@ -9,6 +9,10 @@ function Desktop() {
   onMount(() => {
     checkLoginStateAndRedirect();
     SocketConnectionClient.initializeConnection();
+  });
+
+  onCleanup(() => {
+    SocketConnectionClient.disconnect();
   });
 
   return (
