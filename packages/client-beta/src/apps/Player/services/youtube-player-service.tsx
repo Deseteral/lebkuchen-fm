@@ -127,10 +127,11 @@ class YoutubePlayerService {
   }
 
   private static playerStateRequestEventHandler(): void {
+    const id = LocalEventTypes.PlayerStateRequestEventResponse;
     const playerState = PlayerStateService.get();
     console.log('Local PlayerState requested:', playerState);
-    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>({
-      id: LocalEventTypes.PlayerStateRequestEventResponse,
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>(id, {
+      id,
       state: playerState,
     });
   }
@@ -225,7 +226,8 @@ class YoutubePlayerService {
       });
 
       if (time === 0) {
-        SocketConnectionClient.sendSocketMessage<SongChangedEvent>({ id: 'SongChanged', song });
+        const id = 'SongChanged';
+        SocketConnectionClient.sendSocketMessage<SongChangedEvent>(id, { id, song });
       }
 
       YoutubePlayerService.player.load(song.youtubeId, true);
