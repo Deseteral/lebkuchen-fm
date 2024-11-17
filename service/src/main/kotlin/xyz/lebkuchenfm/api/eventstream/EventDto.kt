@@ -2,7 +2,7 @@ package xyz.lebkuchenfm.api.eventstream
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.domain.DefaultPlayerStateProvider
+import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.eventstream.Event
 
 @Serializable
@@ -90,7 +90,7 @@ data class PlayerStateDonationEventDto(
     val state: PlayerStateDto,
 ) : EventDto
 
-object DefaultPlayerStateDtoProvider : DefaultPlayerStateProvider<PlayerStateDto> {
+object DefaultPlayerStateDtoProvider : PlayerStateSynchronizer.DefaultStateProvider<PlayerStateDto> {
     override fun getDefaultState() =
         PlayerStateDto(currentlyPlaying = null, queue = emptyList(), isPlaying = false, volume = 100)
 }
