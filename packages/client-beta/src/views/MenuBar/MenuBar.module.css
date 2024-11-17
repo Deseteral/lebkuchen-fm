@@ -1,6 +1,6 @@
 .menuBar {
   font-size: 16px;
-  background-color: var(--secondary-color);
+  background-color: var(--menu-bar-background);
   line-height: var(--menu-bar-height);
   display: flex;
   justify-content: space-between;
