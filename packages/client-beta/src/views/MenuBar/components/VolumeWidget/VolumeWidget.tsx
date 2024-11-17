@@ -5,14 +5,9 @@ import styles from './VolumeWidget.module.css';
 import { createEffect, createSignal } from 'solid-js';
 import { PlayerStateService } from '../../../../apps/Player/services/player-state-service';
 
-const userVolume = () => {
-  return localStorage.getItem('userVolume') || 100;
-};
-
 function VolumeWidget() {
   // TODO: Get volume from preferences stored in localStorage
   const currentVolume = PlayerStateService.get().volume;
-  const [storedVolume, setStoredVolume] = createSignal(userVolume());
   const [volume] = createSignal(currentVolume);
   const [icon, setIcon] = createSignal(volumeHighIcon);
 
