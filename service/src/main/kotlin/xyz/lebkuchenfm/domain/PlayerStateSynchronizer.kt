@@ -25,14 +25,14 @@ class PlayerStateSynchronizer<StateT>(
         }
     }
 
-    suspend fun incomingStateDonation(requestHandle: PlayerStateDonationRequestHandle, state: StateT) {
+    suspend fun incomingStateDonation(handle: PlayerStateDonationRequestHandle, state: StateT) {
         // If the value is missing then we've already served that state request.
-        val target = requestHandles[requestHandle] ?: return
+        val target = requestHandles[handle] ?: return
 
         eventStream.sendToOne(target, Event.PlayerStateUpdate(state))
 
         // The request was served so we can remove it from the list.
-        requestHandles.remove(requestHandle)
+        requestHandles.remove(handle)
     }
 
     interface DefaultStateProvider<StateT> {
