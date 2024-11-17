@@ -9,3 +9,4 @@ insert_final_newline = true
 
 [*.{kt,kts}]
 indent_size = 4
+ktlint_code_style = intellij_idea

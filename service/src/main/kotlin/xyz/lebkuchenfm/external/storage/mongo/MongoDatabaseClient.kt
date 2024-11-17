@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.storage
+package xyz.lebkuchenfm.external.storage.mongo
 
 import com.mongodb.ConnectionString
 import com.mongodb.MongoClientSettings
@@ -11,7 +11,7 @@ object MongoDatabaseClient {
     lateinit var client: MongoClient
 
     private const val CONNECTION_STRING_PROPERTY_PATH = "storage.mongodb.connectionString"
-    private const val DATABASE_NAME = "lebkuchen-fm"
+    private const val DATABASE_NAME = "lebkuchen-fm" // TODO: This should be configurable.
 
     fun getDatabase(config: ApplicationConfig): MongoDatabase {
         if (!MongoDatabaseClient::client.isInitialized) {
@@ -21,10 +21,8 @@ object MongoDatabaseClient {
     }
 
     private fun connectToMongo(config: ApplicationConfig): MongoClient {
-        val mongoConnectionString =
-            config.property(CONNECTION_STRING_PROPERTY_PATH).getString()
-        val clientSettings =
-            MongoClientSettings.builder().applyConnectionString(ConnectionString(mongoConnectionString)).build()
+        val mongoConnectionString = ConnectionString(config.property(CONNECTION_STRING_PROPERTY_PATH).getString())
+        val clientSettings = MongoClientSettings.builder().applyConnectionString(mongoConnectionString).build()
         return MongoClient.create(clientSettings)
     }
 }

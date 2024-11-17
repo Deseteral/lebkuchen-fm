@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "test": "yarn run lint && yarn run format:check",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -13,9 +14,7 @@
   },
   "dependencies": {
     "@solidjs/router": "0.13.0",
-    "lebkuchen-fm-service": "*",
     "mitt": "3.0.1",
-    "socket.io-client": "4.8.1",
     "solid-js": "1.8.15",
     "yt-player": "3.6.1"
   },

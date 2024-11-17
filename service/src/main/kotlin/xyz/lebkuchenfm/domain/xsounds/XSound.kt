@@ -1,8 +1,10 @@
 package xyz.lebkuchenfm.domain.xsounds
 
-typealias XSoundId = String
-
 data class XSound(
-    val id: XSoundId,
     val name: String,
+    // TODO: This should be a URL type.
+    val url: String,
+    val addedBy: String?,
+    val timesPlayed: Int,
+    val tags: List<String>,
 )
