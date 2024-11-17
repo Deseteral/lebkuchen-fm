@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.api.eventstream
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.suitableCharset
 import io.ktor.server.routing.Route
 import io.ktor.server.websocket.converter
@@ -8,6 +9,8 @@ import io.ktor.util.reflect.typeInfo
 import kotlinx.serialization.SerializationException
 import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import java.util.UUID
+
+private val logger = KotlinLogging.logger {}
 
 fun Route.eventStreamRouting(
     eventStream: WebSocketEventStream,
@@ -23,8 +26,7 @@ fun Route.eventStreamRouting(
             val event = try {
                 converter.deserialize(call.request.headers.suitableCharset(), typeInfo<EventDto>(), frame)
             } catch (ex: SerializationException) {
-                // TODO: Add logging for unknown event types.
-                println("Oh snap! Can't parse event!")
+                logger.error(ex) { "Could not parse incoming WebSocket event." }
                 continue
             }
 
