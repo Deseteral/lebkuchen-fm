@@ -23,8 +23,6 @@ abstract class EventStream<ConsumerT : EventStream.Consumer> {
         subscriptions.remove(consumer.id)
     }
 
-    val subscriptionCount get() = subscriptions.count()
-
     interface Consumer {
         val id: EventStreamConsumerId
     }
