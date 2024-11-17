@@ -14,9 +14,8 @@ fun Route.eventStreamRouting(
     playerStateSynchronizer: PlayerStateSynchronizer<PlayerStateDto>,
 ) {
     webSocket("/event-stream") {
-        val connectionId = UUID.randomUUID()
-        val connection = Connection(id = connectionId, session = this)
-        eventStream.addConnection(connection)
+        val connection = WebSocketConnection(session = this)
+        eventStream.subscribe(connection)
 
         val converter = checkNotNull(converter)
 
@@ -38,6 +37,6 @@ fun Route.eventStreamRouting(
             }
         }
 
-        eventStream.removeConnection(connection)
+        eventStream.unsubscribe(connection)
     }
 }

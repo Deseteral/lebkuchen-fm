@@ -3,31 +3,31 @@ package xyz.lebkuchenfm.domain.eventstream
 import io.ktor.util.collections.ConcurrentMap
 import java.util.UUID
 
-typealias EventStreamClientId = UUID
+abstract class EventStream<ConsumerT : EventStreamConsumer> {
+    protected val subscriptions: MutableMap<EventStreamConsumerId, ConsumerT> = ConcurrentMap()
 
-interface EventStreamClient {
-    val id: EventStreamClientId
-}
+    abstract suspend fun sendToOne(id: EventStreamConsumerId, event: Event)
 
-abstract class EventStream<T: EventStreamClient> {
-    protected val clients: MutableMap<EventStreamClientId, T> = ConcurrentMap()
-
-    abstract suspend fun sendToOne(id: EventStreamClientId, event: Event)
-
-    suspend fun sendToEveryone(event: Event, exclude: EventStreamClientId? = null) {
-        for (id in clients.keys) {
+    suspend fun sendToEveryone(event: Event, exclude: EventStreamConsumerId? = null) {
+        for (id in subscriptions.keys) {
             if (id == exclude) continue
             sendToOne(id, event)
         }
     }
 
-    open fun addConnection(client: T) {
-        clients[client.id] = client
+    open fun subscribe(consumer: ConsumerT) {
+        subscriptions[consumer.id] = consumer
     }
 
-    open fun removeConnection(client: T) {
-        clients.remove(client.id)
+    open fun unsubscribe(consumer: ConsumerT) {
+        subscriptions.remove(consumer.id)
     }
 
-    val connectedClientsCount get() = clients.count()
+    val subscriptionCount get() = subscriptions.count()
+}
+
+typealias EventStreamConsumerId = UUID
+
+interface EventStreamConsumer {
+    val id: EventStreamConsumerId
 }

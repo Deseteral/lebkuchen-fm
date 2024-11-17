@@ -3,7 +3,7 @@ package xyz.lebkuchenfm.domain
 import io.ktor.util.collections.ConcurrentMap
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.eventstream.EventStreamClientId
+import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
 import java.util.UUID
 
 typealias RequestResponseId = UUID
@@ -12,10 +12,10 @@ class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
     private val defaultStateProvider: DefaultStateProvider<StateT>,
 ) {
-    private val responsePoints: MutableMap<RequestResponseId, EventStreamClientId> = ConcurrentMap()
+    private val responsePoints: MutableMap<RequestResponseId, EventStreamConsumerId> = ConcurrentMap()
 
-    suspend fun incomingStateSyncRequest(target: EventStreamClientId) {
-        if (eventStream.connectedClientsCount <= 1) {
+    suspend fun incomingStateSyncRequest(target: EventStreamConsumerId) {
+        if (eventStream.subscriptionCount <= 1) {
             // If the client asking for the state is the only one that's connected, then we have to send it the default
             // state - because there is no one else to donate the state.
             eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
