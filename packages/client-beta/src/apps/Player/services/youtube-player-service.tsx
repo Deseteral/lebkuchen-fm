@@ -13,7 +13,7 @@ import type {
   RewindEvent,
   SkipEvent,
   SongChangedEvent,
-} from '@service/event-stream/model/events';
+} from '../../../types/event-data';
 import { PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
 import { LocalEventTypes, PlayerStateRequestEventResponse } from '../../../types/local-events';
@@ -127,11 +127,10 @@ class YoutubePlayerService {
   }
 
   private static playerStateRequestEventHandler(): void {
-    const id = LocalEventTypes.PlayerStateRequestEventResponse;
     const playerState = PlayerStateService.get();
     console.log('Local PlayerState requested:', playerState);
-    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>(id, {
-      id,
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEventResponse>({
+      id: LocalEventTypes.PlayerStateRequestEventResponse,
       state: playerState,
     });
   }
@@ -226,8 +225,7 @@ class YoutubePlayerService {
       });
 
       if (time === 0) {
-        const id = 'SongChanged';
-        SocketConnectionClient.sendSocketMessage<SongChangedEvent>(id, { id, song });
+        SocketConnectionClient.sendSocketMessage<SongChangedEvent>({ id: 'SongChanged', song });
       }
 
       YoutubePlayerService.player.load(song.youtubeId, true);

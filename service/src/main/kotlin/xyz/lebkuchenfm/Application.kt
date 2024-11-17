@@ -21,6 +21,7 @@ import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
@@ -35,6 +36,9 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -43,6 +47,7 @@ import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
+import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
@@ -63,8 +68,14 @@ fun Application.module() {
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val songsRepository = SongsMongoRepository(database)
+    val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository)
+    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
+
+    runBlocking {
+        xSoundsRepository.createUniqueIndex()
+        songsRepository.createTextIndex()
+    }
 
     val eventStream = WebSocketEventStream()
 
@@ -74,7 +85,10 @@ fun Application.module() {
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(xSoundsService, eventStream),
+            TagAddCommandProcessor(xSoundsService),
+            TagRemoveCommandProcessor(xSoundsService),
             SongQueueCommandProcessor(songsService, eventStream),
+            SongRandomCommandProcessor(songsService, eventStream),
             helpCommandProcessor,
         ),
     )
@@ -122,7 +136,11 @@ fun Application.module() {
     }
 
     install(WebSockets) {
-        contentConverter = KotlinxWebsocketSerializationConverter(Json)
+        val webSocketJsonConverter = Json {
+            encodeDefaults = true
+            classDiscriminator = "id"
+        }
+        contentConverter = KotlinxWebsocketSerializationConverter(webSocketJsonConverter)
     }
 
     routing {

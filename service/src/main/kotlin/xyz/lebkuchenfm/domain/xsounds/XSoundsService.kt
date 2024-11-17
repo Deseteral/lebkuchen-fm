@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.domain.xsounds
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.get
+import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.auth.UserSession
 
@@ -14,13 +18,19 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         return repository.findAllByTagOrderByNameAsc(tag)
     }
 
+    sealed interface NewSoundError {
+        data object FileStorageError : NewSoundError
+        data object DatabaseError : NewSoundError
+    }
+
     suspend fun addNewXSound(
         soundName: String,
         tags: List<String>,
         bytes: ByteArray,
         userSession: UserSession,
-    ): XSound {
-        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes)
+    ): Result<XSound, NewSoundError> {
+        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes).get()
+            ?: return Err(NewSoundError.FileStorageError)
         val readySound = XSound(
             name = soundName,
             url = fileUrl,
@@ -28,8 +38,11 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
             timesPlayed = 0,
             addedBy = userSession.name,
         )
-        repository.insert(readySound)
-        return readySound
+        val insertResult = repository.insert(readySound)
+        return insertResult.mapError {
+            logger.error { it }
+            NewSoundError.DatabaseError
+        }
     }
 
     suspend fun findAllUniqueTags(): List<String> {
@@ -44,5 +57,34 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         repository.incrementPlayCount(soundName) ?: run {
             logger.error { "Could not increment play count for sound $soundName" }
         }
+    }
+
+    sealed interface AddTagError {
+        data object SoundDoesNotExist : AddTagError
+        data object UnknownError : AddTagError
+    }
+
+    suspend fun addTagToXSound(soundName: String, tag: String): Result<XSound, AddTagError> {
+        return repository.addTagToXSound(soundName, tag)
+            .mapError { err ->
+                when (err) {
+                    is AddTagToXSoundError.SoundDoesNotExist -> AddTagError.SoundDoesNotExist
+                    is AddTagToXSoundError.UnknownError -> AddTagError.UnknownError
+                }
+            }
+    }
+
+    sealed interface RemoveTagError {
+        data object SoundDoesNotExist : RemoveTagError
+        data object UnknownError : RemoveTagError
+    }
+    suspend fun removeTagFromXSound(soundName: String, tag: String): Result<XSound, RemoveTagError> {
+        return repository.removeTagFromXSound(soundName, tag)
+            .mapError { err ->
+                when (err) {
+                    is RemoveTagFromXSoundError.SoundDoesNotExist -> RemoveTagError.SoundDoesNotExist
+                    is RemoveTagFromXSoundError.UnknownError -> RemoveTagError.UnknownError
+                }
+            }
     }
 }
