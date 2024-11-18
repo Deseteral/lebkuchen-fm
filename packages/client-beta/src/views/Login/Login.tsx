@@ -29,7 +29,6 @@ function Login() {
       <MenuBar isUserLoggedIn={false} />
       <AppWindow
         title="Login"
-        close={() => {}}
         startSize={{ width: `${LOGIN_WINDOW_WIDTH}px`, height: `${LOGIN_WINDOW_HEIGHT}px` }}
         centered
       >

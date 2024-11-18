@@ -10,7 +10,7 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.bearer
 import io.ktor.server.auth.form
 import io.ktor.server.auth.session
-import io.ktor.server.http.content.staticResources
+import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
@@ -162,6 +162,10 @@ fun Application.module() {
             }
         }
 
-        staticResources("/", "static")
+        singlePageApplication {
+            useResources = true
+            filesPath = "static"
+            defaultPage = "index.html"
+        }
     }
 }

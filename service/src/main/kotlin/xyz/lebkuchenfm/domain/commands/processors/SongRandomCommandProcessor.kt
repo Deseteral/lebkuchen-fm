@@ -13,7 +13,7 @@ import xyz.lebkuchenfm.domain.songs.SongsService
 
 private val logger = KotlinLogging.logger {}
 
-class SongRandomCommandProcessor(private val songsService: SongsService, private val eventStream: EventStream) :
+class SongRandomCommandProcessor(private val songsService: SongsService, private val eventStream: EventStream<*>) :
     CommandProcessor(
         key = "song-random",
         shortKey = "random",
