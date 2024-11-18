@@ -36,3 +36,9 @@
   border: none;
   background-color: var(--primary-color);
 }
+
+.xSign {
+  font-size: 15px;
+  display: block;
+  rotate: 45deg;
+}

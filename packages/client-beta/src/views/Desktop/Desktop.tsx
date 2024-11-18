@@ -3,7 +3,7 @@ import { onCleanup, onMount } from 'solid-js';
 import styles from './Desktop.module.css';
 import { Player } from '../../apps/Player/Player';
 import { UserAccountService } from '../../services/user-account-service';
-import { MenuBar } from '../MenuBar/MenuBar';
+import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 
 function Desktop() {

@@ -13,7 +13,8 @@ interface AppWindowProps {
     height?: string;
   };
   title: string;
-  close: () => void;
+  close?: () => void;
+  centered?: boolean;
 }
 
 function AppWindow(props: AppWindowProps) {
@@ -80,7 +81,9 @@ function AppWindow(props: AppWindowProps) {
 
   const closeWindow = (e: MouseEvent) => {
     e.stopPropagation();
-    props.close();
+    if (props.close) {
+      props.close();
+    }
   };
 
   return (
@@ -89,8 +92,14 @@ function AppWindow(props: AppWindowProps) {
       ref={(el) => {
         windowRef = el;
         el.className = styles.window;
-        el.style.top = `${y}px`;
-        el.style.left = `${x}px`;
+        if (props.centered) {
+          el.style.top = '50%';
+          el.style.left = '50%';
+          el.style.transform = 'translate(-50%, -50%)';
+        } else {
+          el.style.top = `${y}px`;
+          el.style.left = `${x}px`;
+        }
         el.style.zIndex = `${getBiggestZIndex() + 1}`;
         if (props.startSize?.height) {
           el.style.height = props.startSize.height;
@@ -103,9 +112,11 @@ function AppWindow(props: AppWindowProps) {
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
         <p>{props.title}</p>
-        <button type="button" class={styles.close} onClick={closeWindow}>
-          x
-        </button>
+        {!!props.close && (
+          <button type="button" class={styles.close} onClick={closeWindow}>
+            <span class={styles.xSign}>+</span>
+          </button>
+        )}
       </div>
       <div class={styles.content}>{props.children}</div>
     </Portal>

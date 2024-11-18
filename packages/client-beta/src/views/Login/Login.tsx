@@ -4,25 +4,22 @@ import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import { createSignal } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
-import { MenuBar } from '../MenuBar/MenuBar';
+import { MenuBar } from '@components/MenuBar/MenuBar';
+
+const LOGIN_WINDOW_WIDTH = 400;
+const LOGIN_WINDOW_HEIGHT = 350;
 
 function Login() {
-  const [login, setLogin] = createSignal('');
-  const [password, setPassword] = createSignal('');
   const [error, setError] = createSignal('');
-
-  const onLoginChange = (e: Event) => {
-    setLogin((e.target as HTMLInputElement).value);
-  };
-
-  const onPasswordChange = (e: Event) => {
-    setPassword((e.target as HTMLInputElement).value);
-  };
 
   const onSubmit = (e: Event) => {
     setError('');
     e.preventDefault();
-    UserAccountService.userLogin(login(), password()).catch(() => {
+    const form = e.target as HTMLFormElement;
+    const login = form.login.value;
+    const password = form.password.value;
+
+    UserAccountService.userLogin(login, password).catch(() => {
       setError('Wrong login or password');
     });
   };
@@ -30,25 +27,18 @@ function Login() {
   return (
     <>
       <MenuBar isUserLoggedIn={false} />
-      <AppWindow title="Sign in" close={() => {}} startSize={{ width: '400px' }}>
+      <AppWindow
+        title="Login"
+        close={() => {}}
+        startSize={{ width: `${LOGIN_WINDOW_WIDTH}px`, height: `${LOGIN_WINDOW_HEIGHT}px` }}
+        centered
+      >
         <div class={styles.container}>
-          <h1>Sign in</h1>
+          <h1>Login</h1>
           <span class={styles.error}>{error()}</span>
           <form onSubmit={onSubmit}>
-            <Input
-              type="text"
-              placeholder="Login"
-              value={login()}
-              onInput={onLoginChange}
-              required
-            />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password()}
-              onInput={onPasswordChange}
-              required
-            />
+            <Input type="text" name="login" placeholder="Login" required />
+            <Input type="password" name="password" placeholder="Password" required />
             <Button primary>Login</Button>
           </form>
         </div>
