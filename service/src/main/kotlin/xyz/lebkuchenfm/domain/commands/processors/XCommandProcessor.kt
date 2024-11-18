@@ -12,7 +12,7 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
 private val logger = KotlinLogging.logger {}
 
-class XCommandProcessor(private val xSoundsService: XSoundsService, private val eventStream: EventStream) :
+class XCommandProcessor(private val xSoundsService: XSoundsService, private val eventStream: EventStream<*>) :
     CommandProcessor(
         key = "x",
         shortKey = null,
