@@ -38,6 +38,7 @@ import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.TagListCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
@@ -87,6 +88,7 @@ fun Application.module() {
             XCommandProcessor(xSoundsService, eventStream),
             TagAddCommandProcessor(xSoundsService),
             TagRemoveCommandProcessor(xSoundsService),
+            TagListCommandProcessor(xSoundsService),
             SongQueueCommandProcessor(songsService, eventStream),
             SongRandomCommandProcessor(songsService, eventStream),
             helpCommandProcessor,

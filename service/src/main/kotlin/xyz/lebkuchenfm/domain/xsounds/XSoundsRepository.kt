@@ -35,5 +35,5 @@ sealed class XSoundsRepositoryError {
 }
 
 sealed class ListXSoundsWithTagError {
-    data object UnknownError: ListXSoundsWithTagError()
+    data object UnknownError : ListXSoundsWithTagError()
 }

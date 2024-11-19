@@ -30,7 +30,7 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
             return error(
                 """
                     You have to provide tag name as an argument.
-                    Refer to this commands help message for usage info.
+                    Refer to this command's help message for usage info.
                 """.trimIndent(),
                 logger,
             )
@@ -38,14 +38,16 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
         val (tagName) = args
 
         return xSoundsService.listXSoundsFromTag(tagName)
-            .map { CommandProcessingResult.fromMarkdown("TODO Added $tagName tag to $soundName sound.") }
-//            .getOrElse { err ->
-//                error(
-//                    when (err) {
-//
-//                    },
-//                    logger,
-//                )
-//            }
+            .map { soundList ->
+                CommandProcessingResult.fromMarkdown("There are ${soundList.size} sounds tagged with $tagName: ${soundList.joinToString(", ") { it.name }}")
+            }
+            .getOrElse { err ->
+                error(
+                    when (err) {
+                        XSoundsService.ListTagError.UnknownError -> "Unknown error"
+                    },
+                    logger,
+                )
+            }
     }
 }

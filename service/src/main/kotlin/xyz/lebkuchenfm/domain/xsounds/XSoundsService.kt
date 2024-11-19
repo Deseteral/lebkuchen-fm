@@ -89,10 +89,14 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     }
 
     sealed interface ListTagError {
-        data object TagDoesNotExist : RemoveTagError
-        data object UnknownError : RemoveTagError
+//        data object TagDoesNotExist : RemoveTagError
+        data object UnknownError : ListTagError
     }
     suspend fun listXSoundsFromTag(tag: String): Result<List<XSound>, ListTagError> {
-        return repository.listXSoundsWithTag(tag).mapError(TODO())
+        return repository.listXSoundsWithTag(tag).mapError { err ->
+            when (err) {
+                is ListXSoundsWithTagError.UnknownError -> ListTagError.UnknownError
+            }
+        }
     }
 }
