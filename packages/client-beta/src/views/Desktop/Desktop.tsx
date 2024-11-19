@@ -5,6 +5,7 @@ import { Player } from '../../apps/Player/Player';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
+import { Settings } from '../../apps/Settings/Settings';
 
 function Desktop() {
   onMount(() => {
@@ -22,6 +23,7 @@ function Desktop() {
       <main class={styles.desktop}>
         <Soundboard />
         <Player />
+        <Settings />
       </main>
     </>
   );

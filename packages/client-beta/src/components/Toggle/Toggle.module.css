@@ -1,0 +1,40 @@
+.label {
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle {
+  display: inline-block;
+  width: 2.6rem;
+  height: 1.4rem;
+  background-color: #ccc;
+  border: 1px solid var(--border-color-one);
+  border-radius: 1.4rem;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+  box-sizing: content-box;
+}
+
+.toggle::before {
+  content: "";
+  display: inline-block;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background-color: white;
+  transition: .1s ease-in;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkbox:checked + .toggle {
+  background-color: var(--primary-color);
+}
+
+.checkbox:checked + .toggle::before {
+  transform: translateX(1.2rem);
+}
