@@ -9,7 +9,7 @@ class UserAccountService {
     });
   }
 
-  static userLogin(username: string, password: string) {
+  static async userLogin(username: string, password: string) {
     const body = new URLSearchParams();
     body.set('username', username);
     body.set('password', password);
@@ -19,13 +19,12 @@ class UserAccountService {
       body,
     };
 
-    return fetch('/api/auth', options).then(({ status }) => {
-      if (status === 200) {
-        redirectTo('/');
-      } else {
-        throw new Error('Login failed');
-      }
-    });
+    const { status } = await fetch('/api/auth', options);
+    if (status === 200) {
+      redirectTo('/');
+    } else {
+      throw new Error('Login failed');
+    }
   }
 
   static userLogout() {

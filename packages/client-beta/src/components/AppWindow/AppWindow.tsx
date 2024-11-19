@@ -91,12 +91,13 @@ function AppWindow(props: AppWindowProps) {
       mount={document.getElementById('windows')!}
       ref={(el) => {
         windowRef = el;
-        el.className = styles.window;
         if (props.centered) {
+          el.classList.add(styles.window);
           el.style.top = '50%';
           el.style.left = '50%';
           el.style.transform = 'translate(-50%, -50%)';
         } else {
+          el.classList.add(styles.window, styles.resizeable);
           el.style.top = `${y}px`;
           el.style.left = `${x}px`;
         }

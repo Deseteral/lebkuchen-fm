@@ -7,8 +7,11 @@
   width: max-content;
   height: max-content;
   box-shadow: 8px 8px 24px 0 rgba(66, 68, 90, 1);
-  resize: both;
   overflow: auto;
+}
+
+.resizeable {
+  resize: both;
 }
 
 .title {
