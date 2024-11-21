@@ -25,6 +25,7 @@ class YoutubePlayerService {
 
   static initialize(playerRootElementId: string): void {
     PlayerStateService.initialize();
+    YoutubePlayerService.subscribeToSocketEvents();
 
     YoutubePlayerService.player = new YouTubePlayer(`#${playerRootElementId}`, {
       host: 'https://www.youtube-nocookie.com',
@@ -57,8 +58,6 @@ class YoutubePlayerService {
     YoutubePlayerService.player.on('ended', YoutubePlayerService.playNextSong);
     YoutubePlayerService.player.on('error', YoutubePlayerService.playNextSong);
     YoutubePlayerService.player.on('unplayable', YoutubePlayerService.playNextSong);
-
-    YoutubePlayerService.subscribeToSocketEvents();
 
     SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({
       id: 'PlayerStateRequestEvent',
