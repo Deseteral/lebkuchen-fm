@@ -10,18 +10,31 @@ const DEFAULT_PLAYER_STATE: PlayerState = {
 };
 
 class PlayerStateService {
-  private static playerState: PlayerState = {
-    ...DEFAULT_PLAYER_STATE,
-  };
+  // Null when Player is closed and there is no active subscription for WebSocket Player events
+  private static playerState: PlayerState | null = null;
   private static debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
-  static get(): PlayerState {
+  static reset(): void {
+    PlayerStateService.playerState = null;
+    PlayerStateService.debouncedSendLocalPlayerStateUpdateEvent();
+  }
+
+  static initialize(): void {
+    PlayerStateService.playerState = DEFAULT_PLAYER_STATE;
+    PlayerStateService.debouncedSendLocalPlayerStateUpdateEvent();
+  }
+
+  static get(): PlayerState | null {
+    if (!PlayerStateService.playerState) {
+      return null;
+    }
+
     return { ...PlayerStateService.playerState };
   }
 
   static change(newPlayerState: Partial<PlayerState>, propagateEvent: boolean = true): PlayerState {
     PlayerStateService.playerState = {
-      ...PlayerStateService.playerState,
+      ...(PlayerStateService.playerState ?? DEFAULT_PLAYER_STATE),
       ...newPlayerState,
     };
 

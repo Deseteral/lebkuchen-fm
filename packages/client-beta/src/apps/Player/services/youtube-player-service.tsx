@@ -24,6 +24,8 @@ class YoutubePlayerService {
   private static timeStateUpdateQueue: number | null = null;
 
   static initialize(playerRootElementId: string): void {
+    PlayerStateService.initialize();
+
     YoutubePlayerService.player = new YouTubePlayer(`#${playerRootElementId}`, {
       host: 'https://www.youtube-nocookie.com',
     });
@@ -38,7 +40,7 @@ class YoutubePlayerService {
     });
 
     YoutubePlayerService.player.on('timeupdate', (seconds: number) => {
-      const { currentlyPlaying } = PlayerStateService.get();
+      const { currentlyPlaying } = PlayerStateService.get() ?? {};
       if (seconds > 0 && currentlyPlaying) {
         PlayerStateService.change(
           {
@@ -65,6 +67,7 @@ class YoutubePlayerService {
 
   // prettier-ignore
   static cleanup(): void {
+    PlayerStateService.reset();
     YoutubePlayerService.player.destroy();
 
     EventStreamClient.unsubscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
@@ -114,6 +117,10 @@ class YoutubePlayerService {
   private static addSongsToQueueEventHandler(eventData: AddSongsToQueueEvent): void {
     const { songs } = eventData;
     const playerState = PlayerStateService.get();
+    if (!playerState) {
+      return;
+    }
+
     const prevLength = playerState.queue.length;
 
     PlayerStateService.change({
@@ -141,12 +148,17 @@ class YoutubePlayerService {
   }
 
   private static skipEventHandler(eventData: SkipEvent): void {
+    const playerState = PlayerStateService.get();
+
+    if (!playerState) {
+      return;
+    }
+
     const { skipAll, amount } = eventData;
     const amountToSkip = skipAll ? Infinity : amount - 1;
-    const { queue } = PlayerStateService.get();
 
     PlayerStateService.change({
-      queue: queue.slice(amountToSkip),
+      queue: playerState.queue.slice(amountToSkip),
     });
     YoutubePlayerService.playNextSong();
   }
@@ -186,8 +198,14 @@ class YoutubePlayerService {
   }
 
   private static changeVolumeEventHandler(eventData: ChangeVolumeEvent): void {
+    const playerState = PlayerStateService.get();
+
+    if (!playerState) {
+      return;
+    }
+
     const { isRelative, nextVolume } = eventData;
-    const { volume } = PlayerStateService.get();
+    const { volume } = playerState;
 
     if (isRelative) {
       let newVolume = volume + nextVolume;
@@ -241,6 +259,11 @@ class YoutubePlayerService {
 
   private static playNextSong() {
     const playerState = PlayerStateService.get();
+
+    if (!playerState) {
+      return;
+    }
+
     const nextSong = playerState.queue.shift();
     PlayerStateService.change({ queue: playerState.queue });
 
@@ -250,7 +273,7 @@ class YoutubePlayerService {
   }
 
   private static rewindTo(time: number) {
-    const { currentlyPlaying } = PlayerStateService.get();
+    const { currentlyPlaying } = PlayerStateService.get() ?? {};
 
     if (!currentlyPlaying) {
       return;
@@ -266,7 +289,12 @@ class YoutubePlayerService {
   }
 
   private static rewindBy(time: number) {
-    const { currentlyPlaying } = PlayerStateService.get();
+    const { currentlyPlaying } = PlayerStateService.get() ?? {};
+
+    if (!currentlyPlaying) {
+      return;
+    }
+
     const actualTime = currentlyPlaying?.time;
 
     if (actualTime === undefined) {
