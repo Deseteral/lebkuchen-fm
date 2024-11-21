@@ -16,35 +16,50 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
     CommandProcessor(
         key = "tag-list",
         shortKey = null,
-        helpMessage = "Lists sounds with a selected tag",
-        exampleUsages = listOf("fun stuff"),
+        helpMessage = "Lists sounds with the provided tag or lists all tags when none is provided",
+        exampleUsages = listOf("", "example-tag"),
         parameters = CommandParameters(
             parameters = listOf(
-                CommandParameters.RequiredCommandParameter("tag-name"),
+                CommandParameters.OptionalCommandParameter("tag-name"),
             ),
         ),
     ) {
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val args = command.args
-        if (args.size != 1) {
-            return error(
-                """
-                    You have to provide tag name as an argument.
-                    Refer to this command's help message for usage info.
-                """.trimIndent(),
-                logger,
-            )
+        if (args.isEmpty()) {
+            return xSoundsService.listTags()
+                .map { tags ->
+                    return CommandProcessingResult.fromMarkdown(
+                        """
+                            *There are ${tags.size} tags:*
+                            ${tags.joinToString(", ")}
+                        """.trimIndent().replace("\n", " "),
+                    )
+                }
+                .getOrElse { err ->
+                    error(
+                        when (err) {
+                            XSoundsService.ListTagsError.UnknownError -> "Unknown error"
+                        },
+                        logger,
+                    )
+                }
         }
         val (tagName) = args
 
-        return xSoundsService.listXSoundsFromTag(tagName)
+        return xSoundsService.listXSoundsWithTag(tagName)
             .map { soundList ->
-                CommandProcessingResult.fromMarkdown("There are ${soundList.size} sounds tagged with $tagName: ${soundList.joinToString(", ") { it.name }}")
+                return CommandProcessingResult.fromMarkdown(
+                    """
+                        There are ${soundList.size} sounds tagged
+                        with $tagName: ${soundList.joinToString(", ") { it.name }}
+                    """.trimIndent().replace("\n", " "),
+                )
             }
             .getOrElse { err ->
                 error(
                     when (err) {
-                        XSoundsService.ListTagError.UnknownError -> "Unknown error"
+                        XSoundsService.ListWithTagError.UnknownError -> "Unknown error"
                     },
                     logger,
                 )
