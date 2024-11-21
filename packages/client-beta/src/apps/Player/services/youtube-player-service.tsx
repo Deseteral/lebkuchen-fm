@@ -65,35 +65,11 @@ class YoutubePlayerService {
     });
   }
 
-  // prettier-ignore
   static cleanup(): void {
     PlayerStateService.reset();
     YoutubePlayerService.player.destroy();
 
-    EventStreamClient.unsubscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
-    EventStreamClient.unsubscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
-    EventStreamClient.unsubscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
-    EventStreamClient.unsubscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
-    EventStreamClient.unsubscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
-    EventStreamClient.unsubscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
-    EventStreamClient.unsubscribe<ChangeSpeedEvent>('ChangeSpeedEvent', YoutubePlayerService.changeSpeedEventHandler);
-    EventStreamClient.unsubscribe<ChangeVolumeEvent>('ChangeVolumeEvent', YoutubePlayerService.changeVolumeEventHandler);
-    EventStreamClient.unsubscribe<ReplaceQueueEvent>('ReplaceQueueEvent', YoutubePlayerService.replaceQueueEventHandler);
-    EventStreamClient.unsubscribe<RewindEvent>('RewindEvent', YoutubePlayerService.revindEventHandler);
-  }
-
-  // prettier-ignore
-  private static subscribeToSocketEvents(): void {
-    EventStreamClient.subscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
-    EventStreamClient.subscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
-    EventStreamClient.subscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
-    EventStreamClient.subscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
-    EventStreamClient.subscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
-    EventStreamClient.subscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
-    EventStreamClient.subscribe<ChangeSpeedEvent>('ChangeSpeedEvent', YoutubePlayerService.changeSpeedEventHandler);
-    EventStreamClient.subscribe<ChangeVolumeEvent>('ChangeVolumeEvent', YoutubePlayerService.changeVolumeEventHandler);
-    EventStreamClient.subscribe<ReplaceQueueEvent>('ReplaceQueueEvent', YoutubePlayerService.replaceQueueEventHandler);
-    EventStreamClient.subscribe<RewindEvent>('RewindEvent', YoutubePlayerService.revindEventHandler);
+    YoutubePlayerService.unsubscribeFromSocketEvents();
   }
 
   // Socket event handlers
@@ -307,6 +283,34 @@ class YoutubePlayerService {
     } else {
       YoutubePlayerService.rewindTo(timeAfterRewind);
     }
+  }
+
+  // prettier-ignore
+  private static subscribeToSocketEvents(): void {
+    EventStreamClient.subscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
+    EventStreamClient.subscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
+    EventStreamClient.subscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
+    EventStreamClient.subscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
+    EventStreamClient.subscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
+    EventStreamClient.subscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
+    EventStreamClient.subscribe<ChangeSpeedEvent>('ChangeSpeedEvent', YoutubePlayerService.changeSpeedEventHandler);
+    EventStreamClient.subscribe<ChangeVolumeEvent>('ChangeVolumeEvent', YoutubePlayerService.changeVolumeEventHandler);
+    EventStreamClient.subscribe<ReplaceQueueEvent>('ReplaceQueueEvent', YoutubePlayerService.replaceQueueEventHandler);
+    EventStreamClient.subscribe<RewindEvent>('RewindEvent', YoutubePlayerService.revindEventHandler);
+  }
+
+  // prettier-ignore
+  private static unsubscribeFromSocketEvents(): void {
+    EventStreamClient.unsubscribe<PlayerStateUpdateEvent>('PlayerStateUpdateEvent', YoutubePlayerService.playerStateUpdateEventHandler);
+    EventStreamClient.unsubscribe<PlayerStateRequestDonationEvent>('PlayerStateRequestDonationEvent', YoutubePlayerService.playerStateRequestEventHandler);
+    EventStreamClient.unsubscribe<AddSongsToQueueEvent>('AddSongsToQueueEvent', YoutubePlayerService.addSongsToQueueEventHandler);
+    EventStreamClient.unsubscribe<PlayerPauseEvent>('PauseEvent', YoutubePlayerService.pauseEventHandler);
+    EventStreamClient.unsubscribe<PlayerResumeEvent>('ResumeEvent', YoutubePlayerService.resumeEventHandler);
+    EventStreamClient.unsubscribe<SkipEvent>('SkipEvent', YoutubePlayerService.skipEventHandler);
+    EventStreamClient.unsubscribe<ChangeSpeedEvent>('ChangeSpeedEvent', YoutubePlayerService.changeSpeedEventHandler);
+    EventStreamClient.unsubscribe<ChangeVolumeEvent>('ChangeVolumeEvent', YoutubePlayerService.changeVolumeEventHandler);
+    EventStreamClient.unsubscribe<ReplaceQueueEvent>('ReplaceQueueEvent', YoutubePlayerService.replaceQueueEventHandler);
+    EventStreamClient.unsubscribe<RewindEvent>('RewindEvent', YoutubePlayerService.revindEventHandler);
   }
 }
 
