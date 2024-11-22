@@ -2,14 +2,13 @@ import { redirectTo } from './redirect-to';
 
 class UserAccountService {
   static checkLoginStateAndRedirect() {
-    fetch('/api/auth')
-      .then((res) => {
-        if(res.ok && window.location.pathname === '/login') {
-          redirectTo('/');
-        } else if (window.location.pathname !== '/login') {
-          redirectTo('/login');
-        }
-      })
+    fetch('/api/auth').then((res) => {
+      if (res.ok && window.location.pathname === '/login') {
+        redirectTo('/');
+      } else if (window.location.pathname !== '/login') {
+        redirectTo('/login');
+      }
+    });
   }
 
   static async userLogin(username: string, password: string) {
