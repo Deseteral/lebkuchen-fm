@@ -2,7 +2,7 @@ import styles from './Login.module.css';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { Button } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
-import { createSignal } from 'solid-js';
+import { createSignal, onMount } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 
@@ -11,6 +11,10 @@ const LOGIN_WINDOW_HEIGHT = 350;
 
 function Login() {
   const [error, setError] = createSignal('');
+
+  onMount(() => {
+    UserAccountService.checkLoginStateAndRedirect();
+  })
 
   const onSubmit = (e: Event) => {
     setError('');
