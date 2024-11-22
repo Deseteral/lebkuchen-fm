@@ -14,7 +14,7 @@ function Login() {
 
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
-  })
+  });
 
   const onSubmit = (e: Event) => {
     setError('');
