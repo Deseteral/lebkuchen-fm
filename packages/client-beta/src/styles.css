@@ -1,12 +1,32 @@
+:root {
+  --border-color-one: #000;
+  --menu-bar-height: 24px;
+  --primary-color: #662d91;
+  --secondary-color: #f1f1f1;
+  --menu-bar-background: #ccd1d3;
+  --input-color: #fff;
+  --border-radius: 3px;
+  --base-font-size: 12px;
+}
+
 * {
   box-sizing: border-box;
-  font-family: Inconsolata, Menlo, Chicago, Geneva, sans-serif;
+  font-family: Menlo, Chicago, Geneva, sans-serif;
   margin: 0;
+}
+
+html {
+  font-size: var(--base-font-size);
 }
 
 body {
   background-image: url('../public/bg.png');
   background-color: #6261a1;
+}
+
+#root {
+  display: grid;
+  grid-template-rows: var(--menu-bar-height) 1fr;
 }
 
 #youtube-player {
