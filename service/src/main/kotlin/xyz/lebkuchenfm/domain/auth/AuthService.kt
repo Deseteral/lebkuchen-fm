@@ -6,7 +6,7 @@ import xyz.lebkuchenfm.domain.users.UsersService
 private val logger = KotlinLogging.logger {}
 
 class AuthService(private val usersService: UsersService) {
-    fun authenticateWithCredentials(username: String, password: String): UserSession? {
+    suspend fun authenticateWithCredentials(username: String, password: String): UserSession? {
         val user = usersService.getByName(username)
 
         return when {
@@ -42,7 +42,7 @@ class AuthService(private val usersService: UsersService) {
         }
     }
 
-    fun authenticateWithApiToken(token: String): UserSession? {
+    suspend fun authenticateWithApiToken(token: String): UserSession? {
         return usersService.getByApiToken(token)?.let { UserSession(it.data.name) }
     }
 }

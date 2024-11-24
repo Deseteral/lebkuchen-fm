@@ -5,36 +5,36 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 private val logger = KotlinLogging.logger {}
 
 class UsersService(private val repository: UsersRepository) {
-    fun getByName(username: String): User? {
+    suspend fun getByName(username: String): User? {
+        return repository.findByName(username)
+    }
+
+    suspend fun getUsersCount(): Int {
         TODO()
     }
 
-    fun getUsersCount(): Int {
+    suspend fun addNewUser(username: String): User {
         TODO()
     }
 
-    fun addNewUser(username: String): User {
+    suspend fun doesUserExist(username: String): Boolean {
         TODO()
     }
 
-    fun doesUserExist(username: String): Boolean {
+    suspend fun checkPassword(user: User, password: String): Boolean {
         TODO()
     }
 
-    fun checkPassword(user: User, password: String): Boolean {
-        TODO()
-    }
-
-    fun setPassword(user: User, password: String): User {
+    suspend fun setPassword(user: User, password: String): User {
         logger.info { "User '${user.data.name}' set new password." }
         TODO()
     }
 
-    fun updateLastLoginDate(user: User) {
+    suspend fun updateLastLoginDate(user: User) {
         TODO()
     }
 
-    fun getByApiToken(token: String): User? {
+    suspend fun getByApiToken(token: String): User? {
         TODO()
     }
 }

@@ -1,3 +1,5 @@
 package xyz.lebkuchenfm.domain.users
 
-interface UsersRepository
+interface UsersRepository {
+    suspend fun findByName(username: String): User?
+}
