@@ -13,8 +13,9 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
 
     override suspend fun findByName(username: String): User? {
+        val fieldName = "${UserEntity::data.name}.${User.UserData::name.name}"
         return collection
-            .find(eq(UserEntity::data::name.name, username))
+            .find(eq(fieldName, username))
             .firstOrNull()
             ?.toDomain()
     }
