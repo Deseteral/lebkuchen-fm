@@ -9,7 +9,8 @@ class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
     private val defaultStateProvider: DefaultStateProvider<StateT>,
 ) {
-    private val requestHandles: MutableMap<Event.PlayerStateRequestDonation.RequestHandle, EventStreamConsumerId> = ConcurrentMap()
+    private val requestHandles: MutableMap<Event.PlayerStateRequestDonation.RequestHandle, EventStreamConsumerId> =
+        ConcurrentMap()
 
     suspend fun incomingStateSyncRequest(target: EventStreamConsumerId) {
         if (eventStream.subscriptionCount <= 1) {
