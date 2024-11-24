@@ -20,6 +20,7 @@ import io.ktor.server.sessions.cookie
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
@@ -62,7 +63,7 @@ fun Application.module() {
     val youtubeClient = YoutubeClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
-    val usersService = UsersService(usersRepository)
+    val usersService = UsersService(usersRepository, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)

@@ -1,10 +1,11 @@
 package xyz.lebkuchenfm.domain.users
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.datetime.Clock
 
 private val logger = KotlinLogging.logger {}
 
-class UsersService(private val repository: UsersRepository) {
+class UsersService(private val repository: UsersRepository, private val clock: Clock) {
     suspend fun getByName(username: String): User? {
         return repository.findByName(username)
     }
@@ -27,7 +28,7 @@ class UsersService(private val repository: UsersRepository) {
     }
 
     suspend fun updateLastLoginDate(user: User) {
-        TODO()
+        repository.updateLastLoginDate(user, clock.now())
     }
 
     suspend fun getByApiToken(token: String): User? {

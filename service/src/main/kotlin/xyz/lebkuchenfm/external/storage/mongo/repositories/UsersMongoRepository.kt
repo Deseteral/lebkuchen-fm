@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
@@ -30,6 +31,15 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             .find(eq(fieldName, token))
             .firstOrNull()
             ?.toDomain()
+    }
+
+    override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
+        val nameFieldName = "${UserEntity::data.name}.${User.UserData::name.name}"
+        val loginDateFieldName = "${UserEntity::data.name}.${User.UserData::lastLoggedIn.name}"
+        return collection.findOneAndUpdate(
+            eq(nameFieldName, user.data.name),
+            Updates.set(loginDateFieldName, date),
+        )?.toDomain()
     }
 }
 
