@@ -22,6 +22,14 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     override suspend fun countUsers(): Long {
         return collection.countDocuments()
     }
+
+    override suspend fun findByApiToken(token: String): User? {
+        val fieldName = "${UserEntity::data.name}.${User.UserSecret::apiToken.name}"
+        return collection
+            .find(eq(fieldName, token))
+            .firstOrNull()
+            ?.toDomain()
+    }
 }
 
 @Serializable

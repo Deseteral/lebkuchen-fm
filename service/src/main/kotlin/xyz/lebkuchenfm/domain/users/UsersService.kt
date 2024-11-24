@@ -31,6 +31,6 @@ class UsersService(private val repository: UsersRepository) {
     }
 
     suspend fun getByApiToken(token: String): User? {
-        TODO()
+        return repository.findByApiToken(token)
     }
 }
