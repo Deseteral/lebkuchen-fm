@@ -148,20 +148,14 @@ fun Application.module() {
     }
 
     routing {
-        // TODO: This route should be secured using auth-session and auth-bearer when the whole auth flow is done.
-        route("/api") {
-            authRouting()
-            xSoundsRouting(xSoundsService)
-            songsRouting(songsService)
-            commandsRouting(commandExecutorService)
-            eventStreamRouting(eventStream)
-        }
-
-        // TODO: Remove me.
         authenticate("auth-session") {
             authenticate("auth-bearer") {
-                get("/auth-test") {
-                    call.respondText { "You are authenticated!" }
+                route("/api") {
+                    authRouting()
+                    xSoundsRouting(xSoundsService)
+                    songsRouting(songsService)
+                    commandsRouting(commandExecutorService)
+                    eventStreamRouting(eventStream)
                 }
             }
         }
