@@ -1,13 +1,14 @@
 import { Soundboard } from '../../apps/Soundboard/Soundboard';
 import { onCleanup, onMount } from 'solid-js';
-import { checkLoginStateAndRedirect } from '../../services/user-account-service';
 import styles from './Desktop.module.css';
 import { Player } from '../../apps/Player/Player';
+import { UserAccountService } from '../../services/user-account-service';
+import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 
 function Desktop() {
   onMount(() => {
-    checkLoginStateAndRedirect();
+    UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.initializeConnection();
   });
 
@@ -16,10 +17,13 @@ function Desktop() {
   });
 
   return (
-    <main class={styles.desktop}>
-      <Soundboard />
-      <Player />
-    </main>
+    <>
+      <MenuBar isUserLoggedIn={true} />
+      <main class={styles.desktop}>
+        <Soundboard />
+        <Player />
+      </main>
+    </>
   );
 }
 
