@@ -9,8 +9,8 @@ class UsersService(private val repository: UsersRepository) {
         return repository.findByName(username)
     }
 
-    suspend fun getUsersCount(): Int {
-        TODO()
+    suspend fun getUsersCount(): Long {
+        return repository.countUsers()
     }
 
     suspend fun addNewUser(username: String): User {

@@ -10,7 +10,7 @@ class AuthService(private val usersService: UsersService) {
         val user = usersService.getByName(username)
 
         return when {
-            user == null && usersService.getUsersCount() == 0 -> {
+            user == null && usersService.getUsersCount() == 0L -> {
                 logger.info { "User '$username' is the first user to log in." }
 
                 val newUser = usersService.addNewUser(username)

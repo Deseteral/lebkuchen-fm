@@ -18,6 +18,10 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             .firstOrNull()
             ?.toDomain()
     }
+
+    override suspend fun countUsers(): Long {
+        return collection.countDocuments()
+    }
 }
 
 @Serializable
