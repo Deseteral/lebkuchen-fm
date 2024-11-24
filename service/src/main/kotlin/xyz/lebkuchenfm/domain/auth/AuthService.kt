@@ -1,6 +1,8 @@
 package xyz.lebkuchenfm.domain.auth
 
-class AuthService {
+import xyz.lebkuchenfm.domain.users.UsersService
+
+class AuthService(private val usersService: UsersService) {
     fun authenticateWithCredentials(username: String, password: String): UserSession? {
         // TODO: Actually validate the credentials.
         return if (username == "admin" && password == "test") {

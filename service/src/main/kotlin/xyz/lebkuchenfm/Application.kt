@@ -41,6 +41,7 @@ import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.songs.SongsService
+import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
@@ -49,6 +50,7 @@ import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
@@ -57,11 +59,13 @@ import kotlin.time.Duration.Companion.days
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
-    val authService = AuthService()
-
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
+
+    val usersRepository = UsersMongoRepository(database)
+    val usersService = UsersService(usersRepository)
+    val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
     val xSoundsRepository = XSoundsMongoRepository(database)
