@@ -17,10 +17,6 @@ class UsersService(private val repository: UsersRepository) {
         TODO()
     }
 
-    suspend fun doesUserExist(username: String): Boolean {
-        TODO()
-    }
-
     suspend fun checkPassword(user: User, password: String): Boolean {
         TODO()
     }
