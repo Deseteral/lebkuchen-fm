@@ -36,18 +36,13 @@ class AuthService(private val usersService: UsersService) {
                 usersService.updateLastLoginDate(user)
                 UserSession(user.data.name)
             } else {
-                logger.info { "User '${user.data.name}' tried to log in, but provided wrong password" }
+                logger.info { "User '${user.data.name}' tried to log in, but provided wrong password." }
                 null
             }
         }
     }
 
     fun authenticateWithApiToken(token: String): UserSession? {
-        // TODO: Actually validate the token.
-        return if (token == "1234") {
-            UserSession("admin")
-        } else {
-            null
-        }
+        return usersService.getByApiToken(token)?.let { UserSession(it.data.name) }
     }
 }

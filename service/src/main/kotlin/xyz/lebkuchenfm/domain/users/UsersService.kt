@@ -33,4 +33,8 @@ class UsersService(private val repository: UsersRepository) {
     fun updateLastLoginDate(user: User) {
         TODO()
     }
+
+    fun getByApiToken(token: String): User? {
+        TODO()
+    }
 }
