@@ -29,11 +29,9 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
         if (args.isEmpty()) {
             return xSoundsService.listTags()
                 .map { tags ->
-                    return CommandProcessingResult.fromMarkdown(
-                        """
-                            *There are ${tags.size} tags:*
-                            ${tags.joinToString(", ")}
-                        """.trimIndent().replace("\n", " "),
+                    return CommandProcessingResult.fromMultilineMarkdown(
+                        "*There are ${tags.size} tags:*",
+                        *tags.map { "- $it" }.toTypedArray(),
                     )
                 }
                 .getOrElse { err ->
@@ -49,11 +47,9 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
 
         return xSoundsService.listXSoundsWithTag(tagName)
             .map { soundList ->
-                return CommandProcessingResult.fromMarkdown(
-                    """
-                        There are ${soundList.size} sounds tagged
-                        with $tagName: ${soundList.joinToString(", ") { it.name }}
-                    """.trimIndent().replace("\n", " "),
+                return CommandProcessingResult.fromMultilineMarkdown(
+                    "*There are ${soundList.size} sounds tagged with $tagName: *",
+                    *soundList.map { "- ${it.name}" }.toTypedArray(),
                 )
             }
             .getOrElse { err ->
