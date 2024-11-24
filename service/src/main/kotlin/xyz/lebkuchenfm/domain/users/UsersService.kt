@@ -21,7 +21,7 @@ class UsersService(private val repository: UsersRepository) {
         TODO()
     }
 
-    fun checkPassword(password: String, user: User): Boolean {
+    fun checkPassword(user: User, password: String): Boolean {
         TODO()
     }
 

@@ -30,7 +30,7 @@ class AuthService(private val usersService: UsersService) {
                 UserSession(userWithPassword.data.name)
             }
 
-            else -> if (usersService.checkPassword(password, user)) {
+            else -> if (usersService.checkPassword(user, password)) {
                 logger.info { "User '${user.data.name}' logged in." }
 
                 usersService.updateLastLoginDate(user)
