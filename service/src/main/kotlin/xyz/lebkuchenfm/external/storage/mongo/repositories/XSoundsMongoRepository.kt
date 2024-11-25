@@ -24,6 +24,8 @@ import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
+import xyz.lebkuchenfm.domain.xsounds.ListXSoundsTagsError
+import xyz.lebkuchenfm.domain.xsounds.ListXSoundsWithTagError
 import xyz.lebkuchenfm.domain.xsounds.RemoveTagFromXSoundError
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
@@ -117,6 +119,24 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             return Err(RemoveTagFromXSoundError.SoundDoesNotExist)
         }
         return Ok(xSound.toDomain())
+    }
+
+    override suspend fun listXSoundsWithTag(tag: String): Result<List<XSound>, ListXSoundsWithTagError> {
+        return try {
+            val sounds = collection.find(eq(XSoundEntity::tags.name, tag)).map { it.toDomain() }.toList()
+            Ok(sounds)
+        } catch (e: Exception) {
+            Err(ListXSoundsWithTagError.UnknownError)
+        }
+    }
+
+    override suspend fun listTags(): Result<List<String>, ListXSoundsTagsError> {
+        return try {
+            val tags = collection.distinct<String>(XSoundEntity::tags.name).toList()
+            Ok(tags)
+        } catch (e: Exception) {
+            Err(ListXSoundsTagsError.UnknownError)
+        }
     }
 
     override suspend fun incrementPlayCount(soundName: String): XSound? {
