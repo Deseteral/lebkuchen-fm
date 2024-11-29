@@ -12,7 +12,7 @@ import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDonationEventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateRequestEventDto
 import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
-import java.util.UUID
+import xyz.lebkuchenfm.domain.eventstream.Event
 
 private val logger = KotlinLogging.logger {}
 
@@ -37,7 +37,7 @@ fun Route.eventStreamRouting(
             when (event) {
                 is PlayerStateRequestEventDto -> playerStateSynchronizer.incomingStateSyncRequest(connection.id)
                 is PlayerStateDonationEventDto -> playerStateSynchronizer.incomingStateDonation(
-                    UUID.fromString(event.requestHandle),
+                    Event.PlayerStateRequestDonation.RequestHandle(event.requestHandle),
                     event.state,
                 )
             }

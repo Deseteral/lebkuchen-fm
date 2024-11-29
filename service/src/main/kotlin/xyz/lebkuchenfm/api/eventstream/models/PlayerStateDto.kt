@@ -53,7 +53,7 @@ data class PlayerStateUpdateEventDto(
 data class PlayerStateRequestDonationEventDto(
     val requestHandle: String,
 ) : EventDto {
-    constructor(event: Event.PlayerStateRequestDonation) : this(event.requestHandle.toString())
+    constructor(event: Event.PlayerStateRequestDonation) : this(event.requestHandle.value)
 }
 
 @Serializable
