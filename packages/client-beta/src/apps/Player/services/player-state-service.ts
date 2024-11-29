@@ -3,7 +3,7 @@ import { LocalEventTypes, type LocalPlayerStateUpdateEvent } from '../../../type
 import { EventStreamClient } from '../../../services/event-stream-client';
 
 class PlayerStateService {
-  // Null when Player has not been initialized
+  // Null when PlayerState has not been initialized
   private static playerState: PlayerState | null = null;
   private static debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
