@@ -60,5 +60,5 @@ data class PlayerStateRequestDonationEventDto(
 @SerialName("PlayerStateDonationEvent")
 data class PlayerStateDonationEventDto(
     val requestHandle: String,
-    val state: PlayerStateDto,
+    val state: PlayerStateDto?,
 ) : EventDto
