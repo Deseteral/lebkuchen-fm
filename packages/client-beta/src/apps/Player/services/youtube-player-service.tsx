@@ -99,7 +99,6 @@ class YoutubePlayerService {
   private static addSongsToQueueEventHandler(eventData: AddSongsToQueueEvent): void {
     const { songs } = eventData;
     const playerState = PlayerStateService.get();
-
     const prevLength = playerState.queue.length;
 
     PlayerStateService.change({
