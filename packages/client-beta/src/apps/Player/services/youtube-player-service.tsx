@@ -134,13 +134,12 @@ class YoutubePlayerService {
   }
 
   private static skipEventHandler(eventData: SkipEvent): void {
-    const playerState = PlayerStateService.get();
-
     const { skipAll, amount } = eventData;
     const amountToSkip = skipAll ? Infinity : amount - 1;
+    const { queue } = PlayerStateService.get();
 
     PlayerStateService.change({
-      queue: playerState.queue.slice(amountToSkip),
+      queue: queue.slice(amountToSkip),
     });
     YoutubePlayerService.playNextSong();
   }
@@ -235,7 +234,6 @@ class YoutubePlayerService {
 
   private static playNextSong() {
     const playerState = PlayerStateService.get();
-
     const nextSong = playerState.queue.shift();
     PlayerStateService.change({ queue: playerState.queue });
 
