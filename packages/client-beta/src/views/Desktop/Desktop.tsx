@@ -6,15 +6,18 @@ import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
+import { XSoundsPlayService } from '../../services/x-sounds-play-service';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.initializeConnection();
+    XSoundsPlayService.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
+    XSoundsPlayService.cleanup();
   });
 
   return (
