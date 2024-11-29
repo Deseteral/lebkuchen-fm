@@ -7,7 +7,7 @@ enum LocalEventTypes {
 
 interface LocalPlayerStateUpdateEvent {
   id: LocalEventTypes.LocalPlayerStateUpdate;
-  state: PlayerState;
+  state: PlayerState | null;
 }
 
 type LocalEvent = EventData | LocalPlayerStateUpdateEvent;
