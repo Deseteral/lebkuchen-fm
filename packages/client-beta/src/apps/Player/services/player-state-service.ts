@@ -2,15 +2,8 @@ import type { PlayerState } from '../../../types/player-state';
 import { LocalEventTypes, type LocalPlayerStateUpdateEvent } from '../../../types/local-events';
 import { EventStreamClient } from '../../../services/event-stream-client';
 
-const DEFAULT_PLAYER_STATE: PlayerState = {
-  currentlyPlaying: null,
-  queue: [],
-  isPlaying: true,
-  volume: 100,
-};
-
 class PlayerStateService {
-  // Null when Player is closed and there is no active subscription for WebSocket Player events
+  // Null when Player has not been initialized
   private static playerState: PlayerState | null = null;
   private static debounceTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -19,22 +12,30 @@ class PlayerStateService {
     PlayerStateService.debouncedSendLocalPlayerStateUpdateEvent();
   }
 
-  static initialize(): void {
-    PlayerStateService.playerState = DEFAULT_PLAYER_STATE;
+  static initialize(playerState: PlayerState): void {
+    if (!playerState) {
+      console.log('Player state not initialized: Wrong player state', playerState);
+    }
+
+    PlayerStateService.playerState = playerState;
     PlayerStateService.debouncedSendLocalPlayerStateUpdateEvent();
   }
 
-  static get(): PlayerState | null {
+  static get(): PlayerState {
     if (!PlayerStateService.playerState) {
-      return null;
+      throw new PlayerStateNotInitializedError();
     }
 
-    return { ...PlayerStateService.playerState };
+    return structuredClone(PlayerStateService.playerState);
   }
 
   static change(newPlayerState: Partial<PlayerState>, propagateEvent: boolean = true): PlayerState {
+    if (!PlayerStateService.playerState) {
+      throw new PlayerStateNotInitializedError();
+    }
+
     PlayerStateService.playerState = {
-      ...(PlayerStateService.playerState ?? DEFAULT_PLAYER_STATE),
+      ...structuredClone(PlayerStateService.playerState),
       ...newPlayerState,
     };
 
@@ -61,6 +62,14 @@ class PlayerStateService {
     const eventData: LocalPlayerStateUpdateEvent = { id, state: PlayerStateService.playerState };
 
     EventStreamClient.broadcast<LocalPlayerStateUpdateEvent>(id, eventData);
+  }
+}
+
+export class PlayerStateNotInitializedError extends Error {
+  constructor() {
+    super('PlayerStateService is not initialized');
+
+    Object.setPrototypeOf(this, PlayerStateNotInitializedError.prototype);
   }
 }
 

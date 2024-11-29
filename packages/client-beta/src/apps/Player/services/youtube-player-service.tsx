@@ -16,7 +16,7 @@ import type {
   SkipEvent,
   SongChangedEvent,
 } from '../../../types/event-data';
-import { PlayerStateService } from './player-state-service';
+import { PlayerStateNotInitializedError, PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
 
 class YoutubePlayerService {
@@ -24,8 +24,8 @@ class YoutubePlayerService {
   private static timeStateUpdateQueue: number | null = null;
 
   static initialize(playerRootElementId: string): void {
-    PlayerStateService.initialize();
     YoutubePlayerService.subscribeToSocketEvents();
+    YoutubePlayerService.sendPlayerStateRequest();
 
     YoutubePlayerService.player = new YouTubePlayer(`#${playerRootElementId}`, {
       host: 'https://www.youtube-nocookie.com',
@@ -58,10 +58,6 @@ class YoutubePlayerService {
     YoutubePlayerService.player.on('ended', YoutubePlayerService.playNextSong);
     YoutubePlayerService.player.on('error', YoutubePlayerService.playNextSong);
     YoutubePlayerService.player.on('unplayable', YoutubePlayerService.playNextSong);
-
-    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({
-      id: 'PlayerStateRequestEvent',
-    });
   }
 
   static cleanup(): void {
@@ -71,13 +67,24 @@ class YoutubePlayerService {
     YoutubePlayerService.unsubscribeFromSocketEvents();
   }
 
+  private static sendPlayerStateRequest(): void {
+    SocketConnectionClient.sendSocketMessage<PlayerStateRequestEvent>({
+      id: 'PlayerStateRequestEvent',
+    });
+  }
+
   // Socket event handlers
   private static playerStateUpdateEventHandler(eventData: PlayerStateUpdateEvent): void {
     const { state } = eventData;
-    PlayerStateService.change({
-      queue: state.queue,
-      volume: state.volume,
-    });
+
+    try {
+      PlayerStateService.change({
+        queue: state.queue,
+        volume: state.volume,
+      });
+    } catch {
+      PlayerStateService.initialize(state);
+    }
 
     YoutubePlayerService.player.setVolume(state.volume);
     YoutubePlayerService.player.setPlaybackQuality('highres');
@@ -92,9 +99,6 @@ class YoutubePlayerService {
   private static addSongsToQueueEventHandler(eventData: AddSongsToQueueEvent): void {
     const { songs } = eventData;
     const playerState = PlayerStateService.get();
-    if (!playerState) {
-      return;
-    }
 
     const prevLength = playerState.queue.length;
 
@@ -113,21 +117,24 @@ class YoutubePlayerService {
   }
 
   private static playerStateRequestEventHandler(event: PlayerStateRequestDonationEvent): void {
-    const playerState = PlayerStateService.get();
-    console.log('Local PlayerState requested:', playerState);
-    SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
-      id: 'PlayerStateDonationEvent',
-      requestHandle: event.requestHandle,
-      state: playerState,
-    });
+    try {
+      const playerState = PlayerStateService.get();
+
+      console.log('Local PlayerState requested:', playerState);
+      SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
+        id: 'PlayerStateDonationEvent',
+        requestHandle: event.requestHandle,
+        state: playerState,
+      });
+    } catch (error) {
+      if (error instanceof PlayerStateNotInitializedError) {
+        console.log('Local PlayerState requested but not initialized');
+      }
+    }
   }
 
   private static skipEventHandler(eventData: SkipEvent): void {
     const playerState = PlayerStateService.get();
-
-    if (!playerState) {
-      return;
-    }
 
     const { skipAll, amount } = eventData;
     const amountToSkip = skipAll ? Infinity : amount - 1;
@@ -173,14 +180,8 @@ class YoutubePlayerService {
   }
 
   private static changeVolumeEventHandler(eventData: ChangeVolumeEvent): void {
-    const playerState = PlayerStateService.get();
-
-    if (!playerState) {
-      return;
-    }
-
     const { isRelative, nextVolume } = eventData;
-    const { volume } = playerState;
+    const { volume } = PlayerStateService.get();
 
     if (isRelative) {
       let newVolume = volume + nextVolume;
@@ -235,10 +236,6 @@ class YoutubePlayerService {
   private static playNextSong() {
     const playerState = PlayerStateService.get();
 
-    if (!playerState) {
-      return;
-    }
-
     const nextSong = playerState.queue.shift();
     PlayerStateService.change({ queue: playerState.queue });
 
@@ -248,7 +245,7 @@ class YoutubePlayerService {
   }
 
   private static rewindTo(time: number) {
-    const { currentlyPlaying } = PlayerStateService.get() ?? {};
+    const { currentlyPlaying } = PlayerStateService.get();
 
     if (!currentlyPlaying) {
       return;
@@ -264,7 +261,7 @@ class YoutubePlayerService {
   }
 
   private static rewindBy(time: number) {
-    const { currentlyPlaying } = PlayerStateService.get() ?? {};
+    const { currentlyPlaying } = PlayerStateService.get();
 
     if (!currentlyPlaying) {
       return;

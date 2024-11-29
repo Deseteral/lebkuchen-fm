@@ -17,7 +17,7 @@ export interface PlayerStateUpdateEvent {
 export interface PlayerStateDonationEvent {
   id: 'PlayerStateDonationEvent';
   requestHandle: string;
-  state: PlayerState | null;
+  state: PlayerState;
 }
 
 export interface AddSongsToQueueEvent {
