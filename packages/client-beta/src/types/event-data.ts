@@ -1,12 +1,23 @@
 import { PlayerState, Song } from './player-state';
 
+export interface PlayerStateRequestEvent {
+  id: 'PlayerStateRequestEvent';
+}
+
+export interface PlayerStateRequestDonationEvent {
+  id: 'PlayerStateRequestDonationEvent';
+  requestHandle: string;
+}
+
 export interface PlayerStateUpdateEvent {
   id: 'PlayerStateUpdateEvent';
   state: PlayerState;
 }
 
-export interface PlayerStateRequestEvent {
-  id: 'PlayerStateRequestEvent';
+export interface PlayerStateDonationEvent {
+  id: 'PlayerStateDonationEvent';
+  requestHandle: string;
+  state: PlayerState;
 }
 
 export interface AddSongsToQueueEvent {
@@ -72,7 +83,9 @@ export interface ConnectedUsersEvent {
 
 export type EventData =
   | PlayerStateUpdateEvent
+  | PlayerStateRequestDonationEvent
   | PlayerStateRequestEvent
+  | PlayerStateDonationEvent
   | AddSongsToQueueEvent
   | PlayXSoundEvent
   | SayEvent

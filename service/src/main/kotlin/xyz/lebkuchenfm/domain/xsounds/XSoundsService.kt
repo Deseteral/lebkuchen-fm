@@ -87,4 +87,26 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
                 }
             }
     }
+
+    sealed interface ListWithTagError {
+        data object UnknownError : ListWithTagError
+    }
+    suspend fun listXSoundsWithTag(tag: String): Result<List<XSound>, ListWithTagError> {
+        return repository.listXSoundsWithTag(tag).mapError { err ->
+            when (err) {
+                is ListXSoundsWithTagError.UnknownError -> ListWithTagError.UnknownError
+            }
+        }
+    }
+
+    sealed interface ListTagsError {
+        data object UnknownError : ListTagsError
+    }
+    suspend fun listTags(): Result<List<String>, ListTagsError> {
+        return repository.listTags().mapError { err ->
+            when (err) {
+                is ListXSoundsTagsError.UnknownError -> ListTagsError.UnknownError
+            }
+        }
+    }
 }
