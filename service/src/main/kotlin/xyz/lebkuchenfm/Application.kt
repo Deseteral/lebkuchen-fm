@@ -65,7 +65,9 @@ fun Application.module() {
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
 
-    val usersRepository = UsersMongoRepository(database)
+    val usersRepository = UsersMongoRepository(database).also {
+        runBlocking { it.createUniqueIndex() }
+    }
     val usersService = UsersService(usersRepository, Clock.System)
     val authService = AuthService(usersService)
 

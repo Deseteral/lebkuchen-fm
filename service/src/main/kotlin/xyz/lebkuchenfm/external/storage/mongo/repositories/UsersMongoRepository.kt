@@ -13,6 +13,13 @@ import xyz.lebkuchenfm.domain.users.UsersRepository
 class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
 
+    suspend fun createUniqueIndex() {
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val index = Indexes.ascending(fieldName)
+        val options = IndexOptions().unique(true).name("unique_data_name")
+        collection.createIndex(index, options)
+    }
+
     override suspend fun findByName(username: String): User? {
         val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         return collection
