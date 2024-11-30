@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.serialize
 import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.server.websocket.converter
+import xyz.lebkuchenfm.api.eventstream.models.mapToDto
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
