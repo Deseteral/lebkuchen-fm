@@ -14,7 +14,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
 
     override suspend fun findByName(username: String): User? {
-        val fieldName = "${UserEntity::data.name}.${User.UserData::name.name}"
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         return collection
             .find(eq(fieldName, username))
             .firstOrNull()
@@ -26,7 +26,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     }
 
     override suspend fun findByApiToken(token: String): User? {
-        val fieldName = "${UserEntity::data.name}.${User.UserSecret::apiToken.name}"
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserSecretEntity::apiToken.name}"
         return collection
             .find(eq(fieldName, token))
             .firstOrNull()
@@ -34,8 +34,8 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     }
 
     override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
-        val nameFieldName = "${UserEntity::data.name}.${User.UserData::name.name}"
-        val loginDateFieldName = "${UserEntity::data.name}.${User.UserData::lastLoggedIn.name}"
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
         return collection.findOneAndUpdate(
             eq(nameFieldName, user.data.name),
             Updates.set(loginDateFieldName, date),
