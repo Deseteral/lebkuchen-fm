@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.users
 
+import com.github.michaelbull.result.Result
 import kotlinx.datetime.Instant
 
 interface UsersRepository {
@@ -7,4 +8,10 @@ interface UsersRepository {
     suspend fun countUsers(): Long
     suspend fun findByApiToken(token: String): User?
     suspend fun updateLastLoginDate(user: User, date: Instant): User?
+    suspend fun insert(user: User): Result<User, InsertUserError>
+}
+
+sealed class InsertUserError {
+    data object UserAlreadyExists : InsertUserError()
+    data object UnknownError : InsertUserError()
 }

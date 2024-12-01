@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.domain.users
 
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
 
@@ -14,8 +16,28 @@ class UsersService(private val repository: UsersRepository, private val clock: C
         return repository.countUsers()
     }
 
-    suspend fun addNewUser(username: String): User {
-        TODO()
+    suspend fun addNewUser(username: String): Result<User, AddNewUserError> {
+        val now = clock.now()
+        val user = User(
+            data = User.UserData(
+                name = username,
+                discordId = null,
+                creationDate = now,
+                lastLoggedIn = now,
+            ),
+            secret = null,
+        )
+
+        return repository.insert(user)
+            .mapError {
+                when (it) {
+                    InsertUserError.UserAlreadyExists -> AddNewUserError.UserAlreadyExists
+                    InsertUserError.UnknownError -> {
+                        logger.error { "Something went wrong while inserting user into repository." }
+                        AddNewUserError.UnknownError
+                    }
+                }
+            }
     }
 
     suspend fun checkPassword(user: User, password: String): Boolean {
@@ -34,4 +56,9 @@ class UsersService(private val repository: UsersRepository, private val clock: C
     suspend fun getByApiToken(token: String): User? {
         return repository.findByApiToken(token)
     }
+}
+
+sealed class AddNewUserError {
+    data object UserAlreadyExists : AddNewUserError()
+    data object UnknownError : AddNewUserError()
 }

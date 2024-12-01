@@ -1,14 +1,24 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.coroutines.runSuspendCatching
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapError
+import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.IndexOptions
+import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
+import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
 
 class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
@@ -48,14 +58,26 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             Updates.set(loginDateFieldName, date),
         )?.toDomain()
     }
+
+    override suspend fun insert(user: User): Result<User, InsertUserError> {
+        return runSuspendCatching { collection.insertOne(user.toEntity()) }
+            .map { user }
+            .mapError { ex ->
+                val error = when {
+                    ex is MongoWriteException && ex.isDuplicateKeyException -> InsertUserError.UserAlreadyExists
+                    else -> InsertUserError.UnknownError
+                }
+                return Err(error)
+            }
+    }
 }
 
 @Serializable
 private data class UserEntity(
     val data: UserDataEntity,
-    val secret: UserSecretEntity,
+    val secret: UserSecretEntity?,
 ) {
-    fun toDomain() = User(data.toDomain(), secret.toDomain())
+    fun toDomain() = User(data.toDomain(), secret?.toDomain())
 
     @Serializable
     data class UserDataEntity(
@@ -76,3 +98,9 @@ private data class UserEntity(
         fun toDomain() = User.UserSecret(hashedPassword, salt, apiToken)
     }
 }
+
+private fun User.toEntity() = UserEntity(data.toEntity(), secret?.toEntity())
+
+private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name, discordId, creationDate, lastLoggedIn)
+
+private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword, salt, apiToken)
