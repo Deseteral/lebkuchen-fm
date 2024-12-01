@@ -4,12 +4,14 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
+import xyz.lebkuchenfm.domain.security.SecureGenerator
 
 private val logger = KotlinLogging.logger {}
 
 class UsersService(
     private val repository: UsersRepository,
     private val passwordEncoder: PasswordEncoder,
+    private val secureGenerator: SecureGenerator,
     private val clock: Clock,
 ) {
     suspend fun getByName(username: String): User? {

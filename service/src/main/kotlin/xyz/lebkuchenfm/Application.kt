@@ -48,6 +48,7 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
+import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
@@ -57,6 +58,7 @@ import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.days
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -70,7 +72,8 @@ fun Application.module() {
         runBlocking { it.createUniqueIndex() }
     }
     val passwordEncoder = Pbkdf2PasswordEncoder()
-    val usersService = UsersService(usersRepository, passwordEncoder, Clock.System)
+    val secureGenerator = RandomSecureGenerator()
+    val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
