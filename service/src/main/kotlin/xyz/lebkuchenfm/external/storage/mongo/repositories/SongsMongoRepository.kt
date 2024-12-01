@@ -1,9 +1,9 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.runCatching
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
@@ -31,7 +31,7 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     }
 
     override suspend fun insert(song: Song): Result<Song, InsertSongError> {
-        return runCatching { collection.insertOne(song.toEntity()) }
+        return runSuspendCatching { collection.insertOne(song.toEntity()) }
             .map { song }
             .mapError { InsertSongError.UnknownError }
     }

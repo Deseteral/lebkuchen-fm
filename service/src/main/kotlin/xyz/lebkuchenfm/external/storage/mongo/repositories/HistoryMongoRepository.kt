@@ -1,9 +1,9 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.runCatching
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
@@ -16,7 +16,7 @@ class HistoryMongoRepository(database: MongoDatabase) : HistoryRepository {
     private val collection = database.getCollection<HistoryEntity>("history")
 
     override suspend fun insert(history: HistoryEntry): Result<HistoryEntry, InsertHistoryEntryError> {
-        return runCatching { collection.insertOne(history.toEntity()) }
+        return runSuspendCatching { collection.insertOne(history.toEntity()) }
             .map { history }
             .mapError { InsertHistoryEntryError.UnknownError }
     }

@@ -48,6 +48,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:$kotlin_logging_version")
 
     implementation("com.michael-bull.kotlin-result:kotlin-result:$kotlin_result_version")
+    implementation("com.michael-bull.kotlin-result:kotlin-result-coroutines:$kotlin_result_version")
 
     implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
     implementation("org.mongodb:bson-kotlinx:$mongo_driver_version")

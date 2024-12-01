@@ -3,9 +3,9 @@ package xyz.lebkuchenfm.external.storage.mongo.repositories
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
-import com.github.michaelbull.result.runCatching
 import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
@@ -60,7 +60,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 
     override suspend fun insert(sound: XSound): Result<XSound, XSoundsRepositoryError> {
-        return runCatching { collection.insertOne(sound.toEntity()) }
+        return runSuspendCatching { collection.insertOne(sound.toEntity()) }
             .map { sound }
             .mapError { ex ->
                 when {
