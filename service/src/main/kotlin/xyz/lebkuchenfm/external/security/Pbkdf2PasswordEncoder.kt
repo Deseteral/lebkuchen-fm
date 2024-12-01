@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.external.security
 
-import xyz.lebkuchenfm.domain.users.HashedPasswordHexEncoded
-import xyz.lebkuchenfm.domain.users.PasswordEncoder
+import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.security.PasswordEncoder
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
