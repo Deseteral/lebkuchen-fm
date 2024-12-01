@@ -16,10 +16,9 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
-import org.bson.codecs.kotlinx.InstantAsBsonDateTime
+import xyz.lebkuchenfm.domain.users.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
@@ -101,7 +100,7 @@ private data class UserEntity(
         val salt: String,
         val apiToken: String,
     ) {
-        fun toDomain() = User.UserSecret(hashedPassword, salt, apiToken)
+        fun toDomain() = User.UserSecret(HashedPasswordHexEncoded(hashedPassword), salt, apiToken)
     }
 }
 
@@ -109,4 +108,4 @@ private fun User.toEntity() = UserEntity(data.toEntity(), secret?.toEntity())
 
 private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name, discordId, creationDate, lastLoggedIn)
 
-private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword, salt, apiToken)
+private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword.value, salt, apiToken)

@@ -47,6 +47,7 @@ import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
@@ -68,7 +69,8 @@ fun Application.module() {
     val usersRepository = UsersMongoRepository(database).also {
         runBlocking { it.createUniqueIndex() }
     }
-    val usersService = UsersService(usersRepository, Clock.System)
+    val passwordEncoder = Pbkdf2PasswordEncoder()
+    val usersService = UsersService(usersRepository, passwordEncoder, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)

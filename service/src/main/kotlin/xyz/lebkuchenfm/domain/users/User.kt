@@ -16,7 +16,7 @@ data class User(
     )
 
     data class UserSecret(
-        val hashedPassword: String,
+        val hashedPassword: HashedPasswordHexEncoded,
         val salt: String,
         val apiToken: String,
     )
