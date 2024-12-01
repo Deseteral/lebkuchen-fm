@@ -18,7 +18,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
-import xyz.lebkuchenfm.domain.users.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository

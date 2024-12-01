@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.domain.users
+package xyz.lebkuchenfm.domain.security
 
 interface PasswordEncoder {
     fun encode(password: String, salt: String): HashedPasswordHexEncoded
