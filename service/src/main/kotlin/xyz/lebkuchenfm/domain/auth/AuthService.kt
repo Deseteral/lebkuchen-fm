@@ -31,6 +31,7 @@ class AuthService(private val usersService: UsersService) {
             !user.hasPasswordSet -> {
                 logger.info { "User '${user.data.name}' is logging in for the first time." }
 
+                // TODO: Handle error here.
                 val userWithPassword = usersService.setPassword(user, password)
                 UserSession(userWithPassword.data.name)
             }

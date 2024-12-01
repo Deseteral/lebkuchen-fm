@@ -4,6 +4,9 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.PBEKeySpec
+
 
 private val logger = KotlinLogging.logger {}
 
@@ -40,8 +43,25 @@ class UsersService(private val repository: UsersRepository, private val clock: C
             }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     suspend fun checkPassword(user: User, password: String): Boolean {
-        TODO()
+        if (user.secret == null) {
+            return false
+        }
+
+        val iterationCount = 50000
+        val keyLength = 64 * 8
+        val spec = PBEKeySpec(
+            password.toCharArray(),
+            user.secret.salt.toByteArray(),
+            iterationCount,
+            keyLength,
+        )
+        val factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA512")
+
+        val hash = factory.generateSecret(spec).encoded
+
+        return hash.toHexString() == user.secret.hashedPassword
     }
 
     suspend fun setPassword(user: User, password: String): User {

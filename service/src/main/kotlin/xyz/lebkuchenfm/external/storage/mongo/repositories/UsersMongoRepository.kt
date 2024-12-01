@@ -7,14 +7,19 @@ import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
+import org.bson.BsonDateTime
+import org.bson.codecs.kotlinx.InstantAsBsonDateTime
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
@@ -55,7 +60,8 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
         return collection.findOneAndUpdate(
             eq(nameFieldName, user.data.name),
-            Updates.set(loginDateFieldName, date),
+            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
+            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
     }
 
