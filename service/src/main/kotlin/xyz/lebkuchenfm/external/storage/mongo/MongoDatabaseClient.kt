@@ -1,7 +1,9 @@
 package xyz.lebkuchenfm.external.storage.mongo
 
 import com.mongodb.ConnectionString
+import com.mongodb.ErrorCategory
 import com.mongodb.MongoClientSettings
+import com.mongodb.MongoWriteException
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.ktor.server.config.ApplicationConfig
@@ -26,3 +28,6 @@ object MongoDatabaseClient {
         return MongoClient.create(clientSettings)
     }
 }
+
+val MongoWriteException.isDuplicateKeyException: Boolean
+    get() = this.error.category == ErrorCategory.DUPLICATE_KEY

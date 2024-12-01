@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.songs
 
+import com.github.michaelbull.result.getOr
 import kotlinx.datetime.Clock
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.history.HistoryEntry
@@ -45,11 +46,6 @@ class SongsService(
             trimStartSeconds = null,
             trimEndSeconds = null,
         )
-        val inserted = songsRepository.insert(newSong)
-        return if (inserted) {
-            newSong
-        } else {
-            null
-        }
+        return songsRepository.insert(newSong).getOr(null)
     }
 }

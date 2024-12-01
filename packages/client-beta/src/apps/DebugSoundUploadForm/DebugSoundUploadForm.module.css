@@ -1,0 +1,10 @@
+.container {
+  padding: 64px 30px;
+}
+
+.error {
+  display: block;
+  padding: 4px 0;
+  height: 20px;
+  color: red;
+}

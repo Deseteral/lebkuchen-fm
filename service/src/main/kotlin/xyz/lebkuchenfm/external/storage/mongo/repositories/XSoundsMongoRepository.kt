@@ -3,7 +3,9 @@ package xyz.lebkuchenfm.external.storage.mongo.repositories
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.mongodb.ErrorCategory
+import com.github.michaelbull.result.coroutines.runSuspendCatching
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Accumulators.addToSet
 import com.mongodb.client.model.Aggregates.group
@@ -30,6 +32,7 @@ import xyz.lebkuchenfm.domain.xsounds.RemoveTagFromXSoundError
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepository
 import xyz.lebkuchenfm.domain.xsounds.XSoundsRepositoryError
+import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
 
 class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     private val collection = database.getCollection<XSoundEntity>("x")
@@ -57,19 +60,14 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 
     override suspend fun insert(sound: XSound): Result<XSound, XSoundsRepositoryError> {
-        return try {
-            if (collection.insertOne(XSoundEntity(sound)).wasAcknowledged()) {
-                Ok(sound)
-            } else {
-                Err(XSoundsRepositoryError.UnknownError)
+        return runSuspendCatching { collection.insertOne(sound.toEntity()) }
+            .map { sound }
+            .mapError { ex ->
+                when {
+                    ex is MongoWriteException && ex.isDuplicateKeyException -> XSoundsRepositoryError.SoundAlreadyExists
+                    else -> XSoundsRepositoryError.UnknownError
+                }
             }
-        } catch (e: MongoWriteException) {
-            if (e.error.category == ErrorCategory.DUPLICATE_KEY) {
-                Err(XSoundsRepositoryError.SoundAlreadyExists)
-            } else {
-                Err((XSoundsRepositoryError.UnknownError))
-            }
-        }
     }
 
     override suspend fun findAllUniqueTags(): List<String> {
@@ -155,15 +153,6 @@ data class XSoundEntity(
     val tags: List<String>?,
     val addedBy: String?,
 ) {
-    constructor(sound: XSound) : this(
-        null,
-        sound.name,
-        sound.url,
-        sound.timesPlayed,
-        sound.tags,
-        sound.addedBy,
-    )
-
     fun toDomain(): XSound = XSound(
         name = this.name,
         url = this.url,
@@ -172,3 +161,12 @@ data class XSoundEntity(
         addedBy = this.addedBy,
     )
 }
+
+private fun XSound.toEntity(): XSoundEntity = XSoundEntity(
+    id = null,
+    name = name,
+    url = url,
+    timesPlayed = timesPlayed,
+    tags = tags,
+    addedBy = addedBy,
+)
