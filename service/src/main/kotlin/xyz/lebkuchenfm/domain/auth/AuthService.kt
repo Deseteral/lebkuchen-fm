@@ -1,6 +1,8 @@
 package xyz.lebkuchenfm.domain.auth
 
+import com.github.michaelbull.result.flatten
 import com.github.michaelbull.result.getOr
+import com.github.michaelbull.result.map
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.users.UsersService
 
@@ -13,14 +15,12 @@ class AuthService(private val usersService: UsersService) {
         return when {
             user == null && usersService.getUsersCount() == 0L -> {
                 logger.info { "User '$username' is the first user to log in." }
-                return usersService
-                    .addNewUser(username)
+                // TODO: Handle errors (probably just present them to the user).
+                usersService.addNewUser(username)
+                    .map { usersService.setPassword(it, password) }
+                    .flatten()
                     .getOr(null)
-                    ?.let { newUser ->
-                        // TODO: Handle error here.
-                        usersService.setPassword(newUser, password)
-                        UserSession(newUser.data.name)
-                    }
+                    ?.let { UserSession(it.data.name) }
             }
 
             user == null -> {
@@ -30,10 +30,10 @@ class AuthService(private val usersService: UsersService) {
 
             !user.hasPasswordSet -> {
                 logger.info { "User '${user.data.name}' is logging in for the first time." }
-
-                // TODO: Handle error here.
-                val userWithPassword = usersService.setPassword(user, password)
-                UserSession(userWithPassword.data.name)
+                // TODO: Handle errors (probably just present them to the user).
+                usersService.setPassword(user, password)
+                    .map { UserSession(it.data.name) }
+                    .getOr(null)
             }
 
             else -> {
