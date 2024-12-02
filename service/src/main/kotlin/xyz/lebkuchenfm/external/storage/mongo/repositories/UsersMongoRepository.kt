@@ -34,7 +34,13 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val index = Indexes.ascending(fieldName)
         val options = IndexOptions().unique(true).name("unique_data_name")
-        collection.createIndex(index, options)
+
+        try {
+            collection.createIndex(index, options)
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while creating a user repository index." }
+            throw ex
+        }
     }
 
     override suspend fun findByName(username: String): User? {
