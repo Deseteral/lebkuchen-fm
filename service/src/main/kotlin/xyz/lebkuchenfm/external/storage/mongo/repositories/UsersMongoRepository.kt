@@ -51,10 +51,6 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
-    override suspend fun countUsers(): Long {
-        return collection.countDocuments()
-    }
-
     override suspend fun findByApiToken(token: String): User? {
         val fieldName = "${UserEntity::data.name}.${UserEntity.UserSecretEntity::apiToken.name}"
         return collection
@@ -63,14 +59,10 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
-    override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
-        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
-        val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
-        return collection.findOneAndUpdate(
-            eq(nameFieldName, user.data.name),
-            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
-            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
-        )?.toDomain()
+    override suspend fun countUsers(): Long {
+        // TODO: If this throws we should not return zero. Returning zero here will mean that any credentials will
+        //  be able to authorize - which is a major breach of security.
+        return collection.countDocuments()
     }
 
     override suspend fun insert(user: User): Result<User, InsertUserError> {
@@ -86,6 +78,16 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
                 }
                 return Err(error)
             }
+    }
+
+    override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
+        return collection.findOneAndUpdate(
+            eq(nameFieldName, user.data.name),
+            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
+            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+        )?.toDomain()
     }
 
     override suspend fun updateSecret(user: User, secret: User.UserSecret): User? {
