@@ -14,5 +14,6 @@ interface UsersRepository {
 
 sealed class InsertUserError {
     data object UserAlreadyExists : InsertUserError()
-    data object UnknownError : InsertUserError()
+    data object WriteError : InsertUserError()
+}
 }

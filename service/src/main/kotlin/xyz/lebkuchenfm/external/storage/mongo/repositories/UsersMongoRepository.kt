@@ -75,7 +75,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
                     ex is MongoWriteException && ex.isDuplicateKeyException -> InsertUserError.UserAlreadyExists
                     else -> {
                         logger.error(ex) { "An error occurred while inserting new user document." }
-                        InsertUserError.UnknownError
+                        InsertUserError.WriteError
                     }
                 }
                 return Err(error)

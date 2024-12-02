@@ -46,7 +46,7 @@ class UsersService(
                         logger.info { "Tried to create a new user '${user.data.name}', but it already exists." }
                         AddNewUserError.UserAlreadyExists
                     }
-                    InsertUserError.UnknownError -> {
+                    InsertUserError.WriteError -> {
                         logger.error { "Something went wrong while inserting user into repository." }
                         AddNewUserError.UnknownError
                     }
