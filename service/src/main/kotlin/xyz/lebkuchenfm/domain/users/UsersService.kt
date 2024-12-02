@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.domain.users
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -47,7 +49,7 @@ class UsersService(
             }
     }
 
-    suspend fun checkPassword(user: User, password: String): Boolean {
+    fun checkPassword(user: User, password: String): Boolean {
         if (user.secret == null) {
             return false
         }
@@ -56,9 +58,25 @@ class UsersService(
         return hash == user.secret.hashedPassword
     }
 
-    suspend fun setPassword(user: User, password: String): User {
-        logger.info { "User '${user.data.name}' set new password." }
-        TODO()
+    suspend fun setPassword(user: User, password: String): Result<User, SetPasswordError> {
+        if (password.length < 6) {
+            return Err(SetPasswordError.ValidationError(tooShort = true))
+        }
+
+        val salt = secureGenerator.generateSalt()
+        val hashedPassword = passwordEncoder.encode(password, salt)
+        val apiToken = secureGenerator.generateApiToken()
+        val secret = User.UserSecret(hashedPassword, salt, apiToken)
+
+        val updatedUser = repository.updateSecret(user, secret)
+
+        return if (updatedUser != null) {
+            logger.info { "User '${user.data.name}' set new password." }
+            Ok(updatedUser)
+        } else {
+            logger.error { "An error occurred while saving updated user secret to repository." }
+            Err(SetPasswordError.UnknownError)
+        }
     }
 
     suspend fun updateLastLoginDate(user: User) {
@@ -73,4 +91,9 @@ class UsersService(
 sealed class AddNewUserError {
     data object UserAlreadyExists : AddNewUserError()
     data object UnknownError : AddNewUserError()
+}
+
+sealed class SetPasswordError {
+    data class ValidationError(val tooShort: Boolean) : SetPasswordError()
+    data object UnknownError : SetPasswordError()
 }

@@ -9,6 +9,7 @@ interface UsersRepository {
     suspend fun findByApiToken(token: String): User?
     suspend fun updateLastLoginDate(user: User, date: Instant): User?
     suspend fun insert(user: User): Result<User, InsertUserError>
+    suspend fun updateSecret(user: User, secret: User.UserSecret): User?
 }
 
 sealed class InsertUserError {

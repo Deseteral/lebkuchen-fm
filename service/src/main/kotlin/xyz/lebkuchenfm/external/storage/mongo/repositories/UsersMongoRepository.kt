@@ -75,6 +75,16 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
                 return Err(error)
             }
     }
+
+    override suspend fun updateSecret(user: User, secret: User.UserSecret): User? {
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val secretFieldName = UserEntity::secret.name
+        return collection.findOneAndUpdate(
+            eq(nameFieldName, user.data.name),
+            Updates.set(secretFieldName, secret.toEntity()),
+            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+        )?.toDomain()
+    }
 }
 
 @Serializable
