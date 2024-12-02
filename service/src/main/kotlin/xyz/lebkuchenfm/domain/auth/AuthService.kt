@@ -36,14 +36,15 @@ class AuthService(private val usersService: UsersService) {
                 UserSession(userWithPassword.data.name)
             }
 
-            else -> if (usersService.checkPassword(user, password)) {
-                logger.info { "User '${user.data.name}' logged in." }
-
-                usersService.updateLastLoginDate(user)
-                UserSession(user.data.name)
-            } else {
-                logger.info { "User '${user.data.name}' tried to log in, but provided wrong password." }
-                null
+            else -> {
+                if (usersService.checkPassword(user, password)) {
+                    logger.info { "User '${user.data.name}' logged in." }
+                    usersService.updateLastLoginDate(user)
+                    UserSession(user.data.name)
+                } else {
+                    logger.info { "User '${user.data.name}' tried to log in, but provided wrong password." }
+                    null
+                }
             }
         }
     }

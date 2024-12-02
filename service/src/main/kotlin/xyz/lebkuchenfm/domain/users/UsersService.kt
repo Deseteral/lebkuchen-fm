@@ -4,6 +4,7 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
+import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
 import xyz.lebkuchenfm.domain.security.PasswordEncoder
@@ -38,9 +39,13 @@ class UsersService(
         )
 
         return repository.insert(user)
+            .onSuccess { logger.info { "Created new user '${it.data.name}'." } }
             .mapError {
                 when (it) {
-                    InsertUserError.UserAlreadyExists -> AddNewUserError.UserAlreadyExists
+                    InsertUserError.UserAlreadyExists -> {
+                        logger.info { "Tried to create a new user '${user.data.name}', but it already exists." }
+                        AddNewUserError.UserAlreadyExists
+                    }
                     InsertUserError.UnknownError -> {
                         logger.error { "Something went wrong while inserting user into repository." }
                         AddNewUserError.UnknownError
@@ -59,6 +64,7 @@ class UsersService(
     }
 
     suspend fun setPassword(user: User, password: String): Result<User, SetPasswordError> {
+        // TODO: Create password validator service.
         if (password.length < 6) {
             return Err(SetPasswordError.ValidationError(tooShort = true))
         }
