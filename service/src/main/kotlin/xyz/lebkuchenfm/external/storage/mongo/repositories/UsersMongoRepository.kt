@@ -13,6 +13,7 @@ import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
@@ -23,6 +24,8 @@ import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
+
+private val logger = KotlinLogging.logger {}
 
 class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
@@ -70,7 +73,10 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             .mapError { ex ->
                 val error = when {
                     ex is MongoWriteException && ex.isDuplicateKeyException -> InsertUserError.UserAlreadyExists
-                    else -> InsertUserError.UnknownError
+                    else -> {
+                        logger.error(ex) { "An error occurred while inserting new user document." }
+                        InsertUserError.UnknownError
+                    }
                 }
                 return Err(error)
             }
