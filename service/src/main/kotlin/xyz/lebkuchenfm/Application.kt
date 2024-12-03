@@ -67,23 +67,20 @@ fun Application.module() {
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
 
-    val usersRepository = UsersMongoRepository(database).also {
-        runBlocking { it.createUniqueIndex() }
-    }
+    val usersRepository = UsersMongoRepository(database)
+        .also { runBlocking { it.createUniqueIndex() } }
     val passwordEncoder = Pbkdf2PasswordEncoder()
     val secureGenerator = RandomSecureGenerator()
     val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
-    val xSoundsRepository = XSoundsMongoRepository(database).also {
-        runBlocking { it.createUniqueIndex() }
-    }
+    val xSoundsRepository = XSoundsMongoRepository(database)
+        .also { runBlocking { it.createUniqueIndex() } }
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
-    val songsRepository = SongsMongoRepository(database).also {
-        runBlocking { it.createTextIndex() }
-    }
+    val songsRepository = SongsMongoRepository(database)
+        .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
