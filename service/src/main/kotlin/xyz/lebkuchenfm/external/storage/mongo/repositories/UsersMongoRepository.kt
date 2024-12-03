@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
 import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
@@ -21,6 +22,7 @@ import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
+import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
@@ -90,14 +92,19 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         )?.toDomain()
     }
 
-    override suspend fun updateSecret(user: User, secret: User.UserSecret): User? {
+    override suspend fun updateSecret(user: User, secret: User.UserSecret): Result<User, UpdateSecretError> {
         val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val secretFieldName = UserEntity::secret.name
-        return collection.findOneAndUpdate(
-            eq(nameFieldName, user.data.name),
-            Updates.set(secretFieldName, secret.toEntity()),
-            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
-        )?.toDomain()
+        return try {
+            collection.findOneAndUpdate(
+                eq(nameFieldName, user.data.name),
+                Updates.set(secretFieldName, secret.toEntity()),
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+            )?.toDomain()?.let { Ok(it) } ?: Err(UpdateSecretError.UserNotFound)
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while updating user '${user.data.name}' secret." }
+            Err(UpdateSecretError.WriteError)
+        }
     }
 }
 

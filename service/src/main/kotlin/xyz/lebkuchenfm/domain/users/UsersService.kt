@@ -1,7 +1,6 @@
 package xyz.lebkuchenfm.domain.users
 
 import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
@@ -74,15 +73,17 @@ class UsersService(
         val apiToken = secureGenerator.generateApiToken()
         val secret = User.UserSecret(hashedPassword, salt, apiToken)
 
-        val updatedUser = repository.updateSecret(user, secret)
-
-        return if (updatedUser != null) {
-            logger.info { "User '${user.data.name}' set new password." }
-            Ok(updatedUser)
-        } else {
-            logger.error { "An error occurred while saving updated user secret to repository." }
-            Err(SetPasswordError.UnknownError)
-        }
+        return repository.updateSecret(user, secret)
+            .onSuccess { logger.info { "User '${user.data.name}' set new password." } }
+            .mapError {
+                when (it) {
+                    UpdateSecretError.UserNotFound -> {
+                        logger.error { "Tried to update user '${user.data.name} secret, but that user doesn't exist." }
+                        SetPasswordError.UserDoesNotExist
+                    }
+                    UpdateSecretError.WriteError -> SetPasswordError.UnknownError
+                }
+            }
     }
 
     suspend fun updateLastLoginDate(user: User) {
@@ -101,5 +102,6 @@ sealed class AddNewUserError {
 
 sealed class SetPasswordError {
     data class ValidationError(val tooShort: Boolean) : SetPasswordError()
+    data object UserDoesNotExist : SetPasswordError()
     data object UnknownError : SetPasswordError()
 }
