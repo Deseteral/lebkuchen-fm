@@ -20,11 +20,16 @@ class LLMPromptsRepository extends Repository<LLMPrompt> {
 
   async findOneByTypeVariantNotDeprecatedOrderByDateDesc(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
     const result = await this.collection
-      .find({ type, variant, deprecated: false })
+      .find({ type, variant })
       .sort({ creationDate: -1 })
       .limit(1)
       .toArray();
-    return result[0] || null;
+    
+    if (!!result[0] && !result[0].deprecated) {
+      return result[0];
+    } else {
+      return null;
+    }
   }
 
   async findAllByTypeVariantOrderByDateDesc(type: LLMPromptType, variant: string): Promise<LLMPrompt[]> {
