@@ -3,6 +3,7 @@ import { AppWindow } from '@components/AppWindow/AppWindow';
 import { Toggle } from '@components/Toggle/Toggle';
 import styles from './SettingsWindow.module.css';
 import { UserPreferencesService } from '../../../../services/user-preferences-service';
+import { SliderInput } from '@components/SliderInput/SliderInput';
 
 interface SettingsWindowProps {
   close?: () => void;
@@ -39,17 +40,15 @@ function SettingsWindow(props: SettingsWindowProps) {
         <Toggle onChange={onXSoundsPreferenceChange} checked={xSoundPreference()}>
           Play XSounds
         </Toggle>
-        <label>
-          <input
-            type="range"
-            min="1"
-            max="100"
-            value={xSoundVolume()}
-            onInput={onXSoundVolumeChange}
-            onChange={saveNewXSoundVolume}
-          />
-        </label>
-        <span>Volume: {xSoundVolume()}%</span>
+        <SliderInput
+          min={1}
+          max={100}
+          value={xSoundVolume()}
+          onInput={onXSoundVolumeChange}
+          onChange={saveNewXSoundVolume}
+        >
+          {`Volume: ${xSoundVolume()}%`}
+        </SliderInput>
       </section>
     </AppWindow>
   );

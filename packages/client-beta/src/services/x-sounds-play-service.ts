@@ -19,13 +19,14 @@ class XSoundsPlayService {
 
   static play(soundUrl: string) {
     const audio = new Audio(soundUrl);
-    audio.volume = 0.5;
+    const volume = (UserPreferencesService.get('xSoundVolume') ?? 50) as number;
+    audio.volume = volume / 100;
     audio.play();
   }
 
   private static playXSoundEventHandler(event: PlayXSoundEvent) {
     const { soundUrl } = event;
-    if (!XSoundsPlayService.shouldPlay()) {
+    if (XSoundsPlayService.shouldPlay()) {
       XSoundsPlayService.play(soundUrl);
     }
   }
