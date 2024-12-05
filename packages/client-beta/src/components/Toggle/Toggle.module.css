@@ -22,14 +22,14 @@
 }
 
 .toggle::before {
-  content: "";
+  content: '';
   display: block;
   width: toggleWidth;
   height: 1.6rem;
   border: 1px solid var(--border-color-one);
   border-radius: var(--border-radius);
   background-color: white;
-  transition: .1s ease-in;
+  transition: 0.1s ease-in;
 }
 
 .checkbox {
