@@ -7,6 +7,7 @@ import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
 import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
 
 function Desktop() {
   onMount(() => {
@@ -26,6 +27,7 @@ function Desktop() {
       <main class={styles.desktop}>
         <Soundboard />
         <Player />
+        <DebugSoundUploadForm />
         <Settings />
       </main>
     </>

@@ -1,5 +1,9 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
+import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.coroutines.runSuspendCatching
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapError
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
@@ -13,6 +17,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
+import xyz.lebkuchenfm.domain.songs.InsertSongError
 import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsRepository
 
@@ -25,8 +30,10 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
         collection.createIndex(Indexes.text(SongEntity::name.name), options)
     }
 
-    override suspend fun insert(song: Song): Boolean {
-        return collection.insertOne(SongEntity(song)).wasAcknowledged()
+    override suspend fun insert(song: Song): Result<Song, InsertSongError> {
+        return runSuspendCatching { collection.insertOne(song.toEntity()) }
+            .map { song }
+            .mapError { InsertSongError.UnknownError }
     }
 
     override suspend fun findAllOrderByNameAsc(): List<Song> {
@@ -69,15 +76,6 @@ data class SongEntity(
     val trimEndSeconds: Int?,
     val timesPlayed: Int,
 ) {
-    constructor(song: Song) : this(
-        null,
-        song.name,
-        song.youtubeId,
-        song.trimStartSeconds,
-        song.trimEndSeconds,
-        song.timesPlayed,
-    )
-
     fun toDomain(): Song {
         return Song(
             name = this.name,
@@ -88,3 +86,12 @@ data class SongEntity(
         )
     }
 }
+
+private fun Song.toEntity(): SongEntity = SongEntity(
+    id = null,
+    name = name,
+    youtubeId = youtubeId,
+    trimStartSeconds = trimStartSeconds,
+    trimEndSeconds = trimEndSeconds,
+    timesPlayed = timesPlayed,
+)

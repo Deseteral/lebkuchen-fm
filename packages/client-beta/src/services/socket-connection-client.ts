@@ -51,7 +51,7 @@ class SocketConnectionClient {
     }
 
     SocketConnectionClient.client.send(JSON.stringify(messageData));
-    console.log('Sent message to event stream', { messageData });
+    console.log('Sent message to event stream', messageData);
   }
 
   private static getWebSocketUrl(): string {

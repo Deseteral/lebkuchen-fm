@@ -8,11 +8,14 @@ abstract class EventStream<ConsumerT : EventStream.Consumer> {
 
     abstract suspend fun sendToOne(id: EventStreamConsumerId, event: Event)
 
-    suspend fun sendToEveryone(event: Event, exclude: EventStreamConsumerId? = null) {
+    suspend fun sendToEveryone(event: Event, exclude: EventStreamConsumerId? = null): Int {
+        var sentCount = 0
         for (id in subscriptions.keys) {
             if (id == exclude) continue
             sendToOne(id, event)
+            sentCount += 1
         }
+        return sentCount
     }
 
     open fun subscribe(consumer: ConsumerT) {
@@ -22,6 +25,8 @@ abstract class EventStream<ConsumerT : EventStream.Consumer> {
     open fun unsubscribe(consumer: ConsumerT) {
         subscriptions.remove(consumer.id)
     }
+
+    val subscriptionCount get() = subscriptions.count()
 
     interface Consumer {
         val id: EventStreamConsumerId

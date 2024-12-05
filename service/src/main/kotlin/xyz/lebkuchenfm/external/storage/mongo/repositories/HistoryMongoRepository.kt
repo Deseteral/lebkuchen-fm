@@ -1,30 +1,24 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
-import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import com.mongodb.MongoWriteException
+import com.github.michaelbull.result.coroutines.runSuspendCatching
+import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapError
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
-import xyz.lebkuchenfm.domain.history.HistoryRepositoryError
+import xyz.lebkuchenfm.domain.history.InsertHistoryEntryError
 
 class HistoryMongoRepository(database: MongoDatabase) : HistoryRepository {
     private val collection = database.getCollection<HistoryEntity>("history")
 
-    override suspend fun insert(history: HistoryEntry): Result<HistoryEntry, HistoryRepositoryError> {
-        return try {
-            if (collection.insertOne(history.toEntity()).wasAcknowledged()) {
-                Ok(history)
-            } else {
-                Err(HistoryRepositoryError.UnknownError)
-            }
-        } catch (e: MongoWriteException) {
-            Err(HistoryRepositoryError.UnknownError)
-        }
+    override suspend fun insert(history: HistoryEntry): Result<HistoryEntry, InsertHistoryEntryError> {
+        return runSuspendCatching { collection.insertOne(history.toEntity()) }
+            .map { history }
+            .mapError { InsertHistoryEntryError.UnknownError }
     }
 }
 
@@ -35,6 +29,8 @@ private data class HistoryEntity(
     val user: String?,
 )
 
-private fun HistoryEntry.toEntity(): HistoryEntity {
-    return HistoryEntity(this.date, this.youtubeId, this.user)
-}
+private fun HistoryEntry.toEntity() = HistoryEntity(
+    date = date,
+    youtubeId = youtubeId,
+    user = user,
+)
