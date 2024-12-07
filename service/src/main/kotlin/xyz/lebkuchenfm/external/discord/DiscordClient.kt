@@ -63,36 +63,16 @@ class DiscordClient(
             .filter { it.author?.isBot == false }
             .onEach {
                 val author = requireNotNull(it.author)
-                val user = userService.getByDiscordId(author.id.toString())
 
-                // TODO: Add support for login command.
-                val isLoginCommand = false
-
-                when {
-                    isLoginCommand -> {
-                        val context = ExecutionContext(UserSession(name = "unknown"))
-                        val result = commandExecutorService.executeFromText(it.content, context)
-                        it.reply {
-                            content = result.message.markdown
-                        }
-                    }
-
-                    user != null -> {
-                        val context = ExecutionContext(UserSession(user.data.name))
-                        val result = commandExecutorService.executeFromText(it.content, context)
-                        it.reply {
-                            content = result.message.markdown
-                        }
+                when (val user = userService.getByDiscordId(author.id.toString())) {
+                    null -> {
+                        it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
                     }
 
                     else -> {
-                        // TODO: Add support for login command.
-                        it.reply {
-                            content = """
-                                You have to connect your Discord account with LebkuchenFM.
-                                Use `$commandPrompt TODO LOGIN_COMMAND_KEY <lebkuchen-fm-username>` to login.
-                            """.trimIndent()
-                        }
+                        val context = ExecutionContext(UserSession(user.data.name))
+                        val result = commandExecutorService.executeFromText(it.content, context)
+                        it.reply { content = result.message.markdown }
                     }
                 }
             }
