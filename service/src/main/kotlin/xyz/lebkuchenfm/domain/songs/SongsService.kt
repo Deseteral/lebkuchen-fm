@@ -30,18 +30,32 @@ class SongsService(
         val foundByName = songsRepository.findByName(nameOrYouTubeId)
         foundByName?.let { return it }
 
-        val maybeYoutubeId = nameOrYouTubeId.split(" ").firstOrNull()
+        val maybeYoutubeId = nameOrYouTubeId.split(" ").firstOrNull() ?: return null
 
-        return maybeYoutubeId?.let { youtubeId ->
-            songsRepository.findByYoutubeId(youtubeId) ?: createNewSong(youtubeId)
+        val foundById = songsRepository.findByYoutubeId(maybeYoutubeId)
+        foundById?.let { return it }
+
+        val foundOnYoutube = youtubeRepository.findVideoById(maybeYoutubeId)
+        foundOnYoutube?.let {
+            createNewSong(foundOnYoutube.id, foundOnYoutube.name)
+        }.also {
+            return it
         }
     }
 
-    private suspend fun createNewSong(youtubeId: String, songName: String? = null): Song? {
-        val youtubeVideo = youtubeRepository.findVideoById(youtubeId) ?: return null
+    suspend fun getSongFromYoutube(searchPhrase: String): Song? {
+        val foundOnYoutube = youtubeRepository.findVideoByPhrase(searchPhrase)
+        foundOnYoutube?.let {
+            songsRepository.findByYoutubeId(foundOnYoutube.id) ?: createNewSong(foundOnYoutube.id, foundOnYoutube.name)
+        }.also {
+            return it
+        }
+    }
+
+    private suspend fun createNewSong(youtubeId: String, songName: String): Song? {
         val newSong = Song(
-            name = songName ?: youtubeVideo.name,
-            youtubeId = youtubeVideo.id,
+            name = songName,
+            youtubeId = youtubeId,
             timesPlayed = 0,
             trimStartSeconds = null,
             trimEndSeconds = null,
