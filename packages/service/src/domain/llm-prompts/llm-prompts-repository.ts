@@ -18,18 +18,14 @@ class LLMPromptsRepository extends Repository<LLMPrompt> {
     return result.map((doc) => doc._id.variant);
   }
 
-  async findOneByTypeVariantNotDeprecatedOrderByDateDesc(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
+  async findOneByTypeVariantOrderByDateDesc(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
     const result = await this.collection
       .find({ type, variant })
       .sort({ creationDate: -1 })
       .limit(1)
       .toArray();
-    
-    if (!!result[0] && !result[0].deprecated) {
-      return result[0];
-    } else {
-      return null;
-    }
+
+    return result[0] || null;
   }
 
   async findAllByTypeVariantOrderByDateDesc(type: LLMPromptType, variant: string): Promise<LLMPrompt[]> {
