@@ -25,6 +25,10 @@ class UsersService(
         return repository.countUsers()
     }
 
+    suspend fun getByDiscordId(discordId: String): User? {
+        return repository.findByDiscordId(discordId)
+    }
+
     suspend fun addNewUser(username: String): Result<User, AddNewUserError> {
         val now = clock.now()
         val user = User(

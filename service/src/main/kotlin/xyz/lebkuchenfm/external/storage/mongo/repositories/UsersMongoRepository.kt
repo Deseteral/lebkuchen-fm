@@ -61,6 +61,14 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
+    override suspend fun findByDiscordId(discordId: String): User? {
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::discordId.name}"
+        return collection
+            .find(eq(fieldName, discordId))
+            .firstOrNull()
+            ?.toDomain()
+    }
+
     override suspend fun countUsers(): Long {
         // TODO: If this throws we should not return zero. Returning zero here will mean that any credentials will
         //  be able to authorize - which is a major breach of security.

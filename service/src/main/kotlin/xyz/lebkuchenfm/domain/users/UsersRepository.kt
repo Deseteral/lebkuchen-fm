@@ -6,6 +6,7 @@ import kotlinx.datetime.Instant
 interface UsersRepository {
     suspend fun findByName(username: String): User?
     suspend fun findByApiToken(token: String): User?
+    suspend fun findByDiscordId(discordId: String): User?
     suspend fun countUsers(): Long
     suspend fun insert(user: User): Result<User, InsertUserError>
     suspend fun updateLastLoginDate(user: User, date: Instant): User?

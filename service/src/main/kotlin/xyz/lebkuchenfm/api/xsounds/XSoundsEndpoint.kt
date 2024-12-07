@@ -11,6 +11,8 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import io.ktor.server.sessions.get
+import io.ktor.server.sessions.sessions
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
@@ -30,10 +32,8 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
-            // TODO: Get UserSession from request when the endpoints get authorization.
-            val session = UserSession("FAKE USER TODO")
-            // val session = call.sessions.get<UserSession>()
-            // checkNotNull(session)
+            val session = call.sessions.get<UserSession>()
+            checkNotNull(session)
 
             var soundName = ""
             var tags: List<String> = emptyList()

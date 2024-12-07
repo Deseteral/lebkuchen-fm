@@ -17,9 +17,15 @@ import kotlinx.coroutines.flow.onEach
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
-class DiscordClient(config: ApplicationConfig, private val commandExecutorService: CommandExecutorService) {
+
+class DiscordClient(
+    config: ApplicationConfig,
+    private val commandExecutorService: CommandExecutorService,
+    private val userService: UsersService,
+) {
     private lateinit var kord: Kord
 
     private val token: String? = config.propertyOrNull("discord.token")?.getString()
@@ -53,13 +59,41 @@ class DiscordClient(config: ApplicationConfig, private val commandExecutorServic
             .map { it.message }
             .filter { it.channelId.value.toString() == channelId }
             .filter { it.content.startsWith(commandPrompt) }
+            .filter { it.author != null }
             .filter { it.author?.isBot == false }
             .onEach {
-                // TODO: Get user by Discord ID.
-                val context = ExecutionContext(UserSession(name = "FAKE USER TODO"))
-                val result = commandExecutorService.executeFromText(it.content, context)
-                it.reply {
-                    content = result.message.markdown
+                val author = requireNotNull(it.author)
+                val user = userService.getByDiscordId(author.id.toString())
+
+                // TODO: Add support for login command.
+                val isLoginCommand = false
+
+                when {
+                    isLoginCommand -> {
+                        val context = ExecutionContext(UserSession(name = "unknown"))
+                        val result = commandExecutorService.executeFromText(it.content, context)
+                        it.reply {
+                            content = result.message.markdown
+                        }
+                    }
+
+                    user != null -> {
+                        val context = ExecutionContext(UserSession(user.data.name))
+                        val result = commandExecutorService.executeFromText(it.content, context)
+                        it.reply {
+                            content = result.message.markdown
+                        }
+                    }
+
+                    else -> {
+                        // TODO: Add support for login command.
+                        it.reply {
+                            content = """
+                                You have to connect your Discord account with LebkuchenFM.
+                                Use `$commandPrompt TODO LOGIN_COMMAND_KEY <lebkuchen-fm-username>` to login.
+                            """.trimIndent()
+                        }
+                    }
                 }
             }
             .launchIn(kord)
