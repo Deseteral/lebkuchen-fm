@@ -10,13 +10,13 @@ import {
   soundsSorting,
 } from '../../services/soundboard-service';
 import { XSound } from '../../types/x-sound';
+import { XSoundsPlayService } from '../../services/x-sounds-play-service';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
   const [filteredXSounds, setFilteredXSounds] = createSignal([]);
   const [xsounds, setXsounds] = createSignal([]);
   const [tags, setTags] = createSignal([]);
-  const audioClient = new Audio();
   let buttonRef!: HTMLButtonElement;
   const toggleWindow = () => {
     setShowWindow((prev: boolean) => !prev);
@@ -26,8 +26,7 @@ function Soundboard() {
   };
 
   function playXSoundLocally(url: string) {
-    audioClient.src = url;
-    audioClient.play();
+    XSoundsPlayService.play(url);
   }
 
   createEffect(() => {
