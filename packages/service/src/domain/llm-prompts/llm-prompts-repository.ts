@@ -24,7 +24,6 @@ class LLMPromptsRepository extends Repository<LLMPrompt> {
       .sort({ creationDate: -1 })
       .limit(1)
       .toArray();
-
     return result[0] || null;
   }
 
