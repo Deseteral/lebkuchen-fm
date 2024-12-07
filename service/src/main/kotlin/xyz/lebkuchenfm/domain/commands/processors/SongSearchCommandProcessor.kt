@@ -25,6 +25,7 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
             delimiter = " ",
         ),
     ) {
+    
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val phrase = command.rawArgs
 
