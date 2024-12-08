@@ -70,8 +70,8 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     }
 
     override suspend fun countUsers(): Long {
-        // TODO: If this throws we should not return zero. Returning zero here will mean that any credentials will
-        //  be able to authorize - which is a major breach of security.
+        // We should not return zero on errors here!
+        // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
         return collection.countDocuments()
     }
 
