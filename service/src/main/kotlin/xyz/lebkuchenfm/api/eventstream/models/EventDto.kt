@@ -39,3 +39,15 @@ data class AddSongsToQueueEventDto(
         val youtubeId: String,
     )
 }
+
+@Serializable
+@SerialName("SongChanged")
+data class SongChangedEventDto(
+    val song: SongDto,
+) : EventDto {
+    @Serializable
+    data class SongDto(
+        val name: String,
+        val youtubeId: String,
+    )
+}
