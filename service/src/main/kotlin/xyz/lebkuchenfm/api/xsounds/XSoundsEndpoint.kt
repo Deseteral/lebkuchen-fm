@@ -32,8 +32,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
-            val session = call.sessions.get<UserSession>()
-            checkNotNull(session)
+            val session = checkNotNull(call.sessions.get<UserSession>())
 
             var soundName = ""
             var tags: List<String> = emptyList()

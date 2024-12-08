@@ -16,8 +16,7 @@ private val logger = KotlinLogging.logger {}
 
 fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/text") {
-        val session = call.sessions.get<UserSession>()
-        checkNotNull(session)
+        val session = checkNotNull(call.sessions.get<UserSession>())
 
         val text = call.receive<TextCommandRequest>().text
         logger.info { "Received $text command from ${session.name}" }
