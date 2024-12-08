@@ -45,10 +45,10 @@ data class AddSongsToQueueEventDto(
 @SerialName("SkipEvent")
 data class SkipEventDto(
     val skipAll: Boolean,
-    val amount: Int
+    val amount: Int,
 ) : EventDto {
     constructor(event: Event.Skip) : this(
         skipAll = event.all,
-        amount = event.amount
+        amount = event.amount,
     )
 }
