@@ -12,6 +12,11 @@ sealed interface Event {
         val songs: List<Song>,
     ) : Event
 
+    data class Skip(
+        val all: Boolean,
+        val amount: Int,
+    ) : Event
+
     data class PlayerStateUpdate<T>(
         val state: T,
     ) : Event

@@ -36,6 +36,7 @@ import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
 import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.PlaybackSkipCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongSearchCommandProcessor
@@ -102,6 +103,7 @@ fun Application.module() {
             SongRandomCommandProcessor(songsService, eventStream),
             SongSearchCommandProcessor(songsService, eventStream),
             SongQueueCommandProcessor(songsService, eventStream),
+            PlaybackSkipCommandProcessor(eventStream),
             helpCommandProcessor,
         ),
     )

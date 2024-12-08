@@ -12,6 +12,7 @@ fun Event.mapToDto(): EventDto = when (this) {
     is Event.QueueSongs -> AddSongsToQueueEventDto(this)
     is Event.PlayerStateUpdate<*> -> PlayerStateUpdateEventDto(this)
     is Event.PlayerStateRequestDonation -> PlayerStateRequestDonationEventDto(this)
+    is Event.Skip -> SkipEventDto(this)
 }
 
 @Serializable
@@ -37,5 +38,17 @@ data class AddSongsToQueueEventDto(
     data class SongDto(
         val name: String,
         val youtubeId: String,
+    )
+}
+
+@Serializable
+@SerialName("SkipEvent")
+data class SkipEventDto(
+    val skipAll: Boolean,
+    val amount: Int
+) : EventDto {
+    constructor(event: Event.Skip) : this(
+        skipAll = event.all,
+        amount = event.amount
     )
 }
