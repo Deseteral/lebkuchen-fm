@@ -18,6 +18,8 @@ sealed interface Event {
 
     data object Resume : Event
 
+    data object Pause : Event
+
     data class PlayerStateUpdate<T>(
         val state: T,
     ) : Event

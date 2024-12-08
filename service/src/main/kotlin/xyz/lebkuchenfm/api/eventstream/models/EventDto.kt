@@ -15,6 +15,7 @@ fun Event.mapToDto(): EventDto = when (this) {
     is Event.PlayerStateRequestDonation -> PlayerStateRequestDonationEventDto(this)
     is Event.Skip -> SkipEventDto(this)
     is Event.Resume -> PlayerResumeEventDto
+    is Event.Pause -> PlayerPauseEventDto
 }
 
 @Serializable
@@ -59,3 +60,6 @@ data class SkipEventDto(
 @SerialName("ResumeEvent")
 data object PlayerResumeEventDto : EventDto
 
+@Serializable
+@SerialName("PauseEvent")
+data object PlayerPauseEventDto : EventDto
