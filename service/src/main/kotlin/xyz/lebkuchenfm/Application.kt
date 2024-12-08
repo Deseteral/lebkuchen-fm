@@ -87,7 +87,7 @@ fun Application.module() {
         .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
+    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, Clock.System)
 
     val eventStream = WebSocketEventStream()
 
