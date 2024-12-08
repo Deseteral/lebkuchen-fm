@@ -54,7 +54,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     }
 
     override suspend fun findByApiToken(token: String): User? {
-        val fieldName = "${UserEntity::data.name}.${UserEntity.UserSecretEntity::apiToken.name}"
+        val fieldName = "${UserEntity::secret.name}.${UserEntity.UserSecretEntity::apiToken.name}"
         return collection
             .find(eq(fieldName, token))
             .firstOrNull()
