@@ -156,10 +156,10 @@ class DropboxClient(config: ApplicationConfig) {
         const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.auth.appSecret"
     }
 
-    sealed interface DropboxClientError {
-        data object ClientConfigMissing : DropboxClientError
-        data object AuthorizationError : DropboxClientError
-        data object ErrorWhenUploadingFile : DropboxClientError
-        data object ErrorWhenCreatingFileUrl : DropboxClientError
+    sealed class DropboxClientError {
+        data object ClientConfigMissing : DropboxClientError()
+        data object AuthorizationError : DropboxClientError()
+        data object ErrorWhenUploadingFile : DropboxClientError()
+        data object ErrorWhenCreatingFileUrl : DropboxClientError()
     }
 }

@@ -100,10 +100,10 @@ class YoutubeClient(config: ApplicationConfig) {
     }
 }
 
-sealed interface YoutubeClientError {
-    data object ApiKeyMissing : YoutubeClientError
-    data object VideoNotFound : YoutubeClientError
-    data object UnknownError : YoutubeClientError
+sealed class YoutubeClientError {
+    data object ApiKeyMissing : YoutubeClientError()
+    data object VideoNotFound : YoutubeClientError()
+    data object UnknownError : YoutubeClientError()
 }
 
 @Serializable

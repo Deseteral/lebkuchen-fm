@@ -38,7 +38,7 @@ class TextCommandParser(private val commandPrompt: String) {
     }
 }
 
-sealed interface CommandParsingError {
-    data object IncorrectPrompt : CommandParsingError
-    data object RequiredTokensMissing : CommandParsingError
+sealed class CommandParsingError {
+    data object IncorrectPrompt : CommandParsingError()
+    data object RequiredTokensMissing : CommandParsingError()
 }

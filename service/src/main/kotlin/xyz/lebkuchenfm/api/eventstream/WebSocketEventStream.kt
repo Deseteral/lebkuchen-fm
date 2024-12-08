@@ -5,6 +5,7 @@ import io.ktor.serialization.serialize
 import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.server.websocket.converter
 import xyz.lebkuchenfm.api.eventstream.models.mapToDto
+import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
@@ -24,11 +25,13 @@ class WebSocketEventStream : EventStream<WebSocketConnection>() {
     }
 
     override fun subscribe(consumer: WebSocketConnection) = super.subscribe(consumer).also {
-        logger.info { "User TODO connected to WebSockets event stream." }
+        val session = consumer.session.call.getUserSession()
+        logger.info { "User ${session.name} connected to WebSockets event stream." }
     }
 
     override fun unsubscribe(consumer: WebSocketConnection) = super.unsubscribe(consumer).also {
-        logger.info { "User TODO disconnected from WebSockets event stream." }
+        val session = consumer.session.call.getUserSession()
+        logger.info { "User ${session.name} disconnected from WebSockets event stream." }
     }
 }
 

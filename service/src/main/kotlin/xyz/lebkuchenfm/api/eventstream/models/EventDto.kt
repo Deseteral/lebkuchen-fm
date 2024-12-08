@@ -63,3 +63,15 @@ data object PlayerResumeEventDto : EventDto
 @Serializable
 @SerialName("PauseEvent")
 data object PlayerPauseEventDto : EventDto
+
+@Serializable
+@SerialName("SongChanged")
+data class SongChangedEventDto(
+    val song: SongDto,
+) : EventDto {
+    @Serializable
+    data class SongDto(
+        val name: String,
+        val youtubeId: String,
+    )
+}

@@ -63,14 +63,19 @@ class DiscordClient(
             .filter { it.author?.isBot == false }
             .onEach {
                 val author = requireNotNull(it.author)
+                val user = userService.getByDiscordId(author.id.toString())
 
-                when (val user = userService.getByDiscordId(author.id.toString())) {
-                    null -> {
+                when {
+                    user == null -> {
                         it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
                     }
 
+                    user.secret == null -> {
+                        it.reply { content = "You must login to LebkuchenFM, before you can use Discord integration." }
+                    }
+
                     else -> {
-                        val context = ExecutionContext(UserSession(user.data.name))
+                        val context = ExecutionContext(UserSession(user.data.name, user.secret.apiToken))
                         val result = commandExecutorService.executeFromText(it.content, context)
                         it.reply { content = result.message.markdown }
                     }
