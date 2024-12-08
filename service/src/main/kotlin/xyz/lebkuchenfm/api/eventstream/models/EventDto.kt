@@ -3,6 +3,7 @@ package xyz.lebkuchenfm.api.eventstream.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.eventstream.Event
+import xyz.lebkuchenfm.domain.eventstream.SkipAmount
 
 @Serializable
 sealed interface EventDto
@@ -48,7 +49,7 @@ data class SkipEventDto(
     val amount: Int,
 ) : EventDto {
     constructor(event: Event.Skip) : this(
-        skipAll = event.all,
-        amount = event.amount,
+        skipAll = event.amount is SkipAmount.All,
+        amount = (event.amount as? SkipAmount.Some)?.amount ?: 1,
     )
 }

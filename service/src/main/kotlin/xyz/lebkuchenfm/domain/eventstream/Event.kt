@@ -13,8 +13,7 @@ sealed interface Event {
     ) : Event
 
     data class Skip(
-        val all: Boolean,
-        val amount: Int,
+        val amount: SkipAmount,
     ) : Event
 
     data class PlayerStateUpdate<T>(
@@ -26,5 +25,20 @@ sealed interface Event {
     ) : Event {
         @JvmInline
         value class RequestHandle(val value: String = UUID.randomUUID().toString())
+    }
+}
+
+sealed class SkipAmount {
+    data object All : SkipAmount()
+    data class Some(val amount: Int) : SkipAmount()
+
+    companion object {
+        fun fromString(value: String?): SkipAmount? = when (value) {
+            "all" -> All
+            null, "1" -> Some(1)
+            else -> value.toIntOrNull()
+                ?.takeIf { it > 1 }
+                ?.let { Some(it) }
+        }
     }
 }
