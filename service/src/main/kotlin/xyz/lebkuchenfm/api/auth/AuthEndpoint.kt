@@ -19,7 +19,7 @@ fun Route.authRouting() {
     route("/auth") {
         get {
             val session = call.sessions.get<UserSession>()!!
-            call.respond(LoggedInResponse(username = session.name, apiToken = "TODO"))
+            call.respond(LoggedInResponse(username = session.name, apiToken = session.apiToken))
         }
 
         authenticate("auth-form") {
