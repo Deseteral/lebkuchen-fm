@@ -16,6 +16,8 @@ sealed interface Event {
         val amount: SkipAmount,
     ) : Event
 
+    data object Resume : Event
+
     data class PlayerStateUpdate<T>(
         val state: T,
     ) : Event
