@@ -11,12 +11,10 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import io.ktor.server.sessions.get
-import io.ktor.server.sessions.sessions
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -32,7 +30,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
-            val session = checkNotNull(call.sessions.get<UserSession>())
+            val session = call.getUserSession()
 
             var soundName = ""
             var tags: List<String> = emptyList()
