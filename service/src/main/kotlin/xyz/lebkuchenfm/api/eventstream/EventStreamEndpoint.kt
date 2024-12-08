@@ -11,8 +11,8 @@ import xyz.lebkuchenfm.api.eventstream.models.EventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDonationEventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateRequestEventDto
-import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.eventstream.Event
+import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 
 private val logger = KotlinLogging.logger {}
 
