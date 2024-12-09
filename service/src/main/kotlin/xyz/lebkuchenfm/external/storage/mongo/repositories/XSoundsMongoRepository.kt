@@ -12,9 +12,11 @@ import com.mongodb.client.model.Aggregates.group
 import com.mongodb.client.model.Aggregates.project
 import com.mongodb.client.model.Aggregates.unwind
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.Projections
+import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.client.model.Updates.inc
@@ -92,6 +94,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             collection.findOneAndUpdate(
                 eq(XSoundEntity::name.name, name),
                 Updates.addToSet(XSoundEntity::tags.name, tag),
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
             )
         } catch (e: Exception) {
             return Err(AddTagToXSoundError.UnknownError)
@@ -108,6 +111,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             collection.findOneAndUpdate(
                 eq(XSoundEntity::name.name, name),
                 Updates.pull(XSoundEntity::tags.name, tag),
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
             )
         } catch (e: Exception) {
             return Err(RemoveTagFromXSoundError.UnknownError)
@@ -141,6 +145,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
         return collection.findOneAndUpdate(
             eq(XSoundEntity::name.name, soundName),
             inc(XSoundEntity::timesPlayed.name, 1),
+            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
     }
 }

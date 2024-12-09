@@ -29,7 +29,6 @@ import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
-import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
@@ -46,13 +45,14 @@ import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagListCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
+import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
-import xyz.lebkuchenfm.external.SessionStorageMongo
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
+import xyz.lebkuchenfm.external.security.SessionStorageMongo
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
@@ -87,7 +87,7 @@ fun Application.module() {
         .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository)
+    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, Clock.System)
 
     val eventStream = WebSocketEventStream()
 

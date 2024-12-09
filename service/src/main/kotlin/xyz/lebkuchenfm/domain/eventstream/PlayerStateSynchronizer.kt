@@ -1,9 +1,6 @@
-package xyz.lebkuchenfm.domain
+package xyz.lebkuchenfm.domain.eventstream
 
 import io.ktor.util.collections.ConcurrentMap
-import xyz.lebkuchenfm.domain.eventstream.Event
-import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
