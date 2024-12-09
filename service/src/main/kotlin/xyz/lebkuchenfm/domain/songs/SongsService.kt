@@ -11,6 +11,7 @@ class SongsService(
     private val songsRepository: SongsRepository,
     private val youtubeRepository: YouTubeRepository,
     private val historyRepository: HistoryRepository,
+    private val clock: Clock,
 ) {
     suspend fun getAllSongs(): List<Song> {
         return songsRepository.findAllOrderByNameAsc()
@@ -22,7 +23,7 @@ class SongsService(
 
     suspend fun incrementPlayCount(song: Song, userSession: UserSession): Song? {
         return songsRepository.incrementPlayCountByName(song.name)?.also {
-            historyRepository.insert(HistoryEntry(Clock.System.now(), it.name, userSession.name))
+            historyRepository.insert(HistoryEntry(clock.now(), it.name, userSession.name))
         }
     }
 

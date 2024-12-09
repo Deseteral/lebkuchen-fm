@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external
+package xyz.lebkuchenfm.external.security
 
 import io.ktor.server.sessions.SessionStorage
 import io.ktor.server.sessions.SessionStorageMemory

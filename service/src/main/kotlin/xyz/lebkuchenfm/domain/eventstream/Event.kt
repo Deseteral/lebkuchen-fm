@@ -12,6 +12,29 @@ sealed interface Event {
         val songs: List<Song>,
     ) : Event
 
+    data class Skip(
+        val amount: Amount,
+    ) : Event {
+        sealed class Amount {
+            data object All : Amount()
+            data class Some(val amount: Int) : Amount()
+
+            companion object {
+                fun fromString(value: String?): Amount? = when (value) {
+                    "all" -> All
+                    null, "1" -> Some(1)
+                    else -> value.toIntOrNull()
+                        ?.takeIf { it > 1 }
+                        ?.let { Some(it) }
+                }
+            }
+        }
+    }
+
+    data object Resume : Event
+
+    data object Pause : Event
+
     data class PlayerStateUpdate<T>(
         val state: T,
     ) : Event
