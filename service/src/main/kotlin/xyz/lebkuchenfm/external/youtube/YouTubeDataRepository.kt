@@ -12,4 +12,10 @@ class YouTubeDataRepository(private val youtubeClient: YoutubeClient) : YouTubeR
     override suspend fun findVideoByPhrase(phrase: String): YoutubeVideo? {
         return youtubeClient.findVideo(phrase).get()?.let { YoutubeVideo(it.id, it.snippet.title) }
     }
+
+    override suspend fun findVideosByPlaylistId(playlistId: String): List<YoutubeVideo> {
+        return youtubeClient.getPlaylistVideos(playlistId).get()
+            ?.map { YoutubeVideo(it.id, it.snippet.title) }
+            ?: emptyList()
+    }
 }

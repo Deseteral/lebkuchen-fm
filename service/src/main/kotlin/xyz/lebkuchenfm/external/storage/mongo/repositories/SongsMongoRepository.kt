@@ -7,6 +7,7 @@ import com.github.michaelbull.result.mapError
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters.`in`
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
@@ -51,6 +52,13 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
 
     override suspend fun findByYoutubeId(youtubeId: String): Song? {
         return collection.find(eq(SongEntity::youtubeId.name, youtubeId)).firstOrNull()?.toDomain()
+    }
+
+    override suspend fun findByYoutubeIds(youtubeIds: List<String>): List<Song> {
+        return collection
+            .find(`in`(SongEntity::youtubeId.name, youtubeIds))
+            .map { it.toDomain() }
+            .toList()
     }
 
     override suspend fun findRandom(limit: Int, phrase: String): List<Song> {

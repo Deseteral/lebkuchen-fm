@@ -42,9 +42,9 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         songsService.getSongByNameWithYouTubeIdFallback(videoOrPlaylistId)?.let {
             songs.add(it)
+        } ?: run {
+            songs += songsService.getSongsFromPlaylist(videoOrPlaylistId)
         }
-
-        // TODO: handle playlist
 
         if (songs.isEmpty()) {
             return error("Could not queue any song.", logger)
