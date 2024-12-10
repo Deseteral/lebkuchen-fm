@@ -1,0 +1,45 @@
+@value toggleSliderWidth: 2.6rem;
+@value toggleWidth: 1rem;
+
+.label {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  width: toggleSliderWidth;
+  height: 1rem;
+  background-color: var(--third-color);
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s;
+  box-sizing: content-box;
+}
+
+.toggle::before {
+  content: '';
+  display: block;
+  width: toggleWidth;
+  height: 1.6rem;
+  border: 1px solid var(--border-color-one);
+  border-radius: var(--border-radius);
+  background-color: white;
+  transition: 0.1s ease-in;
+}
+
+.checkbox {
+  display: none;
+}
+
+.checkbox:checked + .toggle::before {
+  background-color: var(--primary-color);
+}
+
+.checkbox:checked + .toggle::before {
+  transform: translateX(calc(toggleSliderWidth - toggleWidth));
+}

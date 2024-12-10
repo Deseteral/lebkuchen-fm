@@ -5,16 +5,20 @@ import { Player } from '../../apps/Player/Player';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
+import { Settings } from '../../apps/Settings/Settings';
+import { XSoundsPlayService } from '../../services/x-sounds-play-service';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.initializeConnection();
+    XSoundsPlayService.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
+    XSoundsPlayService.cleanup();
   });
 
   return (
@@ -24,6 +28,7 @@ function Desktop() {
         <Soundboard />
         <Player />
         <DebugSoundUploadForm />
+        <Settings />
       </main>
     </>
   );
