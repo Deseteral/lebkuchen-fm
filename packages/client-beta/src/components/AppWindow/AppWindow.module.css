@@ -17,12 +17,14 @@
 .title {
   position: relative;
   display: flex;
+  align-items: center;
   cursor: grab;
   justify-content: space-between;
   background-color: mediumpurple;
-  padding: 5px;
+  padding: 4px;
+  padding-left: 8px;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
 }
 
 .content {

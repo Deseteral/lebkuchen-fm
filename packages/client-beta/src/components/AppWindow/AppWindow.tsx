@@ -1,6 +1,7 @@
 import { Portal } from 'solid-js/web';
 import { JSX, createEffect } from 'solid-js';
 import styles from './AppWindow.module.css';
+import {AppIcon} from "@components/AppIcon/AppIcon";
 
 interface AppWindowProps {
   children: JSX.Element;
@@ -15,6 +16,7 @@ interface AppWindowProps {
   title: string;
   close?: () => void;
   centered?: boolean;
+  iconIndex: [number, number];
 }
 
 function AppWindow(props: AppWindowProps) {
@@ -112,6 +114,7 @@ function AppWindow(props: AppWindowProps) {
       }}
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
+        <AppIcon size={16} iconIndex={props.iconIndex} />
         <p>{props.title}</p>
         {!!props.close && (
           <button type="button" class={styles.close} onClick={closeWindow}>

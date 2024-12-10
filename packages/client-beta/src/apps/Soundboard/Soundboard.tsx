@@ -69,6 +69,7 @@ function Soundboard() {
           title="Soundboard"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
+          iconIndex={[1, 0]}
         >
           <h4 class={styles.title}>Search</h4>
           <input

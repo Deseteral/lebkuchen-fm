@@ -50,9 +50,10 @@ function DebugSoundUploadForm() {
       />
       {showWindow() && (
         <AppWindow
-          title="[DEBUG] Sound upload form.app"
+          title="[DEBUG] Sound upload form"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
+          iconIndex={[2, 0]}
         >
           <div class={styles.container}>
             <h1>Add new sound</h1>

@@ -23,7 +23,7 @@ function Player() {
         iconIndex={[0, 0]}
       />
       {showWindow() && (
-        <AppWindow title="LebkuchenFM Player" close={closeWindow}>
+        <AppWindow title="Player" close={closeWindow} iconIndex={[0, 0]}>
           <YouTubePlayer />
         </AppWindow>
       )}

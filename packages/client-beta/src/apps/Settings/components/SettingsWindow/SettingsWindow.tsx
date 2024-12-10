@@ -34,7 +34,7 @@ function SettingsWindow(props: SettingsWindowProps) {
   };
 
   return (
-    <AppWindow title="Settings" close={props.close} startSize={{ width: '400px', height: '200px' }}>
+    <AppWindow title="Settings" close={props.close} startSize={{ width: '400px', height: '200px' }} iconIndex={[3, 0]}>
       <section class={styles.section}>
         <h3 class={styles.sectionTitle}>X Sounds</h3>
         <Toggle onChange={onXSoundsPreferenceChange} checked={xSoundPreference()}>
