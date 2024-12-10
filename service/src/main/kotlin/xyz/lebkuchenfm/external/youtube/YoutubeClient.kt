@@ -20,7 +20,6 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import xyz.lebkuchenfm.external.youtube.YoutubeSearchResponse.YoutubeSearchItem
 
 private val logger = KotlinLogging.logger {}
 
@@ -50,12 +49,12 @@ class YoutubeClient(config: ApplicationConfig) {
         val responseBody: YoutubeVideosResponse = response.body()
 
         return when (val video = responseBody.items.firstOrNull()) {
-            is YoutubeVideo -> Ok(video.snippet.title)
+            is Video -> Ok(video.snippet.title)
             else -> Err(YoutubeClientError.VideoNotFound)
         }
     }
 
-    suspend fun findVideo(phrase: String): Result<YoutubeVideo, YoutubeClientError> {
+    suspend fun findVideo(phrase: String): Result<Video, YoutubeClientError> {
         apiKey ?: run {
             logger.warn { "Missing Youtube API key." }
             return Err(YoutubeClientError.ApiKeyMissing)
@@ -77,12 +76,43 @@ class YoutubeClient(config: ApplicationConfig) {
             return Err(YoutubeClientError.UnknownError)
         }
 
-        val responseBody: YoutubeSearchResponse = response.body()
+        val responseBody: SearchResponse = response.body()
 
         return when (val item = responseBody.items.firstOrNull()) {
-            is YoutubeSearchItem -> Ok(YoutubeVideo(item.id.videoId, item.snippet))
+            is SearchResponse.SearchItem -> Ok(Video(item.id.videoId, item.snippet))
             else -> Err(YoutubeClientError.VideoNotFound)
         }
+    }
+
+    suspend fun getPlaylistVideos(playlistId: String): Result<List<Video>, YoutubeClientError> {
+        apiKey ?: run {
+            logger.warn { "Missing Youtube API key." }
+            return Err(YoutubeClientError.ApiKeyMissing)
+        }
+
+        val response = youtubeClient.get("playlistItems") {
+            parameters {
+                parameter("playlistId", playlistId)
+                parameter("part", "snippet")
+                parameter("maxResults", "50")
+            }
+        }
+
+        if (response.status != HttpStatusCode.OK) {
+            logger.error { "YoutubeClient failed with status: ${response.status} \n ${response.request.url}." }
+            return Err(YoutubeClientError.UnknownError)
+        }
+
+        val responseBody: PlaylistItemListResponse = response.body()
+
+        return Ok(
+            responseBody.items.map {
+                Video(
+                    it.snippet.resourceId.videoId,
+                    Video.Snippet(it.snippet.title, it.snippet.description),
+                )
+            },
+        )
     }
 
     private fun prepareHttpClient(): HttpClient {
@@ -107,28 +137,48 @@ sealed class YoutubeClientError {
 }
 
 @Serializable
-data class YoutubeVideosResponse(val items: List<YoutubeVideo>)
-
-@Serializable
-data class YoutubeSearchResponse(val items: List<YoutubeSearchItem>) {
+data class Video(
+    val id: String,
+    val snippet: Snippet,
+) {
     @Serializable
-    data class YoutubeSearchItem(
-        val id: Id,
-        val snippet: YouTubeVideoSnippet,
-    ) {
-        @Serializable
-        data class Id(val videoId: String)
-    }
+    data class Snippet(
+        val title: String,
+        val description: String,
+    )
 }
 
 @Serializable
-data class YoutubeVideo(
-    val id: String,
-    val snippet: YouTubeVideoSnippet,
-)
+data class YoutubeVideosResponse(val items: List<Video>)
 
 @Serializable
-data class YouTubeVideoSnippet(
-    val title: String,
-    val description: String,
-)
+data class SearchResponse(val items: List<SearchItem>) {
+    @Serializable
+    data class SearchItem(
+        val id: Id,
+        val snippet: Video.Snippet,
+    )
+
+    @Serializable
+    data class Id(val videoId: String)
+}
+
+@Serializable
+data class PlaylistItemListResponse(
+    val items: List<PlaylistItem>,
+) {
+    @Serializable
+    data class PlaylistResourceId(val videoId: String)
+
+    @Serializable
+    data class PlaylistSnippet(
+        val title: String,
+        val description: String,
+        val resourceId: PlaylistResourceId,
+    )
+
+    @Serializable
+    data class PlaylistItem(
+        val snippet: PlaylistSnippet,
+    )
+}
