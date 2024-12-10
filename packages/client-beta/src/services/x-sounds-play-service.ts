@@ -11,7 +11,7 @@ class XSoundsPlayService {
   }
 
   static cleanup() {
-    EventStreamClient.subscribe<PlayXSoundEvent>(
+    EventStreamClient.unsubscribe<PlayXSoundEvent>(
       'PlayXSoundEvent',
       XSoundsPlayService.playXSoundEventHandler,
     );
@@ -32,7 +32,7 @@ class XSoundsPlayService {
   }
 
   private static shouldPlay() {
-    return UserPreferencesService.get('xSoundPreference') ?? false;
+    return UserPreferencesService.get('xSoundShouldPlay') ?? false;
   }
 }
 
