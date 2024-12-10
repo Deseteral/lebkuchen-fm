@@ -31,6 +31,7 @@ function Login() {
         title="Login"
         startSize={{ width: `${LOGIN_WINDOW_WIDTH}px`, height: `${LOGIN_WINDOW_HEIGHT}px` }}
         centered
+        iconIndex={[0, 1]}
       >
         <div class={styles.container}>
           <h1>Login</h1>

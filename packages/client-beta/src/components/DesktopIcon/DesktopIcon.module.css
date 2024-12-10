@@ -12,8 +12,3 @@
 .app:focus {
   outline: 2px dotted mediumpurple;
 }
-
-.icon {
-  width: 64px;
-  height: 64px;
-}
