@@ -6,6 +6,7 @@ import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
+import xyz.lebkuchenfm.domain.youtube.YoutubeVideo
 
 class SongsService(
     private val songsRepository: SongsRepository,
@@ -25,6 +26,12 @@ class SongsService(
         return songsRepository.incrementPlayCountByName(song.name)?.also {
             historyRepository.insert(HistoryEntry(clock.now(), it.name, userSession.name))
         }
+    }
+
+    suspend fun getSongsFromPlaylist(playlistId: String): List<Song> {
+        val youtubeVideos = youtubeRepository.findVideosByPlaylistId(playlistId)
+        val songs = getOrCreateSongsCorrespondingToYoutubeVideos(youtubeVideos)
+        return songs
     }
 
     suspend fun getSongByNameWithYouTubeIdFallback(nameOrYouTubeId: String): Song? {
@@ -62,5 +69,17 @@ class SongsService(
             trimEndSeconds = null,
         )
         return songsRepository.insert(newSong).getOr(null)
+    }
+
+    private suspend fun getOrCreateSongsCorrespondingToYoutubeVideos(youtubeVideos: List<YoutubeVideo>): List<Song> {
+        val youtubeIds = youtubeVideos.map { it.id }
+        val knownSongs = songsRepository.findByYoutubeIds(youtubeIds)
+        val knownIds = knownSongs.map { it.youtubeId }
+
+        val newSongs = youtubeVideos
+            .filterNot { it.id in knownIds }
+            .mapNotNull { createNewSong(it.id, it.name) }
+
+        return knownSongs + newSongs
     }
 }
