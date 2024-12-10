@@ -80,6 +80,6 @@ class SongsService(
             .filterNot { it.id in knownIds }
             .mapNotNull { createNewSong(it.id, it.name) }
 
-        return knownSongs + newSongs
+        return (knownSongs + newSongs).sortedBy { youtubeIds.indexOf(it.youtubeId) }
     }
 }
