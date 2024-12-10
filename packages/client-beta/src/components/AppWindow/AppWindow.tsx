@@ -115,7 +115,7 @@ function AppWindow(props: AppWindowProps) {
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
         <AppIcon size={16} iconIndex={props.iconIndex} />
-        <p>{props.title}</p>
+        <p class={styles.titleText}>{props.title}</p>
         {!!props.close && (
           <button type="button" class={styles.close} onClick={closeWindow}>
             <span class={styles.xSign}>+</span>
