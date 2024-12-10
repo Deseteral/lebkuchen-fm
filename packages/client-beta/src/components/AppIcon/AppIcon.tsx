@@ -1,4 +1,4 @@
-import appIconsSpreadsheet from "../../icons/app-icons-spritesheet.png";
+import appIconsSpreadsheet from '../../icons/app-icons-spritesheet.png';
 
 interface AppIconProps {
   size: number;
@@ -20,9 +20,7 @@ function AppIcon(props: AppIconProps) {
     image-rendering: pixelated;
   `;
 
-  return (
-    <div style={iconStyle}/>
-  );
+  return <div style={iconStyle} />;
 }
 
 export { AppIcon };

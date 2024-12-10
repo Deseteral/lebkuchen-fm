@@ -1,7 +1,7 @@
 import { Portal } from 'solid-js/web';
 import { JSX, createEffect } from 'solid-js';
 import styles from './AppWindow.module.css';
-import {AppIcon} from "@components/AppIcon/AppIcon";
+import { AppIcon } from '@components/AppIcon/AppIcon';
 
 interface AppWindowProps {
   children: JSX.Element;

@@ -1,5 +1,5 @@
 import styles from './DesktopIcon.module.css';
-import {AppIcon} from "@components/AppIcon/AppIcon";
+import { AppIcon } from '@components/AppIcon/AppIcon';
 
 interface DesktopIconProps {
   label: string;
