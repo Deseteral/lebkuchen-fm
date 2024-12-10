@@ -2,12 +2,12 @@ type UserPreferenceValue = string | number | boolean;
 
 // TODO: Enum with all possible user preferences
 const DEFAULT_VALUES: Record<string, UserPreferenceValue> = {
-  xSoundPreference: true,
+  xSoundShouldPlay: true,
   xSoundVolume: 50,
 };
 
 class UserPreferencesService {
-  static save(key: string, value: UserPreferenceValue) {
+  static set(key: string, value: UserPreferenceValue) {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (err) {
@@ -21,7 +21,7 @@ class UserPreferencesService {
 
       if (value === null && key in DEFAULT_VALUES) {
         const defaultValue = DEFAULT_VALUES[key];
-        UserPreferencesService.save(key, defaultValue);
+        UserPreferencesService.set(key, defaultValue);
 
         return defaultValue;
       }
