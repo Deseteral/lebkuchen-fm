@@ -1,5 +1,4 @@
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
-import circlePlayIcon from '../../icons/circle-play-regular.svg';
 import { createSignal } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
@@ -19,9 +18,9 @@ function Player() {
     <>
       <DesktopIcon
         label="Player"
-        imgSrc={circlePlayIcon}
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={[0, 0]}
       />
       {showWindow() && (
         <AppWindow title="LebkuchenFM Player" close={closeWindow}>

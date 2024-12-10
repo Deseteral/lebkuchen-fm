@@ -1,7 +1,6 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createEffect, createSignal, For } from 'solid-js';
-import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
 import {
   getXSounds,
@@ -60,10 +59,10 @@ function Soundboard() {
   return (
     <>
       <DesktopIcon
-        label="Soundboard.exe"
-        imgSrc={soundboardIcon}
+        label="Soundboard"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={[1, 0]}
       />
       {showWindow() && (
         <AppWindow

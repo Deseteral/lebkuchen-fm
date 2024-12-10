@@ -1,7 +1,6 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal } from 'solid-js';
-import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './DebugSoundUploadForm.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
@@ -44,10 +43,10 @@ function DebugSoundUploadForm() {
   return (
     <>
       <DesktopIcon
-        label="[DEBUG] Sound upload form.app"
-        imgSrc={soundboardIcon}
+        label="Sound Manager"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={[2, 0]}
       />
       {showWindow() && (
         <AppWindow
