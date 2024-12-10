@@ -23,6 +23,7 @@ html {
 body {
   background-image: url('../public/bg.png');
   background-color: #6261a1;
+  user-select: none;
 }
 
 #root {
