@@ -7,8 +7,10 @@ import com.github.michaelbull.result.mapError
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates.inc
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -64,6 +66,7 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
         return collection.findOneAndUpdate(
             eq(SongEntity::name.name, name),
             inc(SongEntity::timesPlayed.name, 1),
+            FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
     }
 }

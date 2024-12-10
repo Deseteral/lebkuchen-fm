@@ -17,9 +17,15 @@ import kotlinx.coroutines.flow.onEach
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
-class DiscordClient(config: ApplicationConfig, private val commandExecutorService: CommandExecutorService) {
+
+class DiscordClient(
+    config: ApplicationConfig,
+    private val commandExecutorService: CommandExecutorService,
+    private val userService: UsersService,
+) {
     private lateinit var kord: Kord
 
     private val token: String? = config.propertyOrNull("discord.token")?.getString()
@@ -53,13 +59,26 @@ class DiscordClient(config: ApplicationConfig, private val commandExecutorServic
             .map { it.message }
             .filter { it.channelId.value.toString() == channelId }
             .filter { it.content.startsWith(commandPrompt) }
+            .filter { it.author != null }
             .filter { it.author?.isBot == false }
             .onEach {
-                // TODO: Get user by Discord ID.
-                val context = ExecutionContext(UserSession(name = "FAKE USER TODO"))
-                val result = commandExecutorService.executeFromText(it.content, context)
-                it.reply {
-                    content = result.message.markdown
+                val author = requireNotNull(it.author)
+                val user = userService.getByDiscordId(author.id.toString())
+
+                when {
+                    user == null -> {
+                        it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
+                    }
+
+                    user.secret == null -> {
+                        it.reply { content = "You must login to LebkuchenFM, before you can use Discord integration." }
+                    }
+
+                    else -> {
+                        val context = ExecutionContext(UserSession(user.data.name, user.secret.apiToken))
+                        val result = commandExecutorService.executeFromText(it.content, context)
+                        it.reply { content = result.message.markdown }
+                    }
                 }
             }
             .launchIn(kord)

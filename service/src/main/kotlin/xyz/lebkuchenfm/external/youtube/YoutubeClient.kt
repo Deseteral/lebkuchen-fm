@@ -20,6 +20,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.external.youtube.YoutubeSearchResponse.YoutubeSearchItem
 
 private val logger = KotlinLogging.logger {}
 
@@ -28,7 +29,7 @@ class YoutubeClient(config: ApplicationConfig) {
     private val apiKey: String? by lazy { config.propertyOrNull("youtube.apiKey")?.getString() }
 
     suspend fun getVideoName(id: String): Result<String, YoutubeClientError> {
-        if (apiKey == null) {
+        apiKey ?: run {
             logger.warn { "Missing Youtube API key." }
             return Err(YoutubeClientError.ApiKeyMissing)
         }
@@ -54,6 +55,36 @@ class YoutubeClient(config: ApplicationConfig) {
         }
     }
 
+    suspend fun findVideo(phrase: String): Result<YoutubeVideo, YoutubeClientError> {
+        apiKey ?: run {
+            logger.warn { "Missing Youtube API key." }
+            return Err(YoutubeClientError.ApiKeyMissing)
+        }
+
+        val response = youtubeClient.get("search") {
+            parameters {
+                parameter("q", phrase)
+                parameter("maxResults", 1.toString())
+                parameter("part", "snippet")
+                parameter("type", "video")
+                parameter("safeSearch", "none")
+                parameter("videoEmbeddable", "true")
+            }
+        }
+
+        if (response.status != HttpStatusCode.OK) {
+            logger.error { "YoutubeClient failed with status: ${response.status} \n ${response.request.url}." }
+            return Err(YoutubeClientError.UnknownError)
+        }
+
+        val responseBody: YoutubeSearchResponse = response.body()
+
+        return when (val item = responseBody.items.firstOrNull()) {
+            is YoutubeSearchItem -> Ok(YoutubeVideo(item.id.videoId, item.snippet))
+            else -> Err(YoutubeClientError.VideoNotFound)
+        }
+    }
+
     private fun prepareHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
@@ -69,14 +100,26 @@ class YoutubeClient(config: ApplicationConfig) {
     }
 }
 
-sealed interface YoutubeClientError {
-    data object ApiKeyMissing : YoutubeClientError
-    data object VideoNotFound : YoutubeClientError
-    data object UnknownError : YoutubeClientError
+sealed class YoutubeClientError {
+    data object ApiKeyMissing : YoutubeClientError()
+    data object VideoNotFound : YoutubeClientError()
+    data object UnknownError : YoutubeClientError()
 }
 
 @Serializable
 data class YoutubeVideosResponse(val items: List<YoutubeVideo>)
+
+@Serializable
+data class YoutubeSearchResponse(val items: List<YoutubeSearchItem>) {
+    @Serializable
+    data class YoutubeSearchItem(
+        val id: Id,
+        val snippet: YouTubeVideoSnippet,
+    ) {
+        @Serializable
+        data class Id(val videoId: String)
+    }
+}
 
 @Serializable
 data class YoutubeVideo(

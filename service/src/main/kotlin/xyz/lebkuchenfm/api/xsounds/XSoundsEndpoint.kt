@@ -14,7 +14,7 @@ import io.ktor.server.routing.route
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -30,10 +30,7 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
-            // TODO: Get UserSession from request when the endpoints get authorization.
-            val session = UserSession("FAKE USER TODO")
-            // val session = call.sessions.get<UserSession>()
-            // checkNotNull(session)
+            val session = call.getUserSession()
 
             var soundName = ""
             var tags: List<String> = emptyList()

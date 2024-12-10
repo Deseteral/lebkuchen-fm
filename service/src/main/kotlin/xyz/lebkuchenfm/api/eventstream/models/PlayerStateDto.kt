@@ -2,8 +2,8 @@ package xyz.lebkuchenfm.api.eventstream.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.domain.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.eventstream.Event
+import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 
 @Serializable
 data class PlayerStateDto(

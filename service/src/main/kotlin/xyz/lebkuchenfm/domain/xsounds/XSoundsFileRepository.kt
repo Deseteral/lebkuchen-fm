@@ -6,6 +6,6 @@ interface XSoundsFileRepository {
     suspend fun uploadXSoundFile(soundName: String, byteArray: ByteArray): Result<String, UploadXSoundFileError>
 }
 
-sealed interface UploadXSoundFileError {
-    data object FileCouldNotBeSaved : UploadXSoundFileError
+sealed class UploadXSoundFileError {
+    data object FileCouldNotBeSaved : UploadXSoundFileError()
 }

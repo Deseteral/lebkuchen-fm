@@ -41,7 +41,11 @@ class LLMPromptsService {
   }
 
   async getActivePromptForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt | null> {
-    return this.llmPromptsRepository.findOneByTypeVariantNotDeprecatedOrderByDateDesc(type, variant);
+    const latestPrompt = await this.llmPromptsRepository.findOneByTypeVariantOrderByDateDesc(type, variant);
+    if (!latestPrompt || latestPrompt.deprecated) {
+      return null;
+    }
+    return latestPrompt;
   }
 
   async getAllPromptsForTypeVariant(type: LLMPromptType, variant: string): Promise<LLMPrompt[]> {
