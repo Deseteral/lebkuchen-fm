@@ -1,24 +1,26 @@
 package xyz.lebkuchenfm.external.security
 
 import io.ktor.server.sessions.SessionStorage
-import io.ktor.server.sessions.SessionStorageMemory
+import io.ktor.util.collections.ConcurrentMap
+import xyz.lebkuchenfm.external.storage.mongo.repositories.SessionsMongoRepository
 
-class SessionStorageMongo : SessionStorage {
-    // TODO: In-memory storage is temporary. We have to implement a custom storage using Mongo.
-    private val storage = SessionStorageMemory()
+class SessionStorageMongo(
+    private val sessionsRepository: SessionsMongoRepository,
+) : SessionStorage {
+    private val cache = ConcurrentMap<String, String>()
 
-    override suspend fun invalidate(id: String) {
-        // TODO: Actually implement.
-        storage.invalidate(id)
+    override suspend fun write(id: String, value: String) {
+        sessionsRepository.upsert(id, value)?.also { cache[id] = value }
     }
 
     override suspend fun read(id: String): String {
-        // TODO: Actually implement.
-        return storage.read(id)
+        return cache[id]
+            ?: run { sessionsRepository.findById(id) }?.also { cache[id] = it }
+            ?: throw NoSuchElementException("Session $id not found.")
     }
 
-    override suspend fun write(id: String, value: String) {
-        // TODO: Actually implement.
-        storage.write(id, value)
+    override suspend fun invalidate(id: String) {
+        cache.remove(id)
+        sessionsRepository.remove(id)
     }
 }

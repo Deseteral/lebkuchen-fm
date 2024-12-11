@@ -57,6 +57,7 @@ import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.SessionsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
@@ -123,7 +124,9 @@ fun Application.module() {
     }
 
     install(Sessions) {
-        cookie<UserSession>("user_session", SessionStorageMongo()) {
+        val sessionsMongoRepository = SessionsMongoRepository(database)
+        val sessionStorage = SessionStorageMongo(sessionsMongoRepository)
+        cookie<UserSession>("user_session", sessionStorage) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 30.days.inWholeSeconds
             // TODO: The cookie should be signed, I guess?
