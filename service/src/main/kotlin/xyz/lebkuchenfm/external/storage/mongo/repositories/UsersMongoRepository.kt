@@ -16,6 +16,8 @@ import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -43,6 +45,12 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             logger.error(ex) { "An error occurred while creating a user repository index." }
             throw ex
         }
+    }
+
+    override suspend fun findAll(): List<User> {
+        return collection
+            .find()
+            .map { it.toDomain() }.toList()
     }
 
     override suspend fun findByName(username: String): User? {
