@@ -20,7 +20,7 @@ class AuthService(private val usersService: UsersService) {
                     .map { usersService.setPassword(it, password) }
                     .flatten()
                     .getOr(null)
-                    ?.let { UserSession(it.data.name, it.secret!!.apiToken) }
+                    ?.let { UserSession(it.data.name) }
             }
 
             user == null -> {
@@ -32,7 +32,7 @@ class AuthService(private val usersService: UsersService) {
                 logger.info { "User '${user.data.name}' is logging in for the first time." }
                 // TODO: Handle errors (probably just present them to the user).
                 usersService.setPassword(user, password)
-                    .map { UserSession(it.data.name, it.secret!!.apiToken) }
+                    .map { UserSession(it.data.name) }
                     .getOr(null)
             }
 
@@ -40,7 +40,7 @@ class AuthService(private val usersService: UsersService) {
                 if (usersService.checkPassword(user, password)) {
                     logger.info { "User '${user.data.name}' logged in." }
                     usersService.updateLastLoginDate(user)
-                    UserSession(user.data.name, user.secret!!.apiToken)
+                    UserSession(user.data.name)
                 } else {
                     logger.info { "User '${user.data.name}' tried to log in, but provided wrong password." }
                     null
@@ -50,6 +50,6 @@ class AuthService(private val usersService: UsersService) {
     }
 
     suspend fun authenticateWithApiToken(token: String): UserSession? {
-        return usersService.getByApiToken(token)?.let { UserSession(it.data.name, it.secret!!.apiToken) }
+        return usersService.getByApiToken(token)?.let { UserSession(it.data.name) }
     }
 }
