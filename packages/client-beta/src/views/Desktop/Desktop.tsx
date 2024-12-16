@@ -12,7 +12,7 @@ import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSound
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
-    SocketConnectionClient.initializeConnection();
+    SocketConnectionClient.connect();
     XSoundsPlayService.initialize();
   });
 
