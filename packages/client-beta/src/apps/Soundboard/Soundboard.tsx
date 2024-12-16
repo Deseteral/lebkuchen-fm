@@ -1,7 +1,6 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createEffect, createSignal, For } from 'solid-js';
-import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './Soundboard.module.css';
 import {
   getXSounds,
@@ -11,6 +10,7 @@ import {
 } from '../../services/soundboard-service';
 import { XSound } from '../../types/x-sound';
 import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { SOUNDBOARD_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -60,16 +60,17 @@ function Soundboard() {
   return (
     <>
       <DesktopIcon
-        label="Soundboard.exe"
-        imgSrc={soundboardIcon}
+        label="Soundboard"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={SOUNDBOARD_ICON_INDEX}
       />
       {showWindow() && (
         <AppWindow
           title="Soundboard"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
+          iconIndex={SOUNDBOARD_ICON_INDEX}
         >
           <h4 class={styles.title}>Search</h4>
           <input
