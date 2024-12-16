@@ -62,4 +62,10 @@ class ValidateAuthHandler(private val authService: AuthService) {
             }
             .get()
     }
+
+    suspend fun badSessionHandler(call: ApplicationCall) {
+        val status = HttpStatusCode.Unauthorized
+        val response = ProblemResponse("Unauthorized.", "You are unauthorized.", status, call.request.uri)
+        call.respond(status, response.toDto())
+    }
 }

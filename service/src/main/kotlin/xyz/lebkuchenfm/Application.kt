@@ -147,7 +147,7 @@ fun Application.module() {
         session<UserSession>("auth-session") {
             validate { session -> session }
             challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.badSessionHandler(call)
             }
         }
         bearer("auth-bearer") {
