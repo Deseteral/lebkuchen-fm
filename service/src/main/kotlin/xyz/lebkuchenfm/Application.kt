@@ -1,6 +1,5 @@
 package xyz.lebkuchenfm
 
-import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -12,7 +11,6 @@ import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
@@ -152,7 +150,7 @@ fun Application.module() {
         }
         bearer("auth-bearer") {
             authenticate { tokenCredential ->
-                authService.authenticateWithApiToken(tokenCredential.token)
+                validateAuthHandler.apiTokenHandler(tokenCredential, this)
             }
         }
     }

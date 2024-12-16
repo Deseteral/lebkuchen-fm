@@ -4,6 +4,7 @@ import com.github.michaelbull.result.get
 import com.github.michaelbull.result.onFailure
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.BearerTokenCredential
 import io.ktor.server.auth.UserPasswordCredential
 import io.ktor.server.request.uri
 import io.ktor.server.response.respond
@@ -63,9 +64,28 @@ class ValidateAuthHandler(private val authService: AuthService) {
             .get()
     }
 
+    suspend fun apiTokenHandler(tokenCredential: BearerTokenCredential, call: ApplicationCall): UserSession? {
+        return authService.authenticateWithApiToken(tokenCredential.token) ?: run {
+            val status = HttpStatusCode.Unauthorized
+            val response = ProblemResponse(
+                "Could not authenticate.",
+                "Provided API token is not active.",
+                status,
+                call.request.uri,
+            )
+            call.respond(status, response.toDto())
+            null
+        }
+    }
+
     suspend fun badSessionHandler(call: ApplicationCall) {
         val status = HttpStatusCode.Unauthorized
-        val response = ProblemResponse("Unauthorized.", "You are unauthorized.", status, call.request.uri)
+        val response = ProblemResponse(
+            "Could not authenticate.",
+            "You are not authenticated.",
+            status,
+            call.request.uri,
+        )
         call.respond(status, response.toDto())
     }
 }
