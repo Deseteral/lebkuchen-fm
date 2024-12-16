@@ -7,6 +7,7 @@ import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideo
+import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
 
 class SongsService(
     private val songsRepository: SongsRepository,
@@ -38,7 +39,11 @@ class SongsService(
         val foundByName = songsRepository.findByName(nameOrYouTubeId)
         foundByName?.let { return it }
 
-        val maybeYoutubeId = nameOrYouTubeId.split(" ").firstOrNull() ?: return null
+        val maybeYoutubeId = nameOrYouTubeId
+            .split(" ")
+            .firstOrNull()
+            ?.let { YoutubeVideoId(it) }
+            ?: return null
 
         val foundById = songsRepository.findByYoutubeId(maybeYoutubeId)
         foundById?.let { return it }
@@ -60,7 +65,7 @@ class SongsService(
         }
     }
 
-    private suspend fun createNewSong(youtubeId: String, songName: String): Song? {
+    private suspend fun createNewSong(youtubeId: YoutubeVideoId, songName: String): Song? {
         val newSong = Song(
             name = songName,
             youtubeId = youtubeId,

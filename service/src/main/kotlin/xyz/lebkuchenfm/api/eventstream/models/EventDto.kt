@@ -34,7 +34,7 @@ data class AddSongsToQueueEventDto(
     val songs: List<SongDto>,
 ) : EventDto {
     constructor(event: Event.QueueSongs) : this(
-        songs = event.songs.map { SongDto(it.name, it.youtubeId) },
+        songs = event.songs.map { SongDto(it.name, it.youtubeId.value) },
     )
 
     @Serializable
