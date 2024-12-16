@@ -1,11 +1,12 @@
 import { type LocalEvent } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
 
-// TODO: Implement reconnecting logic when socket disconnects (or maybe not - we have to discuss it).
 class SocketConnectionClient {
   private static client: WebSocket | null = null;
 
-  static initializeConnection(): void {
+  private static readonly RECONNECT_INTERVAL_MS = 2000;
+
+  static connect(): void {
     if (!SocketConnectionClient.client) {
       SocketConnectionClient.client = new WebSocket(SocketConnectionClient.getWebSocketUrl());
     }
@@ -30,6 +31,13 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener('close', () => {
       SocketConnectionClient.client = null;
       console.log('Disconnected by server from WebSocket event stream');
+      SocketConnectionClient.startReconnectingProcedure();
+    });
+
+    SocketConnectionClient.client.addEventListener('error', (err) => {
+      console.error('Socket encountered error. Closing the socket.', err);
+      SocketConnectionClient.disconnect();
+      SocketConnectionClient.startReconnectingProcedure();
     });
   }
 
@@ -42,6 +50,13 @@ class SocketConnectionClient {
     SocketConnectionClient.client.close();
     SocketConnectionClient.client = null;
     console.log('Disconnected from WebSocket event stream');
+  }
+
+  private static startReconnectingProcedure(): void {
+    setTimeout(() => {
+      console.log('Reconnecting to event stream WebSocket...');
+      SocketConnectionClient.connect();
+    }, SocketConnectionClient.RECONNECT_INTERVAL_MS);
   }
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
