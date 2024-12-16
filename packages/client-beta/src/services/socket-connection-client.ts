@@ -31,16 +31,13 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener('close', () => {
       SocketConnectionClient.client = null;
       console.log('Disconnected by server from WebSocket event stream');
-
-      setTimeout(() => {
-        console.log('Reconnecting to event stream WebSocket...');
-        SocketConnectionClient.connect();
-      }, SocketConnectionClient.RECONNECT_INTERVAL_MS);
+      SocketConnectionClient.startReconnectingProcedure();
     });
 
     SocketConnectionClient.client.addEventListener('error', (err) => {
       console.error('Socket encountered error. Closing the socket.', err);
       SocketConnectionClient.disconnect();
+      SocketConnectionClient.startReconnectingProcedure();
     });
   }
 
@@ -53,6 +50,13 @@ class SocketConnectionClient {
     SocketConnectionClient.client.close();
     SocketConnectionClient.client = null;
     console.log('Disconnected from WebSocket event stream');
+  }
+
+  private static startReconnectingProcedure(): void {
+    setTimeout(() => {
+      console.log('Reconnecting to event stream WebSocket...');
+      SocketConnectionClient.connect();
+    }, SocketConnectionClient.RECONNECT_INTERVAL_MS);
   }
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
