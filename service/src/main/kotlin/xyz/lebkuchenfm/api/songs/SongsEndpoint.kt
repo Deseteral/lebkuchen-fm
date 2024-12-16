@@ -34,7 +34,7 @@ data class SongResponse(
 fun Song.toResponse(): SongResponse {
     return SongResponse(
         name = this.name,
-        youtubeId = this.youtubeId,
+        youtubeId = this.youtubeId.value,
         trimStartSeconds = this.trimStartSeconds,
         trimEndSeconds = this.trimEndSeconds,
         timesPlayed = this.timesPlayed,
