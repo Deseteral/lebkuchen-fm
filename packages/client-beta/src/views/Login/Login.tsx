@@ -19,8 +19,8 @@ function Login() {
     const login = form.login.value;
     const password = form.password.value;
 
-    UserAccountService.userLogin(login, password).catch(() => {
-      setError('Wrong login or password');
+    UserAccountService.userLogin(login, password).catch((problem: ProblemResponse) => {
+      setError(problem.detail);
     });
   };
 
