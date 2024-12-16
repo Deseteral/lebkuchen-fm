@@ -10,6 +10,7 @@ import {
 } from '../../services/soundboard-service';
 import { XSound } from '../../types/x-sound';
 import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { SOUNDBOARD_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -62,14 +63,14 @@ function Soundboard() {
         label="Soundboard"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
-        iconIndex={[1, 0]}
+        iconIndex={SOUNDBOARD_ICON_INDEX}
       />
       {showWindow() && (
         <AppWindow
           title="Soundboard"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
-          iconIndex={[1, 0]}
+          iconIndex={SOUNDBOARD_ICON_INDEX}
         >
           <h4 class={styles.title}>Search</h4>
           <input

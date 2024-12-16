@@ -4,6 +4,7 @@ import { createSignal } from 'solid-js';
 import styles from './DebugSoundUploadForm.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
+import { SOUND_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 /*
  * TODO: This is a very basic sound upload form that I've done just to have something to test
@@ -46,14 +47,14 @@ function DebugSoundUploadForm() {
         label="Sound Manager"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
-        iconIndex={[2, 0]}
+        iconIndex={SOUND_MANAGER_ICON_INDEX}
       />
       {showWindow() && (
         <AppWindow
           title="[DEBUG] Sound upload form"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
-          iconIndex={[2, 0]}
+          iconIndex={SOUND_MANAGER_ICON_INDEX}
         >
           <div class={styles.container}>
             <h1>Add new sound</h1>

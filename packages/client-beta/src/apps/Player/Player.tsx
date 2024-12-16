@@ -2,6 +2,7 @@ import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
+import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -20,10 +21,10 @@ function Player() {
         label="Player"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
-        iconIndex={[0, 0]}
+        iconIndex={PLAYER_ICON_INDEX}
       />
       {showWindow() && (
-        <AppWindow title="Player" close={closeWindow} iconIndex={[0, 0]}>
+        <AppWindow title="Player" close={closeWindow} iconIndex={PLAYER_ICON_INDEX}>
           <YouTubePlayer />
         </AppWindow>
       )}

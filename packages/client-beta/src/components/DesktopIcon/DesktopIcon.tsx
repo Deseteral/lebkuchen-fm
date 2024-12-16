@@ -1,11 +1,12 @@
 import styles from './DesktopIcon.module.css';
 import { AppIcon } from '@components/AppIcon/AppIcon';
+import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 
 interface DesktopIconProps {
   label: string;
   buttonRef: (el: HTMLButtonElement) => HTMLButtonElement;
   toggleWindow: () => void;
-  iconIndex: [number, number];
+  iconIndex: IconSpriteIndex;
 }
 
 function DesktopIcon(props: DesktopIconProps) {

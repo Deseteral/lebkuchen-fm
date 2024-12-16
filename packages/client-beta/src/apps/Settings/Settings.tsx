@@ -1,6 +1,7 @@
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal } from 'solid-js';
 import { SettingsWindow } from './components/SettingsWindow/SettingsWindow';
+import { SETTINGS_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 function Settings() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -19,7 +20,7 @@ function Settings() {
         label="Settings"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
-        iconIndex={[3, 0]}
+        iconIndex={SETTINGS_ICON_INDEX}
       />
       {showWindow() && <SettingsWindow close={closeWindow} />}
     </>
