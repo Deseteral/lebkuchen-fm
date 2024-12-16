@@ -1,7 +1,5 @@
 package xyz.lebkuchenfm
 
-import com.github.michaelbull.result.get
-import com.github.michaelbull.result.onFailure
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
@@ -14,7 +12,6 @@ import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
@@ -25,16 +22,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
-import xyz.lebkuchenfm.api.ProblemResponse
+import xyz.lebkuchenfm.api.auth.ValidateAuthHandler
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.songs.songsRouting
-import xyz.lebkuchenfm.api.toDto
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
-import xyz.lebkuchenfm.domain.auth.AuthError
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
@@ -53,8 +48,6 @@ import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.songs.SongsService
-import xyz.lebkuchenfm.domain.users.AddNewUserError
-import xyz.lebkuchenfm.domain.users.SetPasswordError
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
@@ -127,6 +120,8 @@ fun Application.module() {
     val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
     launch { discordClient.start() }
 
+    val validateAuthHandler = ValidateAuthHandler(authService)
+
     install(ContentNegotiation) {
         json()
     }
@@ -146,53 +141,7 @@ fun Application.module() {
             userParamName = "username"
             passwordParamName = "password"
             validate { credentials ->
-                authService.authenticateWithCredentials(credentials.name, credentials.password)
-                    .onFailure { error ->
-                        val status = HttpStatusCode.Unauthorized
-                        val instance = request.uri
-                        val response: ProblemResponse = when (error) {
-                            AuthError.BadCredentialsError -> ProblemResponse(
-                                "Could not authenticate.",
-                                "Wrong password was provided.",
-                                status,
-                                instance,
-                            )
-
-                            AuthError.UserDoesNotExistError -> ProblemResponse(
-                                "Could not authenticate.",
-                                "User does not exist.",
-                                status,
-                                instance,
-                            )
-
-                            is AuthError.CannotAddNewUserError -> {
-                                val title = "Could not create new user."
-                                val detail = when (error.addNewUserError) {
-                                    AddNewUserError.UserAlreadyExists -> "User already exists."
-                                    AddNewUserError.UnknownError -> "Something went wrong."
-                                }
-                                ProblemResponse(title, detail, status, instance)
-                            }
-
-                            is AuthError.CannotSetPasswordError -> {
-                                val title = "Could not set password for user."
-                                val detail = when (error.setPasswordError) {
-                                    SetPasswordError.UserDoesNotExist -> "User does not exist."
-                                    is SetPasswordError.ValidationError -> listOfNotNull(
-                                        "Password is too weak:",
-                                        "too short".takeIf { error.setPasswordError.tooShort },
-                                    ).joinToString(separator = " ")
-                                    SetPasswordError.UnknownError -> "Something went wrong."
-                                }
-                                ProblemResponse(title, detail, status, instance)
-                            }
-                        }
-                        respond(status, response.toDto())
-                    }
-                    .get()
-            }
-            challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.credentialsHandler(credentials, this)
             }
         }
         session<UserSession>("auth-session") {
