@@ -1,10 +1,12 @@
 import styles from './DesktopIcon.module.css';
+import { AppIcon } from '@components/AppIcon/AppIcon';
+import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 
 interface DesktopIconProps {
   label: string;
-  imgSrc: string;
   buttonRef: (el: HTMLButtonElement) => HTMLButtonElement;
   toggleWindow: () => void;
+  iconIndex: IconSpriteIndex;
 }
 
 function DesktopIcon(props: DesktopIconProps) {
@@ -16,7 +18,7 @@ function DesktopIcon(props: DesktopIconProps) {
       onDblClick={() => props.toggleWindow()}
       onKeyDown={(e) => e.key === 'Enter' && props.toggleWindow()}
     >
-      <img class={styles.icon} src={props.imgSrc} alt="" />
+      <AppIcon size={64} iconIndex={props.iconIndex} />
       {props.label}
     </button>
   );

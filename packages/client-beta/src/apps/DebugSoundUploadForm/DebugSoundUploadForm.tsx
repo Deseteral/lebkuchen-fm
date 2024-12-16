@@ -1,10 +1,10 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal } from 'solid-js';
-import soundboardIcon from '../../icons/soundboard-icon.svg';
 import styles from './DebugSoundUploadForm.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
+import { SOUND_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 /*
  * TODO: This is a very basic sound upload form that I've done just to have something to test
@@ -44,16 +44,17 @@ function DebugSoundUploadForm() {
   return (
     <>
       <DesktopIcon
-        label="[DEBUG] Sound upload form.app"
-        imgSrc={soundboardIcon}
+        label="Sound Manager"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={SOUND_MANAGER_ICON_INDEX}
       />
       {showWindow() && (
         <AppWindow
-          title="[DEBUG] Sound upload form.app"
+          title="[DEBUG] Sound upload form"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
+          iconIndex={SOUND_MANAGER_ICON_INDEX}
         >
           <div class={styles.container}>
             <h1>Add new sound</h1>

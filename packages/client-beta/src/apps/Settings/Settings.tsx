@@ -1,7 +1,7 @@
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal } from 'solid-js';
-import gearSolidIcon from '../../icons/gear-solid.svg';
 import { SettingsWindow } from './components/SettingsWindow/SettingsWindow';
+import { SETTINGS_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 function Settings() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -18,9 +18,9 @@ function Settings() {
     <>
       <DesktopIcon
         label="Settings"
-        imgSrc={gearSolidIcon}
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={SETTINGS_ICON_INDEX}
       />
       {showWindow() && <SettingsWindow close={closeWindow} />}
     </>

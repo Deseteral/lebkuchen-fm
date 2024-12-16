@@ -4,6 +4,7 @@ import { Toggle } from '@components/Toggle/Toggle';
 import styles from './SettingsWindow.module.css';
 import { UserPreferencesService } from '../../../../services/user-preferences-service';
 import { SliderInput } from '@components/SliderInput/SliderInput';
+import { SETTINGS_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 interface SettingsWindowProps {
   close?: () => void;
@@ -34,7 +35,12 @@ function SettingsWindow(props: SettingsWindowProps) {
   };
 
   return (
-    <AppWindow title="Settings" close={props.close} startSize={{ width: '400px', height: '200px' }}>
+    <AppWindow
+      title="Settings"
+      close={props.close}
+      startSize={{ width: '400px', height: '200px' }}
+      iconIndex={SETTINGS_ICON_INDEX}
+    >
       <section class={styles.section}>
         <h3 class={styles.sectionTitle}>X Sounds</h3>
         <Toggle onChange={onXSoundsShouldPlayChange} checked={xSoundShouldPlay()}>

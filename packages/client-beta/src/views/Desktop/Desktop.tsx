@@ -25,8 +25,8 @@ function Desktop() {
     <>
       <MenuBar isUserLoggedIn={true} />
       <main class={styles.desktop}>
-        <Soundboard />
         <Player />
+        <Soundboard />
         <DebugSoundUploadForm />
         <Settings />
       </main>
