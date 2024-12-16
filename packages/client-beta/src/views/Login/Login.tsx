@@ -5,6 +5,7 @@ import { Input } from '@components/Input/Input';
 import { createSignal } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
+import { ProblemResponse } from '../../types/problem-response';
 
 const LOGIN_WINDOW_WIDTH = 400;
 const LOGIN_WINDOW_HEIGHT = 350;

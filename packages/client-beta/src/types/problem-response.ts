@@ -4,3 +4,5 @@ interface ProblemResponse {
   status: number;
   instance: string;
 }
+
+export { ProblemResponse };
