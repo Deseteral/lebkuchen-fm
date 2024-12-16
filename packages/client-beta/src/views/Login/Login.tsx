@@ -5,6 +5,7 @@ import { Input } from '@components/Input/Input';
 import { createSignal } from 'solid-js';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
+import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 
 const LOGIN_WINDOW_WIDTH = 400;
 const LOGIN_WINDOW_HEIGHT = 350;
@@ -31,6 +32,7 @@ function Login() {
         title="Login"
         startSize={{ width: `${LOGIN_WINDOW_WIDTH}px`, height: `${LOGIN_WINDOW_HEIGHT}px` }}
         centered
+        iconIndex={USER_MANAGER_ICON_INDEX}
       >
         <div class={styles.container}>
           <h1>Login</h1>
