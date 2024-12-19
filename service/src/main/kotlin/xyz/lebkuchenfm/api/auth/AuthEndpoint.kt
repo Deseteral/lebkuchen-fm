@@ -14,12 +14,14 @@ import io.ktor.server.sessions.set
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.domain.users.UsersService
 
-fun Route.authRouting() {
+fun Route.authRouting(usersService: UsersService) {
     route("/auth") {
         get {
             val session = call.getUserSession()
-            call.respond(LoggedInResponse(username = session.name, apiToken = session.apiToken))
+            val apiToken = usersService.getByName(session.name)?.secret?.apiToken
+            call.respond(LoggedInResponse(username = session.name, apiToken = apiToken!!))
         }
 
         authenticate("auth-form") {

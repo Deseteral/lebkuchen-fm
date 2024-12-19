@@ -19,11 +19,11 @@ class UserAccountService {
       body,
     };
 
-    const { status } = await fetch('/api/auth', options);
-    if (status === 200) {
+    const response = await fetch('/api/auth', options);
+    if (response.status === 200) {
       redirectTo('/');
     } else {
-      throw new Error('Login failed');
+      throw await response.json();
     }
   }
 

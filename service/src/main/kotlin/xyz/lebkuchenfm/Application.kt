@@ -1,6 +1,5 @@
 package xyz.lebkuchenfm
 
-import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -12,7 +11,6 @@ import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
@@ -22,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.api.auth.ValidateAuthHandler
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
@@ -119,6 +118,8 @@ fun Application.module() {
     val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
     launch { discordClient.start() }
 
+    val validateAuthHandler = ValidateAuthHandler(authService)
+
     install(ContentNegotiation) {
         json()
     }
@@ -138,21 +139,18 @@ fun Application.module() {
             userParamName = "username"
             passwordParamName = "password"
             validate { credentials ->
-                authService.authenticateWithCredentials(credentials.name, credentials.password)
-            }
-            challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.credentialsHandler(credentials, this)
             }
         }
         session<UserSession>("auth-session") {
             validate { session -> session }
             challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.badSessionHandler(call)
             }
         }
         bearer("auth-bearer") {
             authenticate { tokenCredential ->
-                authService.authenticateWithApiToken(tokenCredential.token)
+                validateAuthHandler.apiTokenHandler(tokenCredential, this)
             }
         }
     }
@@ -169,7 +167,7 @@ fun Application.module() {
         authenticate("auth-session") {
             authenticate("auth-bearer") {
                 route("/api") {
-                    authRouting()
+                    authRouting(usersService)
                     xSoundsRouting(xSoundsService)
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
