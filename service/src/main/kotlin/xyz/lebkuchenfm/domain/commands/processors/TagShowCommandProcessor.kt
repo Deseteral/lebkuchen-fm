@@ -20,7 +20,7 @@ class TagShowCommandProcessor(private val xSoundsService: XSoundsService) :
         exampleUsages = listOf("example-sound"),
         parameters = CommandParameters(
             parameters = listOf(
-                CommandParameters.RequiredCommandParameter("sound-name")
+                CommandParameters.RequiredCommandParameter("sound-name"),
             ),
         ),
     ) {
@@ -31,23 +31,24 @@ class TagShowCommandProcessor(private val xSoundsService: XSoundsService) :
                 """
                 You have to provide a sound name in the arguments.
                 Refer to this command's help message for usage info.
-            """.trimIndent(),
+                """.trimIndent(),
                 logger,
             )
         }
         val (soundName) = args
 
-        return xSoundsService.listTags()
+        return xSoundsService.listTagsForSound(soundName)
             .map { tags ->
                 return CommandProcessingResult.fromMultilineMarkdown(
-                    "*Sound $soundName has ${tags.size} tags:*",
+                    "*Sound $soundName has ${tags.size} tags${if (tags.isNotEmpty()) ":" else ""}*",
                     *tags.map { "- $it" }.toTypedArray(),
                 )
             }
             .getOrElse { err ->
                 error(
                     when (err) {
-                        XSoundsService.ListTagsError.UnknownError -> "Unknown error"
+                        XSoundsService.ListTagsForSoundError.UnknownError -> "Unknown error"
+                        XSoundsService.ListTagsForSoundError.SoundNotFoundError -> "Sound $soundName was not found"
                     },
                     logger,
                 )
