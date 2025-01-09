@@ -31,6 +31,6 @@ private data class HistoryEntity(
 
 private fun HistoryEntry.toEntity() = HistoryEntity(
     date = date,
-    youtubeId = youtubeId,
+    youtubeId = youtubeId.value,
     user = user,
 )

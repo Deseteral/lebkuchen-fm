@@ -25,7 +25,7 @@ class SongsService(
 
     suspend fun incrementPlayCount(song: Song, userSession: UserSession): Song? {
         return songsRepository.incrementPlayCountByName(song.name)?.also {
-            historyRepository.insert(HistoryEntry(clock.now(), it.name, userSession.name))
+            historyRepository.insert(HistoryEntry(clock.now(), it.youtubeId, userSession.name))
         }
     }
 
