@@ -25,7 +25,7 @@ class PlayerStateSynchronizer<StateT>(
             // Give time for clients to donate their state.
             delay(stateDonationResponseTimeout)
 
-            // If none of the clients donated state in the allowed time, respond with default state.
+            // If none of the clients donated state in the allowed time - respond with default state.
             if (handle in requestHandles) {
                 eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
                 requestHandles.remove(handle)
