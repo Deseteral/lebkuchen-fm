@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.domain.eventstream
 
 import io.ktor.util.collections.ConcurrentMap
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.seconds
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
@@ -22,9 +23,15 @@ class PlayerStateSynchronizer<StateT>(
             requestHandles[handle] = DonationRequest(target, awaitingResponseCount = sentCount)
 
             // Timeout the request when donors do not respond in required time.
-            delay(1000)
-            if (requestHandles[handle] != null) {
+            delay(stateDonationResponseTimeout)
+
+            // Check if the request was not handled in the allowed processing time.
+            // Send the default state if it was not.
+            if (handle in requestHandles) {
                 eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
+
+                // The request was served so we can remove it from the list.
+                requestHandles.remove(handle)
             }
         }
     }
@@ -58,4 +65,8 @@ class PlayerStateSynchronizer<StateT>(
         val target: EventStreamConsumerId,
         var awaitingResponseCount: Int,
     )
+
+    companion object {
+        private val stateDonationResponseTimeout: Long = 1.seconds.inWholeMilliseconds
+    }
 }
