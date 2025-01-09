@@ -22,15 +22,12 @@ class PlayerStateSynchronizer<StateT>(
             val sentCount = eventStream.sendToEveryone(Event.PlayerStateRequestDonation(handle), exclude = target)
             requestHandles[handle] = DonationRequest(target, awaitingResponseCount = sentCount)
 
-            // Timeout the request when donors do not respond in required time.
+            // Give time for clients to donate their state.
             delay(stateDonationResponseTimeout)
 
-            // Check if the request was not handled in the allowed processing time.
-            // Send the default state if it was not.
+            // If none of the clients donated state in the allowed time, respond with default state.
             if (handle in requestHandles) {
                 eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
-
-                // The request was served so we can remove it from the list.
                 requestHandles.remove(handle)
             }
         }
