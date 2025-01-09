@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.eventstream
 
 import io.ktor.util.collections.ConcurrentMap
+import kotlinx.coroutines.delay
 
 class PlayerStateSynchronizer<StateT>(
     private val eventStream: EventStream<*>,
@@ -19,6 +20,12 @@ class PlayerStateSynchronizer<StateT>(
             val handle = Event.PlayerStateRequestDonation.RequestHandle()
             val sentCount = eventStream.sendToEveryone(Event.PlayerStateRequestDonation(handle), exclude = target)
             requestHandles[handle] = DonationRequest(target, awaitingResponseCount = sentCount)
+
+            // Timeout the request when donors do not respond in required time.
+            delay(1000)
+            if (requestHandles[handle] != null) {
+                eventStream.sendToOne(target, Event.PlayerStateUpdate(defaultStateProvider.getDefaultState()))
+            }
         }
     }
 
@@ -28,7 +35,7 @@ class PlayerStateSynchronizer<StateT>(
 
         request.awaitingResponseCount -= 1
 
-        // When we get te state - just send it to target.
+        // When we get the state - just send it to target.
         // When we don't get the state, and we have no one else to wait for - send default state.
         // Otherwise, don't send anything - we're still waiting for donors to respond.
         val actualState = when {
