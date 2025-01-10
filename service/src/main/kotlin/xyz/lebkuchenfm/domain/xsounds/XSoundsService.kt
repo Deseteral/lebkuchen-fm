@@ -109,4 +109,17 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
             }
         }
     }
+
+    sealed class ListTagsForSoundError {
+        data object UnknownError : ListTagsForSoundError()
+        data object SoundNotFoundError : ListTagsForSoundError()
+    }
+    suspend fun listTagsForSound(soundName: String): Result<List<String>, ListTagsForSoundError> {
+        return repository.listTagsForXSound(soundName).mapError { err ->
+            when (err) {
+                is ListTagsForXSoundError.UnknownError -> ListTagsForSoundError.UnknownError
+                is ListTagsForXSoundError.SoundDoesNotExist -> ListTagsForSoundError.SoundNotFoundError
+            }
+        }
+    }
 }
