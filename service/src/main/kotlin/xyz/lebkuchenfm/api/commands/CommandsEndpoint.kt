@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.api.commands
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
@@ -16,15 +17,18 @@ private val logger = KotlinLogging.logger {}
 
 fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/execute") {
+        val contentType = call.request.headers["Content-Type"] ?: return@post
+
         val session = call.getUserSession()
         val context = ExecutionContext(session)
 
-        val processingResult = when (call.request.headers["Content-Type"]) {
-            "plain/text" -> {
+        val processingResult = when {
+            ContentType.Text.Plain.match(contentType) -> {
                 val text = call.receive<TextCommandRequest>().text
                 logger.info { "Received $text command from ${session.name}" }
                 commandExecutorService.executeFromText(text, context)
             }
+
             else -> {
                 call.respondWithProblem(
                     title = "Invalid content type.",
