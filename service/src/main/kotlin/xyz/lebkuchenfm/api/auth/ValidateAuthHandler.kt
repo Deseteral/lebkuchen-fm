@@ -19,18 +19,10 @@ class ValidateAuthHandler(private val authService: AuthService) {
             .authenticateWithCredentials(credentials.name, credentials.password)
             .onFailure { error ->
                 when (error) {
-                    AuthError.BadCredentialsError -> {
+                    AuthError.BadCredentialsError, AuthError.UserDoesNotExistError -> {
                         call.respondWithProblem(
                             title = "Could not authenticate.",
-                            detail = "Wrong password was provided.",
-                            status = HttpStatusCode.Unauthorized,
-                        )
-                    }
-
-                    AuthError.UserDoesNotExistError -> {
-                        call.respondWithProblem(
-                            title = "Could not authenticate.",
-                            detail = "User does not exist.",
+                            detail = "User does not exist or wrong password was provided.",
                             status = HttpStatusCode.Unauthorized,
                         )
                     }
@@ -51,6 +43,7 @@ class ValidateAuthHandler(private val authService: AuthService) {
                             title = "Could not set password for user.",
                             detail = when (error.setPasswordError) {
                                 SetPasswordError.UserDoesNotExist -> "User does not exist."
+
                                 is SetPasswordError.ValidationError -> listOfNotNull(
                                     "Password is too weak:",
                                     "too short".takeIf { error.setPasswordError.tooShort },
