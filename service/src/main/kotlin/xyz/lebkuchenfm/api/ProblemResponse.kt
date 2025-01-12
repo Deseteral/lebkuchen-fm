@@ -3,8 +3,8 @@ package xyz.lebkuchenfm.api
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.uri
-import kotlinx.serialization.Serializable
 import io.ktor.server.response.respond
+import kotlinx.serialization.Serializable
 
 /*
  * Response body for errors based on RFC 9457.
