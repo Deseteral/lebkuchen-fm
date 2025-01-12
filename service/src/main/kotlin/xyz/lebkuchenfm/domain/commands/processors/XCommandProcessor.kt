@@ -1,18 +1,19 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
+import com.github.michaelbull.result.getOrElse
+import com.github.michaelbull.result.map
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
-import xyz.lebkuchenfm.domain.eventstream.Event
-import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.xsounds.XSoundsService
+import xyz.lebkuchenfm.domain.soundboard.SoundboardService
+import xyz.lebkuchenfm.domain.soundboard.SoundboardService.PlayXSoundError
 
 private val logger = KotlinLogging.logger {}
 
-class XCommandProcessor(private val xSoundsService: XSoundsService, private val eventStream: EventStream<*>) :
+class XCommandProcessor(private val soundboardService: SoundboardService) :
     CommandProcessor(
         key = "x",
         shortKey = null,
@@ -28,12 +29,14 @@ class XCommandProcessor(private val xSoundsService: XSoundsService, private val 
         val soundName = command.rawArgs
             ?: return error("You have to provide sound name.", logger)
 
-        val xSound = xSoundsService.getByName(soundName)
-            ?: return error("Sound '$soundName' does not exist.", logger)
-
-        eventStream.sendToEveryone(Event.PlayXSound(soundUrl = xSound.url))
-        xSoundsService.markAsPlayed(xSound.name)
-
-        return CommandProcessingResult.fromMarkdown("Played $soundName sound.")
+        return soundboardService
+            .playXSound(soundName)
+            .map { CommandProcessingResult.fromMarkdown("Played $soundName sound.") }
+            .getOrElse { error ->
+                val message = when (error) {
+                    PlayXSoundError.SoundNotFound -> "Sound '$soundName' does not exist."
+                }
+                error(message, logger)
+            }
     }
 }

@@ -47,6 +47,7 @@ import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.songs.SongsService
+import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
@@ -94,12 +95,14 @@ fun Application.module() {
 
     val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
+    val soundboardService = SoundboardService(xSoundsService, eventStream)
+
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
     val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
-            XCommandProcessor(xSoundsService, eventStream),
+            XCommandProcessor(soundboardService),
             TagAddCommandProcessor(xSoundsService),
             TagRemoveCommandProcessor(xSoundsService),
             TagListCommandProcessor(xSoundsService),
