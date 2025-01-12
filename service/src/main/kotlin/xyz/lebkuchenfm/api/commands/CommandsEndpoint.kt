@@ -3,14 +3,12 @@ package xyz.lebkuchenfm.api.commands
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
-import io.ktor.server.request.uri
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.api.ProblemResponse
 import xyz.lebkuchenfm.api.getUserSession
-import xyz.lebkuchenfm.api.toDto
+import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 
@@ -21,14 +19,11 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
         val contentType = call.request.headers["Content-Type"]
 
         if (contentType != "plain/text") {
-            val status = HttpStatusCode.UnsupportedMediaType
-            val problem = ProblemResponse(
+            call.respondWithProblem(
                 title = "Invalid content type.",
                 detail = "Unsupported content type.",
-                status = status,
-                instance = call.request.uri,
+                status = HttpStatusCode.UnsupportedMediaType,
             )
-            call.respond(status, problem.toDto())
             return@post
         }
 
