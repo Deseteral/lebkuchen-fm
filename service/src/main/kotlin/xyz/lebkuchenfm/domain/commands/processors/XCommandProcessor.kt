@@ -1,7 +1,6 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
-import com.github.michaelbull.result.getOrElse
-import com.github.michaelbull.result.map
+import com.github.michaelbull.result.mapBoth
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
@@ -29,13 +28,14 @@ class XCommandProcessor(private val soundboardService: SoundboardService) :
         val soundName = command.rawArgs
             ?: return error("You have to provide sound name.", logger)
 
-        return soundboardService.playXSound(soundName)
-            .map { CommandProcessingResult.fromMarkdown("Played $soundName sound.") }
-            .getOrElse { error ->
+        return soundboardService.playXSound(soundName).mapBoth(
+            { CommandProcessingResult.fromMarkdown("Played $soundName sound.") },
+            { error ->
                 val message = when (error) {
                     PlayXSoundError.SoundNotFound -> "Sound '$soundName' does not exist."
                 }
                 error(message, logger)
-            }
+            },
+        )
     }
 }
