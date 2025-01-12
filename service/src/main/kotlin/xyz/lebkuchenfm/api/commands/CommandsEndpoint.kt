@@ -17,7 +17,7 @@ private val logger = KotlinLogging.logger {}
 
 fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/execute") {
-        val contentType = call.request.headers["Content-Type"] ?: return@post
+        val contentType = call.request.headers["Content-Type"] ?: ""
 
         val session = call.getUserSession()
         val context = ExecutionContext(session)
