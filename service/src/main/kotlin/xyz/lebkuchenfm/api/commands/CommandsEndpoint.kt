@@ -3,6 +3,7 @@ package xyz.lebkuchenfm.api.commands
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.request.contentType
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
@@ -17,13 +18,12 @@ private val logger = KotlinLogging.logger {}
 
 fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/execute") {
-        val contentType = call.request.headers["Content-Type"] ?: ""
-
+        val contentType = call.request.contentType()
         val session = call.getUserSession()
         val context = ExecutionContext(session)
 
         val processingResult = when {
-            ContentType.Text.Plain.match(contentType) -> {
+            contentType.match(ContentType.Text.Plain) -> {
                 val text = call.receive<TextCommandRequest>().text
                 logger.info { "Received $text command from ${session.name}" }
                 commandExecutorService.executeFromText(text, context)
