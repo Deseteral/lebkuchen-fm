@@ -30,7 +30,7 @@ fun Route.soundboardEndpoint(soundboardService: SoundboardService) {
                     when (error) {
                         SoundboardService.PlayXSoundError.SoundNotFound -> {
                             call.respondWithProblem(
-                                title = "Sound does not exist",
+                                title = "Sound does not exist.",
                                 detail = "Sound $soundName does not exist.",
                                 status = HttpStatusCode.NotFound,
                             )
