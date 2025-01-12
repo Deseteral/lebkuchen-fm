@@ -25,8 +25,12 @@ function Soundboard() {
     }
   };
 
-  function playXSoundLocally(url: string) {
-    XSoundsPlayService.play(url);
+  function playXSound(sound: XSound, event: MouseEvent) {
+    if (event.metaKey || event.altKey) {
+      XSoundsPlayService.play(sound.url)
+    } else {
+      SoundboardService.playXSound(sound.name);
+    }
   }
 
   createEffect(() => {
@@ -96,7 +100,7 @@ function Soundboard() {
           <div class={styles.container}>
             {filteredXSounds() &&
               filteredXSounds().map((xsound: XSound) => (
-                <button class={styles.button} onClick={() => playXSoundLocally(xsound.url)}>
+                <button class={styles.button} onClick={(event) => playXSound(xsound, event)}>
                   {xsound.name}
                 </button>
               ))}
