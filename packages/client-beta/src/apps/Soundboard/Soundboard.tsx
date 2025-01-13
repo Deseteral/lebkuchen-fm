@@ -9,7 +9,7 @@ import {
   soundsSorting,
 } from '../../services/soundboard-service';
 import { XSound } from '../../types/x-sound';
-import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { SOUNDBOARD_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { SoundboardService } from './soundboard-service';
 
@@ -28,7 +28,7 @@ function Soundboard() {
 
   function playXSound(sound: XSound, event: MouseEvent) {
     if (event.metaKey || event.altKey) {
-      XSoundsPlayService.play(sound.url);
+      PlayXSoundEventHandler.play(sound.url);
     } else {
       SoundboardService.playXSound(sound.name);
     }

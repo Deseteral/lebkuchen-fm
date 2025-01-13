@@ -6,19 +6,19 @@ import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
-import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.connect();
-    XSoundsPlayService.initialize();
+    PlayXSoundEventHandler.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
-    XSoundsPlayService.cleanup();
+    PlayXSoundEventHandler.cleanup();
   });
 
   return (
