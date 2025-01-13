@@ -42,4 +42,4 @@ class UserPreferencesService {
   }
 }
 
-export {UserPreferencesService};
+export { UserPreferencesService };
