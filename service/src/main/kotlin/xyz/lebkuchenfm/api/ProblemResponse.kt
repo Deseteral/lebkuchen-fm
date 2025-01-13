@@ -1,6 +1,9 @@
 package xyz.lebkuchenfm.api
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.uri
+import io.ktor.server.response.respond
 import kotlinx.serialization.Serializable
 
 /*
@@ -23,3 +26,13 @@ data class ProblemResponseDto(
 )
 
 fun ProblemResponse.toDto(): ProblemResponseDto = ProblemResponseDto(title, detail, status.value, instance)
+
+suspend fun ApplicationCall.respondWithProblem(title: String, detail: String, status: HttpStatusCode) {
+    val problem = ProblemResponse(
+        title = title,
+        detail = detail,
+        status = status,
+        this.request.uri,
+    )
+    this.respond(status, problem.toDto())
+}
