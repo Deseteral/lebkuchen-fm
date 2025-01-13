@@ -15,7 +15,7 @@ function SettingsWindow(props: SettingsWindowProps) {
     !!UserPreferencesService.get('xSoundShouldPlay'),
   );
   const [xSoundVolume, setXSoundVolume] = createSignal(
-    (UserPreferencesService.get('xSoundVolume') ?? 50) as number,
+    UserPreferencesService.get<number>('xSoundVolume'),
   );
 
   const onXSoundsShouldPlayChange = (e: Event) => {

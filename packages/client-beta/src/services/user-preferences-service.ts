@@ -15,24 +15,31 @@ class UserPreferencesService {
     }
   }
 
-  static get(key: string): UserPreferenceValue | null {
-    try {
-      const value = localStorage.getItem(key);
+  static get<T extends UserPreferenceValue>(key: string): T {
+    const value = UserPreferencesService.safeGetFromLocalStorage(key);
 
-      if (value === null && key in DEFAULT_VALUES) {
-        const defaultValue = DEFAULT_VALUES[key];
-        UserPreferencesService.set(key, defaultValue);
-
-        return defaultValue;
+    if (value === null) {
+      const defaultValue = DEFAULT_VALUES[key];
+      if (!defaultValue) {
+        throw new Error(`Unknown user preference key "${key}".`);
       }
 
-      return value ? JSON.parse(value) : null;
+      UserPreferencesService.set(key, defaultValue);
+
+      return defaultValue as T;
+    }
+
+    return JSON.parse(value) as T;
+  }
+
+  private static safeGetFromLocalStorage(key: string): string | null {
+    try {
+      return localStorage.getItem(key);
     } catch (err) {
       console.error(`Cannot get user preference "${key}"`, err);
-
       return null;
     }
   }
 }
 
-export { UserPreferencesService };
+export {UserPreferencesService};
