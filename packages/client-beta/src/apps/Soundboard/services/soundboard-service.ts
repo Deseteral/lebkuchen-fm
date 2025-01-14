@@ -1,4 +1,4 @@
-import { XSound } from '../../types/x-sound';
+import { XSound } from '../../../types/x-sound';
 
 export abstract class SoundboardService {
   static async playXSound(soundName: string) {

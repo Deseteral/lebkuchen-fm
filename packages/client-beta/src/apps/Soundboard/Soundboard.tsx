@@ -4,7 +4,7 @@ import { createEffect, createSignal, For } from 'solid-js';
 import styles from './Soundboard.module.css';
 import { XSound } from '../../types/x-sound';
 import { SOUNDBOARD_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
-import { SoundboardService } from './soundboard-service';
+import { SoundboardService } from './services/soundboard-service';
 import { playAudioFromUrl } from '../../services/audio-service';
 import { UserPreferencesService } from '../../services/user-preferences-service';
 
