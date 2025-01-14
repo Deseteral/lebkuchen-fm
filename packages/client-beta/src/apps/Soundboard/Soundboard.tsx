@@ -2,15 +2,11 @@ import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createEffect, createSignal, For } from 'solid-js';
 import styles from './Soundboard.module.css';
-import {
-  getXSounds,
-  getXSoundsTags,
-  soundMatchesPhrase,
-  soundsSorting,
-} from '../../services/soundboard-service';
 import { XSound } from '../../types/x-sound';
-import { XSoundsPlayService } from '../../services/x-sounds-play-service';
 import { SOUNDBOARD_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
+import { SoundboardService } from './services/soundboard-service';
+import { playAudioFromUrl } from '../../services/audio-service';
+import { UserPreferencesService } from '../../services/user-preferences-service';
 
 function Soundboard() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -25,17 +21,22 @@ function Soundboard() {
     }
   };
 
-  function playXSoundLocally(url: string) {
-    XSoundsPlayService.play(url);
+  function playXSound(sound: XSound, event: MouseEvent) {
+    if (event.metaKey || event.altKey) {
+      const volume = UserPreferencesService.get<number>('xSoundVolume');
+      playAudioFromUrl(sound.url, volume);
+    } else {
+      SoundboardService.playXSound(sound.name);
+    }
   }
 
   createEffect(() => {
-    getXSounds().then((sounds) => {
+    SoundboardService.getXSounds().then((sounds) => {
       setXsounds(sounds);
       setFilteredXSounds(sounds);
     });
 
-    getXSoundsTags().then((tags) => {
+    SoundboardService.getXSoundsTags().then((tags) => {
       setTags(tags);
     });
   });
@@ -52,8 +53,8 @@ function Soundboard() {
 
     setFilteredXSounds(
       xsounds()
-        .filter((sound: XSound) => soundMatchesPhrase(sound, value))
-        .sort(soundsSorting(value)),
+        .filter((sound: XSound) => SoundboardService.soundMatchesPhrase(sound, value))
+        .sort(SoundboardService.soundsComparator(value)),
     );
   };
 
@@ -96,7 +97,7 @@ function Soundboard() {
           <div class={styles.container}>
             {filteredXSounds() &&
               filteredXSounds().map((xsound: XSound) => (
-                <button class={styles.button} onClick={() => playXSoundLocally(xsound.url)}>
+                <button class={styles.button} onClick={(event) => playXSound(xsound, event)}>
                   {xsound.name}
                 </button>
               ))}
