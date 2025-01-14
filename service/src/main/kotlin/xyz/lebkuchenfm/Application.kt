@@ -27,6 +27,7 @@ import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.songs.songsRouting
+import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.auth.UserSession
@@ -47,6 +48,7 @@ import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.songs.SongsService
+import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
@@ -94,12 +96,14 @@ fun Application.module() {
 
     val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
+    val soundboardService = SoundboardService(xSoundsService, eventStream)
+
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
     val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
-            XCommandProcessor(xSoundsService, eventStream),
+            XCommandProcessor(soundboardService),
             TagAddCommandProcessor(xSoundsService),
             TagRemoveCommandProcessor(xSoundsService),
             TagListCommandProcessor(xSoundsService),
@@ -174,6 +178,7 @@ fun Application.module() {
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
                     eventStreamRouting(eventStream, playerStateSynchronizer)
+                    soundboardEndpoint(soundboardService)
                 }
             }
         }
