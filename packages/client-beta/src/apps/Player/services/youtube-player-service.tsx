@@ -233,12 +233,10 @@ class YoutubePlayerService {
 
   private static playNextSong() {
     const playerState = PlayerStateService.get();
-    const nextSong = playerState.queue.shift();
+    const nextSong = playerState.queue.shift() || null;
     PlayerStateService.change({ queue: playerState.queue });
 
-    if (nextSong) {
-      YoutubePlayerService.playSong(nextSong);
-    }
+    YoutubePlayerService.playSong(nextSong);
   }
 
   private static rewindTo(time: number) {
