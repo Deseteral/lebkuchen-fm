@@ -6,12 +6,11 @@ ARG JDK_VERSION=21
 FROM node:${NODE_VERSION}-alpine AS client
 WORKDIR /usr/src/app
 
-COPY ./package.json .
-COPY ./yarn.lock .
-COPY ./packages ./packages
+COPY ./client ./client
 
+WORKDIR ./client
 RUN yarn install
-RUN yarn run build:client-beta
+RUN yarn run build
 
 ################################################################################
 # Stage 2: Cache Gradle dependencies
@@ -31,7 +30,7 @@ WORKDIR /usr/src/app
 COPY --chown=gradle:gradle ./service /home/gradle/src
 WORKDIR /home/gradle/src
 # Copy the static files from the build of frontend app to be hosted by the backend service.
-COPY --from=client /usr/src/app/packages/client-beta/dist/ ./src/main/resources/static
+COPY --from=client /usr/src/app/client/dist/ ./src/main/resources/static
 # Build the fat JAR, Gradle also supports shadow
 # and boot JAR by default.
 RUN gradle buildFatJar --no-daemon

@@ -6,18 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: 18.x
-    - run: yarn install --frozen-lockfile
-    - run: yarn run build
-    - run: yarn test
-
-  build-v3:
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v4
 
       - name: Setup JDK
@@ -39,10 +27,13 @@ jobs:
         run: ./gradlew build
 
       - name: Install client dependencies
+        working-directory: ./client
         run: yarn install --frozen-lockfile
 
       - name: Build client
-        run: yarn run build:client-beta
+        working-directory: ./client
+        run: yarn run build
 
       - name: Test client
-        run: yarn run test:client-beta
+        working-directory: ./client
+        run: yarn run test
