@@ -13,7 +13,7 @@ function getFormattedTime(): string {
 
 function TimeWidget() {
   const [time, setTime] = createSignal(getFormattedTime());
-  const [intervalId, setIntervalId] = createSignal<NodeJS.Timer>();
+  const [intervalId, setIntervalId] = createSignal<number>();
 
   onMount(() => {
     const interval = setInterval(() => {
