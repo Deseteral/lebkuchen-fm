@@ -1,7 +1,7 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal, createEffect, For } from 'solid-js';
-import gearSolidIcon from '../../icons/gear-solid.svg';
+import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Users.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
@@ -69,15 +69,16 @@ function Users() {
     <>
       <DesktopIcon
         label="Users"
-        imgSrc={gearSolidIcon}
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
         toggleWindow={toggleWindow}
+        iconIndex={USER_MANAGER_ICON_INDEX}
       />
       {showWindow() && (
         <AppWindow
           title="[WIP] Users management"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}
+          iconIndex={USER_MANAGER_ICON_INDEX}
         >
           <div class={styles.container}>
             <div class={styles.tableWrapper}>
