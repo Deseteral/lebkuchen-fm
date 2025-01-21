@@ -6,28 +6,28 @@ import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
-import { XSoundsPlayService } from '../../services/x-sounds-play-service';
+import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
 import { Users } from '../../apps/Users/Users';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
-    SocketConnectionClient.initializeConnection();
-    XSoundsPlayService.initialize();
+    SocketConnectionClient.connect();
+    PlayXSoundEventHandler.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
-    XSoundsPlayService.cleanup();
+    PlayXSoundEventHandler.cleanup();
   });
 
   return (
     <>
       <MenuBar isUserLoggedIn={true} />
       <main class={styles.desktop}>
-        <Soundboard />
         <Player />
+        <Soundboard />
         <DebugSoundUploadForm />
         <Users />
         <Settings />

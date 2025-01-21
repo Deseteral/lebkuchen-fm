@@ -23,6 +23,7 @@ import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.songs.InsertSongError
 import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsRepository
+import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
 
 class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     private val collection = database.getCollection<SongEntity>("songs")
@@ -50,13 +51,13 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
         return collection.find(eq(SongEntity::name.name, name)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun findByYoutubeId(youtubeId: String): Song? {
-        return collection.find(eq(SongEntity::youtubeId.name, youtubeId)).firstOrNull()?.toDomain()
+    override suspend fun findByYoutubeId(youtubeId: YoutubeVideoId): Song? {
+        return collection.find(eq(SongEntity::youtubeId.name, youtubeId.value)).firstOrNull()?.toDomain()
     }
 
-    override suspend fun findByYoutubeIds(youtubeIds: List<String>): List<Song> {
+    override suspend fun findByYoutubeIds(youtubeIds: List<YoutubeVideoId>): List<Song> {
         return collection
-            .find(`in`(SongEntity::youtubeId.name, youtubeIds))
+            .find(`in`(SongEntity::youtubeId.name, youtubeIds.map { it.value }))
             .map { it.toDomain() }
             .toList()
     }
@@ -90,7 +91,7 @@ data class SongEntity(
     fun toDomain(): Song {
         return Song(
             name = this.name,
-            youtubeId = this.youtubeId,
+            youtubeId = YoutubeVideoId(this.youtubeId),
             trimStartSeconds = this.trimStartSeconds,
             trimEndSeconds = this.trimEndSeconds,
             timesPlayed = this.timesPlayed,
@@ -101,7 +102,7 @@ data class SongEntity(
 private fun Song.toEntity(): SongEntity = SongEntity(
     id = null,
     name = name,
-    youtubeId = youtubeId,
+    youtubeId = youtubeId.value,
     trimStartSeconds = trimStartSeconds,
     trimEndSeconds = trimEndSeconds,
     timesPlayed = timesPlayed,

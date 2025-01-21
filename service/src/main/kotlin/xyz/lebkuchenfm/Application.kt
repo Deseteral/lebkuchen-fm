@@ -1,6 +1,5 @@
 package xyz.lebkuchenfm
 
-import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -12,7 +11,6 @@ import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.response.respond
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
@@ -22,12 +20,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.api.auth.ValidateAuthHandler
 import xyz.lebkuchenfm.api.auth.authRouting
 import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.songs.songsRouting
+import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.users.usersRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
@@ -45,9 +45,11 @@ import xyz.lebkuchenfm.domain.commands.processors.SongSearchCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagAddCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagListCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.songs.SongsService
+import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
@@ -95,15 +97,18 @@ fun Application.module() {
 
     val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
+    val soundboardService = SoundboardService(xSoundsService, eventStream)
+
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
     val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
-            XCommandProcessor(xSoundsService, eventStream),
+            XCommandProcessor(soundboardService),
             TagAddCommandProcessor(xSoundsService),
             TagRemoveCommandProcessor(xSoundsService),
             TagListCommandProcessor(xSoundsService),
+            TagShowCommandProcessor(xSoundsService),
             SongRandomCommandProcessor(songsService, eventStream),
             SongSearchCommandProcessor(songsService, eventStream),
             SongQueueCommandProcessor(songsService, eventStream),
@@ -119,6 +124,8 @@ fun Application.module() {
 
     val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
     launch { discordClient.start() }
+
+    val validateAuthHandler = ValidateAuthHandler(authService)
 
     install(ContentNegotiation) {
         json()
@@ -139,21 +146,18 @@ fun Application.module() {
             userParamName = "username"
             passwordParamName = "password"
             validate { credentials ->
-                authService.authenticateWithCredentials(credentials.name, credentials.password)
-            }
-            challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.credentialsHandler(credentials, this)
             }
         }
         session<UserSession>("auth-session") {
             validate { session -> session }
             challenge {
-                call.respond(HttpStatusCode.Unauthorized)
+                validateAuthHandler.badSessionHandler(call)
             }
         }
         bearer("auth-bearer") {
             authenticate { tokenCredential ->
-                authService.authenticateWithApiToken(tokenCredential.token)
+                validateAuthHandler.apiTokenHandler(tokenCredential, this)
             }
         }
     }
@@ -170,11 +174,12 @@ fun Application.module() {
         authenticate("auth-session") {
             authenticate("auth-bearer") {
                 route("/api") {
-                    authRouting()
+                    authRouting(usersService)
                     xSoundsRouting(xSoundsService)
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
                     eventStreamRouting(eventStream, playerStateSynchronizer)
+                    soundboardEndpoint(soundboardService)
                     usersRouting(usersService)
                 }
             }

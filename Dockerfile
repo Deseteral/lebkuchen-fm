@@ -1,76 +1,45 @@
-# syntax=docker/dockerfile:1
-
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/engine/reference/builder/
-
 ARG NODE_VERSION=18
+ARG JDK_VERSION=21
 
 ################################################################################
-# Use node image for base image for all stages.
-FROM node:${NODE_VERSION}-alpine as base
-
-# Set working directory for all build stages.
+# Stage 1: Build client application
+FROM node:${NODE_VERSION}-alpine AS client
 WORKDIR /usr/src/app
 
+COPY ./package.json .
+COPY ./yarn.lock .
+COPY ./packages ./packages
+
+RUN yarn install
+RUN yarn run build:client-beta
 
 ################################################################################
-# Create a stage for installing production dependecies.
-FROM base as deps
-
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.yarn to speed up subsequent builds.
-# Leverage bind mounts to package.json and yarn.lock to avoid having to copy them
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=packages/service/package.json,target=packages/service/package.json \
-    --mount=type=bind,source=packages/client/package.json,target=packages/client/package.json \
-    --mount=type=bind,source=packages/client-beta/package.json,target=packages/client-beta/package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --production --frozen-lockfile
+# Stage 2: Cache Gradle dependencies
+FROM gradle:latest AS cache
+RUN mkdir -p /home/gradle/cache_home
+ENV GRADLE_USER_HOME=/home/gradle/cache_home
+COPY ./service/build.gradle.* ./service/gradle.properties /home/gradle/app/
+WORKDIR /home/gradle/app
+RUN gradle clean build -i --stacktrace
 
 ################################################################################
-# Create a stage for building the application.
-FROM deps as build
-
-# Download additional development dependencies before building, as some projects require
-# "devDependencies" to be installed to build. If you don't need this, remove this step.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=packages/service/package.json,target=packages/service/package.json \
-    --mount=type=bind,source=packages/client/package.json,target=packages/client/package.json \
-    --mount=type=bind,source=packages/client-beta/package.json,target=packages/client-beta/package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/root/.yarn \
-    yarn install --frozen-lockfile
-
-# Copy the rest of the source files into the image.
-COPY . .
-
-# Run the build script.
-RUN yarn run build
+# Stage 3: Build Application
+FROM gradle:latest AS build
+COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
+COPY ./service /usr/src/app
+WORKDIR /usr/src/app
+COPY --chown=gradle:gradle ./service /home/gradle/src
+WORKDIR /home/gradle/src
+# Copy the static files from the build of frontend app to be hosted by the backend service.
+COPY --from=client /usr/src/app/packages/client-beta/dist/ ./src/main/resources/static
+# Build the fat JAR, Gradle also supports shadow
+# and boot JAR by default.
+RUN gradle buildFatJar --no-daemon
 
 ################################################################################
-# Create a new stage to run the application with minimal runtime dependencies
-# where the necessary files are copied from the build stage.
-FROM base as final
-
-# Use production node environment by default.
-ENV NODE_ENV production
-
-# Run the application as a non-root user.
-USER node
-
-# Copy package.json so that package manager commands can be used.
-COPY package.json .
-
-# Copy the production dependencies from the deps stage and also
-# the built application from the build stage into the image.
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/packages/service/build ./packages/service/build
-
-# Expose the port that the application listens on.
-EXPOSE 9000
-
-# Run the application.
-CMD yarn start
+# Stage 4: Create the Runtime Image
+FROM eclipse-temurin:${JDK_VERSION} AS runtime
+EXPOSE 8080:8080
+RUN mkdir /app
+COPY --from=build /home/gradle/src/build/libs/*.jar /app/lebkuchenfm.jar
+ENTRYPOINT ["java","-jar","/app/lebkuchenfm.jar"]

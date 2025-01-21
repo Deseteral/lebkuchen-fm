@@ -38,7 +38,7 @@ class DiscordClient {
   }
 
   private async messageCreate(message: Message): Promise<void> {
-    if (!message.content.startsWith(this.configuration.COMMAND_PROMPT)) return;
+    if (!message.content.startsWith(`${this.configuration.COMMAND_PROMPT} `)) return;
     if (message.channelId !== this.configuration.DISCORD_CHANNEL_ID) return;
 
     const discordId: string = message.author.id;

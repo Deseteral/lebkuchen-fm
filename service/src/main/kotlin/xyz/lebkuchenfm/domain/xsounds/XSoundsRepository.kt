@@ -19,6 +19,7 @@ interface XSoundsRepository {
     suspend fun removeTagFromXSound(name: String, tag: String): Result<XSound, RemoveTagFromXSoundError>
     suspend fun listXSoundsWithTag(tag: String): Result<List<XSound>, ListXSoundsWithTagError>
     suspend fun listTags(): Result<List<String>, ListXSoundsTagsError>
+    suspend fun listTagsForXSound(name: String): Result<List<String>, ListTagsForXSoundError>
 }
 
 sealed class RemoveTagFromXSoundError {
@@ -41,4 +42,9 @@ sealed class ListXSoundsWithTagError {
 
 sealed class ListXSoundsTagsError {
     data object UnknownError : ListXSoundsTagsError()
+}
+
+sealed class ListTagsForXSoundError {
+    data object SoundDoesNotExist : ListTagsForXSoundError()
+    data object UnknownError : ListTagsForXSoundError()
 }

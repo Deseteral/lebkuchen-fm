@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.toList
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
+import xyz.lebkuchenfm.domain.xsounds.ListTagsForXSoundError
 import xyz.lebkuchenfm.domain.xsounds.ListXSoundsTagsError
 import xyz.lebkuchenfm.domain.xsounds.ListXSoundsWithTagError
 import xyz.lebkuchenfm.domain.xsounds.RemoveTagFromXSoundError
@@ -138,6 +139,16 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
             Ok(tags)
         } catch (e: Exception) {
             Err(ListXSoundsTagsError.UnknownError)
+        }
+    }
+
+    override suspend fun listTagsForXSound(name: String): Result<List<String>, ListTagsForXSoundError> {
+        return try {
+            val xSound = collection.find(eq(XSoundEntity::name.name, name)).toList().firstOrNull()
+                ?: return Err(ListTagsForXSoundError.SoundDoesNotExist)
+            Ok(xSound.tags ?: listOf())
+        } catch (e: Exception) {
+            Err(ListTagsForXSoundError.UnknownError)
         }
     }
 
