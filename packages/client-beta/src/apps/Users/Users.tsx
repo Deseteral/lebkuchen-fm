@@ -111,17 +111,12 @@ function Users() {
 }
 
 function UserLine(user: User) {
-  const { username, discordId, creationDate, lastLoggedIn } = user;
-
-  const cd = new Date(creationDate).toLocaleDateString('pl-PL');
-  const ld = new Date(lastLoggedIn).toLocaleString('pl-PL');
-
   return (
     <tr>
-      <td>{`${username}`}</td>
-      <td>{`${discordId ?? ''}`}</td>
-      <td>{`${cd}`}</td>
-      <td>{`${ld}`}</td>
+      <td>{`${user.username}`}</td>
+      <td>{`${user.discordId ?? ''}`}</td>
+      <td>{`${new Date(user.creationDate).toLocaleDateString('pl-PL')}`}</td>
+      <td>{`${new Date(user.lastLoggedIn).toLocaleString('pl-PL')}`}</td>
     </tr>
   );
 }
