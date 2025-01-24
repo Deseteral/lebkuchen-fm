@@ -19,6 +19,10 @@ import type {
 import { PlayerStateNotInitializedError, PlayerStateService } from './player-state-service';
 import { SocketConnectionClient } from '../../../services/socket-connection-client';
 
+// TODO: Remove 'events' package from dependencies once we get rid of the yt-player.
+//       Right now the project will throw an error on startup without it.
+//       See: https://github.com/feross/yt-player/issues/73
+//       ~Deseteral, 2025-01-23
 class YoutubePlayerService {
   private static player: YouTubePlayer;
   private static timeStateUpdateQueue: number | null = null;

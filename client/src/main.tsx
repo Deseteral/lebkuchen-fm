@@ -13,8 +13,3 @@ render(
   ),
   document.getElementById('root')!,
 );
-
-// TODO: Remove 'events' package from dependencies once we get rid of the yt-player.
-//       Right now the project will throw an error on startup without it.
-//       See: https://github.com/feross/yt-player/issues/73
-//       ~Deseteral, 2025-01-23
