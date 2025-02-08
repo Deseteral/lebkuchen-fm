@@ -56,8 +56,21 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         songs.forEach { songsService.incrementPlayCount(it, context.session) }
 
-        val songNames = songs.joinToString(", ") { it.name }
-        val message = "Queued $songNames."
-        return CommandProcessingResult.fromMarkdown(message)
+        val messageLines = buildMessage(songs)
+        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
+    }
+
+    companion object {
+        private const val MAX_TITLES_IN_MESSAGE = 10
+        fun buildMessage(songsToQueue: List<Song>, requestedAmount: Int = 0): List<String> {
+            val queuedCount = songsToQueue.count()
+            val requestAmountText = if (queuedCount < requestedAmount) " from $requestedAmount requested" else ""
+
+            return listOfNotNull(
+                "Queued $queuedCount$requestAmountText:",
+                *songsToQueue.take(MAX_TITLES_IN_MESSAGE).map { "- _${it.name}_" }.toTypedArray(),
+                "...and others.".takeIf { queuedCount > MAX_TITLES_IN_MESSAGE },
+            )
+        }
     }
 }

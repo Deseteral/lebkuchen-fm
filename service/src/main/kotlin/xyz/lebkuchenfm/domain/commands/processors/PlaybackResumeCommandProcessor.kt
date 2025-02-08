@@ -10,7 +10,7 @@ import xyz.lebkuchenfm.domain.eventstream.EventStream
 
 class PlaybackResumeCommandProcessor(private val eventStream: EventStream<*>) :
     CommandProcessor(
-        key = "playback-pause",
+        key = "playback-resume",
         shortKey = "resume",
         helpMessage = "Resumes paused video or start playing last finished when queue is empty.",
         exampleUsages = listOf(""),
