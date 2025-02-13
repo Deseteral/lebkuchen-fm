@@ -15,7 +15,7 @@
 - [Authorization and user management](./docs/auth.md)
 - [Scripts](./docs/scripts.md)
 
-## 🧑‍💻 How to contribute
+## 🧑‍💻 Development
 LebkuchenFM service is a Kotlin application that uses [Ktor](http://ktor.io) framework and Gradle for building.
 
 The backbone of the service is MongoDB database. It is required for basic operation of the service.
