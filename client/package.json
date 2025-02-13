@@ -1,7 +1,7 @@
 {
   "name": "lebkuchen-fm-client",
   "private": true,
-  "version": "0.0.0",
+  "version": "2025.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
