@@ -7,13 +7,16 @@ Refer to [Ktor documentation](https://ktor.io/docs) for detailed building instru
 ## Running locally
 
 ### Configuration
-Create `.env` file in the root of this project and put desired configuration variables in it.
+LebkuchenFM is configured via environment variables.
 Refer to [configuration](./configuration.md) documentation for available configuration variables.
+
+We recommend using `.env` file to store configuration variables for local development.
+You can use IntelliJ's plugin to source it, or load the variables in the command line shell of your choice.
 
 ### MongoDB
 To run the application locally you will have to connect it to a MongoDB instance.
 
-You can provide connection string via environment variable in `.env` file.
+You can provide connection string via environment variable.
 Refer to documentation about [configuration](./configuration.md) for more details.
 
 If none is provided, the service will connect to MongoDB instance running locally.

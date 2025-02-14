@@ -1,8 +1,6 @@
 # Configuration
 LebkuchenFM uses environment variables for configuration.
 
-You can also create `.env` file in the root of this project and put desired configuration variables in it.
-
 ## Service
 Configuration necessary for the service to run.
 
@@ -20,7 +18,7 @@ YouTube integration is optional - when required variables are not provided YouTu
 
 ## Discord
 Discord integration is optional - when required variables are not provided Discord communication is not available.
-You can still issue commands using the [LebkuchenFM REST API](./rest_api.md).
+You can still issue commands using the LebkuchenFM REST API.
 
 | Name                 | Description                                                  | Required | Default value |
 |----------------------|--------------------------------------------------------------|----------|---------------|
