@@ -24,3 +24,10 @@ discord:
   channelId: $?DISCORD_CHANNEL_ID
 
 commandPrompt: "$COMMAND_PROMPT:/fm"
+
+radioPersonality:
+  textToSpeech:
+    gcp:
+      apiKey: $?GCP_TTS_API_KEY
+      languageCode: "$GCP_TTS_LANG:en-US"
+      voiceGender: "$GCP_TTS_VOICE_GENDER:NEUTRAL"
