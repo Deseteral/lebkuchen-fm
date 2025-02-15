@@ -38,6 +38,7 @@ import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackPauseCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackResumeCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackSkipCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.SayCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongSearchCommandProcessor
@@ -119,6 +120,7 @@ fun Application.module() {
             PlaybackPauseCommandProcessor(eventStream),
             PlaybackResumeCommandProcessor(eventStream),
             PlaybackSkipCommandProcessor(eventStream),
+            SayCommandProcessor(eventStream, ttsProvider),
             helpCommandProcessor,
         ),
     )

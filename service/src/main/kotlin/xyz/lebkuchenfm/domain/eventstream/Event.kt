@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.eventstream
 
+import xyz.lebkuchenfm.domain.radiopersonality.tts.Base64EncodedAudio
 import xyz.lebkuchenfm.domain.songs.Song
 import java.util.UUID
 
@@ -45,4 +46,9 @@ sealed interface Event {
         @JvmInline
         value class RequestHandle(val value: String = UUID.randomUUID().toString())
     }
+
+    data class Say(
+        val text: String,
+        val audio: Base64EncodedAudio,
+    ) : Event
 }
