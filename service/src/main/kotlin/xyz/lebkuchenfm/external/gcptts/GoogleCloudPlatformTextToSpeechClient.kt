@@ -37,6 +37,9 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
     private val voiceGender: String by lazy {
         config.property("radioPersonality.textToSpeech.gcp.voiceGender").getString()
     }
+    private val speakingRate: Double by lazy {
+        config.property("radioPersonality.textToSpeech.gcp.speakingRate").getString().toDouble()
+    }
 
     suspend fun textSynthesize(text: String): Result<Base64EncodedAudio, GCPTextSynthesiseError> {
         apiKey ?: run {
@@ -46,8 +49,11 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
 
         val requestBody = TextSynthesizeRequestBody(
             input = TextSynthesizeRequestBody.SynthesisInput(text),
-            voice = TextSynthesizeRequestBody.VoiceSelectionParams(languageCode, voiceGender),
-            audioConfig = TextSynthesizeRequestBody.AudioConfig("MP3"),
+            voice = TextSynthesizeRequestBody.VoiceSelectionParams(
+                languageCode = languageCode,
+                ssmlGender = voiceGender
+            ),
+            audioConfig = TextSynthesizeRequestBody.AudioConfig(audioEncoding = "MP3", speakingRate = speakingRate),
         )
 
         val response = httpClient.post("v1/text:synthesize") {
@@ -106,7 +112,7 @@ private data class TextSynthesizeRequestBody(
     )
 
     @Serializable
-    data class AudioConfig(val audioEncoding: String)
+    data class AudioConfig(val audioEncoding: String, val speakingRate: Double)
 }
 
 @Serializable

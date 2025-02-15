@@ -31,3 +31,4 @@ radioPersonality:
       apiKey: $?GCP_TTS_API_KEY
       languageCode: "$GCP_TTS_LANG:en-US"
       voiceGender: "$GCP_TTS_VOICE_GENDER:NEUTRAL"
+      speakingRate: "$GCP_TTS_SPEAKING_RATE:1.0"
