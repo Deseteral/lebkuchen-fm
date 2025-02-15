@@ -1,6 +1,8 @@
 # LebkuchenFM
 [![Actions Status](https://github.com/Deseteral/lebkuchen-fm/workflows/Build/badge.svg)](https://github.com/Deseteral/lebkuchen-fm/actions)
 
+<img src="./assets/repository-open-graph.jpg" alt="Project logo">
+
 ## 🍿 Features
 - Awesome desktop-like web UI.
 - Play music from YouTube.
