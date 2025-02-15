@@ -37,6 +37,9 @@ export interface PlayXSoundEvent {
 export interface SayEvent {
   id: 'SayEvent';
   text: string;
+  audio: {
+    src: string;
+  };
 }
 
 export interface PlayerResumeEvent {
