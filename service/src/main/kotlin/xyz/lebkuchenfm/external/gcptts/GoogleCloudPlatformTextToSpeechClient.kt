@@ -51,7 +51,7 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
             audioConfig = TextSynthesizeRequestBody.AudioConfig("MP3"),
         )
 
-        val response = httpClient.post("text:synthesize") {
+        val response = httpClient.post("v1/text:synthesize") {
             setBody(requestBody)
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -75,7 +75,6 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
                 url {
                     protocol = URLProtocol.HTTPS
                     host = "texttospeech.googleapis.com"
-                    path("/v1/")
                 }
                 headers {
                     this@GoogleCloudPlatformTextToSpeechClient.apiKey?.let {
