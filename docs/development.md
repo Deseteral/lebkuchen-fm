@@ -2,7 +2,8 @@
 
 ## Building
 LebkuchenFM service uses Gradle for its build system.\
-Refer to [Ktor documentation](https://ktor.io/docs) for detailed building instruction and how to import the project in the IDE of your choice.
+Refer to [Ktor documentation](https://ktor.io/docs) for detailed building instruction and how to import the project in
+the IDE of your choice.
 
 ## Running locally
 
@@ -21,9 +22,8 @@ Refer to documentation about [configuration](./configuration.md) for more detail
 
 If none is provided, the service will connect to MongoDB instance running locally.
 
-If you have Docker installed you can use `scripts/docker_db_local.sh` script to run MongoDB in Docker locally.
+If you have Docker installed you can use `scripts/docker_db_local` script to run MongoDB in Docker locally.
 For more information you can refer to [Local MongoDB in Docker](./scripts.md) script documentation.
-
 
 # Web client
 LebkuchenFM web client uses Vite for its build system, and Yarn for package management.
@@ -39,7 +39,8 @@ For development purposes you should use Vite's development server:
 yarn run dev
 ```
 
-This will start a development server on `localhost:9090` with hot-reloading enabled and a proxy to the backend service running on `localhost:8080`.
+This will start a development server on `localhost:9090` with hot-reloading enabled and a proxy to the backend service
+running on `localhost:8080`.
 
 ## Building
 To build a production bundle run:
@@ -52,3 +53,10 @@ You can run tests using:
 yarn test
 ```
 Tests include linting and checking code style (using Prettier).
+
+# Versioning
+LebkuchenFM uses [Calendar Versioning](https://calver.org/) in `YYYY.MINOR.MICRO` scheme.
+
+Each pull request targeting `main` branch should bump the version in Gradle and npm.
+Use `scripts/set-version` helper script to change the version. Refer to [documentation](./scripts.md) for more
+details.

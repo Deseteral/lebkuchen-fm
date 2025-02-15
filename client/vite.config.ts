@@ -31,4 +31,7 @@ export default defineConfig({
       '/api': 'http://localhost:8080',
     },
   },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+  },
 });

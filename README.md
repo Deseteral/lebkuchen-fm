@@ -14,6 +14,7 @@
 - [Configuration](./docs/configuration.md)
 - [Authorization and user management](./docs/auth.md)
 - [Scripts](./docs/scripts.md)
+- [Project roadmap](https://github.com/users/Deseteral/projects/2)
 
 ## 🧑‍💻 Development
 LebkuchenFM service is a Kotlin application that uses [Ktor](http://ktor.io) framework and Gradle for building.

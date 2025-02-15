@@ -1,5 +1,6 @@
 @file:Suppress("ktlint:standard:property-naming")
 
+val lebkuchenfm_version: String by project
 val kord_version: String by project
 val kotlin_logging_version: String by project
 val kotlin_result_version: String by project
@@ -16,7 +17,7 @@ plugins {
 
 group = "xyz.lebkuchenfm"
 
-version = "0.0.1"
+version = lebkuchenfm_version
 
 application {
     mainClass.set("xyz.lebkuchenfm.ApplicationKt")
