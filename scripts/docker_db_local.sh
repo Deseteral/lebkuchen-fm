@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/sh
 
 CONTAINER_NAME="lebkuchen-fm-db-local"
 
