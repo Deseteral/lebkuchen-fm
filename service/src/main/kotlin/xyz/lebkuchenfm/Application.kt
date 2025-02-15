@@ -52,6 +52,8 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.gcptts.GoogleCloudPlatformTextToSpeech
+import xyz.lebkuchenfm.external.gcptts.GoogleCloudPlatformTextToSpeechClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.security.SessionStorageMongo
@@ -73,6 +75,7 @@ fun Application.module() {
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
+    val gcpTtsClient = GoogleCloudPlatformTextToSpeechClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
@@ -97,6 +100,8 @@ fun Application.module() {
     val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
     val soundboardService = SoundboardService(xSoundsService, eventStream)
+
+    val ttsProvider = GoogleCloudPlatformTextToSpeech(gcpTtsClient)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)

@@ -1,29 +1,29 @@
 package xyz.lebkuchenfm.external.gcptts
 
+import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
+import com.github.michaelbull.result.Result
+import dev.kord.rest.request.errorString
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.accept
 import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
+import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.radiopersonality.tts.Base64EncodedAudio
-import com.github.michaelbull.result.Result
-import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Ok
-import dev.kord.rest.request.errorString
-import io.ktor.client.call.body
-import io.ktor.client.request.accept
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
 
 private val logger = KotlinLogging.logger {}
 
@@ -89,7 +89,7 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
 
 sealed class GCPTextSynthesiseError {
     data object ApiKeyMissing : GCPTextSynthesiseError()
-    data object GoogleCloudPlatformError: GCPTextSynthesiseError()
+    data object GoogleCloudPlatformError : GCPTextSynthesiseError()
 }
 
 @Serializable
