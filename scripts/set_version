@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/usr/bin/env bash
 
 # Set the version in Gradle project.
 sed -i '' '1s/.*/lebkuchenfm_version='"$1"'/' ./service/gradle.properties
