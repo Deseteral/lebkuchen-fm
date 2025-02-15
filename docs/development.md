@@ -22,7 +22,7 @@ Refer to documentation about [configuration](./configuration.md) for more detail
 
 If none is provided, the service will connect to MongoDB instance running locally.
 
-If you have Docker installed you can use `scripts/docker_db_local.sh` script to run MongoDB in Docker locally.
+If you have Docker installed you can use `scripts/docker_db_local` script to run MongoDB in Docker locally.
 For more information you can refer to [Local MongoDB in Docker](./scripts.md) script documentation.
 
 # Web client
@@ -58,5 +58,5 @@ Tests include linting and checking code style (using Prettier).
 LebkuchenFM uses [Calendar Versioning](https://calver.org/) in `YYYY.MINOR.MICRO` scheme.
 
 Each pull request targeting `main` branch should bump the version in Gradle and npm.
-Use `scripts/set-version.sh` helper script to change the version. Refer to [documentation](./scripts.md) for more
+Use `scripts/set-version` helper script to change the version. Refer to [documentation](./scripts.md) for more
 details.
