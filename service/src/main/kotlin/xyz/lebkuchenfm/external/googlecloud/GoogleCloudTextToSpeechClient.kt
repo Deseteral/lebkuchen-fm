@@ -28,17 +28,18 @@ private val logger = KotlinLogging.logger {}
 
 class GoogleCloudTextToSpeechClient(config: ApplicationConfig) {
     private val httpClient: HttpClient by lazy { prepareHttpClient() }
+
     private val apiKey: String? by lazy {
-        config.propertyOrNull("radioPersonality.textToSpeech.gcp.apiKey")?.getString()
+        config.propertyOrNull("$CONFIGURATION_KEY.apiKey")?.getString()
     }
     private val languageCode: String by lazy {
-        config.property("radioPersonality.textToSpeech.gcp.languageCode").getString()
+        config.property("$CONFIGURATION_KEY.languageCode").getString()
     }
     private val voiceGender: String by lazy {
-        config.property("radioPersonality.textToSpeech.gcp.voiceGender").getString()
+        config.property("$CONFIGURATION_KEY.voiceGender").getString()
     }
     private val speakingRate: Double by lazy {
-        config.property("radioPersonality.textToSpeech.gcp.speakingRate").getString().toDouble()
+        config.property("$CONFIGURATION_KEY.speakingRate").getString().toDouble()
     }
 
     suspend fun textSynthesize(text: String): Result<Base64EncodedAudio, GoogleCloudTextSynthesizeError> {
@@ -86,6 +87,10 @@ class GoogleCloudTextToSpeechClient(config: ApplicationConfig) {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val CONFIGURATION_KEY = "radioPersonality.textToSpeech.googleCloud"
     }
 }
 

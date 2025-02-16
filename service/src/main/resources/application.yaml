@@ -27,7 +27,7 @@ commandPrompt: "$COMMAND_PROMPT:/fm"
 
 radioPersonality:
   textToSpeech:
-    gcp:
+    googleCloud:
       apiKey: $?GCP_TTS_API_KEY
       languageCode: "$GCP_TTS_LANG:en-US"
       voiceGender: "$GCP_TTS_VOICE_GENDER:NEUTRAL"
