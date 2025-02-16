@@ -30,5 +30,5 @@ radioPersonality:
     googleCloud:
       apiKey: $?GCP_TTS_API_KEY
       languageCode: "$GCP_TTS_LANG:en-US"
-      voiceGender: "$GCP_TTS_VOICE_GENDER:NEUTRAL"
+      voiceGender: "$GCP_TTS_VOICE_GENDER:FEMALE"
       speakingRate: "$GCP_TTS_SPEAKING_RATE:1.0"
