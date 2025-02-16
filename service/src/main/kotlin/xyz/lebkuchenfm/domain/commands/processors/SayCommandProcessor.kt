@@ -8,7 +8,7 @@ import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.radiopersonality.tts.TextToSpeechProvider
+import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.TextToSpeechProvider
 
 private val logger = KotlinLogging.logger {}
 

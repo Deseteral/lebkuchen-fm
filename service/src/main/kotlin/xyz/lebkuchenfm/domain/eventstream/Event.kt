@@ -1,6 +1,6 @@
 package xyz.lebkuchenfm.domain.eventstream
 
-import xyz.lebkuchenfm.domain.radiopersonality.tts.Base64EncodedAudio
+import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.Base64EncodedAudio
 import xyz.lebkuchenfm.domain.songs.Song
 import java.util.UUID
 

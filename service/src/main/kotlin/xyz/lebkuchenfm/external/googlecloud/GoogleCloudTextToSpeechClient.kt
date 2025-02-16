@@ -1,4 +1,4 @@
-package xyz.lebkuchenfm.external.gcptts
+package xyz.lebkuchenfm.external.googlecloud
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -22,11 +22,11 @@ import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import xyz.lebkuchenfm.domain.radiopersonality.tts.Base64EncodedAudio
+import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.Base64EncodedAudio
 
 private val logger = KotlinLogging.logger {}
 
-class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
+class GoogleCloudTextToSpeechClient(config: ApplicationConfig) {
     private val httpClient: HttpClient by lazy { prepareHttpClient() }
     private val apiKey: String? by lazy {
         config.propertyOrNull("radioPersonality.textToSpeech.gcp.apiKey")?.getString()
@@ -41,17 +41,17 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
         config.property("radioPersonality.textToSpeech.gcp.speakingRate").getString().toDouble()
     }
 
-    suspend fun textSynthesize(text: String): Result<Base64EncodedAudio, GCPTextSynthesiseError> {
+    suspend fun textSynthesize(text: String): Result<Base64EncodedAudio, GoogleCloudTextSynthesizeError> {
         apiKey ?: run {
             logger.error { "Missing Google Cloud Platform API key." }
-            return Err(GCPTextSynthesiseError.ApiKeyMissing)
+            return Err(GoogleCloudTextSynthesizeError.ApiKeyMissing)
         }
 
         val requestBody = TextSynthesizeRequestBody(
             input = TextSynthesizeRequestBody.SynthesisInput(text),
             voice = TextSynthesizeRequestBody.VoiceSelectionParams(
                 languageCode = languageCode,
-                ssmlGender = voiceGender
+                ssmlGender = voiceGender,
             ),
             audioConfig = TextSynthesizeRequestBody.AudioConfig(audioEncoding = "MP3", speakingRate = speakingRate),
         )
@@ -65,7 +65,7 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
         if (!response.status.isSuccess()) {
             val error = response.errorString()
             logger.error { error }
-            return Err(GCPTextSynthesiseError.GoogleCloudPlatformError)
+            return Err(GoogleCloudTextSynthesizeError.GoogleCloudPlatformError)
         }
 
         val responseBody: TextSynthesizeResponseBody = response.body()
@@ -73,27 +73,25 @@ class GoogleCloudPlatformTextToSpeechClient(config: ApplicationConfig) {
         return Ok(Base64EncodedAudio(responseBody.audioContent, "mp3"))
     }
 
-    private fun prepareHttpClient(): HttpClient {
-        return HttpClient(OkHttp) {
-            install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-            install(DefaultRequest) {
-                url {
-                    protocol = URLProtocol.HTTPS
-                    host = "texttospeech.googleapis.com"
-                }
-                headers {
-                    this@GoogleCloudPlatformTextToSpeechClient.apiKey?.let {
-                        append("X-Goog-Api-Key", it)
-                    }
+    private fun prepareHttpClient(): HttpClient = HttpClient(OkHttp) {
+        install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
+        install(DefaultRequest) {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = "texttospeech.googleapis.com"
+            }
+            headers {
+                this@GoogleCloudTextToSpeechClient.apiKey?.let {
+                    append("X-Goog-Api-Key", it)
                 }
             }
         }
     }
 }
 
-sealed class GCPTextSynthesiseError {
-    data object ApiKeyMissing : GCPTextSynthesiseError()
-    data object GoogleCloudPlatformError : GCPTextSynthesiseError()
+sealed class GoogleCloudTextSynthesizeError {
+    data object ApiKeyMissing : GoogleCloudTextSynthesizeError()
+    data object GoogleCloudPlatformError : GoogleCloudTextSynthesizeError()
 }
 
 @Serializable
