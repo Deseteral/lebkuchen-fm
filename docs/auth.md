@@ -17,4 +17,4 @@ For external integrations users should use API tokens.
 
 Each user can obtain this token after logging in the web client and requesting `GET /api/auth`.
 
-Using this token external tools can integrate with LebkuchenFM by making requests with `Authorization: Basic <api-token>` header set.
+Using this token external tools can integrate with LebkuchenFM by making requests with `Authorization: Bearer <api-token>` header set.
