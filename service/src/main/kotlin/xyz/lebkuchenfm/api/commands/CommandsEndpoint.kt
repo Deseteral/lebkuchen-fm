@@ -24,7 +24,7 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
 
         val processingResult = when {
             contentType.match(ContentType.Text.Plain) -> {
-                val text = call.receive<TextCommandRequest>().text
+                val text = call.receive<String>()
                 logger.info { "Received $text command from ${session.name}" }
                 commandExecutorService.executeFromText(text, context)
             }
@@ -43,9 +43,6 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
         call.respond(response)
     }
 }
-
-@Serializable
-data class TextCommandRequest(val text: String)
 
 @Serializable
 data class TextCommandResponse(val textResponse: String)
