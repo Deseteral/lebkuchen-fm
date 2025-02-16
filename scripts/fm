@@ -2,9 +2,10 @@
 
 if [ $# -ne 2 ]
   then
-    printf "You need to supply command and API token\n\n"
+    printf "You need to supply command and API token.\n\n"
     printf "Example:\n"
-    printf "$0 \"/fm q dQw4w9WgXcQ\" \"api1234\"\n"
+    printf "$0 \"/fm q dQw4w9WgXcQ\" \"api1234\"\n\n"
+    printf "Refer to the LebkuchenFM documentation for more information.\n"
     exit 1
 fi
 
