@@ -16,6 +16,7 @@ fun Event.mapToDto(): EventDto = when (this) {
     is Event.Skip -> SkipEventDto(this)
     is Event.Resume -> PlayerResumeEventDto
     is Event.Pause -> PlayerPauseEventDto
+    is Event.Say -> SayEventDto(this)
 }
 
 @Serializable
@@ -73,5 +74,22 @@ data class SongChangedEventDto(
     data class SongDto(
         val name: String,
         val youtubeId: String,
+    )
+}
+
+@Serializable
+@SerialName("SayEvent")
+data class SayEventDto(
+    val text: String,
+    val audio: SayAudioDto,
+) : EventDto {
+    constructor(event: Event.Say) : this(
+        text = event.text,
+        audio = SayAudioDto(src = event.audio.dataUri),
+    )
+
+    @Serializable
+    data class SayAudioDto(
+        val src: String,
     )
 }

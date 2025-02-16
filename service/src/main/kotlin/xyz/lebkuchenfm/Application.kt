@@ -38,6 +38,7 @@ import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackPauseCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackResumeCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackSkipCommandProcessor
+import xyz.lebkuchenfm.domain.commands.processors.SayCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongRandomCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.SongSearchCommandProcessor
@@ -52,6 +53,8 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeech
+import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeechClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.security.SessionStorageMongo
@@ -73,6 +76,7 @@ fun Application.module() {
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
+    val googleCloudTextToSpeechClient = GoogleCloudTextToSpeechClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
@@ -98,6 +102,8 @@ fun Application.module() {
 
     val soundboardService = SoundboardService(xSoundsService, eventStream)
 
+    val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
+
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
     val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
@@ -114,6 +120,7 @@ fun Application.module() {
             PlaybackPauseCommandProcessor(eventStream),
             PlaybackResumeCommandProcessor(eventStream),
             PlaybackSkipCommandProcessor(eventStream),
+            SayCommandProcessor(eventStream, textToSpeechProvider),
             helpCommandProcessor,
         ),
     )

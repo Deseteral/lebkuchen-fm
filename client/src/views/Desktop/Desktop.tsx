@@ -8,17 +8,20 @@ import { SocketConnectionClient } from '../../services/socket-connection-client'
 import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
+import { SayEventHandler } from '../../services/say-event-handler';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.connect();
     PlayXSoundEventHandler.initialize();
+    SayEventHandler.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
     PlayXSoundEventHandler.cleanup();
+    SayEventHandler.cleanup();
   });
 
   return (
