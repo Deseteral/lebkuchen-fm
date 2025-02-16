@@ -85,7 +85,7 @@ data class SayEventDto(
 ) : EventDto {
     constructor(event: Event.Say) : this(
         text = event.text,
-        audio = SayAudioDto("data:audio/${event.audio.format};base64,${event.audio.audioContent}"),
+        audio = SayAudioDto(src = event.audio.dataUri),
     )
 
     @Serializable
