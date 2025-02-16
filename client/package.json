@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && yarn run build:apply-dist-to-service",
     "test": "yarn run type-check && yarn run lint && yarn run format:check",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build:apply-dist-to-service": "rm -rf ../service/src/main/resources/static && mkdir -p ../service/src/main/resources/static && cp -R ./dist/* ../service/src/main/resources/static"
   },
   "dependencies": {
     "@solidjs/router": "0.13.0",
