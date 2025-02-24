@@ -14,11 +14,11 @@ data class LlmSituationPrompt(
     val text: String,
     val type: LlmSituationType,
     val created: LlmPromptCreation,
-) {
-    enum class LlmSituationType {
-        SONG_STARTED_PLAYING,
-        LISTENER_CALLING,
-    }
+)
+
+enum class LlmSituationType {
+    SONG_STARTED_PLAYING,
+    LISTENER_CALLING,
 }
 
 data class LlmPromptCreation(

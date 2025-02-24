@@ -48,6 +48,7 @@ import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
+import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptService
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
@@ -102,6 +103,7 @@ fun Application.module() {
 
     val soundboardService = SoundboardService(xSoundsService, eventStream)
 
+    val llmPromptService = LlmPromptService()
     val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
