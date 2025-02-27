@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.domain.radiopersonality.llmprompts
 
 import kotlinx.datetime.Instant
-import xyz.lebkuchenfm.domain.users.User
+import xyz.lebkuchenfm.domain.users.UserName
 
 data class LlmPersonalityPrompt(
     val text: String,
@@ -23,5 +23,5 @@ enum class LlmSituationType {
 
 data class LlmPromptCreation(
     val at: Instant,
-    val by: User,
+    val by: UserName,
 )

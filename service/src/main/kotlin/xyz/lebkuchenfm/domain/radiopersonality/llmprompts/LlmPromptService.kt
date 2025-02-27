@@ -4,7 +4,7 @@ class LlmPromptService(
     private val personalityPromptsRepository: LlmPersonalityPromptsRepository,
     private val situationPromptsRepository: LlmSituationPromptsRepository,
 ) {
-    fun getFullPromptTextForSituationUsingRandomPersonality(situationType: LlmSituationType): String? {
+    suspend fun getFullPromptTextForSituationUsingRandomPersonality(situationType: LlmSituationType): String? {
         val personalityPromptText = personalityPromptsRepository.findLatestActiveGroupedByName()
             .randomOrNull()
             ?.text
