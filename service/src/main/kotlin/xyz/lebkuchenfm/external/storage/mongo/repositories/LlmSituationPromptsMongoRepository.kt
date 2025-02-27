@@ -1,6 +1,6 @@
 package xyz.lebkuchenfm.external.storage.mongo.repositories
 
-import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
@@ -20,7 +20,7 @@ class LlmSituationPromptsMongoRepository(database: MongoDatabase) : LlmSituation
 
     override suspend fun findLatestByType(type: LlmSituationType): LlmSituationPrompt? {
         return collection
-            .find(eq(LlmSituationPromptEntity::type.name, type.name))
+            .find(Filters.eq(LlmSituationPromptEntity::type.name, type.name))
             .sort(Sorts.descending(LlmSituationPromptEntity::createdAt.name))
             .limit(1)
             .firstOrNull()
