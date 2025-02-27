@@ -6,7 +6,7 @@ import xyz.lebkuchenfm.domain.users.User
 data class LlmPersonalityPrompt(
     val text: String,
     val name: String,
-    val enabled: Boolean,
+    val active: Boolean,
     val created: LlmPromptCreation,
 )
 
@@ -22,6 +22,6 @@ enum class LlmSituationType {
 }
 
 data class LlmPromptCreation(
-    val on: Instant,
+    val at: Instant,
     val by: User,
 )

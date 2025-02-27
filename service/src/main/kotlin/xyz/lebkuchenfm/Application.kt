@@ -63,6 +63,8 @@ import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.LlmPersonalityPromptsMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.LlmSituationPromptsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SessionsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
@@ -103,7 +105,9 @@ fun Application.module() {
 
     val soundboardService = SoundboardService(xSoundsService, eventStream)
 
-    val llmPromptService = LlmPromptService()
+    val llmPersonalityPromptRepository = LlmPersonalityPromptsMongoRepository(database)
+    val llmSituationsPromptRepository = LlmSituationPromptsMongoRepository(database)
+    val llmPromptService = LlmPromptService(llmPersonalityPromptRepository, llmSituationsPromptRepository)
     val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()

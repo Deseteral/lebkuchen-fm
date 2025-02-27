@@ -1,13 +1,16 @@
 package xyz.lebkuchenfm.domain.radiopersonality.llmprompts
 
-class LlmPromptService {
+class LlmPromptService(
+    private val personalityPromptsRepository: LlmPersonalityPromptsRepository,
+    private val situationPromptsRepository: LlmSituationPromptsRepository,
+) {
     fun getFullPromptTextForSituationUsingRandomPersonality(situationType: LlmSituationType): String? {
-        val personalityPromptText = getAllLatestActivePersonalityPrompts()
+        val personalityPromptText = personalityPromptsRepository.findLatestActiveGroupedByName()
             .randomOrNull()
             ?.text
             ?: return null
 
-        val situationPromptText = getLatestPromptTextForSituationType(situationType)
+        val situationPromptText = situationPromptsRepository.findLatestByType(situationType)
             ?: return null
 
         val fullPrompt = buildString {
@@ -16,17 +19,5 @@ class LlmPromptService {
         }
 
         return fullPrompt
-    }
-
-    private fun getAllLatestActivePersonalityPrompts(): List<LlmPersonalityPrompt> {
-        // Find all latest personality prompts.
-
-        // Filter only active personalities.
-
-        return emptyList() // TODO: Implement.
-    }
-
-    private fun getLatestPromptTextForSituationType(situationType: LlmSituationType): String? {
-        return null // TODO: Implement.
     }
 }

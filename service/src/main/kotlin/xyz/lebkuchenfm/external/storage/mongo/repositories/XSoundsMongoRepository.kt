@@ -161,7 +161,7 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 }
 
-data class XSoundEntity(
+private data class XSoundEntity(
     @BsonId val id: ObjectId? = null,
     val name: String,
     val url: String,
