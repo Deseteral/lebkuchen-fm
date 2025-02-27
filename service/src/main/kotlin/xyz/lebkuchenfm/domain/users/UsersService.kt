@@ -33,7 +33,7 @@ class UsersService(
         val now = clock.now()
         val user = User(
             data = User.UserData(
-                name = username,
+                name = UserName(username),
                 discordId = null,
                 creationDate = now,
                 lastLoggedIn = now,

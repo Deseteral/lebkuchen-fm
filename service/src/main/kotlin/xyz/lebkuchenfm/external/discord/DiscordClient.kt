@@ -75,7 +75,7 @@ class DiscordClient(
                     }
 
                     else -> {
-                        val context = ExecutionContext(UserSession(user.data.name))
+                        val context = ExecutionContext(UserSession(user.data.name.value))
                         val result = commandExecutorService.executeFromText(it.content, context)
                         it.reply { content = result.message.markdown }
                     }

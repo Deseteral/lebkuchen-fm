@@ -30,7 +30,7 @@ class AuthService(private val usersService: UsersService) {
                         ).mapError { AuthError.CannotSetPasswordError(it) }
                     }
                     .flatten()
-                    .map { UserSession(it.data.name) }
+                    .map { UserSession(it.data.name.value) }
             }
 
             user == null -> {
@@ -41,7 +41,7 @@ class AuthService(private val usersService: UsersService) {
             !user.hasPasswordSet -> {
                 logger.info { "User '${user.data.name}' is logging in for the first time." }
                 usersService.setPassword(user, password)
-                    .map { UserSession(it.data.name) }
+                    .map { UserSession(it.data.name.value) }
                     .mapError { AuthError.CannotSetPasswordError(it) }
             }
 
@@ -49,7 +49,7 @@ class AuthService(private val usersService: UsersService) {
                 if (usersService.checkPassword(user, password)) {
                     logger.info { "User '${user.data.name}' logged in." }
                     usersService.updateLastLoginDate(user)
-                    Ok(UserSession(user.data.name))
+                    Ok(UserSession(user.data.name.value))
                 } else {
                     logger.info { "User '${user.data.name}' tried to log in, but provided wrong password." }
                     Err(AuthError.BadCredentialsError)
@@ -59,7 +59,7 @@ class AuthService(private val usersService: UsersService) {
     }
 
     suspend fun authenticateWithApiToken(token: String): UserSession? {
-        return usersService.getByApiToken(token)?.let { UserSession(it.data.name) }
+        return usersService.getByApiToken(token)?.let { UserSession(it.data.name.value) }
     }
 }
 
