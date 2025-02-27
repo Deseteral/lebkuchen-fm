@@ -12,6 +12,7 @@ import io.ktor.server.routing.route
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
@@ -28,26 +29,37 @@ fun Route.usersRouting(usersService: UsersService) {
             val session = call.getUserSession()
 
             val formParameters = call.receiveParameters()
-            print(formParameters.names())
             val username: String? = formParameters["username"]
             val discordId: String? = formParameters["discordId"]
 
             if (username == null) {
                 // TODO: consider installing Validation plugin
-                call.respond(HttpStatusCode.BadRequest, "Missing required field: username.")
+                call.respondWithProblem(
+                    title = "Could not create user.",
+                    detail = "Missing required field: username.",
+                    status = HttpStatusCode.BadRequest,
+                )
                 return@post
             }
 
             usersService.addNewUser(username, discordId)
                 .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
                 .mapError { error ->
-                    call.respond(
-                        when (error) {
-                            AddNewUserError.UserAlreadyExists -> HttpStatusCode.Conflict
-                            AddNewUserError.UnknownError -> HttpStatusCode.InternalServerError
-                        },
-                        "$error",
-                    )
+                    when (error) {
+                        AddNewUserError.UserAlreadyExists ->
+                            call.respondWithProblem(
+                                title = "Could not create user.",
+                                detail = "User already exists.",
+                                status = HttpStatusCode.BadRequest,
+                            )
+
+                        AddNewUserError.UnknownError ->
+                            call.respondWithProblem(
+                                title = "Could not create user.",
+                                detail = "Unknown error.",
+                                status = HttpStatusCode.InternalServerError,
+                            )
+                    }
                 }
         }
     }

@@ -50,7 +50,8 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     override suspend fun findAll(): List<User> {
         return collection
             .find()
-            .map { it.toDomain() }.toList()
+            .map { it.toDomain() }
+            .toList()
     }
 
     override suspend fun findByName(username: String): User? {
