@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [ $# -ne 2 ]
+  then
+    printf "You need to supply command and API token.\n\n"
+    printf "Example:\n"
+    printf "$0 \"/fm q dQw4w9WgXcQ\" \"api1234\"\n\n"
+    printf "Refer to the LebkuchenFM documentation for more information.\n"
+    exit 1
+fi
+
+curl \
+  --silent \
+  --show-error \
+  --request POST 'http://localhost:8080/api/commands/execute' \
+  --header "Authorization: Bearer $2" \
+  --header "Content-Type: text/plain" \
+  --data "$1" \
+  | jq -r .textResponse
