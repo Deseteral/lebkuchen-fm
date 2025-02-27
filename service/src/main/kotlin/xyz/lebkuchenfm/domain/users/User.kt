@@ -10,7 +10,7 @@ data class User(
     val hasPasswordSet: Boolean get() = secret != null
 
     data class UserData(
-        val name: String,
+        val name: UserName,
         val discordId: String?,
         val creationDate: Instant,
         val lastLoggedIn: Instant,
@@ -21,4 +21,9 @@ data class User(
         val salt: String,
         val apiToken: String,
     )
+}
+
+@JvmInline
+value class UserName(val value: String) {
+    override fun toString() = value
 }

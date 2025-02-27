@@ -24,6 +24,7 @@ import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
+import xyz.lebkuchenfm.domain.users.UserName
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
 
@@ -130,7 +131,7 @@ private data class UserEntity(
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {
-        fun toDomain() = User.UserData(name, discordId, creationDate, lastLoggedIn)
+        fun toDomain() = User.UserData(UserName(name), discordId, creationDate, lastLoggedIn)
     }
 
     @Serializable
@@ -145,6 +146,6 @@ private data class UserEntity(
 
 private fun User.toEntity() = UserEntity(data.toEntity(), secret?.toEntity())
 
-private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name, discordId, creationDate, lastLoggedIn)
+private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name.value, discordId, creationDate, lastLoggedIn)
 
 private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword.value, salt, apiToken)
