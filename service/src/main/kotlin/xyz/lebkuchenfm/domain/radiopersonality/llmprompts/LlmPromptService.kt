@@ -11,6 +11,7 @@ class LlmPromptService(
             ?: return null
 
         val situationPromptText = situationPromptsRepository.findLatestByType(situationType)
+            ?.text
             ?: return null
 
         val fullPrompt = buildString {
