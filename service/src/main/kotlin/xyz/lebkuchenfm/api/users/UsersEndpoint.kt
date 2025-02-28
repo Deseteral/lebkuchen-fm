@@ -3,7 +3,9 @@ package xyz.lebkuchenfm.api.users
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.request.receive
 import io.ktor.server.request.receiveParameters
+import io.ktor.server.request.receiveText
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -27,22 +29,9 @@ fun Route.usersRouting(usersService: UsersService) {
 
         post {
             val session = call.getUserSession()
+            val newUser: NewUser = call.receive()
 
-            val formParameters = call.receiveParameters()
-            val username: String? = formParameters["username"]
-            val discordId: String? = formParameters["discordId"]
-
-            if (username == null) {
-                // TODO: consider installing Validation plugin
-                call.respondWithProblem(
-                    title = "Could not create user.",
-                    detail = "Missing required field: username.",
-                    status = HttpStatusCode.BadRequest,
-                )
-                return@post
-            }
-
-            usersService.addNewUser(username, discordId)
+            usersService.addNewUser(newUser.username, newUser.discordId)
                 .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
                 .mapError { error ->
                     when (error) {
@@ -50,7 +39,7 @@ fun Route.usersRouting(usersService: UsersService) {
                             call.respondWithProblem(
                                 title = "Could not create user.",
                                 detail = "User already exists.",
-                                status = HttpStatusCode.BadRequest,
+                                status = HttpStatusCode.Conflict,
                             )
 
                         AddNewUserError.UnknownError ->
@@ -64,6 +53,12 @@ fun Route.usersRouting(usersService: UsersService) {
         }
     }
 }
+
+@Serializable
+data class NewUser(
+    val username: String,
+    val discordId: String?,
+)
 
 @Serializable
 data class UsersResponse(val users: List<UserResponse>)

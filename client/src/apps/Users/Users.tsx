@@ -5,7 +5,7 @@ import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Users.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
-import { getUsers } from '../../services/users-service';
+import { getUsers, postUser } from '../../services/users-service';
 import { User } from '../../types/user';
 
 /*
@@ -30,28 +30,10 @@ function Users() {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
-    const asSearchParams = new URLSearchParams(formData as unknown as Record<string, string>);
-    const asString = asSearchParams.toString();
 
-    // TODO:
-    // - url encoded or data form?
-    // - discord as empty id handled on front or backend
-
-    const response = await fetch('/api/users', {
-      method: 'POST',
-      body: asString,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      setError(`Added new user ${JSON.stringify(data)}`);
-    } else {
-      const text = await response.text();
-      setError(`Could not add new user: ${text}`);
-    }
+    await postUser(formData)
+      .then((user) => setError(JSON.stringify(user)))
+      .catch((error) => setError(error.message));
 
     form.reset();
     getUsers().then((users) => {
@@ -82,7 +64,7 @@ function Users() {
         >
           <div class={styles.container}>
             <div class={styles.tableWrapper}>
-              <table>
+              <table class={styles.usersTable}>
                 <thead>
                   <tr>
                     <th scope="col">Username</th>
@@ -92,6 +74,11 @@ function Users() {
                   </tr>
                 </thead>
                 <tbody>
+                  {users() == undefined && (
+                    <tr>
+                      <td>Something went wrong.</td>
+                    </tr>
+                  )}
                   <For each={users()}>{(user: User) => UserLine(user)}</For>
                 </tbody>
               </table>

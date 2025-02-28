@@ -16,11 +16,8 @@
   margin-bottom: 32px;
 }
 
-table {
+.usersTable {
   background-color: #fff;
-}
-
-table {
   border-collapse: collapse;
   position: relative;
   text-align: left;
@@ -28,7 +25,7 @@ table {
   width: 100%;
 }
 
-table > thead > tr > * {
+.usersTable > thead > tr > * {
   background: silver;
   box-sizing: border-box;
   font-weight: 400;
@@ -37,7 +34,7 @@ table > thead > tr > * {
   top: 0;
 }
 
-table > tbody > tr > * {
+.usersTable > tbody > tr > * {
   height: 14px;
   padding: 4px;
 }
