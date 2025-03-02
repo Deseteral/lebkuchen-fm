@@ -1,0 +1,40 @@
+.container {
+  padding: 64px 30px;
+}
+
+.error {
+  display: block;
+  padding: 4px 0;
+  height: 20px;
+  color: red;
+}
+
+.tableWrapper {
+  overflow-x: scroll;
+  width: 100%;
+  max-height: 200px;
+  margin-bottom: 32px;
+}
+
+.usersTable {
+  background-color: #fff;
+  border-collapse: collapse;
+  position: relative;
+  text-align: left;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.usersTable > thead > tr > * {
+  background: silver;
+  box-sizing: border-box;
+  font-weight: 400;
+  height: 17px;
+  position: sticky;
+  top: 0;
+}
+
+.usersTable > tbody > tr > * {
+  height: 14px;
+  padding: 4px;
+}

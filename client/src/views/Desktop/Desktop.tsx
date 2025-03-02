@@ -8,6 +8,7 @@ import { SocketConnectionClient } from '../../services/socket-connection-client'
 import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
+import { Users } from '../../apps/Users/Users';
 
 function Desktop() {
   onMount(() => {
@@ -28,6 +29,7 @@ function Desktop() {
         <Player />
         <Soundboard />
         <DebugSoundUploadForm />
+        <Users />
         <Settings />
       </main>
     </>
