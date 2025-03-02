@@ -18,8 +18,7 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import org.bson.codecs.pojo.annotations.BsonId
-import org.bson.types.ObjectId
+import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.songs.InsertSongError
 import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsRepository
@@ -80,27 +79,24 @@ class SongsMongoRepository(database: MongoDatabase) : SongsRepository {
     }
 }
 
-data class SongEntity(
-    @BsonId val id: ObjectId? = null,
+@Serializable
+private data class SongEntity(
     val name: String,
     val youtubeId: String,
     val trimStartSeconds: Int?,
     val trimEndSeconds: Int?,
     val timesPlayed: Int,
 ) {
-    fun toDomain(): Song {
-        return Song(
-            name = this.name,
-            youtubeId = YoutubeVideoId(this.youtubeId),
-            trimStartSeconds = this.trimStartSeconds,
-            trimEndSeconds = this.trimEndSeconds,
-            timesPlayed = this.timesPlayed,
-        )
-    }
+    fun toDomain(): Song = Song(
+        name = this.name,
+        youtubeId = YoutubeVideoId(this.youtubeId),
+        trimStartSeconds = this.trimStartSeconds,
+        trimEndSeconds = this.trimEndSeconds,
+        timesPlayed = this.timesPlayed,
+    )
 }
 
 private fun Song.toEntity(): SongEntity = SongEntity(
-    id = null,
     name = name,
     youtubeId = youtubeId.value,
     trimStartSeconds = trimStartSeconds,

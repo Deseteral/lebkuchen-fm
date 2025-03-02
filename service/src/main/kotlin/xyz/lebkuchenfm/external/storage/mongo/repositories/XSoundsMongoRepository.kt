@@ -25,8 +25,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import org.bson.codecs.pojo.annotations.BsonId
-import org.bson.types.ObjectId
+import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.xsounds.AddTagToXSoundError
 import xyz.lebkuchenfm.domain.xsounds.ListTagsForXSoundError
 import xyz.lebkuchenfm.domain.xsounds.ListXSoundsTagsError
@@ -161,8 +160,8 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
     }
 }
 
+@Serializable
 private data class XSoundEntity(
-    @BsonId val id: ObjectId? = null,
     val name: String,
     val url: String,
     val timesPlayed: Int,
@@ -179,7 +178,6 @@ private data class XSoundEntity(
 }
 
 private fun XSound.toEntity(): XSoundEntity = XSoundEntity(
-    id = null,
     name = name,
     url = url,
     timesPlayed = timesPlayed,
