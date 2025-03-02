@@ -17,7 +17,7 @@ jobs:
           NPM_VERSION=$(jq -r '.version' ./client/package.json)
 
           echo "Gradle version: '$GRADLE_VERSION'."
-          echo "NPM version: '$NPM_VERSION'."
+          echo "NPM version:    '$NPM_VERSION'."
 
           if [ "$GRADLE_VERSION" != "$NPM_VERSION" ]; then
             echo "Version mismatch between client and service. Update the version in both modules."
@@ -33,7 +33,7 @@ jobs:
           MAIN_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
 
           echo "Gradle version on working branch: '$WORK_VERSION'."
-          echo "Gradle version on main branch: '$MAIN_VERSION'."
+          echo "Gradle version on main branch:    '$MAIN_VERSION'."
 
           if [ "$WORK_VERSION" == "$MAIN_VERSION" ]; then
             echo "Version number has not changed. Update the version before merging."
