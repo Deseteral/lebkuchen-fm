@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Check version equality between modules
         run: |
@@ -28,8 +26,10 @@ jobs:
 
       - name: Check version equality between branches
         run: |
+          git fetch origin main:main --depth 1
+
           WORK_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
-          MAIN_VERSION=$(git show origin/main:service/gradle.properties | awk -F= 'NR==1 {print $2}')
+          MAIN_VERSION=$(git show main:service/gradle.properties | awk -F= 'NR==1 {print $2}')
 
           echo "Gradle version on working branch: '$WORK_VERSION'."
           echo "Gradle version on main branch:    '$MAIN_VERSION'."
