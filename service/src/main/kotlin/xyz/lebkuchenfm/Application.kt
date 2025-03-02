@@ -113,10 +113,13 @@ fun Application.module() {
     val llmPromptService = LlmPromptService(llmPersonalityPromptRepository, llmSituationsPromptRepository)
 
     val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
-    val radioPersonalityBrainProvider = GeminiRadioPersonality()
+    val radioPersonalityProvider = GeminiRadioPersonality()
 
-    val radioPersonalityService =
-        RadioPersonalityService(llmPromptService, radioPersonalityBrainProvider, textToSpeechProvider)
+    val radioPersonalityService = RadioPersonalityService(
+        llmPromptService,
+        radioPersonalityProvider,
+        textToSpeechProvider
+    )
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)

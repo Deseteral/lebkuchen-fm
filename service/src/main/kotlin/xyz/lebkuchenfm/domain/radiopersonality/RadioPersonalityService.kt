@@ -11,7 +11,7 @@ private val logger = KotlinLogging.logger {}
 
 class RadioPersonalityService(
     private val llmPromptService: LlmPromptService,
-    private val radioPersonalityBrainProvider: RadioPersonalityBrainProvider,
+    private val radioPersonalityBrain: RadioPersonalityBrain,
     private val textToSpeechProvider: TextToSpeechProvider,
 ) {
     suspend fun onListenerCalling(userMessage: String): RadioPersonalityUtterance? {
@@ -24,7 +24,7 @@ class RadioPersonalityService(
                 return null
             }
 
-        val text = radioPersonalityBrainProvider.generateTextForPrompt(prompt)
+        val text = radioPersonalityBrain.generateTextForPrompt(prompt)
             ?: run {
                 logger.error { "Could not generate the text for given prompt." }
                 return null
