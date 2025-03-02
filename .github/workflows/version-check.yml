@@ -28,11 +28,11 @@ jobs:
         run: |
           WORK_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
 
-          git fetch origin main
+          git checkout main
           MAIN_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
 
           echo "Gradle version on working branch: '$WORK_VERSION'."
-          echo "Gradle version on main branch: $MAIN_VERSION'."
+          echo "Gradle version on main branch: '$MAIN_VERSION'."
 
           if [ "$WORK_VERSION" == "$MAIN_VERSION" ]; then
             echo "Version number has not changed. Update the version before merging."
