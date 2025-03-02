@@ -33,11 +33,11 @@ class CallCommandProcessor(
             return error("You have to provide a message for the presenter!", logger)
         }
 
-        val radioPersonalityUtterance = radioPersonalityService.onListenerCalling(message)
+        val utterance = radioPersonalityService.onListenerCalling(message)
             ?: return error("Radio presenter could not provide a response for this message.", logger)
 
-        eventStream.sendToEveryone(Event.Say(radioPersonalityUtterance.text, radioPersonalityUtterance.audio))
+        eventStream.sendToEveryone(Event.Say.fromRadioPersonalityUtterance(utterance))
 
-        return CommandProcessingResult.fromMarkdown("😎💬: ${radioPersonalityUtterance.text}")
+        return CommandProcessingResult.fromMarkdown("😎💬: ${utterance.text}")
     }
 }

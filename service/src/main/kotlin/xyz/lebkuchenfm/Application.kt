@@ -137,7 +137,7 @@ fun Application.module() {
             PlaybackPauseCommandProcessor(eventStream),
             PlaybackResumeCommandProcessor(eventStream),
             PlaybackSkipCommandProcessor(eventStream),
-            SayCommandProcessor(eventStream, textToSpeechProvider),
+            SayCommandProcessor(eventStream, radioPersonalityService),
             CallCommandProcessor(eventStream, radioPersonalityService),
             helpCommandProcessor,
         ),
