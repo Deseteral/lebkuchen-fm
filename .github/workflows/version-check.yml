@@ -27,10 +27,7 @@ jobs:
       - name: Check version equality between branches
         run: |
           WORK_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
-
-          git fetch origin main
-          git checkout main
-          MAIN_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
+          MAIN_VERSION=$(git show main:service/gradle.properties | awk -F= 'NR==1 {print $2}')
 
           echo "Gradle version on working branch: '$WORK_VERSION'."
           echo "Gradle version on main branch:    '$MAIN_VERSION'."
