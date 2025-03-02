@@ -118,7 +118,7 @@ fun Application.module() {
     val radioPersonalityService = RadioPersonalityService(
         llmPromptService,
         radioPersonalityProvider,
-        textToSpeechProvider
+        textToSpeechProvider,
     )
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
