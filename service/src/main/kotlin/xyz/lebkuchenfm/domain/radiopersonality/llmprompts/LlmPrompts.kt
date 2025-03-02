@@ -29,4 +29,17 @@ data class LlmPromptCreation(
 data class LlmPromptRaw(
     val systemPrompt: String,
     val prompt: String,
-)
+) {
+    fun applyVariable(variable: PromptVariables, value: String): LlmPromptRaw {
+        val variableText = "{{$variable}}"
+        return copy(
+            systemPrompt = systemPrompt.replace(variableText, value),
+            prompt = prompt.replace(variableText, value),
+        )
+    }
+
+    enum class PromptVariables {
+        CURRENT_SONG_NAME,
+        LISTENER_MESSAGE,
+    }
+}
