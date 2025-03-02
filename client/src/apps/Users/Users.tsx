@@ -9,8 +9,8 @@ import { getUsers, postUser } from '../../services/users-service';
 import { User } from '../../types/user';
 
 /*
- * TODO: This is a very basic app as my first contribution to the front.
- *       We should replace it with correct user management component.
+ * TODO: This is a very basic app.
+ *       We should replace it with correct user management component or at least polish this one.
  */
 function Users() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -25,6 +25,12 @@ function Users() {
   const [error, setError] = createSignal('');
   const [users, setUsers] = createSignal([]);
 
+  const refreshUserList = () => {
+    getUsers().then((users) => {
+      setUsers(users);
+    });
+  };
+
   const onSubmit = async (e: Event) => {
     setError('');
     e.preventDefault();
@@ -36,15 +42,11 @@ function Users() {
       .catch((error) => setError(error.message));
 
     form.reset();
-    getUsers().then((users) => {
-      setUsers(users);
-    });
+    refreshUserList();
   };
 
   createEffect(() => {
-    getUsers().then((users) => {
-      setUsers(users);
-    });
+    refreshUserList();
   });
 
   return (
