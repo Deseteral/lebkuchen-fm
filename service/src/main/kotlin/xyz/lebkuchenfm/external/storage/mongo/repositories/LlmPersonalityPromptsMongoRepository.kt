@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPersonalityPrompt
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPersonalityPromptsRepository
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptCreation
@@ -34,7 +32,6 @@ class LlmPersonalityPromptsMongoRepository(database: MongoDatabase) : LlmPersona
 
 @Serializable
 private data class LlmPersonalityPromptEntity(
-    @Contextual @SerialName("_id") val id: ObjectId? = null,
     val text: String,
     val type: String,
     val active: Boolean,
