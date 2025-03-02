@@ -6,9 +6,7 @@ import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.bson.types.ObjectId
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptCreation
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmSituationPrompt
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmSituationPromptsRepository
@@ -30,7 +28,6 @@ class LlmSituationPromptsMongoRepository(database: MongoDatabase) : LlmSituation
 
 @Serializable
 private data class LlmSituationPromptEntity(
-    @Contextual @SerialName("_id") val id: ObjectId? = null,
     val text: String,
     val type: String,
     @Contextual val createdAt: Instant,

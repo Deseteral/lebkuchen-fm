@@ -34,6 +34,7 @@ import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
+import xyz.lebkuchenfm.domain.commands.processors.CallCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.HelpCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackPauseCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.PlaybackResumeCommandProcessor
@@ -48,12 +49,14 @@ import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
+import xyz.lebkuchenfm.domain.radiopersonality.RadioPersonalityService
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptService
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.gemini.GeminiRadioPersonality
 import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeech
 import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeechClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
@@ -108,7 +111,15 @@ fun Application.module() {
     val llmPersonalityPromptRepository = LlmPersonalityPromptsMongoRepository(database)
     val llmSituationsPromptRepository = LlmSituationPromptsMongoRepository(database)
     val llmPromptService = LlmPromptService(llmPersonalityPromptRepository, llmSituationsPromptRepository)
+
     val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
+    val radioPersonalityProvider = GeminiRadioPersonality()
+
+    val radioPersonalityService = RadioPersonalityService(
+        llmPromptService,
+        radioPersonalityProvider,
+        textToSpeechProvider,
+    )
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
@@ -127,6 +138,7 @@ fun Application.module() {
             PlaybackResumeCommandProcessor(eventStream),
             PlaybackSkipCommandProcessor(eventStream),
             SayCommandProcessor(eventStream, textToSpeechProvider),
+            CallCommandProcessor(eventStream, radioPersonalityService),
             helpCommandProcessor,
         ),
     )
