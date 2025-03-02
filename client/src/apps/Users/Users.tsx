@@ -104,8 +104,8 @@ function UserLine(user: User) {
     <tr>
       <td>{`${user.username}`}</td>
       <td>{`${user.discordId ?? ''}`}</td>
-      <td>{`${new Date(user.creationDate).toLocaleDateString('pl-PL')}`}</td>
-      <td>{`${new Date(user.lastLoggedIn).toLocaleString('pl-PL')}`}</td>
+      <td>{`${new Date(user.creationDate).toLocaleDateString('en-GB')}`}</td>
+      <td>{`${new Date(user.lastLoggedIn).toLocaleString('en-GB')}`}</td>
     </tr>
   );
 }
