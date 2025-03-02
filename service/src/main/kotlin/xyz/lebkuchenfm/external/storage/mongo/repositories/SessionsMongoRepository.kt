@@ -6,6 +6,7 @@ import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Updates.set
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.serialization.Serializable
 
 class SessionsMongoRepository(database: MongoDatabase) {
     private val collection = database.getCollection<SessionsEntity>("sessions")
@@ -27,7 +28,8 @@ class SessionsMongoRepository(database: MongoDatabase) {
     }
 }
 
-data class SessionsEntity(
+@Serializable
+private data class SessionsEntity(
     val sessionId: String,
     val value: String,
 )

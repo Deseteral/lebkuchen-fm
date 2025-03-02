@@ -122,7 +122,10 @@ private data class UserEntity(
     val data: UserDataEntity,
     val secret: UserSecretEntity?,
 ) {
-    fun toDomain() = User(data.toDomain(), secret?.toDomain())
+    fun toDomain() = User(
+        data = data.toDomain(),
+        secret = secret?.toDomain(),
+    )
 
     @Serializable
     data class UserDataEntity(
@@ -131,7 +134,12 @@ private data class UserEntity(
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {
-        fun toDomain() = User.UserData(UserName(name), discordId, creationDate, lastLoggedIn)
+        fun toDomain() = User.UserData(
+            name = UserName(name),
+            discordId = discordId,
+            creationDate = creationDate,
+            lastLoggedIn = lastLoggedIn,
+        )
     }
 
     @Serializable
@@ -140,12 +148,28 @@ private data class UserEntity(
         val salt: String,
         val apiToken: String,
     ) {
-        fun toDomain() = User.UserSecret(HashedPasswordHexEncoded(hashedPassword), salt, apiToken)
+        fun toDomain() = User.UserSecret(
+            hashedPassword = HashedPasswordHexEncoded(hashedPassword),
+            salt = salt,
+            apiToken = apiToken,
+        )
     }
 }
 
-private fun User.toEntity() = UserEntity(data.toEntity(), secret?.toEntity())
+private fun User.toEntity() = UserEntity(
+    data = data.toEntity(),
+    secret = secret?.toEntity(),
+)
 
-private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name.value, discordId, creationDate, lastLoggedIn)
+private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
+    name = name.value,
+    discordId = discordId,
+    creationDate = creationDate,
+    lastLoggedIn = lastLoggedIn,
+)
 
-private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword.value, salt, apiToken)
+private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(
+    hashedPassword = hashedPassword.value,
+    salt = salt,
+    apiToken = apiToken,
+)
