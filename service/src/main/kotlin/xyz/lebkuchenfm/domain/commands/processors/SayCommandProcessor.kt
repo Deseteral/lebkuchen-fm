@@ -8,13 +8,13 @@ import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.TextToSpeechProvider
+import xyz.lebkuchenfm.domain.radiopersonality.RadioPersonalityService
 
 private val logger = KotlinLogging.logger {}
 
 class SayCommandProcessor(
     private val eventStream: EventStream<*>,
-    private val textToSpeechProvider: TextToSpeechProvider,
+    private val radioPersonalityService: RadioPersonalityService,
 ) : CommandProcessor(
     key = "say",
     shortKey = null,
@@ -34,10 +34,10 @@ class SayCommandProcessor(
             return error("You have to provide a message to speak!", logger)
         }
 
-        val audio = textToSpeechProvider.synthesize(message)
-            ?: return error("Could not synthesize audio.", logger)
+        val utterance = radioPersonalityService.userControlledUtterance(message)
+            ?: return error("Radio presenter could not speak this message.", logger)
 
-        eventStream.sendToEveryone(Event.Say(message, audio))
-        return CommandProcessingResult.fromMarkdown("😎💬: $message")
+        eventStream.sendToEveryone(Event.Say.fromRadioPersonalityUtterance(utterance))
+        return CommandProcessingResult.fromMarkdown("😎💬: ${utterance.text}")
     }
 }
