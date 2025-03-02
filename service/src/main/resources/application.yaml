@@ -32,3 +32,8 @@ radioPersonality:
       languageCode: "$GCP_TTS_LANG:en-US"
       voiceGender: "$GCP_TTS_VOICE_GENDER:FEMALE"
       speakingRate: "$GCP_TTS_SPEAKING_RATE:1.0"
+
+  llm:
+    gemini:
+      apiKey: $?GEMINI_API_KEY
+      model: "$GEMINI_MODEL:gemini-2.0-flash"

@@ -56,6 +56,7 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.gemini.GeminiClient
 import xyz.lebkuchenfm.external.gemini.GeminiRadioPersonality
 import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeech
 import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeechClient
@@ -83,6 +84,7 @@ fun Application.module() {
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
     val googleCloudTextToSpeechClient = GoogleCloudTextToSpeechClient(environment.config)
+    val geminiClient = GeminiClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
@@ -113,7 +115,7 @@ fun Application.module() {
     val llmPromptService = LlmPromptService(llmPersonalityPromptRepository, llmSituationsPromptRepository)
 
     val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
-    val radioPersonalityProvider = GeminiRadioPersonality()
+    val radioPersonalityProvider = GeminiRadioPersonality(geminiClient)
 
     val radioPersonalityService = RadioPersonalityService(
         llmPromptService,
