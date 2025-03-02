@@ -25,3 +25,8 @@ data class LlmPromptCreation(
     val at: Instant,
     val by: UserName,
 )
+
+data class LlmPromptRaw(
+    val systemPrompt: String,
+    val prompt: String,
+)
