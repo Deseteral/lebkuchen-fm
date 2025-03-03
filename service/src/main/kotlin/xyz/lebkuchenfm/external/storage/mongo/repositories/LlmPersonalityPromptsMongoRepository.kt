@@ -33,14 +33,14 @@ class LlmPersonalityPromptsMongoRepository(database: MongoDatabase) : LlmPersona
 @Serializable
 private data class LlmPersonalityPromptEntity(
     val text: String,
-    val type: String,
+    val name: String,
     val active: Boolean,
     @Contextual val createdAt: Instant,
     val createdBy: String,
 ) {
     fun toDomain() = LlmPersonalityPrompt(
         text = text,
-        name = type,
+        name = name,
         active = active,
         created = LlmPromptCreation(
             at = createdAt,

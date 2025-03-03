@@ -2,7 +2,6 @@ package xyz.lebkuchenfm.external.storage.dropbox
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import dev.kord.rest.request.errorString
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -19,6 +18,7 @@ import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
@@ -74,7 +74,7 @@ class DropboxClient(config: ApplicationConfig) {
         }
 
         if (!fileUploadResponse.status.isSuccess()) {
-            val error = fileUploadResponse.errorString()
+            val error = fileUploadResponse.bodyAsText()
             logger.error { error }
             return Err(DropboxClientError.ErrorWhenUploadingFile)
         }
@@ -88,7 +88,7 @@ class DropboxClient(config: ApplicationConfig) {
         }
 
         if (!fileSharingResponse.status.isSuccess()) {
-            val error = fileSharingResponse.errorString()
+            val error = fileSharingResponse.bodyAsText()
             logger.error { error }
             return Err(DropboxClientError.ErrorWhenCreatingFileUrl)
         }
