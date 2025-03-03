@@ -3,7 +3,6 @@ package xyz.lebkuchenfm.external.gemini
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import dev.kord.rest.request.errorString
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,9 +12,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
-import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
@@ -23,7 +22,6 @@ import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptRaw
 
 private val logger = KotlinLogging.logger {}
 
@@ -37,7 +35,7 @@ class GeminiClient(config: ApplicationConfig) {
         config.property("${CONFIGURATION_KEY}.model").getString()
     }
 
-    suspend fun generateText(prompt: LlmPromptRaw): Result<String, GeminiGenerateTextError> {
+    suspend fun generateText(prompt: String, systemPrompt: String): Result<String, GeminiGenerateTextError> {
         apiKey ?: run {
             logger.error { "Missing Google Gemini API key." }
             return Err(GeminiGenerateTextError.ApiKeyMissing)
@@ -45,32 +43,22 @@ class GeminiClient(config: ApplicationConfig) {
 
         val requestBody = GenerateTextRequestBody(
             systemInstruction = GenerateTextRequestBody.Content(
-                parts = listOf(GenerateTextRequestBody.Content.Part(prompt.systemPrompt)),
+                parts = listOf(GenerateTextRequestBody.Content.Part(systemPrompt)),
             ),
             contents = GenerateTextRequestBody.Content(
-                parts = listOf(GenerateTextRequestBody.Content.Part(prompt.prompt)),
+                parts = listOf(GenerateTextRequestBody.Content.Part(prompt)),
             ),
-            safetySettings = listOf(
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_HARASSMENT", "BLOCK_NONE"),
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_HATE_SPEECH", "BLOCK_NONE"),
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_CIVIC_INTEGRITY", "BLOCK_NONE"),
-            ),
+            safetySettings = getSafetySettings(),
         )
 
-        val response = httpClient.post("v1beta/models") {
-            url {
-                appendPathSegments("$model:generateContent")
-                parameters.append("key", apiKey!!)
-            }
+        val response = httpClient.post("v1beta/models/$model:generateContent") {
             setBody(requestBody)
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
         }
 
         if (!response.status.isSuccess()) {
-            val error = response.errorString()
+            val error = response.bodyAsText()
             logger.error { error }
             return Err(GeminiGenerateTextError.GeminiError)
         }
@@ -88,9 +76,20 @@ class GeminiClient(config: ApplicationConfig) {
             url {
                 protocol = URLProtocol.HTTPS
                 host = "generativelanguage.googleapis.com"
+                apiKey?.let {
+                    parameters.append("key", it)
+                }
             }
         }
     }
+
+    private fun getSafetySettings(): List<GenerateTextRequestBody.SafetySetting> = listOf(
+        GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_HARASSMENT", "BLOCK_NONE"),
+        GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_HATE_SPEECH", "BLOCK_NONE"),
+        GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
+        GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
+        GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_CIVIC_INTEGRITY", "BLOCK_NONE"),
+    )
 
     companion object {
         private const val CONFIGURATION_KEY = "radioPersonality.llm.gemini"

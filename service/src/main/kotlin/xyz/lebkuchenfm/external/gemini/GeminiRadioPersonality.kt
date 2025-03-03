@@ -6,6 +6,6 @@ import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptRaw
 
 class GeminiRadioPersonality(private val geminiClient: GeminiClient) : RadioPersonalityBrain {
     override suspend fun generateTextForPrompt(prompt: LlmPromptRaw): String? {
-        return geminiClient.generateText(prompt).get()
+        return geminiClient.generateText(prompt.prompt, prompt.systemPrompt).get()
     }
 }

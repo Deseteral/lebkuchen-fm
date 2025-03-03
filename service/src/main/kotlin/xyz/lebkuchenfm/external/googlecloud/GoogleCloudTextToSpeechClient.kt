@@ -3,7 +3,6 @@ package xyz.lebkuchenfm.external.googlecloud
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
-import dev.kord.rest.request.errorString
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -14,6 +13,7 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
@@ -64,7 +64,7 @@ class GoogleCloudTextToSpeechClient(config: ApplicationConfig) {
         }
 
         if (!response.status.isSuccess()) {
-            val error = response.errorString()
+            val error = response.bodyAsText()
             logger.error { error }
             return Err(GoogleCloudTextSynthesizeError.GoogleCloudPlatformError)
         }
