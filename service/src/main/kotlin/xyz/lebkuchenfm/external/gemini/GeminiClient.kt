@@ -55,7 +55,8 @@ class GeminiClient(config: ApplicationConfig) {
                 GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_HATE_SPEECH", "BLOCK_NONE"),
                 GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_SEXUALLY_EXPLICIT", "BLOCK_NONE"),
                 GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_DANGEROUS_CONTENT", "BLOCK_NONE"),
-                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_CIVIC_INTEGRITY", "BLOCK_NONE"),            ),
+                GenerateTextRequestBody.SafetySetting("HARM_CATEGORY_CIVIC_INTEGRITY", "BLOCK_NONE"),
+            ),
         )
 
         val response = httpClient.post("v1beta/models") {
