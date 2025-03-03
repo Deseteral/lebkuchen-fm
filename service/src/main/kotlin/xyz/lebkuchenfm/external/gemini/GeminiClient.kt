@@ -64,7 +64,7 @@ class GeminiClient(config: ApplicationConfig) {
         }
 
         val responseBody: GenerateTextResponseBody = response.body()
-        val responseText = responseBody.candidates.firstOrNull()?.content?.parts?.joinToString(" ") { it.text }
+        val responseText = responseBody.generatedTextContent
             ?: return Err(GeminiGenerateTextError.GeminiError)
 
         return Ok(responseText)
@@ -123,6 +123,8 @@ private data class GenerateTextRequestBody(
 private data class GenerateTextResponseBody(
     val candidates: List<Candidate>,
 ) {
+    val generatedTextContent: String? = candidates.firstOrNull()?.content?.parts?.joinToString(" ") { it.text }
+
     @Serializable
     data class Candidate(
         val content: Content,
