@@ -123,7 +123,8 @@ private data class GenerateTextRequestBody(
 private data class GenerateTextResponseBody(
     val candidates: List<Candidate>,
 ) {
-    val generatedTextContent: String? = candidates.firstOrNull()?.content?.parts?.joinToString(" ") { it.text }
+    val generatedTextContent: String?
+        get() = candidates.firstOrNull()?.content?.parts?.joinToString(" ") { it.text }
 
     @Serializable
     data class Candidate(
