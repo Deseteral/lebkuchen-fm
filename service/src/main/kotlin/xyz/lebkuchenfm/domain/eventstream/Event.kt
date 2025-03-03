@@ -1,5 +1,7 @@
 package xyz.lebkuchenfm.domain.eventstream
 
+import xyz.lebkuchenfm.domain.eventstream.Event.Say
+import xyz.lebkuchenfm.domain.radiopersonality.RadioPersonalityUtterance
 import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.Base64EncodedAudio
 import xyz.lebkuchenfm.domain.songs.Song
 import java.util.UUID
@@ -50,5 +52,10 @@ sealed interface Event {
     data class Say(
         val text: String,
         val audio: Base64EncodedAudio,
-    ) : Event
+    ) : Event {
+        companion object {
+            fun fromRadioPersonalityUtterance(utterance: RadioPersonalityUtterance) =
+                Say(utterance.text, utterance.audio)
+        }
+    }
 }

@@ -38,6 +38,16 @@ class RadioPersonalityService(
 
         return RadioPersonalityUtterance(text, audio)
     }
+
+    suspend fun userControlledUtterance(userMessage: String): RadioPersonalityUtterance? {
+        val audio = textToSpeechProvider.synthesize(userMessage)
+            ?: run {
+                logger.error { "Could not synthesize the text to audio." }
+                return null
+            }
+
+        return RadioPersonalityUtterance(userMessage, audio)
+    }
 }
 
 data class RadioPersonalityUtterance(
