@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build && yarn run build:sync-with-service",
+    "build": "tsc --noEmit && vite build",
     "build:sync-with-service": "rsync -cav --delete ./dist/ ../service/src/main/resources/static/",
     "test": "yarn run type-check && yarn run lint && yarn run format:check",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
