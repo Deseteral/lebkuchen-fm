@@ -37,7 +37,7 @@ radioPersonality:
 
     elevenLabs:
         apiKey: $?ELEVENLABS_API_KEY
-        voiceId: ?$ELEVENLABS_VOICE_ID
+        voiceId: $?ELEVENLABS_VOICE_ID
 
   llm:
     gemini:
