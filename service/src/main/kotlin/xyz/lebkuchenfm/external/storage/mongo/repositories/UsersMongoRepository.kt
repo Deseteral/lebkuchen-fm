@@ -95,7 +95,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
         return collection.findOneAndUpdate(
-            eq(nameFieldName, user.data.name),
+            eq(nameFieldName, user.data.name.value),
             Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
             FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
@@ -106,7 +106,7 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         val secretFieldName = UserEntity::secret.name
         return try {
             collection.findOneAndUpdate(
-                eq(nameFieldName, user.data.name),
+                eq(nameFieldName, user.data.name.value),
                 Updates.set(secretFieldName, secret.toEntity()),
                 FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
             )?.toDomain()?.let { Ok(it) } ?: Err(UpdateSecretError.UserNotFound)
