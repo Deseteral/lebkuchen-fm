@@ -34,6 +34,9 @@ class ElevenLabsClient(config: ApplicationConfig) {
     private val apiKey: String? by lazy {
         config.propertyOrNull("$CONFIGURATION_KEY.apiKey")?.getString()
     }
+    private val voiceId: String? by lazy {
+        config.propertyOrNull("$CONFIGURATION_KEY.voiceId")?.getString()
+    }
 
     @OptIn(ExperimentalEncodingApi::class)
     suspend fun textToSpeech(text: String): Result<Base64EncodedAudio, ElevenLabsTextToSpeechError> {
@@ -41,12 +44,15 @@ class ElevenLabsClient(config: ApplicationConfig) {
             logger.error { "Missing Eleven Labs API key." }
             return Err(ElevenLabsTextToSpeechError.ApiKeyMissing)
         }
+        voiceId ?: run {
+            logger.error { "Missing Eleven Labs voice ID." }
+            return Err(ElevenLabsTextToSpeechError.VoiceIdMissing)
+        }
 
         val requestBody = TextSynthesizeRequestBody(
             text,
             "eleven_multilingual_v2"
         )
-        val voiceId = "Xb7hH8MSUJpSbSDYk0k2"
         val format = "mp3_44100_128"
 
         val response = httpClient.post("text-to-speech/$voiceId?output_format=$format") {
@@ -88,6 +94,7 @@ class ElevenLabsClient(config: ApplicationConfig) {
 
 sealed class ElevenLabsTextToSpeechError {
     data object ApiKeyMissing : ElevenLabsTextToSpeechError()
+    data object VoiceIdMissing: ElevenLabsTextToSpeechError()
     data object ElevenLabsError : ElevenLabsTextToSpeechError()
 }
 
