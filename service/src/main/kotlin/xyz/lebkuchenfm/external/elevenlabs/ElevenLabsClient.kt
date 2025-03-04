@@ -55,7 +55,11 @@ class ElevenLabsClient(config: ApplicationConfig) {
         val requestBody = TextSynthesizeRequestBody(
             text = text,
             modelId = "eleven_multilingual_v2",
-            voiceSettings = TextSynthesizeRequestBody.VoiceSettings(speed = voiceSpeed)
+            voiceSettings = TextSynthesizeRequestBody.VoiceSettings(
+                speed = voiceSpeed,
+                stability = 0.5,
+                similarityBoost = 0.75,
+            ),
         )
         val format = "mp3_44100_128"
 
@@ -98,7 +102,7 @@ class ElevenLabsClient(config: ApplicationConfig) {
 
 sealed class ElevenLabsTextToSpeechError {
     data object ApiKeyMissing : ElevenLabsTextToSpeechError()
-    data object VoiceIdMissing: ElevenLabsTextToSpeechError()
+    data object VoiceIdMissing : ElevenLabsTextToSpeechError()
     data object ElevenLabsError : ElevenLabsTextToSpeechError()
 }
 
@@ -111,5 +115,7 @@ private data class TextSynthesizeRequestBody(
     @Serializable
     data class VoiceSettings(
         val speed: Double,
+        val stability: Double,
+        @SerialName("similarity_boost") val similarityBoost: Double,
     )
 }
