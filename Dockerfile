@@ -4,6 +4,8 @@ ARG JDK_VERSION=21
 ################################################################################
 # Stage 1: Build client application
 FROM node:${NODE_VERSION}-alpine AS client
+RUN apk add --no-cache rsync
+
 WORKDIR /usr/src/app
 
 COPY ./client ./client
