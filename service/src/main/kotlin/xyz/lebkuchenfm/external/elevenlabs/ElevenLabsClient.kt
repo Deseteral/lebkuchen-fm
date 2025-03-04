@@ -37,6 +37,9 @@ class ElevenLabsClient(config: ApplicationConfig) {
     private val voiceId: String? by lazy {
         config.propertyOrNull("$CONFIGURATION_KEY.voiceId")?.getString()
     }
+    private val voiceSpeed: Double by lazy {
+        config.property("$CONFIGURATION_KEY.voiceSpeed").getString().toDouble()
+    }
 
     @OptIn(ExperimentalEncodingApi::class)
     suspend fun textToSpeech(text: String): Result<Base64EncodedAudio, ElevenLabsTextToSpeechError> {
@@ -50,8 +53,9 @@ class ElevenLabsClient(config: ApplicationConfig) {
         }
 
         val requestBody = TextSynthesizeRequestBody(
-            text,
-            "eleven_multilingual_v2"
+            text = text,
+            modelId = "eleven_multilingual_v2",
+            voiceSettings = TextSynthesizeRequestBody.VoiceSettings(speed = voiceSpeed)
         )
         val format = "mp3_44100_128"
 
@@ -102,4 +106,10 @@ sealed class ElevenLabsTextToSpeechError {
 private data class TextSynthesizeRequestBody(
     val text: String,
     @SerialName("model_id") val modelId: String,
-)
+    @SerialName("voice_settings") val voiceSettings: VoiceSettings,
+) {
+    @Serializable
+    data class VoiceSettings(
+        val speed: Double,
+    )
+}

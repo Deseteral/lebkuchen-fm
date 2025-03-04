@@ -38,6 +38,7 @@ radioPersonality:
     elevenLabs:
         apiKey: $?ELEVENLABS_API_KEY
         voiceId: $?ELEVENLABS_VOICE_ID
+        voiceSpeed: "$ELEVENLABS_VOICE_SPEED:1"
 
   llm:
     gemini:
