@@ -164,7 +164,7 @@ class DropboxClient(config: ApplicationConfig) {
         data object ErrorWhenCreatingFileUrl : DropboxClientError()
     }
 
-    private fun <T>HeadersBuilder.appendDropboxApiArg(value: T, serializer: KSerializer<T>) {
+    private fun <T> HeadersBuilder.appendDropboxApiArg(value: T, serializer: KSerializer<T>) {
         // https://www.dropbox.com/developers/reference/json-encoding
         fun String.encodedForDropbox() = buildString {
             for (char in this@encodedForDropbox) {
