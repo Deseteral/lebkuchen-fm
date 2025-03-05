@@ -15,19 +15,17 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept
 import io.ktor.client.request.forms.FormDataContent
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
-import io.ktor.http.HeadersBuilder
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
+import io.ktor.http.encodeURLQueryComponent
 import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.config.ApplicationConfig
-import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharing
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharingResponse
@@ -66,12 +64,12 @@ class DropboxClient(config: ApplicationConfig) {
         }
 
         val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false, strictConflict = true)
+        val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args).encodeURLQueryComponent()
 
-        val fileUploadResponse = client.post(API_FILE_UPLOAD_URL) {
+        val fileUploadResponse = client.post("$API_FILE_UPLOAD_URL?arg=$argsString") {
             setBody(bytes)
             contentType(ContentType.Application.OctetStream)
             accept(ContentType.Application.Json)
-            headers { appendDropboxApiArg(args, DropboxFileUploadArgs.serializer()) }
         }
 
         if (!fileUploadResponse.status.isSuccess()) {
@@ -162,22 +160,5 @@ class DropboxClient(config: ApplicationConfig) {
         data object AuthorizationError : DropboxClientError()
         data object ErrorWhenUploadingFile : DropboxClientError()
         data object ErrorWhenCreatingFileUrl : DropboxClientError()
-    }
-
-    private fun <T> HeadersBuilder.appendDropboxApiArg(value: T, serializer: KSerializer<T>) {
-        // https://www.dropbox.com/developers/reference/json-encoding
-        fun String.encodedForDropbox() = buildString {
-            for (char in this@encodedForDropbox) {
-                if (char.code in 32..<127) {
-                    append(char)
-                } else {
-                    @OptIn(ExperimentalStdlibApi::class)
-                    append("\\u" + char.code.toHexString().takeLast(4))
-                }
-            }
-        }
-
-        val arg = Json.encodeToString(serializer, value)
-        this.append("Dropbox-API-Arg", arg.encodedForDropbox())
     }
 }
