@@ -126,9 +126,7 @@ fun Application.module() {
             val elevenLabsClient = ElevenLabsClient(environment.config)
             ElevenLabsTextToSpeech(elevenLabsClient)
         }
-        else -> {
-            throw IllegalArgumentException("Unknown TTS provider")
-        }
+        else -> throw IllegalArgumentException("Unknown TTS provider.")
     }
     val radioPersonalityProvider = GeminiRadioPersonality(geminiClient)
 
