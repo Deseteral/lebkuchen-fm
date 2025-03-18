@@ -12,3 +12,13 @@
 .input:focus {
   outline: none;
 }
+
+.minimal {
+  font-size: 1rem;
+  border: 1px solid var(--border-color-two);
+  width: 100px;
+}
+
+.minimal:focus {
+  width: 150px;
+}

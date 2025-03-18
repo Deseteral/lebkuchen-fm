@@ -1,5 +1,6 @@
 :root {
   --border-color-one: #000;
+  --border-color-two: #9c9c9c;
   --menu-bar-height: 24px;
   --primary-color: #662d91;
   --secondary-color: #f1f1f1;
@@ -18,12 +19,14 @@
 
 html {
   font-size: var(--base-font-size);
+  overscroll-behavior: none;
 }
 
 body {
   background-image: url('../public/bg.png');
   background-color: #6261a1;
   user-select: none;
+  overscroll-behavior: none;
 }
 
 #root {
