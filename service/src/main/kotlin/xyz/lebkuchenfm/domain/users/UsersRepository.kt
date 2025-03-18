@@ -4,6 +4,7 @@ import com.github.michaelbull.result.Result
 import kotlinx.datetime.Instant
 
 interface UsersRepository {
+    suspend fun findAll(): List<User>
     suspend fun findByName(username: String): User?
     suspend fun findByApiToken(token: String): User?
     suspend fun findByDiscordId(discordId: String): User?
