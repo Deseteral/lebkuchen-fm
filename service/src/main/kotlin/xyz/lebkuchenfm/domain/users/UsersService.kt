@@ -17,6 +17,10 @@ class UsersService(
     private val secureGenerator: SecureGenerator,
     private val clock: Clock,
 ) {
+    suspend fun getAll(): List<User> {
+        return repository.findAll()
+    }
+
     suspend fun getByName(username: String): User? {
         return repository.findByName(username)
     }
@@ -29,12 +33,12 @@ class UsersService(
         return repository.findByDiscordId(discordId)
     }
 
-    suspend fun addNewUser(username: String): Result<User, AddNewUserError> {
+    suspend fun addNewUser(username: String, discordId: String? = null): Result<User, AddNewUserError> {
         val now = clock.now()
         val user = User(
             data = User.UserData(
                 name = UserName(username),
-                discordId = null,
+                discordId = discordId,
                 creationDate = now,
                 lastLoggedIn = now,
             ),
