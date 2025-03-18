@@ -9,6 +9,7 @@ import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
 import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
 import { SayEventHandler } from '../../services/say-event-handler';
+import { Users } from '../../apps/Users/Users';
 
 function Desktop() {
   onMount(() => {
@@ -31,6 +32,7 @@ function Desktop() {
         <Player />
         <Soundboard />
         <DebugSoundUploadForm />
+        <Users />
         <Settings />
       </main>
     </>

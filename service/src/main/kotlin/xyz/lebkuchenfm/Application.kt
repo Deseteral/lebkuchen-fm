@@ -28,6 +28,7 @@ import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
+import xyz.lebkuchenfm.api.users.usersRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.auth.UserSession
@@ -219,6 +220,7 @@ fun Application.module() {
                     commandsRouting(commandExecutorService)
                     eventStreamRouting(eventStream, playerStateSynchronizer)
                     soundboardEndpoint(soundboardService)
+                    usersRouting(usersService)
                 }
             }
         }
