@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@solidjs/router": "0.13.0",
+    "@types/node": "22.13.10",
     "events": "3.3.0",
     "mitt": "3.0.1",
     "solid-js": "1.8.15",

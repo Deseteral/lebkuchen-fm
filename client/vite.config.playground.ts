@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import solid from 'vite-plugin-solid';
-// @ts-ignore
 import path from 'path';
 
 export default defineConfig({

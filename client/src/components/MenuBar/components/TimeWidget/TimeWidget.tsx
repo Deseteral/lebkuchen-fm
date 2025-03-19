@@ -13,7 +13,7 @@ function getFormattedTime(): string {
 
 function TimeWidget() {
   const [time, setTime] = createSignal(getFormattedTime());
-  const [intervalId, setIntervalId] = createSignal<number>();
+  const [intervalId, setIntervalId] = createSignal<ReturnType<typeof setTimeout>>();
 
   onMount(() => {
     const interval = setInterval(() => {
