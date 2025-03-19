@@ -14,7 +14,6 @@ export default defineConfig({
   },
   plugins: [solid()],
   resolve: {
-    dedupe: ['react', 'react-dom'],
     alias: {
       '@components': path.resolve(__dirname, 'src/components'),
     },
