@@ -23,10 +23,6 @@
     },
     "skipLibCheck": true
   },
-  "include": [
-    "src",
-    "vite.config.ts",
-    "vite.config.playground.ts"
-  ],
+  "include": ["src", "vite.config.ts", "vite.config.playground.ts"],
   "exclude": ["node_modules", "build"]
 }
