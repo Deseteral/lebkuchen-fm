@@ -1,5 +1,5 @@
 .componentsPlayground {
-  background-color: #f1f1f1;
+  background-color: var(--secondary-color);
   padding: 50px;
   display: flex;
   flex-direction: column;
