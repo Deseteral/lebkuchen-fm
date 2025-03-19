@@ -63,7 +63,7 @@ function DebugSoundUploadForm() {
               <Input type="file" required name="soundFile" />
               <Input type="text" required placeholder="Sound name" name="soundName" />
               <Input type="text" placeholder="Tags, separate them with a comma" name="tags" />
-              <Button primary>Upload</Button>
+              <Button fullWidth>Upload</Button>
             </form>
           </div>
         </AppWindow>

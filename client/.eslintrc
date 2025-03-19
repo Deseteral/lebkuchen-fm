@@ -23,6 +23,17 @@
     "object-curly-spacing": [
       "error",
       "always"
+    ],
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["**/_playground/**"],
+            "message": "Do not import modules from the _playground directory."
+          }
+        ]
+      }
     ]
   }
 }

@@ -41,7 +41,7 @@ function Login() {
           <form onSubmit={onSubmit}>
             <Input type="text" name="login" placeholder="Login" required />
             <Input type="password" name="password" placeholder="Password" required />
-            <Button primary>Login</Button>
+            <Button fullWidth>Login</Button>
           </form>
         </div>
       </AppWindow>
