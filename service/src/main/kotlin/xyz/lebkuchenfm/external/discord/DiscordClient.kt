@@ -58,7 +58,7 @@ class DiscordClient(
             .filterIsInstance<MessageCreateEvent>()
             .map { it.message }
             .filter { it.channelId.value.toString() == channelId }
-            .filter { it.content.startsWith(commandPrompt) }
+            .filter { it.content.split(' ').firstOrNull() == commandPrompt }
             .filter { it.author != null }
             .filter { it.author?.isBot == false }
             .onEach {

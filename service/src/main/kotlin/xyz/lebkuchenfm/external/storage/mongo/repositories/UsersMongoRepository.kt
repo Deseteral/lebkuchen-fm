@@ -16,6 +16,8 @@ import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
@@ -43,6 +45,13 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             logger.error(ex) { "An error occurred while creating a user repository index." }
             throw ex
         }
+    }
+
+    override suspend fun findAll(): List<User> {
+        return collection
+            .find()
+            .map { it.toDomain() }
+            .toList()
     }
 
     override suspend fun findByName(username: String): User? {
@@ -121,7 +130,10 @@ private data class UserEntity(
     val data: UserDataEntity,
     val secret: UserSecretEntity?,
 ) {
-    fun toDomain() = User(data.toDomain(), secret?.toDomain())
+    fun toDomain() = User(
+        data = data.toDomain(),
+        secret = secret?.toDomain(),
+    )
 
     @Serializable
     data class UserDataEntity(
@@ -130,7 +142,12 @@ private data class UserEntity(
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {
-        fun toDomain() = User.UserData(name, discordId, creationDate, lastLoggedIn)
+        fun toDomain() = User.UserData(
+            name = name,
+            discordId = discordId,
+            creationDate = creationDate,
+            lastLoggedIn = lastLoggedIn,
+        )
     }
 
     @Serializable
@@ -139,12 +156,28 @@ private data class UserEntity(
         val salt: String,
         val apiToken: String,
     ) {
-        fun toDomain() = User.UserSecret(HashedPasswordHexEncoded(hashedPassword), salt, apiToken)
+        fun toDomain() = User.UserSecret(
+            hashedPassword = HashedPasswordHexEncoded(hashedPassword),
+            salt = salt,
+            apiToken = apiToken,
+        )
     }
 }
 
-private fun User.toEntity() = UserEntity(data.toEntity(), secret?.toEntity())
+private fun User.toEntity() = UserEntity(
+    data = data.toEntity(),
+    secret = secret?.toEntity(),
+)
 
-private fun User.UserData.toEntity() = UserEntity.UserDataEntity(name, discordId, creationDate, lastLoggedIn)
+private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
+    name = name,
+    discordId = discordId,
+    creationDate = creationDate,
+    lastLoggedIn = lastLoggedIn,
+)
 
-private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(hashedPassword.value, salt, apiToken)
+private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(
+    hashedPassword = hashedPassword.value,
+    salt = salt,
+    apiToken = apiToken,
+)

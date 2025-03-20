@@ -6,6 +6,7 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
+import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor.Companion.buildMessage
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.songs.SongsService
@@ -39,6 +40,7 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
         eventStream.sendToEveryone(Event.QueueSongs(listOf(song)))
         songsService.incrementPlayCount(song, context.session)
 
-        return CommandProcessingResult.fromMarkdown("Queued ${song.name}.")
+        val messageLines = buildMessage(listOf(song))
+        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
     }
 }

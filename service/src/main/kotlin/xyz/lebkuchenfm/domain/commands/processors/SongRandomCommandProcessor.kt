@@ -6,9 +6,9 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
+import xyz.lebkuchenfm.domain.commands.processors.SongQueueCommandProcessor.Companion.buildMessage
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
-import xyz.lebkuchenfm.domain.songs.Song
 import xyz.lebkuchenfm.domain.songs.SongsService
 
 private val logger = KotlinLogging.logger {}
@@ -56,19 +56,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
         return (amount ?: 1) to phrase
     }
 
-    private fun buildMessage(songsToQueue: List<Song>, requestedAmount: Int): List<String> {
-        val queuedCount = songsToQueue.count()
-        val requestAmountMessage = if (queuedCount == requestedAmount) "" else " from $requestedAmount requested"
-
-        return listOfNotNull(
-            "Queued $queuedCount$requestAmountMessage:",
-            *songsToQueue.take(MAX_TITLES_IN_MESSAGE).map { "- _${it.name}_" }.toTypedArray(),
-            "...and others.".takeIf { queuedCount > MAX_TITLES_IN_MESSAGE },
-        )
-    }
-
     companion object {
-        const val MAX_TITLES_IN_MESSAGE = 10
         const val MAX_SONGS_IN_YOUTUBE_REQUEST = 50
     }
 }

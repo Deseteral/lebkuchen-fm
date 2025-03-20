@@ -1,0 +1,40 @@
+name: Version Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check version equality between modules
+        run: |
+          GRADLE_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
+          NPM_VERSION=$(jq -r '.version' ./client/package.json)
+
+          echo "Gradle version: '$GRADLE_VERSION'."
+          echo "NPM version:    '$NPM_VERSION'."
+
+          if [ "$GRADLE_VERSION" != "$NPM_VERSION" ]; then
+            echo "Version mismatch between client and service. Update the version in both modules."
+            exit 1
+          fi
+
+      - name: Check version equality between branches
+        run: |
+          git fetch origin main:main --depth 1
+
+          WORK_VERSION=$(awk -F= 'NR==1 {print $2}' ./service/gradle.properties)
+          MAIN_VERSION=$(git show main:service/gradle.properties | awk -F= 'NR==1 {print $2}')
+
+          echo "Gradle version on working branch: '$WORK_VERSION'."
+          echo "Gradle version on main branch:    '$MAIN_VERSION'."
+
+          if [ "$WORK_VERSION" == "$MAIN_VERSION" ]; then
+            echo "Version number has not changed. Update the version before merging."
+            exit 1
+          fi

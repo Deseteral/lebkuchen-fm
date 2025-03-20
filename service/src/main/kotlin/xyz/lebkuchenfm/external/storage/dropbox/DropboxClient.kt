@@ -15,13 +15,13 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.accept
 import io.ktor.client.request.forms.FormDataContent
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
+import io.ktor.http.encodeURLQueryComponent
 import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
@@ -64,13 +64,12 @@ class DropboxClient(config: ApplicationConfig) {
         }
 
         val args = DropboxFileUploadArgs(path, mode = "add", autorename = false, mute = false, strictConflict = true)
-        val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args)
+        val argsString = Json.encodeToString(DropboxFileUploadArgs.serializer(), args).encodeURLQueryComponent()
 
-        val fileUploadResponse = client.post(API_FILE_UPLOAD_URL) {
+        val fileUploadResponse = client.post("$API_FILE_UPLOAD_URL?arg=$argsString") {
             setBody(bytes)
             contentType(ContentType.Application.OctetStream)
             accept(ContentType.Application.Json)
-            headers { append("Dropbox-API-Arg", argsString) }
         }
 
         if (!fileUploadResponse.status.isSuccess()) {
