@@ -89,7 +89,7 @@ function Users() {
             <form onSubmit={onSubmit}>
               <Input type="user" required placeholder="Username" name="username" />
               <Input type="text" placeholder="DiscordId" name="discordId" />
-              <Button primary>Create</Button>
+              <Button fullWidth>Create</Button>
             </form>
             <span class={styles.error}>{error()}</span>
           </div>
