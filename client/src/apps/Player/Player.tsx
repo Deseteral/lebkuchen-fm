@@ -11,13 +11,13 @@ import searchIcon from '../../icons/search-icon.png';
 import randomIcon from '../../icons/random-icon.png';
 import queueIcon from '../../icons/queue-icon.png';
 import playIcon from '../../icons/play-icon.png';
-import { Button } from '@components/Button/Button';
+import { Button, ButtonVariant } from '@components/Button/Button';
 import { Input } from '@components/Input/Input';
 import clsx from 'clsx';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
-  const [currentlyPlayingSong, setCurrentlyPlayingSong] = createSignal(null);
+  const [currentlyPlayingSong, setCurrentlyPlayingSong] = createSignal<string | null>(null);
   let buttonRef!: HTMLButtonElement;
   const closeWindow = () => setShowWindow(true);
   const toggleWindow = () => {
@@ -30,7 +30,7 @@ function Player() {
   const onPlayerStateUpdate = (event: LocalPlayerStateUpdateEvent) => {
     console.log('Player state update in player:', event.state);
     if (currentlyPlayingSong() !== event.state?.currentlyPlaying?.song?.name) {
-      setCurrentlyPlayingSong(event.state?.currentlyPlaying?.song?.name);
+      setCurrentlyPlayingSong(event.state?.currentlyPlaying?.song?.name || null);
     }
   };
 
@@ -78,31 +78,31 @@ function Player() {
               <hr class={styles.divider} />
               <div class={styles.buttonsRow}>
                 <div class={styles.controlButtons}>
-                  <Button withIcon title="Skip song" withIconGrouped>
+                  <Button variant={ButtonVariant.Icon} title="Skip song">
                     <img
                       src={skipIcon}
                       class={clsx(styles.buttonIcon, styles.reversed)}
                       alt="Skip song"
                     />
                   </Button>
-                  <Button withIcon title="Play" withIconGrouped>
+                  <Button variant={ButtonVariant.Icon} title="Play">
                     <img src={playIcon} class={styles.buttonIcon} alt="Play" />
                   </Button>
-                  <Button withIcon title="Skip song" withIconGrouped>
+                  <Button variant={ButtonVariant.Icon} title="Skip song">
                     <img src={skipIcon} class={styles.buttonIcon} alt="Skip song" />
                   </Button>
                 </div>
                 <div class={styles.additionalButtons}>
                   <form class={styles.searchForm}>
                     <Input title={'/q - by YT id, /r - random'} placeholder="Search" minimal />
-                    <Button withIcon>
+                    <Button variant={ButtonVariant.Icon}>
                       <img src={searchIcon} class={styles.buttonIcon} alt="Search" />
                     </Button>
                   </form>
-                  <Button withIcon>
+                  <Button variant={ButtonVariant.Icon}>
                     <img src={randomIcon} class={styles.buttonIcon} alt="Play random song" />
                   </Button>
-                  <Button withIcon title="Queue">
+                  <Button variant={ButtonVariant.Icon} title="Queue">
                     <img src={queueIcon} class={styles.buttonIcon} alt="Queue" />
                   </Button>
                 </div>
