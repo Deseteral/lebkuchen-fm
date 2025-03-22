@@ -34,13 +34,14 @@ data class AddSongsToQueueEventDto(
     val songs: List<SongDto>,
 ) : EventDto {
     constructor(event: Event.QueueSongs) : this(
-        songs = event.songs.map { SongDto(it.name, it.youtubeId.value) },
+        songs = event.songs.map { SongDto(it.song.name, it.song.youtubeId.value, it.videoStream.url.toString()) },
     )
 
     @Serializable
     data class SongDto(
         val name: String,
         val youtubeId: String,
+        val url: String,
     )
 }
 
@@ -71,7 +72,9 @@ data class SongChangedEventDto(
 ) : EventDto {
     @Serializable
     data class SongDto(
+        // TODO: We could simplify this and only send the youtubeId back.
         val name: String,
         val youtubeId: String,
+        val url: String,
     )
 }

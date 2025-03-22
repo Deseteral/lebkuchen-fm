@@ -50,9 +50,9 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
             return error("Could not queue any song.", logger)
         }
 
-        // TODO: filter only embeddable
+        val songsWithVideoStream = songs.mapNotNull { songsService.enrichSongWithVideoStreamUrl(it) }
 
-        eventStream.sendToEveryone(Event.QueueSongs(songs))
+        eventStream.sendToEveryone(Event.QueueSongs(songsWithVideoStream))
 
         songs.forEach { songsService.incrementPlayCount(it, context.session) }
 
