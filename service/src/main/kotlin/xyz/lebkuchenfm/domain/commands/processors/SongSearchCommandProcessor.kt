@@ -37,7 +37,10 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
         val song = songsService.getSongFromYoutube(phrase)
             ?: return error("Could not find a song with provided phrase.", logger)
 
-        eventStream.sendToEveryone(Event.QueueSongs(listOf(song)))
+        val songWithVideoStream = songsService.enrichSongWithVideoStreamUrl(song)
+            ?: return error("Could not get a video stream for the song.", logger)
+
+        eventStream.sendToEveryone(Event.QueueSongs(listOf(songWithVideoStream)))
         songsService.incrementPlayCount(song, context.session)
 
         val messageLines = buildMessage(listOf(song))

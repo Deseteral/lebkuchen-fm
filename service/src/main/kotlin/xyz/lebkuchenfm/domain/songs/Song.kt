@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.songs
 
+import io.ktor.http.Url
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
 
 data class Song(
@@ -9,3 +10,12 @@ data class Song(
     val trimStartSeconds: Int?,
     val trimEndSeconds: Int?,
 )
+
+data class SongWithVideoStream(
+    val song: Song,
+    val videoStream: VideoStream,
+) {
+    data class VideoStream(
+        val url: Url,
+    )
+}
