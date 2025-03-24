@@ -34,7 +34,7 @@
   height: 1px;
   background-color: var(--border-color-two);
   width: 100%;
-  margin: 10px 0
+  margin: 10px 0;
 }
 
 .buttonIcon {
@@ -45,7 +45,6 @@
 .buttonIcon.reversed {
   transform: rotate(180deg);
 }
-
 
 .titleRow {
   display: flex;
@@ -60,7 +59,8 @@
   gap: 15px;
 }
 
-.controlButtons, .titleRowButtons {
+.controlButtons,
+.titleRowButtons {
   display: flex;
 }
 
@@ -86,7 +86,8 @@
     justify-content: flex-start;
   }
 
-  .additionalButtons, .searchForm {
+  .additionalButtons,
+  .searchForm {
     flex-direction: row-reverse;
   }
 }
