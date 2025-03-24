@@ -44,9 +44,6 @@ function Player() {
   };
 
   onMount(() => {
-    setTimeout(() => {
-      setShowWindow(true);
-    }, 1000);
     EventStreamClient.subscribe<LocalPlayerStateUpdateEvent>(
       LocalEventTypes.LocalPlayerStateUpdate,
       onPlayerStateUpdate,

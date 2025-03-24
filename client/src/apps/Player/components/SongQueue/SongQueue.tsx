@@ -19,7 +19,7 @@ function SongQueue(props: SongQueueProps) {
       title="Queue"
       iconIndex={PLAYER_ICON_INDEX}
       close={props.closeAction}
-      startSize={{ width: '400px', height: '200px' }}
+      startSize={{ width: '400px', height: '160px' }}
       startPosition={{
         y: containerPosition.y - 28,
         x: containerPosition.x + containerPosition.width,
