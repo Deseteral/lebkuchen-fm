@@ -60,7 +60,7 @@
   gap: 15px;
 }
 
-.controlButtons {
+.controlButtons, .titleRowButtons {
   display: flex;
 }
 
@@ -68,10 +68,6 @@
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.titleRowButtons {
-  display: flex;
 }
 
 .searchForm {
@@ -90,16 +86,12 @@
     justify-content: flex-start;
   }
 
-  .additionalButtons {
-    flex-direction: row-reverse;
-  }
-
-  .searchForm {
+  .additionalButtons, .searchForm {
     flex-direction: row-reverse;
   }
 }
 
-@container (max-height: 250px) {
+@container (max-height: 150px) {
   .player {
     display: none;
   }

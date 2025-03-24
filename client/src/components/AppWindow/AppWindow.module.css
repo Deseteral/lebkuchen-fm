@@ -8,6 +8,8 @@
 
 .resizeable {
   resize: both;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .title {

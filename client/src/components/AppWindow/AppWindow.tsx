@@ -1,5 +1,5 @@
 import { Portal } from 'solid-js/web';
-import { JSX, createEffect } from 'solid-js';
+import { JSX } from 'solid-js';
 import styles from './AppWindow.module.css';
 import { AppIcon } from '@components/AppIcon/AppIcon';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
@@ -26,13 +26,10 @@ function AppWindow(props: AppWindowProps) {
   let windowRef!: HTMLDivElement;
   let nextX = 0;
   let nextY = 0;
-  let x = 100;
-  let y = 100;
-
-  createEffect(() => {
-    x = props.startPosition?.x || x;
-    y = props.startPosition?.y || y;
-  });
+  // eslint-disable-next-line solid/reactivity
+  let x = props.startPosition?.x || 100;
+  // eslint-disable-next-line solid/reactivity
+  let y = props.startPosition?.y || 100;
 
   const getBiggestZIndex = () => {
     let biggestZIndex = 0;

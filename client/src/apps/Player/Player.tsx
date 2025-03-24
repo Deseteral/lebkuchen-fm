@@ -6,19 +6,18 @@ import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Player.module.css';
 import { EventStreamClient } from '../../services/event-stream-client';
 import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-events';
-import skipIcon from '../../icons/skip-button.png';
-import searchIcon from '../../icons/search-icon.png';
-import randomIcon from '../../icons/random-icon.png';
-import queueIcon from '../../icons/queue-icon.png';
-import playIcon from '../../icons/play-icon.png';
-import { Button, ButtonVariant } from '@components/Button/Button';
-import { Input } from '@components/Input/Input';
-import clsx from 'clsx';
+import { PlayerControls } from './components/PlayerControls/PlayerControls';
+import { SongQueue } from './components/SongQueue/SongQueue';
+import { Song } from '../../types/player-state';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
+  const [showQueue, setShowQueue] = createSignal(false);
   const [currentlyPlayingSong, setCurrentlyPlayingSong] = createSignal<string | null>(null);
+  const [playingNextSong, setPlayingNextSong] = createSignal<string | null>(null);
+  const [songQueue, setSongQueue] = createSignal<Song[] | null>(null);
   let buttonRef!: HTMLButtonElement;
+  let containerRef!: HTMLDivElement;
   const closeWindow = () => setShowWindow(true);
   const toggleWindow = () => {
     setShowWindow((prev: boolean) => !prev);
@@ -29,8 +28,18 @@ function Player() {
 
   const onPlayerStateUpdate = (event: LocalPlayerStateUpdateEvent) => {
     console.log('Player state update in player:', event.state);
-    if (currentlyPlayingSong() !== event.state?.currentlyPlaying?.song?.name) {
-      setCurrentlyPlayingSong(event.state?.currentlyPlaying?.song?.name || null);
+    const newCurrentlyPlayingSong = event.state?.currentlyPlaying?.song?.name;
+    const queue = event.state?.queue;
+    const newPlayingNextSong = (queue?.length || 0) > 0 ? queue![0].name : null;
+
+    setSongQueue(queue || null);
+
+    if (currentlyPlayingSong() !== newCurrentlyPlayingSong) {
+      setCurrentlyPlayingSong(newCurrentlyPlayingSong || null);
+    }
+
+    if (playingNextSong() !== newPlayingNextSong) {
+      setPlayingNextSong(newPlayingNextSong || null);
     }
   };
 
@@ -66,7 +75,7 @@ function Player() {
           iconIndex={PLAYER_ICON_INDEX}
           startSize={{ width: '600px', height: '500px', minWidth: '400px', minHeight: '160px' }}
         >
-          <div class={styles.playerContainer}>
+          <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
             <section class={styles.player}>
               <YouTubePlayer />
             </section>
@@ -74,40 +83,17 @@ function Player() {
               <h1 class={styles.songTitle}>
                 {currentlyPlayingSong() || 'No songs are currently playing.'}
               </h1>
-              <p class={styles.nextSong}>Next: Fred Again - Ten days</p>
+              {playingNextSong() && <p class={styles.nextSong}>Next: {playingNextSong()}</p>}
               <hr class={styles.divider} />
-              <div class={styles.buttonsRow}>
-                <div class={styles.controlButtons}>
-                  <Button variant={ButtonVariant.Icon} title="Skip song">
-                    <img
-                      src={skipIcon}
-                      class={clsx(styles.buttonIcon, styles.reversed)}
-                      alt="Skip song"
-                    />
-                  </Button>
-                  <Button variant={ButtonVariant.Icon} title="Play">
-                    <img src={playIcon} class={styles.buttonIcon} alt="Play" />
-                  </Button>
-                  <Button variant={ButtonVariant.Icon} title="Skip song">
-                    <img src={skipIcon} class={styles.buttonIcon} alt="Skip song" />
-                  </Button>
-                </div>
-                <div class={styles.additionalButtons}>
-                  <form class={styles.searchForm}>
-                    <Input title={'/q - by YT id, /r - random'} placeholder="Search" minimal />
-                    <Button variant={ButtonVariant.Icon}>
-                      <img src={searchIcon} class={styles.buttonIcon} alt="Search" />
-                    </Button>
-                  </form>
-                  <Button variant={ButtonVariant.Icon}>
-                    <img src={randomIcon} class={styles.buttonIcon} alt="Play random song" />
-                  </Button>
-                  <Button variant={ButtonVariant.Icon} title="Queue">
-                    <img src={queueIcon} class={styles.buttonIcon} alt="Queue" />
-                  </Button>
-                </div>
-              </div>
+              <PlayerControls queueButtonAction={() => setShowQueue((prev: boolean) => !prev)} />
             </section>
+            {showQueue() && (
+              <SongQueue
+                queue={songQueue()}
+                containerRef={containerRef}
+                closeAction={() => setShowQueue(false)}
+              />
+            )}
           </div>
         </AppWindow>
       )}
