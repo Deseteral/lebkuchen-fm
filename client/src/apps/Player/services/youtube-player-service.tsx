@@ -116,12 +116,6 @@ class YoutubePlayerService {
       if (isReadyToPlayNextVideo) {
         YoutubePlayerService.playNextSong();
       }
-
-      if (!playerState.isPlaying) {
-        PlayerStateService.change({
-          isPlaying: true,
-        });
-      }
     }
   }
 
