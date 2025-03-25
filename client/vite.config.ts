@@ -21,12 +21,12 @@ export default defineConfig({
   server: {
     port: 9090,
     proxy: {
-      '/api': 'http://localhost:8080',
       '/api/event-stream': {
         target: 'ws://localhost:8080',
         ws: true,
         changeOrigin: true,
       },
+      '/api': 'http://localhost:8080',
     },
   },
   define: {
