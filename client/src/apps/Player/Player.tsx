@@ -16,9 +16,10 @@ function Player() {
   const [currentlyPlayingSong, setCurrentlyPlayingSong] = createSignal<string | null>(null);
   const [playingNextSong, setPlayingNextSong] = createSignal<string | null>(null);
   const [songQueue, setSongQueue] = createSignal<Song[] | null>(null);
+  const [isPlaying, setIsPlaying] = createSignal(false);
   let buttonRef!: HTMLButtonElement;
   let containerRef!: HTMLDivElement;
-  const closeWindow = () => setShowWindow(true);
+  const closeWindow = () => setShowWindow(false);
   const toggleWindow = () => {
     setShowWindow((prev: boolean) => !prev);
     if (buttonRef) {
@@ -33,6 +34,7 @@ function Player() {
     const newPlayingNextSong = (queue?.length || 0) > 0 ? queue![0].name : null;
 
     setSongQueue(queue || null);
+    setIsPlaying(Boolean(event.state?.isPlaying));
 
     if (currentlyPlayingSong() !== newCurrentlyPlayingSong) {
       setCurrentlyPlayingSong(newCurrentlyPlayingSong || null);
@@ -82,7 +84,10 @@ function Player() {
               </h1>
               {playingNextSong() && <p class={styles.nextSong}>Next: {playingNextSong()}</p>}
               <hr class={styles.divider} />
-              <PlayerControls queueButtonAction={() => setShowQueue((prev: boolean) => !prev)} />
+              <PlayerControls
+                queueButtonAction={() => setShowQueue((prev: boolean) => !prev)}
+                isPlaying={isPlaying()}
+              />
             </section>
             {showQueue() && (
               <SongQueue

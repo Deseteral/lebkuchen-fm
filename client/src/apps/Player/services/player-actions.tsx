@@ -17,6 +17,14 @@ class PlayerActions {
     PlayerActions.runCommand('/fm skip 1');
   }
 
+  static playerPause() {
+    PlayerActions.runCommand('/fm pause');
+  }
+
+  static playerResume() {
+    PlayerActions.runCommand('/fm resume');
+  }
+
   private static playRandomSongFromHistory(phrase?: string) {
     PlayerActions.runCommand(`/fm random ${phrase || ''}`);
   }

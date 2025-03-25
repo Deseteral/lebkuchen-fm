@@ -8,9 +8,11 @@ import { PlayerInput } from '../PlayerInput/PlayerInput';
 import searchIcon from '../../../../icons/search-icon.png';
 import randomIcon from '../../../../icons/random-icon.png';
 import queueIcon from '../../../../icons/queue-icon.png';
+import pauseIcon from '../../../../icons/pause-icon.png';
 
 interface PlayerControlsProps {
   queueButtonAction: () => void;
+  isPlaying: boolean;
 }
 
 function PlayerControls(props: PlayerControlsProps) {
@@ -29,8 +31,16 @@ function PlayerControls(props: PlayerControlsProps) {
         <Button variant={ButtonVariant.IconGrouped} title="For now I do nothing :(">
           <img src={skipIcon} class={clsx(styles.buttonIcon, styles.reversed)} alt="" />
         </Button>
-        <Button variant={ButtonVariant.IconGrouped} title="Play">
-          <img src={playIcon} class={styles.buttonIcon} alt="" />
+        <Button
+          onClick={props.isPlaying ? PlayerActions.playerPause : PlayerActions.playerResume}
+          variant={ButtonVariant.IconGrouped}
+          title={props.isPlaying ? 'Pause' : 'Play'}
+        >
+          {props.isPlaying ? (
+            <img src={pauseIcon} class={styles.buttonIcon} alt="" />
+          ) : (
+            <img src={playIcon} class={styles.buttonIcon} alt="" />
+          )}
         </Button>
         <Button
           variant={ButtonVariant.IconGrouped}
