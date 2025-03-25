@@ -226,6 +226,7 @@ class YoutubePlayerService {
 
   // Player methods
   private static playSong(song: Song | null, time: number = 0) {
+    const { isPlaying } = PlayerStateService.get();
     if (song) {
       PlayerStateService.change({
         currentlyPlaying: { song, time },
@@ -236,6 +237,10 @@ class YoutubePlayerService {
       }
 
       YoutubePlayerService.player.load(song.youtubeId, true);
+
+      if (!isPlaying) {
+        YoutubePlayerService.player.stop();
+      }
     } else {
       YoutubePlayerService.player.stop();
     }
