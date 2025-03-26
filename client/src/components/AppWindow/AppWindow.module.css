@@ -30,7 +30,7 @@
 }
 
 .content {
-  overflow: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   background-color: var(--secondary-color);
   height: 100%;

@@ -1,14 +1,14 @@
 import styles from '../../Player.module.css';
 import { Button, ButtonVariant } from '@components/Button/Button';
-import skipIcon from '../../../../icons/skip-button.png';
 import clsx from 'clsx';
-import playIcon from '../../../../icons/play-icon.png';
 import { PlayerActions } from '../../services/player-actions';
 import { PlayerInput } from '../PlayerInput/PlayerInput';
-import searchIcon from '../../../../icons/search-icon.png';
-import randomIcon from '../../../../icons/random-icon.png';
-import queueIcon from '../../../../icons/queue-icon.png';
 import pauseIcon from '../../../../icons/pause-icon.png';
+import playIcon from '../../../../icons/play-icon.png';
+import queueIcon from '../../../../icons/queue-icon.png';
+import randomIcon from '../../../../icons/random-icon.png';
+import searchIcon from '../../../../icons/search-icon.png';
+import skipIcon from '../../../../icons/skip-icon.png';
 
 interface PlayerControlsProps {
   queueButtonAction: () => void;
