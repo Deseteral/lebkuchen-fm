@@ -1,16 +1,12 @@
 import styles from './Input.module.css';
-import { Component, JSX, mergeProps, splitProps } from 'solid-js';
-import clsx from 'clsx';
+import { Component, JSX, splitProps } from 'solid-js';
 
-interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
-  minimal?: boolean;
-}
+interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input: Component<InputProps> = (_props) => {
-  const props = mergeProps({ minimal: false }, _props);
-  const [, inputAttributes] = splitProps(props, ['children', 'minimal']);
+const Input: Component<InputProps> = (props) => {
+  const [, inputAttributes] = splitProps(props, ['children']);
 
-  return <input {...inputAttributes} class={clsx(styles.input, props.minimal && styles.minimal)} />;
+  return <input {...inputAttributes} class={styles.input} />;
 };
 
 export { Input };

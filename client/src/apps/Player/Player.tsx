@@ -72,7 +72,12 @@ function Player() {
           title="Player"
           close={closeWindow}
           iconIndex={PLAYER_ICON_INDEX}
-          startSize={{ width: '600px', height: '500px', minWidth: '400px', minHeight: '160px' }}
+          startSize={{
+            width: currentlyPlayingSong() ? '600px' : '400px',
+            height: currentlyPlayingSong() ? '500px' : '160px',
+            minWidth: '400px',
+            minHeight: '160px',
+          }}
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
             <section class={styles.player}>

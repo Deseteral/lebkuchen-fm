@@ -36,7 +36,7 @@
   transform: rotate(180deg);
 }
 
-@container (min-width: 700px) {
+@container playerContainer (min-width: 700px) {
   .buttonsRow {
     justify-content: flex-start;
   }
