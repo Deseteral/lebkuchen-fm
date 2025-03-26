@@ -74,9 +74,9 @@ function Player() {
           iconIndex={PLAYER_ICON_INDEX}
           startSize={{
             width: currentlyPlayingSong() ? '600px' : '400px',
-            height: currentlyPlayingSong() ? '500px' : '160px',
+            height: currentlyPlayingSong() ? '500px' : '180px',
             minWidth: '400px',
-            minHeight: '160px',
+            minHeight: '180px',
           }}
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>

@@ -32,7 +32,7 @@
 .withIcon {
   border: 1px solid var(--border-color-two);
   border-radius: var(--border-radius);
-  padding: 5px;
+  padding: 3px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,6 +1,5 @@
 .playerInput {
-  margin: 8px 0;
-  padding: 6px;
+  padding: 8px;
   border-radius: var(--border-radius);
   box-sizing: border-box;
   background-color: var(--input-color);
