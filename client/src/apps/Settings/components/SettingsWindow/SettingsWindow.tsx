@@ -38,7 +38,7 @@ function SettingsWindow(props: SettingsWindowProps) {
     <AppWindow
       title="Settings"
       close={props.close}
-      startSize={{ width: '400px', height: '200px' }}
+      startSize={{ width: '400px', height: '240px' }}
       iconIndex={SETTINGS_ICON_INDEX}
     >
       <section class={styles.section}>

@@ -1,4 +1,6 @@
 import { render } from 'solid-js/web';
+import '@phosphor-icons/web/bold';
+import '@phosphor-icons/web/fill';
 import '../styles.css';
 import styles from './styles.playground.module.css';
 import { ButtonsPlayground } from './Buttons.playground';

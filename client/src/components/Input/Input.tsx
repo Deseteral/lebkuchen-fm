@@ -1,10 +1,12 @@
 import styles from './Input.module.css';
-import { Component, JSX } from 'solid-js';
+import { Component, JSX, splitProps } from 'solid-js';
 
 interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {}
 
 const Input: Component<InputProps> = (props) => {
-  return <input {...props} class={styles.input} />;
+  const [, inputAttributes] = splitProps(props, ['children']);
+
+  return <input {...inputAttributes} class={styles.input} />;
 };
 
 export { Input };

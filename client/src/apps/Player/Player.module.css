@@ -1,0 +1,53 @@
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background-color: var(--secondary-color);
+  height: 100%;
+  padding: 10px;
+  container-type: size;
+  container-name: playerContainer;
+}
+
+.player {
+  height: 100%;
+  container-type: size;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  max-height: 120px;
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 0;
+}
+
+.songTitle {
+  font-size: 1.2em;
+}
+
+.nextSong {
+  margin-top: 5px;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--border-color-two);
+  width: 100%;
+  margin: 10px 0;
+}
+
+@container playerContainer (max-height: 150px) {
+  .player {
+    display: none;
+  }
+}
+
+@container playerContainer (max-height: 300px) {
+  .player {
+    height: 200px;
+  }
+}

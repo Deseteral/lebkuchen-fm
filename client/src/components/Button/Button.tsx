@@ -6,24 +6,28 @@ export enum ButtonVariant {
   Primary = 'primary',
   Secondary = 'secondary',
   Underlined = 'underlined',
+  Icon = 'icon',
+  IconGrouped = 'icon-grouped',
 }
 
 interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
-  children: string;
+  children: string | JSX.Element;
   fullWidth?: boolean;
   variant?: ButtonVariant;
 }
 
 const getVariantClassName = (variant: ButtonVariant): string => {
   switch (variant) {
-    case ButtonVariant.Primary:
-      return styles.primary;
     case ButtonVariant.Secondary:
       return styles.secondary;
     case ButtonVariant.Underlined:
       return styles.underlined;
+    case ButtonVariant.Icon:
+      return styles.withIcon;
+    case ButtonVariant.IconGrouped:
+      return clsx(styles.withIcon, styles.grouped);
     default:
-      return '';
+      return styles.primary;
   }
 };
 

@@ -1,4 +1,5 @@
 import { Button, ButtonVariant } from '@components/Button/Button';
+import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
 
 function ButtonsPlayground() {
   return (
@@ -35,6 +36,32 @@ function ButtonsPlayground() {
         <Button variant={ButtonVariant.Underlined} disabled>
           Click me
         </Button>
+      </section>
+      <section>
+        <p>Icon:</p>
+        <Button variant={ButtonVariant.Icon}>
+          <PhIcon type={PhIconType.Fill} icon="play" />
+        </Button>
+      </section>
+      <section>
+        <p>Icon disabled:</p>
+        <Button variant={ButtonVariant.Icon} disabled>
+          <PhIcon type={PhIconType.Fill} icon="play" />
+        </Button>
+      </section>
+      <section>
+        <p>Icon grouped buttons:</p>
+        <div style={{ display: 'flex' }}>
+          <Button variant={ButtonVariant.IconGrouped}>
+            <PhIcon type={PhIconType.Fill} icon="skip-back" />
+          </Button>
+          <Button variant={ButtonVariant.IconGrouped}>
+            <PhIcon type={PhIconType.Fill} icon="pause" />
+          </Button>
+          <Button variant={ButtonVariant.IconGrouped}>
+            <PhIcon type={PhIconType.Fill} icon="skip-forward" />
+          </Button>
+        </div>
       </section>
     </>
   );
