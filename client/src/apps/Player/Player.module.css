@@ -1,22 +1,21 @@
-:root {
-  --controls-height: 110px;
-}
-
 .playerContainer {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   background-color: var(--secondary-color);
   height: 100%;
   padding: 10px;
   container-type: size;
+  container-name: playerContainer;
 }
 
 .player {
-  height: calc(100% - var(--controls-height));
+  height: 100%;
+  container-type: size;
 }
 
 .controls {
-  height: var(--controls-height);
+  height: 100px;
   width: 100%;
   margin-top: 10px;
   padding: 10px 0;
@@ -37,63 +36,14 @@
   margin: 10px 0;
 }
 
-.buttonIcon {
-  width: 16px;
-  height: 16px;
-}
-
-.buttonIcon.reversed {
-  transform: rotate(180deg);
-}
-
-.titleRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.buttonsRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-}
-
-.controlButtons,
-.titleRowButtons {
-  display: flex;
-}
-
-.additionalButtons {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.searchForm {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 5px;
-}
-
-.inputShort {
-  width: 100px;
-}
-
-@container (min-width: 700px) {
-  .buttonsRow {
-    justify-content: flex-start;
-  }
-
-  .additionalButtons,
-  .searchForm {
-    flex-direction: row-reverse;
-  }
-}
-
-@container (max-height: 150px) {
+@container playerContainer (max-height: 150px) {
   .player {
     display: none;
+  }
+}
+
+@container playerContainer (max-height: 300px) {
+  .player {
+    height: 200px;
   }
 }

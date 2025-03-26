@@ -1,4 +1,4 @@
-import styles from '../../Player.module.css';
+import styles from './PlayerControls.module.css';
 import { Button, ButtonVariant } from '@components/Button/Button';
 import clsx from 'clsx';
 import { PlayerActions } from '../../services/player-actions';
