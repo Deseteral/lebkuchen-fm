@@ -117,11 +117,19 @@ class DropboxClient(config: ApplicationConfig) {
                 }
                 sendWithoutRequest { true }
                 refreshTokens {
-                    val tokenInfo: DropboxTokenInfo = client.post(tokenPostRequest).body()
-                    bearerTokenStorage.clear()
-                    bearerTokenStorage.add(
-                        BearerTokens(accessToken = tokenInfo.accessToken, refreshToken = refreshToken),
-                    )
+                    val tokenPostResponse = client.post(tokenPostRequest)
+
+                    if (!tokenPostResponse.status.isSuccess()) {
+                        val error = tokenPostResponse.errorString()
+                        logger.error { error }
+                        bearerTokenStorage.clear()
+                    } else {
+                        val tokenInfo: DropboxTokenInfo = tokenPostResponse.body()
+                        bearerTokenStorage.clear()
+                        bearerTokenStorage.add(
+                            BearerTokens(accessToken = tokenInfo.accessToken, refreshToken = refreshToken),
+                        )
+                    }
                     bearerTokenStorage.last()
                 }
             }
