@@ -71,7 +71,7 @@ data class UserResponse(
 
 fun User.toResponse(): UserResponse {
     return UserResponse(
-        username = this.data.name,
+        username = this.data.name.value,
         discordId = this.data.discordId,
         creationDate = this.data.creationDate,
         lastLoggedIn = this.data.lastLoggedIn,

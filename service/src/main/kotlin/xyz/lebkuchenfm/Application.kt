@@ -52,11 +52,14 @@ import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
 import xyz.lebkuchenfm.domain.radiopersonality.RadioPersonalityService
 import xyz.lebkuchenfm.domain.radiopersonality.llmprompts.LlmPromptService
+import xyz.lebkuchenfm.domain.radiopersonality.speechsynthesis.TextToSpeechProvider
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.elevenlabs.ElevenLabsClient
+import xyz.lebkuchenfm.external.elevenlabs.ElevenLabsTextToSpeech
 import xyz.lebkuchenfm.external.gemini.GeminiClient
 import xyz.lebkuchenfm.external.gemini.GeminiRadioPersonality
 import xyz.lebkuchenfm.external.googlecloud.GoogleCloudTextToSpeech
@@ -84,7 +87,6 @@ fun Application.module() {
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
-    val googleCloudTextToSpeechClient = GoogleCloudTextToSpeechClient(environment.config)
     val geminiClient = GeminiClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
@@ -115,7 +117,18 @@ fun Application.module() {
     val llmSituationsPromptRepository = LlmSituationPromptsMongoRepository(database)
     val llmPromptService = LlmPromptService(llmPersonalityPromptRepository, llmSituationsPromptRepository)
 
-    val textToSpeechProvider = GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
+    val ttsProviderConfig = environment.config.property("radioPersonality.textToSpeech.ttsProvider").getString()
+    val textToSpeechProvider: TextToSpeechProvider = when (ttsProviderConfig) {
+        "googleCloud" -> {
+            val googleCloudTextToSpeechClient = GoogleCloudTextToSpeechClient(environment.config)
+            GoogleCloudTextToSpeech(googleCloudTextToSpeechClient)
+        }
+        "elevenLabs" -> {
+            val elevenLabsClient = ElevenLabsClient(environment.config)
+            ElevenLabsTextToSpeech(elevenLabsClient)
+        }
+        else -> throw IllegalArgumentException("Unknown TTS provider.")
+    }
     val radioPersonalityProvider = GeminiRadioPersonality(geminiClient)
 
     val radioPersonalityService = RadioPersonalityService(
