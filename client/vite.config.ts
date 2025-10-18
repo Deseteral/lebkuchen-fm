@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import solid from 'vite-plugin-solid';
-// @ts-ignore
 import path from 'path';
 
 export default defineConfig({
@@ -15,7 +14,6 @@ export default defineConfig({
   },
   plugins: [solid()],
   resolve: {
-    dedupe: ['react', 'react-dom'],
     alias: {
       '@components': path.resolve(__dirname, 'src/components'),
     },

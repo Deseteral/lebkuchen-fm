@@ -1,7 +1,7 @@
 {
   "name": "lebkuchen-fm-client",
   "private": true,
-  "version": "2025.2.0",
+  "version": "2025.3.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,10 +12,12 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "playground": "vite --config ./vite.config.playground.ts"
   },
   "dependencies": {
     "@solidjs/router": "0.13.0",
+    "@types/node": "22.13.10",
     "events": "3.3.0",
     "mitt": "3.0.1",
     "solid-js": "1.8.15",

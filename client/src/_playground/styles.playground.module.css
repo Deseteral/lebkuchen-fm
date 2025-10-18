@@ -1,0 +1,18 @@
+.componentsPlayground {
+  background-color: var(--secondary-color);
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  height: max-content;
+}
+
+.playgroundSection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.playgroundSection p {
+  margin-bottom: 5px;
+}
