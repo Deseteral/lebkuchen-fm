@@ -120,7 +120,7 @@ class DropboxClient(config: ApplicationConfig) {
                     val tokenPostResponse = client.post(tokenPostRequest)
 
                     if (!tokenPostResponse.status.isSuccess()) {
-                        val error = tokenPostResponse.errorString()
+                        val error = tokenPostResponse.bodyAsText()
                         logger.error { error }
                         bearerTokenStorage.clear()
                     } else {
