@@ -1,0 +1,41 @@
+.buffer {
+  --app-terminal-color-prompt: white;
+  --app-terminal-color-background: black;
+  --app-terminal-color-font: green;
+  --app-terminal-font-family: monospace;
+  --app-terminal-font-size: 13px;
+
+  background-color: var(--app-terminal-color-background);
+  color: var(--app-terminal-color-font);
+  font-family: var(--app-terminal-font-family), monospace;
+  font-size: var(--app-terminal-font-size);
+
+  padding: 2px;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overscroll-behavior: none;
+  word-wrap: break-word;
+
+  & > div {
+    min-height: 1em;
+    line-height: 1em;
+  }
+}
+
+.promptContainer {
+  display: flex;
+  flex-direction: row;
+  color: var(--app-terminal-color-prompt);
+}
+
+.prompt {
+  color: var(--app-terminal-color-prompt);
+  background-color: var(--app-terminal-color-background);
+  padding: 0;
+  width: 100%;
+  outline: none;
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+}
