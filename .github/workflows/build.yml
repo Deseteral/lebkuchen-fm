@@ -18,9 +18,9 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Use Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 24.x
 
       - name: Build backend service
         working-directory: ./service
