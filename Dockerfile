@@ -19,7 +19,7 @@ FROM gradle:${GRADLE_VERSION} AS cache
 RUN mkdir -p /home/gradle/cache_home
 ENV GRADLE_USER_HOME=/home/gradle/cache_home
 COPY ./service/build.gradle.* ./service/gradle.properties /home/gradle/app/
-COPY ./service/gradle/libs.versions.toml /home/gradle/app/gradle
+COPY ./service/gradle/libs.versions.toml /home/gradle/app/gradle/
 WORKDIR /home/gradle/app
 RUN gradle clean build -i --stacktrace
 
