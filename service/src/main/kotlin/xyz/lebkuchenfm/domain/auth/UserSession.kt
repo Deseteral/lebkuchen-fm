@@ -4,13 +4,11 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.serialization.Serializable
-import java.util.UUID
-
 @Serializable
 data class UserSession(
     val name: String,
     val scopes: List<String>,
-    val validationToken: String = UUID.randomUUID().toString(),
+    val validationToken: String = "",
 )
 
 object SessionInvalidationFlow {
