@@ -2,7 +2,7 @@
 kotlin = "2.3.10"
 ktor = "3.4.0"
 ktlint = "12.3.0"
-kord = "0.15.0"
+kord = "0.17.0"
 kotlin-logging = "7.0.3"
 kotlin-result = "2.1.0"
 logback = "1.5.27"
