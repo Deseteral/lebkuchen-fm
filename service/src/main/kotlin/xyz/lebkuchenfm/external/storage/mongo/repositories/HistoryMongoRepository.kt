@@ -5,12 +5,12 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
 import xyz.lebkuchenfm.domain.history.InsertHistoryEntryError
-import kotlin.time.Instant
 
 class HistoryMongoRepository(database: MongoDatabase) : HistoryRepository {
     private val collection = database.getCollection<HistoryEntity>("history")

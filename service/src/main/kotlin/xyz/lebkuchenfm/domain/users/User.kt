@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.domain.users
 
+import kotlinx.datetime.Instant
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
-import kotlin.time.Instant
 
 data class User(
     val data: UserData,
