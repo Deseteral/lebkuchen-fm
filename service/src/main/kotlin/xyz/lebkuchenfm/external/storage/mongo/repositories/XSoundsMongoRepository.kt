@@ -21,7 +21,6 @@ import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.client.model.Updates.inc
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
@@ -81,8 +80,8 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
         val result = collection.aggregate<Result>(
             listOf(unwind, group, project),
-        ).first()
-        return result.tagsSet
+        ).firstOrNull()
+        return result?.tagsSet ?: emptyList()
     }
 
     override suspend fun findByName(name: String): XSound? {
