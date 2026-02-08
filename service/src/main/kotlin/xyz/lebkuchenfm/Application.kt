@@ -194,7 +194,7 @@ fun Application.module() {
             authenticate("auth-bearer") {
                 route("/api") {
                     authRouting(usersService)
-                    rolesRouting(usersService)
+                    rolesRouting()
                     xSoundsRouting(xSoundsService)
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
