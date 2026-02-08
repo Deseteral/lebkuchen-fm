@@ -33,7 +33,7 @@ class ValidateAuthHandler(private val authService: AuthService) {
                         call.respondWithProblem(
                             title = "Could not create new user.",
                             detail = when (error.addNewUserError) {
-                                AddNewUserError.NotFirstUser -> "Other users already exists. Contact them."
+                                AddNewUserError.NotFirstUser -> "Other users already exist. Contact them."
                                 AddNewUserError.UserAlreadyExists -> "User already exists."
                                 AddNewUserError.UnknownError -> "Something went wrong."
                             },
