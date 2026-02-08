@@ -1,6 +1,6 @@
-import powerOffIcon from '../../../../icons/power-off-solid.svg';
 import styles from './TurnOffWidget.module.css';
 import { UserAccountService } from '../../../../services/user-account-service';
+import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
 
 function TurnOffWidget() {
   const showLogoutDialog = () => {
@@ -15,7 +15,7 @@ function TurnOffWidget() {
 
   return (
     <button class={styles.buttonIcon} onClick={showLogoutDialog}>
-      <img class={styles.icon} src={powerOffIcon} alt="Log out" />
+      <PhIcon type={PhIconType.Bold} icon="power" />
     </button>
   );
 }

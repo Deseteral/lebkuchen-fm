@@ -27,7 +27,7 @@ data class PlayerStateDto(
 
 object DefaultPlayerStateDtoProvider : PlayerStateSynchronizer.DefaultStateProvider<PlayerStateDto> {
     override fun getDefaultState() =
-        PlayerStateDto(currentlyPlaying = null, queue = emptyList(), isPlaying = false, volume = 100)
+        PlayerStateDto(currentlyPlaying = null, queue = emptyList(), isPlaying = true, volume = 100)
 }
 
 @Serializable

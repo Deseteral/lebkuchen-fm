@@ -1,8 +1,10 @@
 import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
-import './styles.css';
+import '@phosphor-icons/web/bold';
+import '@phosphor-icons/web/fill';
 import { Desktop } from './views/Desktop/Desktop';
 import { Login } from './views/Login/Login';
+import './styles.css';
 
 console.log(
   `%cLebkuchenFM v${__APP_VERSION__}`,
