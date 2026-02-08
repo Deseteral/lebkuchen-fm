@@ -17,7 +17,6 @@ import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
-import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
@@ -40,7 +39,7 @@ import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
 
 private val logger = KotlinLogging.logger {}
 
-class UsersMongoRepository(database: MongoDatabase, private val mongoClient: MongoClient) : UsersRepository {
+class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
 
     suspend fun createUniqueIndex() {
@@ -146,22 +145,15 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
     }
 
     override suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError> {
-        val session = mongoClient.startSession()
+        val count = collection.countDocuments()
+        if (count > 0L) {
+            return Err(InsertFirstUserError.NotFirstUser)
+        }
 
         return try {
-            session.startTransaction()
-
-            val count = collection.countDocuments(session)
-            if (count > 0L) {
-                session.abortTransaction()
-                return Err(InsertFirstUserError.NotFirstUser)
-            }
-
-            collection.insertOne(session, user.toEntity())
-            session.commitTransaction()
+            collection.insertOne(user.toEntity())
             Ok(user)
         } catch (ex: Exception) {
-            session.abortTransaction()
             when {
                 ex is MongoWriteException && ex.isDuplicateKeyException -> Err(InsertFirstUserError.UserAlreadyExists)
                 else -> {
@@ -169,8 +161,6 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
                     Err(InsertFirstUserError.WriteError)
                 }
             }
-        } finally {
-            session.close()
         }
     }
 
@@ -205,54 +195,42 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
         roles: Set<Role>,
         newSessionValidationToken: String,
     ): Result<User, UpdateRoleError> {
-        val mongoSession = mongoClient.startSession()
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+
+        if (Role.OWNER !in roles) {
+            val otherOwnerExists = collection.countDocuments(
+                and(
+                    ne(nameFieldName, user.data.name),
+                    eq(rolesFieldName, Role.OWNER.name),
+                ),
+            ) > 0
+
+            if (!otherOwnerExists) {
+                return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
+            }
+        }
 
         return try {
-            mongoSession.startTransaction()
-
-            val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
-            val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
-            val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
-
-            if (Role.OWNER !in roles) {
-                val otherOwnerExists = collection.countDocuments(
-                    mongoSession,
-                    and(
-                        ne(nameFieldName, user.data.name),
-                        eq(rolesFieldName, Role.OWNER.name),
-                    ),
-                ) > 0
-
-                if (!otherOwnerExists) {
-                    mongoSession.abortTransaction()
-                    return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
-                }
-            }
-
             val updates = Updates.combine(
                 Updates.set(rolesFieldName, roles.map { it.name }.toSet()),
                 Updates.set(tokenFieldName, newSessionValidationToken),
             )
             val updatedUser = collection.findOneAndUpdate(
-                mongoSession,
                 eq(nameFieldName, user.data.name),
                 updates,
                 FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
             )
 
             if (updatedUser == null) {
-                mongoSession.abortTransaction()
                 Err(UpdateRoleError.UserNotFound)
             } else {
-                mongoSession.commitTransaction()
                 Ok(updatedUser.toDomain())
             }
         } catch (ex: Exception) {
-            mongoSession.abortTransaction()
             logger.error(ex) { "An error occurred while updating user '${user.data.name}' roles." }
             Err(UpdateRoleError.WriteError)
-        } finally {
-            mongoSession.close()
         }
     }
 }

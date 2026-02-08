@@ -80,7 +80,7 @@ fun Application.module() {
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
 
-    val usersRepository = UsersMongoRepository(database, MongoDatabaseClient.client)
+    val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.migrateSessionValidationTokens() } }
         .also { runBlocking { it.migrateRoles() } }
         .also { runBlocking { it.createUniqueIndex() } }
