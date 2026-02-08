@@ -1,7 +1,7 @@
 :root {
   --border-color-one: #000;
   --border-color-two: #9c9c9c;
-  --menu-bar-height: 24px;
+  --menu-bar-height: 25px;
   --primary-color: #662d91;
   --secondary-color: #f1f1f1;
   --third-color: #ccd1d3;
@@ -9,6 +9,7 @@
   --input-color: #fff;
   --border-radius: 3px;
   --base-font-size: 12px;
+  --app-window-title-bar-height: 28px;
 }
 
 * {

@@ -1,15 +1,19 @@
-import volumeLowIcon from '../../../../icons/volume-low-solid.svg';
-import volumeHighIcon from '../../../../icons/volume-high-solid.svg';
-import volumeMuteIcon from '../../../../icons/volume-xmark-solid.svg';
 import styles from './VolumeWidget.module.css';
 import { createEffect, createSignal, onCleanup, onMount } from 'solid-js';
 import { EventStreamClient } from '../../../../services/event-stream-client';
 import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../../../types/local-events';
+import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
+
+enum VolumeIcon {
+  Mute = 'speaker-simple-slash',
+  Low = 'speaker-simple-low',
+  High = 'speaker-simple-high',
+}
 
 function VolumeWidget() {
   // TODO: Get volume from preferences stored in localStorage
   const [volume, setVolume] = createSignal(50);
-  const [icon, setIcon] = createSignal(volumeHighIcon);
+  const [icon, setIcon] = createSignal(VolumeIcon.High);
 
   const handleVolumeChange = (event: LocalPlayerStateUpdateEvent) => {
     const playerState = event.state;
@@ -35,17 +39,17 @@ function VolumeWidget() {
   createEffect(() => {
     const changedVolume = volume();
     if (changedVolume === 0) {
-      setIcon(volumeMuteIcon);
+      setIcon(VolumeIcon.Mute);
     } else if (changedVolume < 50) {
-      setIcon(volumeLowIcon);
+      setIcon(VolumeIcon.Low);
     } else {
-      setIcon(volumeHighIcon);
+      setIcon(VolumeIcon.High);
     }
   });
 
   return (
     <button class={styles.buttonIcon}>
-      <img class={styles.icon} src={icon()} alt="Ustawienia" />
+      <PhIcon type={PhIconType.Fill} icon={icon()} />
     </button>
   );
 }

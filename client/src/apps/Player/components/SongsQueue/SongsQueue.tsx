@@ -1,8 +1,10 @@
 import { For } from 'solid-js';
 import { Song } from '../../../../types/player-state';
-import styles from './SongQueue.module.css';
+import styles from './SongsQueue.module.css';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
+
+const APP_WINDOW_TITLE_BAR_HEIGHT = 28;
 
 interface SongQueueProps {
   queue: Song[] | null;
@@ -10,7 +12,7 @@ interface SongQueueProps {
   containerRef: HTMLDivElement;
 }
 
-function SongQueue(props: SongQueueProps) {
+function SongsQueue(props: SongQueueProps) {
   // eslint-disable-next-line solid/reactivity
   const containerPosition = props.containerRef.getBoundingClientRect();
 
@@ -21,7 +23,7 @@ function SongQueue(props: SongQueueProps) {
       close={props.closeAction}
       startSize={{ width: '400px', height: '160px' }}
       startPosition={{
-        y: containerPosition.y - 28,
+        y: containerPosition.y - APP_WINDOW_TITLE_BAR_HEIGHT,
         x: containerPosition.x + containerPosition.width,
       }}
     >
@@ -35,4 +37,4 @@ function SongQueue(props: SongQueueProps) {
   );
 }
 
-export { SongQueue };
+export { SongsQueue };

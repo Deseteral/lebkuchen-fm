@@ -7,7 +7,7 @@ import styles from './Player.module.css';
 import { EventStreamClient } from '../../services/event-stream-client';
 import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-events';
 import { PlayerControls } from './components/PlayerControls/PlayerControls';
-import { SongQueue } from './components/SongQueue/SongQueue';
+import { SongsQueue } from './components/SongsQueue/SongsQueue';
 import { Song } from '../../types/player-state';
 
 function Player() {
@@ -95,7 +95,7 @@ function Player() {
               />
             </section>
             {showQueue() && (
-              <SongQueue
+              <SongsQueue
                 queue={songQueue()}
                 containerRef={containerRef}
                 closeAction={() => setShowQueue(false)}

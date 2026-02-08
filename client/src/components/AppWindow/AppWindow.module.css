@@ -13,6 +13,7 @@
 }
 
 .title {
+  height: var(--app-window-title-bar-height);
   position: relative;
   display: flex;
   align-items: center;
