@@ -31,7 +31,7 @@ function Player() {
     console.log('Player state update in player:', event.state);
     const newCurrentlyPlayingSong = event.state?.currentlyPlaying?.song?.name;
     const queue = event.state?.queue;
-    const newPlayingNextSong = (queue?.length || 0) > 0 ? queue![0].name : null;
+    const newPlayingNextSong = queue?.[0] ? queue[0].name : null;
 
     setSongQueue(queue || null);
     setIsPlaying(Boolean(event.state?.isPlaying));
