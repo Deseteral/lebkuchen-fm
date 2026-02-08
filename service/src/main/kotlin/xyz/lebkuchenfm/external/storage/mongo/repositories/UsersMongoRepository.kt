@@ -7,7 +7,6 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
-import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Filters.exists
@@ -60,30 +59,31 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
     suspend fun migrateRoles() {
         val rolesField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
         val creationDateField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::creationDate.name}"
-        val nameField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
 
-        val usersWithoutRoles = collection
-            .find(exists(rolesField, false))
-            .sort(Sorts.ascending(creationDateField))
-            .toList()
+        val usersWithoutRoles = collection.countDocuments(exists(rolesField, false))
+        if (usersWithoutRoles == 0L) return
 
-        if (usersWithoutRoles.isEmpty()) return
-
-        val oldest = usersWithoutRoles.first()
-        val rest = usersWithoutRoles.drop(1)
-
-        collection.updateOne(
-            eq(nameField, oldest.data.name),
-            Updates.set(rolesField, setOf(Role.OWNER.name)),
+        collection.updateMany(
+            exists(rolesField, false),
+            Updates.set(rolesField, setOf(Role.DJ.name)),
         )
-        logger.info { "Migrated user '${oldest.data.name}' with Owner role (oldest user)." }
+        logger.info { "Migrated $usersWithoutRoles user(s) with DJ role." }
 
-        if (rest.isNotEmpty()) {
-            collection.updateMany(
-                Filters.`in`(nameField, rest.map { it.data.name }),
-                Updates.set(rolesField, setOf(Role.DJ.name)),
+        val otherOwnerExists = collection.countDocuments(
+            eq(rolesField, Role.OWNER.name),
+        ) > 0
+
+        if (!otherOwnerExists) {
+            val promoted = collection.findOneAndUpdate(
+                eq(rolesField, Role.DJ.name),
+                Updates.set(rolesField, setOf(Role.OWNER.name)),
+                FindOneAndUpdateOptions()
+                    .sort(Sorts.ascending(creationDateField))
+                    .returnDocument(ReturnDocument.AFTER),
             )
-            logger.info { "Migrated ${rest.size} user(s) with DJ role." }
+            if (promoted != null) {
+                logger.info { "Promoted user '${promoted.data.name}' to Owner (oldest user)." }
+            }
         }
     }
 

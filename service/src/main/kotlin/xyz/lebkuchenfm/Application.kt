@@ -80,13 +80,13 @@ fun Application.module() {
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
 
-    val sessionsRepository = SessionsMongoRepository(database)
-    val sessionStorage = SessionStorageMongo(sessionsRepository)
-
     val usersRepository = UsersMongoRepository(database, MongoDatabaseClient.client)
-        .also { runBlocking { it.createUniqueIndex() } }
         .also { runBlocking { it.migrateSessionValidationTokens() } }
         .also { runBlocking { it.migrateRoles() } }
+        .also { runBlocking { it.createUniqueIndex() } }
+
+    val sessionsRepository = SessionsMongoRepository(database)
+    val sessionStorage = SessionStorageMongo(sessionsRepository)
     val passwordEncoder = Pbkdf2PasswordEncoder()
     val secureGenerator = RandomSecureGenerator()
     val onUserSessionChanged: suspend ((String) -> Unit) = {
