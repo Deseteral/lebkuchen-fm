@@ -15,6 +15,8 @@ import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.api.missesScopes
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -30,6 +32,9 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
         }
 
         post {
+            if (call.missesScopes(Scope.XSOUNDS_UPLOAD)) {
+                return@post
+            }
             val session = call.getUserSession()
 
             var soundName = ""

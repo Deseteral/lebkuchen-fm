@@ -61,23 +61,27 @@ class DiscordClient(
             .filter { it.content.split(' ').firstOrNull() == commandPrompt }
             .filter { it.author != null }
             .filter { it.author?.isBot == false }
-            .onEach {
-                val author = requireNotNull(it.author)
+            .onEach { message ->
+                val author = requireNotNull(message.author)
                 val user = userService.getByDiscordId(author.id.toString())
 
                 when {
                     user == null -> {
-                        it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
+                        val content = "You have to link your Discord account with LebkuchenFM user."
+                        message.reply { this.content = content }
                     }
 
                     user.secret == null -> {
-                        it.reply { content = "You must login to LebkuchenFM, before you can use Discord integration." }
+                        val content = "You must login to LebkuchenFM, before you can use Discord integration."
+                        message.reply { this.content = content }
                     }
 
                     else -> {
-                        val context = ExecutionContext(UserSession(user.data.name))
-                        val result = commandExecutorService.executeFromText(it.content, context)
-                        it.reply { content = result.message.markdown }
+                        val userScopes = user.data.roles.map { it.scopes }.flatten().map { it.value }
+                        val context =
+                            ExecutionContext(UserSession(user.data.name, userScopes, user.data.sessionValidationToken))
+                        val result = commandExecutorService.executeFromText(message.content, context)
+                        message.reply { content = result.message.markdown }
                     }
                 }
             }

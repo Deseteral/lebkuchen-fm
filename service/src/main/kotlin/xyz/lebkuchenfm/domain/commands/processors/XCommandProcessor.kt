@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.domain.commands.processors
 
 import com.github.michaelbull.result.mapBoth
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -23,6 +24,7 @@ class XCommandProcessor(private val soundboardService: SoundboardService) :
                 CommandParameters.RequiredCommandParameter("sound-name"),
             ),
         ),
+        requiredScope = Scope.XSOUNDS_PLAY,
     ) {
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val soundName = command.rawArgs

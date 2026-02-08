@@ -6,8 +6,10 @@ import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
+import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.PasswordEncoder
 import xyz.lebkuchenfm.domain.security.SecureGenerator
+import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
 
@@ -15,6 +17,7 @@ class UsersService(
     private val repository: UsersRepository,
     private val passwordEncoder: PasswordEncoder,
     private val secureGenerator: SecureGenerator,
+    private val sessionCacheInvalidation: suspend ((String) -> Unit),
     private val clock: Clock,
 ) {
     suspend fun getAll(): List<User> {
@@ -33,7 +36,24 @@ class UsersService(
         return repository.findByDiscordId(discordId)
     }
 
-    suspend fun addNewUser(username: String, discordId: String? = null): Result<User, AddNewUserError> {
+    suspend fun addNewUserWithFirstUserBootstrap(
+        username: String,
+        discordId: String? = null,
+    ): Result<User, AddNewUserError> {
+        val role = if (getUsersCount() == 0L) {
+            Role.OWNER
+        } else {
+            Role.LISTENER
+        }
+
+        return addNewUser(username, discordId, setOf(role))
+    }
+
+    suspend fun addNewUser(
+        username: String,
+        discordId: String? = null,
+        roles: Set<Role>,
+    ): Result<User, AddNewUserError> {
         val now = clock.now()
         val user = User(
             data = User.UserData(
@@ -41,6 +61,8 @@ class UsersService(
                 discordId = discordId,
                 creationDate = now,
                 lastLoggedIn = now,
+                roles = roles,
+                sessionValidationToken = UUID.randomUUID().toString(),
             ),
             secret = null,
         )
@@ -100,6 +122,10 @@ class UsersService(
 
     suspend fun getByApiToken(token: String): User? {
         return repository.findByApiToken(token)
+    }
+
+    suspend fun updateUserRoles(user: User, newRoles: Set<Role>): Result<User, UpdateRoleError> {
+        return repository.updateRoles(user, newRoles).also { sessionCacheInvalidation.invoke(user.data.name) }
     }
 }
 

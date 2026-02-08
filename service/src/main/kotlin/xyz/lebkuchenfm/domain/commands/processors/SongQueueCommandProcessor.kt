@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -31,6 +32,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
                 CommandParameters.RequiredMultiValue("video-name", "youtube-id", "youtube-playlist-id"),
             ),
         ),
+        requiredScope = Scope.PLAYER_QUEUE,
     ) {
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val videoOrPlaylistId = command.rawArgs.orEmpty()

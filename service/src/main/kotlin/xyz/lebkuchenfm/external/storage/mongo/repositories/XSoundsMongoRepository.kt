@@ -79,10 +79,14 @@ class XSoundsMongoRepository(database: MongoDatabase) : XSoundsRepository {
 
         data class Result(val tagsSet: List<String>)
 
-        val result = collection.aggregate<Result>(
-            listOf(unwind, group, project),
-        ).first()
-        return result.tagsSet
+        try {
+            val result = collection.aggregate<Result>(
+                listOf(unwind, group, project),
+            ).first()
+            return result.tagsSet
+        } catch (e: Exception) {
+            return emptyList()
+        }
     }
 
     override suspend fun findByName(name: String): XSound? {

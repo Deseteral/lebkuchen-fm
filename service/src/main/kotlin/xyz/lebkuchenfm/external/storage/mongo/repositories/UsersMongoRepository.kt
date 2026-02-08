@@ -7,12 +7,15 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
+import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters.ne
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
 import com.mongodb.client.model.Updates
+import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
@@ -22,17 +25,21 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
+import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
+import xyz.lebkuchenfm.domain.users.UpdateRoleError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
+import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
 
-class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
+class UsersMongoRepository(database: MongoDatabase, private val mongoClient: MongoClient) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
+    private val sessionsCollection = database.getCollection<UserEntity>("sessions")
 
     suspend fun createUniqueIndex() {
         val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
@@ -102,9 +109,15 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
     override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
         val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
+        val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+
+        val updates = Updates.combine(
+            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
+            Updates.set(tokenFieldName, user.data.sessionValidationToken),
+        )
         return collection.findOneAndUpdate(
             eq(nameFieldName, user.data.name),
-            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
+            updates,
             FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
     }
@@ -123,6 +136,56 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             Err(UpdateSecretError.WriteError)
         }
     }
+
+    override suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRoleError> {
+        val mongoSession = mongoClient.startSession()
+
+        return try {
+            mongoSession.startTransaction()
+
+            val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+            val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+            val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+
+            val otherOwnerExists = collection.countDocuments(
+                mongoSession,
+                and(
+                    ne(nameFieldName, user.data.name),
+                    eq(rolesFieldName, Role.OWNER),
+                ),
+            ) > 0
+
+            if (!otherOwnerExists) {
+                mongoSession.abortTransaction()
+                return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
+            }
+
+            val updates = Updates.combine(
+                Updates.set(rolesFieldName, roles),
+                Updates.set(tokenFieldName, UUID.randomUUID().toString()),
+            )
+            val updatedUser = collection.findOneAndUpdate(
+                mongoSession,
+                eq(nameFieldName, user.data.name),
+                updates,
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+            )
+
+            if (updatedUser == null) {
+                mongoSession.abortTransaction()
+                Err(UpdateRoleError.UserNotFound)
+            } else {
+                mongoSession.commitTransaction()
+                Ok(updatedUser.toDomain())
+            }
+        } catch (ex: Exception) {
+            mongoSession.abortTransaction()
+            logger.error(ex) { "An error occurred while updating user '${user.data.name}' roles." }
+            Err(UpdateRoleError.WriteError)
+        } finally {
+            mongoSession.close()
+        }
+    }
 }
 
 @Serializable
@@ -139,6 +202,8 @@ private data class UserEntity(
     data class UserDataEntity(
         val name: String,
         val discordId: String?,
+        val roles: Set<String>,
+        val sessionValidationToken: String = UUID.randomUUID().toString(),
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {
@@ -147,6 +212,8 @@ private data class UserEntity(
             discordId = discordId,
             creationDate = creationDate,
             lastLoggedIn = lastLoggedIn,
+            roles = roles.mapNotNull { Role.fromString(it) }.toSet(),
+            sessionValidationToken = sessionValidationToken,
         )
     }
 
@@ -174,6 +241,8 @@ private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
     discordId = discordId,
     creationDate = creationDate,
     lastLoggedIn = lastLoggedIn,
+    sessionValidationToken = sessionValidationToken,
+    roles = roles.map { it.name }.toSet(),
 )
 
 private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(

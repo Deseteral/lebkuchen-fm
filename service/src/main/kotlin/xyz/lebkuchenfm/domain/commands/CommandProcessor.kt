@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands
 
 import io.github.oshai.kotlinlogging.KLogger
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 
@@ -10,6 +11,7 @@ abstract class CommandProcessor(
     val helpMessage: String,
     val exampleUsages: List<String>,
     val parameters: CommandParameters,
+    val requiredScope: Scope? = null,
 ) {
     abstract suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult
 

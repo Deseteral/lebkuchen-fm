@@ -11,8 +11,10 @@ import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.api.missesScopes
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.Role
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
@@ -20,16 +22,21 @@ import xyz.lebkuchenfm.domain.users.UsersService
 fun Route.usersRouting(usersService: UsersService) {
     route("/users") {
         get {
+            if (call.missesScopes(Scope.USERS_LIST)) {
+                return@get
+            }
             val users = usersService.getAll()
             val response = UsersResponse(users.map { it.toResponse() })
             call.respond(HttpStatusCode.OK, response)
         }
 
         post {
-            val session = call.getUserSession()
+            if (call.missesScopes(Scope.USERS_ADD)) {
+                return@post
+            }
             val newUser: NewUser = call.receive()
-
-            usersService.addNewUser(newUser.username, newUser.discordId)
+            val roles = newUser.roles.mapNotNull { Role.fromString(it) }.toSet()
+            usersService.addNewUser(newUser.username, newUser.discordId, roles)
                 .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
                 .mapError { error ->
                     when (error) {
@@ -56,6 +63,7 @@ fun Route.usersRouting(usersService: UsersService) {
 data class NewUser(
     val username: String,
     val discordId: String?,
+    val roles: List<String> = emptyList(),
 )
 
 @Serializable

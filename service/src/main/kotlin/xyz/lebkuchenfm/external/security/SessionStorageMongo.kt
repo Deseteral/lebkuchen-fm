@@ -23,4 +23,8 @@ class SessionStorageMongo(
         cache.remove(id)
         sessionsRepository.remove(id)
     }
+
+    fun invalidateCache() {
+        cache.clear()
+    }
 }
