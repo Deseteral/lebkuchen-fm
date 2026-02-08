@@ -64,7 +64,8 @@ fun Route.usersRouting(usersService: UsersService) {
                             )
 
                         AddNewUserError.NotFirstUser,
-                        AddNewUserError.UnknownError ->
+                        AddNewUserError.UnknownError,
+                        ->
                             call.respondWithProblem(
                                 title = "Could not create user.",
                                 detail = "Unknown error.",
