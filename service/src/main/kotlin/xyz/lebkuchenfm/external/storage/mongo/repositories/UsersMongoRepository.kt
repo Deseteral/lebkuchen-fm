@@ -168,7 +168,11 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
         }
     }
 
-    override suspend fun updateRoles(user: User, roles: Set<Role>, newSessionValidationToken: String): Result<User, UpdateRoleError> {
+    override suspend fun updateRoles(
+        user: User,
+        roles: Set<Role>,
+        newSessionValidationToken: String,
+    ): Result<User, UpdateRoleError> {
         val mongoSession = mongoClient.startSession()
 
         return try {

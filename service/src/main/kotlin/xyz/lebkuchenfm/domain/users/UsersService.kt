@@ -143,7 +143,11 @@ class UsersService(
 
     suspend fun updateUserRoles(user: User, newRoles: Set<Role>): Result<User, UpdateRoleError> {
         val newToken = UUID.randomUUID().toString()
-        return repository.updateRoles(user, newRoles, newToken).onSuccess { onUserSessionChanged.invoke(user.data.name) }
+        return repository.updateRoles(
+            user,
+            newRoles,
+            newToken,
+        ).onSuccess { onUserSessionChanged.invoke(user.data.name) }
     }
 }
 
