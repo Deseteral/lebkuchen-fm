@@ -1,5 +1,6 @@
 ARG NODE_VERSION=18
 ARG JDK_VERSION=21
+ARG GRADLE_VERSION=8.4
 
 ################################################################################
 # Stage 1: Build client application
@@ -14,7 +15,7 @@ RUN yarn run build
 
 ################################################################################
 # Stage 2: Cache Gradle dependencies
-FROM gradle:latest AS cache
+FROM gradle:${GRADLE_VERSION} AS cache
 RUN mkdir -p /home/gradle/cache_home
 ENV GRADLE_USER_HOME=/home/gradle/cache_home
 COPY ./service/build.gradle.* ./service/gradle.properties /home/gradle/app/
@@ -23,7 +24,7 @@ RUN gradle clean build -i --stacktrace
 
 ################################################################################
 # Stage 3: Build Application
-FROM gradle:latest AS build
+FROM gradle:${GRADLE_VERSION} AS build
 COPY --from=cache /home/gradle/cache_home /home/gradle/.gradle
 COPY ./service /usr/src/app
 WORKDIR /usr/src/app
