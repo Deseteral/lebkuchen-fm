@@ -9,6 +9,7 @@ import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters.exists
 import com.mongodb.client.model.Filters.ne
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
@@ -25,6 +26,7 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
+import org.bson.Document
 import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertFirstUserError
@@ -34,7 +36,6 @@ import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
-import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
 
@@ -51,6 +52,18 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
         } catch (ex: Exception) {
             logger.error(ex) { "An error occurred while creating a user repository index." }
             throw ex
+        }
+    }
+
+    suspend fun migrateSessionValidationTokens() {
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+        val usersWithoutToken = collection.countDocuments(exists(fieldName, false))
+        if (usersWithoutToken > 0L) {
+            logger.info { "Migrating $usersWithoutToken user(s): adding sessionValidationToken." }
+            collection.updateMany(
+                exists(fieldName, false),
+                listOf(Document("\$set", Document(fieldName, Document("\$toString", "\$_id")))),
+            )
         }
     }
 
@@ -132,15 +145,10 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
     override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
         val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
-        val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
 
-        val updates = Updates.combine(
-            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
-            Updates.set(tokenFieldName, user.data.sessionValidationToken),
-        )
         return collection.findOneAndUpdate(
             eq(nameFieldName, user.data.name),
-            updates,
+            Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
             FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
         )?.toDomain()
     }
@@ -160,7 +168,7 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
         }
     }
 
-    override suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRoleError> {
+    override suspend fun updateRoles(user: User, roles: Set<Role>, newSessionValidationToken: String): Result<User, UpdateRoleError> {
         val mongoSession = mongoClient.startSession()
 
         return try {
@@ -187,7 +195,7 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
 
             val updates = Updates.combine(
                 Updates.set(rolesFieldName, roles.map { it.name }.toSet()),
-                Updates.set(tokenFieldName, UUID.randomUUID().toString()),
+                Updates.set(tokenFieldName, newSessionValidationToken),
             )
             val updatedUser = collection.findOneAndUpdate(
                 mongoSession,
@@ -228,7 +236,7 @@ private data class UserEntity(
         val name: String,
         val discordId: String?,
         val roles: Set<String>,
-        val sessionValidationToken: String = UUID.randomUUID().toString(),
+        val sessionValidationToken: String,
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {

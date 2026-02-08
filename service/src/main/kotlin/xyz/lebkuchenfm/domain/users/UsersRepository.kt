@@ -13,7 +13,7 @@ interface UsersRepository {
     suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError>
     suspend fun updateLastLoginDate(user: User, date: Instant): User?
     suspend fun updateSecret(user: User, secret: User.UserSecret): Result<User, UpdateSecretError>
-    suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRoleError>
+    suspend fun updateRoles(user: User, roles: Set<Role>, newSessionValidationToken: String): Result<User, UpdateRoleError>
 }
 
 sealed class InsertUserError {
