@@ -13,7 +13,7 @@ data class UserSession(
     val validationToken: String = UUID.randomUUID().toString(),
 )
 
-object InvalidationFlow {
+object SessionInvalidationFlow {
     private val flow =
         MutableSharedFlow<String>(extraBufferCapacity = 100, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 

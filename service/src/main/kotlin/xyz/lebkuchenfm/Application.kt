@@ -35,7 +35,7 @@ import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.users.usersRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
-import xyz.lebkuchenfm.domain.auth.InvalidationFlow
+import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
@@ -87,12 +87,12 @@ fun Application.module() {
         .also { runBlocking { it.createUniqueIndex() } }
     val passwordEncoder = Pbkdf2PasswordEncoder()
     val secureGenerator = RandomSecureGenerator()
-    val sessionCacheInvalidator: suspend ((String) -> Unit) = {
+    val onUserSessionChanged: suspend ((String) -> Unit) = {
         sessionStorage.invalidateCache()
-        InvalidationFlow.emit(it)
+        SessionInvalidationFlow.emit(it)
     }
     val usersService =
-        UsersService(usersRepository, passwordEncoder, secureGenerator, sessionCacheInvalidator, Clock.System)
+        UsersService(usersRepository, passwordEncoder, secureGenerator, onUserSessionChanged, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
@@ -207,7 +207,7 @@ fun Application.module() {
 
         get("/cacheInvalidator/{user}") {
             call.parameters["user"]?.let {
-                sessionCacheInvalidator.invoke(it)
+                onUserSessionChanged.invoke(it)
             }
             call.respond(HttpStatusCode.OK)
         }

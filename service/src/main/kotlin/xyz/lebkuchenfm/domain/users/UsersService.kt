@@ -17,7 +17,7 @@ class UsersService(
     private val repository: UsersRepository,
     private val passwordEncoder: PasswordEncoder,
     private val secureGenerator: SecureGenerator,
-    private val sessionCacheInvalidation: suspend ((String) -> Unit),
+    private val onUserSessionChanged: suspend ((String) -> Unit),
     private val clock: Clock,
 ) {
     suspend fun getAll(): List<User> {
@@ -125,7 +125,7 @@ class UsersService(
     }
 
     suspend fun updateUserRoles(user: User, newRoles: Set<Role>): Result<User, UpdateRoleError> {
-        return repository.updateRoles(user, newRoles).also { sessionCacheInvalidation.invoke(user.data.name) }
+        return repository.updateRoles(user, newRoles).also { onUserSessionChanged.invoke(user.data.name) }
     }
 }
 

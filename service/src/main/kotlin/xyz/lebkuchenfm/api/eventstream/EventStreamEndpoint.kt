@@ -20,7 +20,7 @@ import xyz.lebkuchenfm.api.eventstream.models.EventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDonationEventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateRequestEventDto
-import xyz.lebkuchenfm.domain.auth.InvalidationFlow
+import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
@@ -46,7 +46,7 @@ fun Route.eventStreamRouting(
 
         try {
             launch {
-                InvalidationFlow.subscribe(userSession.name).collect {
+                SessionInvalidationFlow.subscribe(userSession.name).collect {
                     runCatching { close(CloseReason(CloseReason.Codes.NORMAL, "Session invalidated")) }
                     stopSignal.trySend(Unit)
                 }
