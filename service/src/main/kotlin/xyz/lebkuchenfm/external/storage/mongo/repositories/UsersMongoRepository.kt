@@ -39,7 +39,6 @@ private val logger = KotlinLogging.logger {}
 
 class UsersMongoRepository(database: MongoDatabase, private val mongoClient: MongoClient) : UsersRepository {
     private val collection = database.getCollection<UserEntity>("users")
-    private val sessionsCollection = database.getCollection<UserEntity>("sessions")
 
     suspend fun createUniqueIndex() {
         val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
@@ -147,17 +146,19 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
             val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
             val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
 
-            val otherOwnerExists = collection.countDocuments(
-                mongoSession,
-                and(
-                    ne(nameFieldName, user.data.name),
-                    eq(rolesFieldName, Role.OWNER),
-                ),
-            ) > 0
+            if (Role.OWNER !in roles) {
+                val otherOwnerExists = collection.countDocuments(
+                    mongoSession,
+                    and(
+                        ne(nameFieldName, user.data.name),
+                        eq(rolesFieldName, Role.OWNER.name),
+                    ),
+                ) > 0
 
-            if (!otherOwnerExists) {
-                mongoSession.abortTransaction()
-                return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
+                if (!otherOwnerExists) {
+                    mongoSession.abortTransaction()
+                    return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
+                }
             }
 
             val updates = Updates.combine(
