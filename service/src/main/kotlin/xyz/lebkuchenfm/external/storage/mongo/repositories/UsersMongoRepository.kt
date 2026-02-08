@@ -7,6 +7,7 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
+import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
 import com.mongodb.client.model.Filters.exists
@@ -15,6 +16,7 @@ import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
@@ -52,6 +54,36 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
         } catch (ex: Exception) {
             logger.error(ex) { "An error occurred while creating a user repository index." }
             throw ex
+        }
+    }
+
+    suspend fun migrateRoles() {
+        val rolesField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        val creationDateField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::creationDate.name}"
+        val nameField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+
+        val usersWithoutRoles = collection
+            .find(exists(rolesField, false))
+            .sort(Sorts.ascending(creationDateField))
+            .toList()
+
+        if (usersWithoutRoles.isEmpty()) return
+
+        val oldest = usersWithoutRoles.first()
+        val rest = usersWithoutRoles.drop(1)
+
+        collection.updateOne(
+            eq(nameField, oldest.data.name),
+            Updates.set(rolesField, setOf(Role.OWNER.name)),
+        )
+        logger.info { "Migrated user '${oldest.data.name}' with Owner role (oldest user)." }
+
+        if (rest.isNotEmpty()) {
+            collection.updateMany(
+                Filters.`in`(nameField, rest.map { it.data.name }),
+                Updates.set(rolesField, setOf(Role.DJ.name)),
+            )
+            logger.info { "Migrated ${rest.size} user(s) with DJ role." }
         }
     }
 

@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserSession(
     val name: String,
-    val scopes: List<String>,
+    val scopes: List<String> = emptyList(),
     val validationToken: String = "",
 )
 

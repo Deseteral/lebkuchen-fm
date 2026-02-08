@@ -86,6 +86,7 @@ fun Application.module() {
     val usersRepository = UsersMongoRepository(database, MongoDatabaseClient.client)
         .also { runBlocking { it.createUniqueIndex() } }
         .also { runBlocking { it.migrateSessionValidationTokens() } }
+        .also { runBlocking { it.migrateRoles() } }
     val passwordEncoder = Pbkdf2PasswordEncoder()
     val secureGenerator = RandomSecureGenerator()
     val onUserSessionChanged: suspend ((String) -> Unit) = {
