@@ -27,6 +27,7 @@ import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
 import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.users.InsertFirstUserError
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.UpdateRoleError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
@@ -84,12 +85,6 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
             ?.toDomain()
     }
 
-    override suspend fun countUsers(): Long {
-        // We should not return zero on errors here!
-        // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
-        return collection.countDocuments()
-    }
-
     override suspend fun insert(user: User): Result<User, InsertUserError> {
         return runSuspendCatching { collection.insertOne(user.toEntity()) }
             .map { user }
@@ -103,6 +98,35 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
                 }
                 return Err(error)
             }
+    }
+
+    override suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError> {
+        val session = mongoClient.startSession()
+
+        return try {
+            session.startTransaction()
+
+            val count = collection.countDocuments(session)
+            if (count > 0L) {
+                session.abortTransaction()
+                return Err(InsertFirstUserError.NotFirstUser)
+            }
+
+            collection.insertOne(session, user.toEntity())
+            session.commitTransaction()
+            Ok(user)
+        } catch (ex: Exception) {
+            session.abortTransaction()
+            when {
+                ex is MongoWriteException && ex.isDuplicateKeyException -> Err(InsertFirstUserError.UserAlreadyExists)
+                else -> {
+                    logger.error(ex) { "An error occurred while inserting first user." }
+                    Err(InsertFirstUserError.WriteError)
+                }
+            }
+        } finally {
+            session.close()
+        }
     }
 
     override suspend fun updateLastLoginDate(user: User, date: Instant): User? {

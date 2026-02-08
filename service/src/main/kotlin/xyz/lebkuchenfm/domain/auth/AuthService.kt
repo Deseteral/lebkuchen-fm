@@ -21,11 +21,14 @@ class AuthService(
         val user = usersService.getByName(username)
 
         return when {
-            user == null && usersService.getUsersCount() == 0L -> {
-                logger.info { "User '$username' is the first user to log in." }
-
-                usersService.addNewUserWithFirstUserBootstrap(username, null)
-                    .mapError { err: AddNewUserError -> AuthError.CannotAddNewUserError(err) }
+            user == null -> {
+                usersService.addFirstUser(username, null)
+                    .mapError { err ->
+                        when (err) {
+                            AddNewUserError.NotFirstUser -> AuthError.UserDoesNotExistError
+                            else -> AuthError.CannotAddNewUserError(err)
+                        }
+                    }
                     .map { newUser ->
                         usersService.setPassword(
                             newUser,
@@ -34,11 +37,6 @@ class AuthService(
                     }
                     .flatten()
                     .map { createSession(it) }
-            }
-
-            user == null -> {
-                logger.info { "User '$username' tried to log in, but does not exist." }
-                Err(AuthError.UserDoesNotExistError)
             }
 
             !user.hasPasswordSet -> {

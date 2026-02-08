@@ -63,6 +63,7 @@ fun Route.usersRouting(usersService: UsersService) {
                                 status = HttpStatusCode.Conflict,
                             )
 
+                        AddNewUserError.NotFirstUser,
                         AddNewUserError.UnknownError ->
                             call.respondWithProblem(
                                 title = "Could not create user.",

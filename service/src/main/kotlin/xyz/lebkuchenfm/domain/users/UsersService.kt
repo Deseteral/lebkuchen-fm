@@ -28,25 +28,45 @@ class UsersService(
         return repository.findByName(username)
     }
 
-    suspend fun getUsersCount(): Long {
-        return repository.countUsers()
-    }
-
     suspend fun getByDiscordId(discordId: String): User? {
         return repository.findByDiscordId(discordId)
     }
 
-    suspend fun addNewUserWithFirstUserBootstrap(
+    suspend fun addFirstUser(
         username: String,
         discordId: String? = null,
     ): Result<User, AddNewUserError> {
-        val role = if (getUsersCount() == 0L) {
-            Role.OWNER
-        } else {
-            Role.LISTENER
-        }
+        val now = clock.now()
+        val user = User(
+            data = User.UserData(
+                name = username,
+                discordId = discordId,
+                creationDate = now,
+                lastLoggedIn = now,
+                roles = setOf(Role.OWNER),
+                sessionValidationToken = UUID.randomUUID().toString(),
+            ),
+            secret = null,
+        )
 
-        return addNewUser(username, discordId, setOf(role))
+        return repository.insertFirstUser(user)
+            .onSuccess { logger.info { "Created first user '${it.data.name}' with Owner role." } }
+            .mapError {
+                when (it) {
+                    InsertFirstUserError.NotFirstUser -> {
+                        logger.info { "User '$username' tried to log in, but does not exist." }
+                        AddNewUserError.NotFirstUser
+                    }
+                    InsertFirstUserError.UserAlreadyExists -> {
+                        logger.info { "Tried to create a new user '$username', but it already exists." }
+                        AddNewUserError.UserAlreadyExists
+                    }
+                    InsertFirstUserError.WriteError -> {
+                        logger.error { "Something went wrong while inserting first user into repository." }
+                        AddNewUserError.UnknownError
+                    }
+                }
+            }
     }
 
     suspend fun addNewUser(
@@ -130,6 +150,7 @@ class UsersService(
 }
 
 sealed class AddNewUserError {
+    data object NotFirstUser : AddNewUserError()
     data object UserAlreadyExists : AddNewUserError()
     data object UnknownError : AddNewUserError()
 }
