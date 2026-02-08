@@ -162,7 +162,7 @@ class UsersMongoRepository(database: MongoDatabase, private val mongoClient: Mon
             }
 
             val updates = Updates.combine(
-                Updates.set(rolesFieldName, roles),
+                Updates.set(rolesFieldName, roles.map { it.name }.toSet()),
                 Updates.set(tokenFieldName, UUID.randomUUID().toString()),
             )
             val updatedUser = collection.findOneAndUpdate(

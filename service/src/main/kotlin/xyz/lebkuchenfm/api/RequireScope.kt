@@ -2,7 +2,6 @@ package xyz.lebkuchenfm.api
 
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
-import io.ktor.server.routing.get
 import xyz.lebkuchenfm.domain.auth.Scope
 
 suspend fun ApplicationCall.missesScopes(vararg scopes: Scope): Boolean {

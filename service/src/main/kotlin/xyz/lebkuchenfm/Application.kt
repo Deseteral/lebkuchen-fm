@@ -101,6 +101,7 @@ fun Application.module() {
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val songsRepository = SongsMongoRepository(database)
+        .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, Clock.System)

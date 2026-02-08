@@ -68,14 +68,14 @@ fun Route.rolesRouting(usersService: UsersService) {
                     is UsersUpdateRoleError.UserNotFound ->
                         call.respondWithProblem(
                             title = "Could not update user role.",
-                            detail = "User '$user' not found.",
+                            detail = "User '${user.data.name}' not found.",
                             status = HttpStatusCode.NotFound,
                         )
                     is UsersUpdateRoleError.AtLeastOneOwnerMustExist ->
                         call.respondWithProblem(
                             title = "At least one owner must exist.",
-                            detail = "User '$user' is the only owner.",
-                            status = HttpStatusCode.ExpectationFailed,
+                            detail = "User '${user.data.name}' is the only owner.",
+                            status = HttpStatusCode.Conflict,
                         )
                     is UsersUpdateRoleError.WriteError ->
                         call.respondWithProblem(
@@ -96,28 +96,6 @@ data class RoleResponse(
     val name: String,
     val scopes: List<String>,
 )
-
-@Serializable
-data class CreateRoleRequest(
-    val name: String,
-    val scopes: List<String>,
-) {
-    fun toDomain() = xyz.lebkuchenfm.domain.auth.Role(
-        name = name,
-        scopes = scopes.mapNotNull { Scope.fromValue(it) }.toSet(),
-    )
-}
-
-@Serializable
-data class UpdateRoleRequest(
-    val name: String,
-    val scopes: List<String>,
-) {
-    fun toDomain() = xyz.lebkuchenfm.domain.auth.Role(
-        name = name,
-        scopes = scopes.mapNotNull { Scope.fromValue(it) }.toSet(),
-    )
-}
 
 @Serializable
 data class UserRoleRequest(

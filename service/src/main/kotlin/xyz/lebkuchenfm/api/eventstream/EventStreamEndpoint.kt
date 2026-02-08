@@ -52,13 +52,13 @@ fun Route.eventStreamRouting(
                 }
             }
 
-            frameProcessing@ for (frame in incoming) {
-                val continueProcessing = select<Boolean> {
-                    stopSignal.onReceive { false }
-                    incoming.onReceiveCatching { true }
-                }
-
-                if (!continueProcessing) break@frameProcessing
+            while (true) {
+                val frame = select<Frame?> {
+                    stopSignal.onReceive { null }
+                    incoming.onReceiveCatching { result ->
+                        result.getOrNull()
+                    }
+                } ?: break
 
                 handleFrame(frame, connection, converter, playerStateSynchronizer)
             }
