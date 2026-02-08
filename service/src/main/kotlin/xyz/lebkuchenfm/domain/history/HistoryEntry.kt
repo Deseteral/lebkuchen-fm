@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.domain.history
 
-import kotlinx.datetime.Instant
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
+import kotlin.time.Instant
 
 data class HistoryEntry(
     val date: Instant,

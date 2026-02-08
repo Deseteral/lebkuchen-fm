@@ -9,13 +9,13 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
+import kotlin.time.Instant
 
 fun Route.usersRouting(usersService: UsersService) {
     route("/users") {

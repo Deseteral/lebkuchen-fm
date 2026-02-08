@@ -1,7 +1,7 @@
 package xyz.lebkuchenfm.domain.users
 
 import com.github.michaelbull.result.Result
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 interface UsersRepository {
     suspend fun findAll(): List<User>

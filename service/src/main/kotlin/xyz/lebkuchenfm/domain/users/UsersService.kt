@@ -5,9 +5,9 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.datetime.Clock
 import xyz.lebkuchenfm.domain.security.PasswordEncoder
 import xyz.lebkuchenfm.domain.security.SecureGenerator
+import kotlin.time.Clock
 
 private val logger = KotlinLogging.logger {}
 

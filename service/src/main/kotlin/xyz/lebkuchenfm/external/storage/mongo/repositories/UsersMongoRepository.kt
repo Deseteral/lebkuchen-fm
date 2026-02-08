@@ -18,7 +18,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
@@ -28,6 +27,7 @@ import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
 import xyz.lebkuchenfm.external.storage.mongo.isDuplicateKeyException
+import kotlin.time.Instant
 
 private val logger = KotlinLogging.logger {}
 
