@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -25,6 +26,7 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
             ),
             delimiter = " ",
         ),
+        requiredScope = Scope.PLAYER_QUEUE,
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {

@@ -10,7 +10,9 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.api.missesScopes
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 
@@ -18,6 +20,9 @@ private val logger = KotlinLogging.logger {}
 
 fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/execute") {
+        if (call.missesScopes(Scope.COMMANDS_EXECUTE)) {
+            return@post
+        }
         val contentType = call.request.contentType()
         val session = call.getUserSession()
         val context = ExecutionContext(session)

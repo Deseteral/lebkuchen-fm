@@ -6,6 +6,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.BearerTokenCredential
 import io.ktor.server.auth.UserPasswordCredential
+import io.ktor.server.sessions.clear
+import io.ktor.server.sessions.sessions
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.AuthError
 import xyz.lebkuchenfm.domain.auth.AuthService
@@ -31,6 +33,7 @@ class ValidateAuthHandler(private val authService: AuthService) {
                         call.respondWithProblem(
                             title = "Could not create new user.",
                             detail = when (error.addNewUserError) {
+                                AddNewUserError.NotFirstUser -> "Other users already exist. Contact them."
                                 AddNewUserError.UserAlreadyExists -> "User already exists."
                                 AddNewUserError.UnknownError -> "Something went wrong."
                             },
@@ -71,6 +74,7 @@ class ValidateAuthHandler(private val authService: AuthService) {
     }
 
     suspend fun badSessionHandler(call: ApplicationCall) {
+        call.sessions.clear<UserSession>()
         call.respondWithProblem(
             title = "Could not authenticate.",
             detail = "You are not authenticated.",

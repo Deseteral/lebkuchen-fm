@@ -7,11 +7,15 @@ import com.github.michaelbull.result.coroutines.runSuspendCatching
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.mongodb.MongoWriteException
+import com.mongodb.client.model.Filters.and
 import com.mongodb.client.model.Filters.eq
+import com.mongodb.client.model.Filters.exists
+import com.mongodb.client.model.Filters.ne
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -22,8 +26,12 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
+import org.bson.Document
+import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.users.InsertFirstUserError
 import xyz.lebkuchenfm.domain.users.InsertUserError
+import xyz.lebkuchenfm.domain.users.UpdateRoleError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
@@ -44,6 +52,49 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         } catch (ex: Exception) {
             logger.error(ex) { "An error occurred while creating a user repository index." }
             throw ex
+        }
+    }
+
+    suspend fun migrateRoles() {
+        val rolesField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        val creationDateField = "${UserEntity::data.name}.${UserEntity.UserDataEntity::creationDate.name}"
+
+        val usersWithoutRoles = collection.countDocuments(exists(rolesField, false))
+        if (usersWithoutRoles == 0L) return
+
+        collection.updateMany(
+            exists(rolesField, false),
+            Updates.set(rolesField, setOf(Role.DJ.name)),
+        )
+        logger.info { "Migrated $usersWithoutRoles user(s) with DJ role." }
+
+        val otherOwnerExists = collection.countDocuments(
+            eq(rolesField, Role.OWNER.name),
+        ) > 0
+
+        if (!otherOwnerExists) {
+            val promoted = collection.findOneAndUpdate(
+                eq(rolesField, Role.DJ.name),
+                Updates.set(rolesField, setOf(Role.OWNER.name)),
+                FindOneAndUpdateOptions()
+                    .sort(Sorts.ascending(creationDateField))
+                    .returnDocument(ReturnDocument.AFTER),
+            )
+            if (promoted != null) {
+                logger.info { "Promoted user '${promoted.data.name}' to Owner (oldest user)." }
+            }
+        }
+    }
+
+    suspend fun migrateSessionValidationTokens() {
+        val fieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+        val usersWithoutToken = collection.countDocuments(exists(fieldName, false))
+        if (usersWithoutToken > 0L) {
+            logger.info { "Migrating $usersWithoutToken user(s): adding sessionValidationToken." }
+            collection.updateMany(
+                exists(fieldName, false),
+                listOf(Document("\$set", Document(fieldName, Document("\$toString", "\$_id")))),
+            )
         }
     }
 
@@ -78,12 +129,6 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
-    override suspend fun countUsers(): Long {
-        // We should not return zero on errors here!
-        // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
-        return collection.countDocuments()
-    }
-
     override suspend fun insert(user: User): Result<User, InsertUserError> {
         return runSuspendCatching { collection.insertOne(user.toEntity()) }
             .map { user }
@@ -99,9 +144,30 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             }
     }
 
+    override suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError> {
+        val count = collection.countDocuments()
+        if (count > 0L) {
+            return Err(InsertFirstUserError.NotFirstUser)
+        }
+
+        return try {
+            collection.insertOne(user.toEntity())
+            Ok(user)
+        } catch (ex: Exception) {
+            when {
+                ex is MongoWriteException && ex.isDuplicateKeyException -> Err(InsertFirstUserError.UserAlreadyExists)
+                else -> {
+                    logger.error(ex) { "An error occurred while inserting first user." }
+                    Err(InsertFirstUserError.WriteError)
+                }
+            }
+        }
+    }
+
     override suspend fun updateLastLoginDate(user: User, date: Instant): User? {
         val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
         val loginDateFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::lastLoggedIn.name}"
+
         return collection.findOneAndUpdate(
             eq(nameFieldName, user.data.name),
             Updates.set(loginDateFieldName, BsonDateTime(date.toEpochMilliseconds())),
@@ -123,6 +189,50 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             Err(UpdateSecretError.WriteError)
         }
     }
+
+    override suspend fun updateRoles(
+        user: User,
+        roles: Set<Role>,
+        newSessionValidationToken: String,
+    ): Result<User, UpdateRoleError> {
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        val tokenFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::sessionValidationToken.name}"
+
+        if (Role.OWNER !in roles) {
+            val otherOwnerExists = collection.countDocuments(
+                and(
+                    ne(nameFieldName, user.data.name),
+                    eq(rolesFieldName, Role.OWNER.name),
+                ),
+            ) > 0
+
+            if (!otherOwnerExists) {
+                return Err(UpdateRoleError.AtLeastOneOwnerMustExist)
+            }
+        }
+
+        return try {
+            val updates = Updates.combine(
+                Updates.set(rolesFieldName, roles.map { it.name }.toSet()),
+                Updates.set(tokenFieldName, newSessionValidationToken),
+            )
+            val updatedUser = collection.findOneAndUpdate(
+                eq(nameFieldName, user.data.name),
+                updates,
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+            )
+
+            if (updatedUser == null) {
+                Err(UpdateRoleError.UserNotFound)
+            } else {
+                Ok(updatedUser.toDomain())
+            }
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while updating user '${user.data.name}' roles." }
+            Err(UpdateRoleError.WriteError)
+        }
+    }
 }
 
 @Serializable
@@ -139,6 +249,8 @@ private data class UserEntity(
     data class UserDataEntity(
         val name: String,
         val discordId: String?,
+        val roles: Set<String>,
+        val sessionValidationToken: String,
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
     ) {
@@ -147,6 +259,8 @@ private data class UserEntity(
             discordId = discordId,
             creationDate = creationDate,
             lastLoggedIn = lastLoggedIn,
+            roles = roles.mapNotNull { Role.fromString(it) }.toSet(),
+            sessionValidationToken = sessionValidationToken,
         )
     }
 
@@ -174,6 +288,8 @@ private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
     discordId = discordId,
     creationDate = creationDate,
     lastLoggedIn = lastLoggedIn,
+    sessionValidationToken = sessionValidationToken,
+    roles = roles.map { it.name }.toSet(),
 )
 
 private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(

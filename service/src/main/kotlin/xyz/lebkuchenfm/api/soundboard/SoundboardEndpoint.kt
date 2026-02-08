@@ -7,12 +7,17 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import xyz.lebkuchenfm.api.missesScopes
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 
 fun Route.soundboardEndpoint(soundboardService: SoundboardService) {
     route("/soundboard") {
         post("/play") {
+            if (call.missesScopes(Scope.XSOUNDS_PLAY)) {
+                return@post
+            }
             val soundName = call.request.queryParameters["soundName"] ?: run {
                 call.respondWithProblem(
                     title = "Missing soundName parameter.",

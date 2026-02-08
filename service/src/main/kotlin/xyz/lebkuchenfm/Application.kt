@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -11,6 +12,8 @@ import io.ktor.server.auth.form
 import io.ktor.server.auth.session
 import io.ktor.server.http.content.singlePageApplication
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
@@ -26,11 +29,13 @@ import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
+import xyz.lebkuchenfm.api.roles.rolesRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.users.usersRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
+import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
@@ -76,10 +81,20 @@ fun Application.module() {
     val youtubeClient = YoutubeClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
+        .also { runBlocking { it.migrateSessionValidationTokens() } }
+        .also { runBlocking { it.migrateRoles() } }
         .also { runBlocking { it.createUniqueIndex() } }
+
+    val sessionsRepository = SessionsMongoRepository(database)
+    val sessionStorage = SessionStorageMongo(sessionsRepository)
     val passwordEncoder = Pbkdf2PasswordEncoder()
     val secureGenerator = RandomSecureGenerator()
-    val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, Clock.System)
+    val onUserSessionChanged: suspend ((String) -> Unit) = {
+        sessionStorage.invalidateCache()
+        SessionInvalidationFlow.emit(it)
+    }
+    val usersService =
+        UsersService(usersRepository, passwordEncoder, secureGenerator, onUserSessionChanged, Clock.System)
     val authService = AuthService(usersService)
 
     val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
@@ -132,8 +147,6 @@ fun Application.module() {
     }
 
     install(Sessions) {
-        val sessionsMongoRepository = SessionsMongoRepository(database)
-        val sessionStorage = SessionStorageMongo(sessionsMongoRepository)
         cookie<UserSession>("user_session", sessionStorage) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 30.days.inWholeSeconds
@@ -150,7 +163,15 @@ fun Application.module() {
             }
         }
         session<UserSession>("auth-session") {
-            validate { session -> session }
+            validate { session ->
+                val user = usersService.getByName(session.name) ?: return@validate null
+
+                return@validate if (session.validationToken != user.data.sessionValidationToken) {
+                    null
+                } else {
+                    session
+                }
+            }
             challenge {
                 validateAuthHandler.badSessionHandler(call)
             }
@@ -175,6 +196,7 @@ fun Application.module() {
             authenticate("auth-bearer") {
                 route("/api") {
                     authRouting(usersService)
+                    rolesRouting()
                     xSoundsRouting(xSoundsService)
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
@@ -183,6 +205,13 @@ fun Application.module() {
                     usersRouting(usersService)
                 }
             }
+        }
+
+        get("/cacheInvalidator/{user}") {
+            call.parameters["user"]?.let {
+                onUserSessionChanged.invoke(it)
+            }
+            call.respond(HttpStatusCode.OK)
         }
 
         singlePageApplication {

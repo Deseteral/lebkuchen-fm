@@ -21,7 +21,13 @@ fun Route.authRouting(usersService: UsersService) {
         get {
             val session = call.getUserSession()
             val apiToken = usersService.getByName(session.name)?.secret?.apiToken
-            call.respond(LoggedInResponse(username = session.name, apiToken = apiToken!!))
+            call.respond(
+                LoggedInResponse(
+                    username = session.name,
+                    scopes = session.scopes,
+                    apiToken = apiToken!!,
+                ),
+            )
         }
 
         authenticate("auth-form") {
@@ -43,5 +49,6 @@ fun Route.authRouting(usersService: UsersService) {
 @Serializable
 data class LoggedInResponse(
     val username: String,
+    val scopes: List<String>,
     val apiToken: String,
 )
