@@ -1,7 +1,7 @@
 {
   "name": "lebkuchen-fm-client",
   "private": true,
-  "version": "2025.3.1",
+  "version": "2026.0.3",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -23,6 +23,7 @@
     "yt-player": "3.6.1"
   },
   "devDependencies": {
+    "@phosphor-icons/web": "2.1.1",
     "@types/yt-player": "3.5.4",
     "@typescript-eslint/eslint-plugin": "7.7.0",
     "@typescript-eslint/parser": "7.1.1",

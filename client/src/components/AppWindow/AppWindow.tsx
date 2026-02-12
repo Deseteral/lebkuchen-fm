@@ -1,5 +1,5 @@
 import { Portal } from 'solid-js/web';
-import { JSX, createEffect } from 'solid-js';
+import { JSX } from 'solid-js';
 import styles from './AppWindow.module.css';
 import { AppIcon } from '@components/AppIcon/AppIcon';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
@@ -13,6 +13,8 @@ interface AppWindowProps {
   startSize?: {
     width?: string;
     height?: string;
+    minWidth?: string;
+    minHeight?: string;
   };
   title: string;
   close?: () => void;
@@ -24,13 +26,10 @@ function AppWindow(props: AppWindowProps) {
   let windowRef!: HTMLDivElement;
   let nextX = 0;
   let nextY = 0;
-  let x = 100;
-  let y = 100;
-
-  createEffect(() => {
-    x = props.startPosition?.x || x;
-    y = props.startPosition?.y || y;
-  });
+  // eslint-disable-next-line solid/reactivity
+  let x = props.startPosition?.x || 100;
+  // eslint-disable-next-line solid/reactivity
+  let y = props.startPosition?.y || 100;
 
   const getBiggestZIndex = () => {
     let biggestZIndex = 0;
@@ -104,13 +103,18 @@ function AppWindow(props: AppWindowProps) {
           el.style.top = `${y}px`;
           el.style.left = `${x}px`;
         }
+
         el.style.zIndex = `${getBiggestZIndex() + 1}`;
-        if (props.startSize?.height) {
-          el.style.height = props.startSize.height;
+        el.style.height = props.startSize?.height || '240px';
+        el.style.width = props.startSize?.width || '320px';
+
+        if (props.startSize?.minHeight) {
+          el.style.minHeight = props.startSize.minHeight;
         }
-        if (props.startSize?.width) {
-          el.style.width = props.startSize.width;
+        if (props.startSize?.minWidth) {
+          el.style.minWidth = props.startSize.minWidth;
         }
+
         windowRef.addEventListener('click', moveWindowToFront);
       }}
     >

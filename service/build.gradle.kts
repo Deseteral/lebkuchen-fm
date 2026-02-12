@@ -1,23 +1,13 @@
-@file:Suppress("ktlint:standard:property-naming")
-
-val lebkuchenfm_version: String by project
-val kord_version: String by project
-val kotlin_logging_version: String by project
-val kotlin_result_version: String by project
-val kotlin_version: String by project
-val logback_version: String by project
-val mongo_driver_version: String by project
-
 plugins {
-    kotlin("jvm") version "2.0.21"
-    id("io.ktor.plugin") version "3.0.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.21"
-    id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ktlint)
 }
 
 group = "xyz.lebkuchenfm"
 
-version = lebkuchenfm_version
+version = providers.gradleProperty("lebkuchenfm_version").get()
 
 application {
     mainClass.set("xyz.lebkuchenfm.ApplicationKt")
@@ -29,33 +19,33 @@ application {
 repositories { mavenCentral() }
 
 dependencies {
-    implementation("io.ktor:ktor-client-core")
-    implementation("io.ktor:ktor-client-okhttp")
-    implementation("io.ktor:ktor-client-auth")
-    implementation("io.ktor:ktor-client-content-negotiation")
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.contentNegotiation)
 
-    implementation("io.ktor:ktor-server-core-jvm")
-    implementation("io.ktor:ktor-server-resources-jvm")
-    implementation("io.ktor:ktor-server-host-common-jvm")
-    implementation("io.ktor:ktor-server-netty-jvm")
-    implementation("io.ktor:ktor-server-config-yaml")
-    implementation("io.ktor:ktor-server-content-negotiation")
-    implementation("io.ktor:ktor-server-sessions")
-    implementation("io.ktor:ktor-server-websockets")
-    implementation("io.ktor:ktor-server-auth")
-    implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.host.common)
+    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.config.yaml)
+    implementation(libs.ktor.server.contentNegotiation)
+    implementation(libs.ktor.server.sessions)
+    implementation(libs.ktor.server.websockets)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.serialization.json)
 
-    implementation("ch.qos.logback:logback-classic:$logback_version")
-    implementation("io.github.oshai:kotlin-logging-jvm:$kotlin_logging_version")
+    implementation(libs.logback)
+    implementation(libs.kotlin.logging)
 
-    implementation("com.michael-bull.kotlin-result:kotlin-result:$kotlin_result_version")
-    implementation("com.michael-bull.kotlin-result:kotlin-result-coroutines:$kotlin_result_version")
+    implementation(libs.result)
+    implementation(libs.result.coroutines)
 
-    implementation("org.mongodb:mongodb-driver-kotlin-coroutine:$mongo_driver_version")
-    implementation("org.mongodb:bson-kotlinx:$mongo_driver_version")
+    implementation(libs.mongodb.driver.coroutine)
+    implementation(libs.mongodb.serialization.bson)
 
-    implementation("dev.kord:kord-core:$kord_version")
+    implementation(libs.kord.core)
 
-    testImplementation("io.ktor:ktor-server-test-host-jvm")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.kotlin.test.junit)
 }
