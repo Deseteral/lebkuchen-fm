@@ -99,9 +99,8 @@ fun Application.module() {
 
     val soundboardService = SoundboardService(xSoundsService, eventStream)
 
-    val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser()
-    val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
+    val helpCommandProcessor = HelpCommandProcessor()
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(soundboardService),
@@ -120,7 +119,7 @@ fun Application.module() {
     )
     helpCommandProcessor.setCommandRegistry(commandProcessorRegistry)
 
-    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
+    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
 
     val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
     launch { discordClient.start() }
