@@ -73,8 +73,8 @@ function Player() {
           close={closeWindow}
           iconIndex={PLAYER_ICON_INDEX}
           startSize={{
-            width: currentlyPlayingSong() ? '600px' : '400px',
-            height: currentlyPlayingSong() ? '500px' : '180px',
+            width: '600px',
+            height: '500px',
             minWidth: '400px',
             minHeight: '180px',
           }}
