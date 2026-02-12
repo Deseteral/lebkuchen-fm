@@ -27,7 +27,6 @@ class CommandExecutorService(
                 logger.error { "Could not parse command '$text'." }
                 CommandProcessingResult.fromMultilineMarkdown(
                     when (err) {
-                        CommandParsingError.IncorrectPrompt -> "Given text is not a command."
                         CommandParsingError.RequiredTokensMissing -> "The command must perform some action."
                     },
                     "For more information checkout `$commandPrompt help`.",

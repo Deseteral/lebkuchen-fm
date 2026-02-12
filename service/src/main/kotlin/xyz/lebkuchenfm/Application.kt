@@ -100,7 +100,7 @@ fun Application.module() {
     val soundboardService = SoundboardService(xSoundsService, eventStream)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
-    val textCommandParser = TextCommandParser(commandPrompt)
+    val textCommandParser = TextCommandParser()
     val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(

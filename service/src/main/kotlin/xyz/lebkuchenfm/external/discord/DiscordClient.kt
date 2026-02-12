@@ -76,7 +76,8 @@ class DiscordClient(
 
                     else -> {
                         val context = ExecutionContext(UserSession(user.data.name))
-                        val result = commandExecutorService.executeFromText(it.content, context)
+                        val commandText = it.content.replace("$commandPrompt ", "")
+                        val result = commandExecutorService.executeFromText(commandText, context)
                         it.reply { content = result.message.markdown }
                     }
                 }
