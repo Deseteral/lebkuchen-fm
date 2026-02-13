@@ -42,5 +42,10 @@ RUN gradle buildFatJar --no-daemon
 FROM eclipse-temurin:${JDK_VERSION} AS runtime
 EXPOSE 8080:8080
 RUN mkdir /app
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
+    && chmod a+rx /usr/local/bin/yt-dlp \
+    && apt-get purge -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/lebkuchenfm.jar
 ENTRYPOINT ["java","-jar","/app/lebkuchenfm.jar"]
