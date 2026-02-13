@@ -2,7 +2,8 @@ package xyz.lebkuchenfm.external.platform
 
 import java.util.concurrent.TimeUnit
 
-class Shell {
+class ProcessExecutor {
+    // TODO: This method should not be blocking.
     fun exec(command: String): List<String> {
         ProcessBuilder("/bin/bash", "-c", command).run {
             val process = start()

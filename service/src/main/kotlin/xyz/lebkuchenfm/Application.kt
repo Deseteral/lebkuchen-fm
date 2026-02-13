@@ -53,7 +53,7 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
-import xyz.lebkuchenfm.external.platform.Shell
+import xyz.lebkuchenfm.external.platform.ProcessExecutor
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.security.SessionStorageMongo
@@ -90,7 +90,7 @@ fun Application.module() {
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val youTubeVideoStreamRepository = YtDlpVideoStreamRepository(Shell())
+    val youTubeVideoStreamRepository = YtDlpVideoStreamRepository(ProcessExecutor())
 
     val historyRepository = HistoryMongoRepository(database)
 
