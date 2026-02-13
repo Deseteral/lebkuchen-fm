@@ -44,7 +44,7 @@ function Buffer() {
   let bufferElement!: HTMLDivElement;
   let promptElement!: HTMLInputElement;
 
-  const [lines, setLines] = createSignal<string[]>([WELCOME_MESSAGE, '']);
+  const [bufferLines, setBufferLines] = createSignal<string[]>([WELCOME_MESSAGE, '']);
 
   const scrollToBottom = (): void => {
     bufferElement.scrollTop = bufferElement.scrollHeight;
@@ -55,7 +55,7 @@ function Buffer() {
   };
 
   const appendBufferLines = (newLines: string[]): void => {
-    setLines([...lines(), ...newLines]);
+    setBufferLines([...bufferLines(), ...newLines]);
     scrollToBottom();
   };
 
@@ -87,7 +87,7 @@ function Buffer() {
 
   return (
     <div class={styles.buffer} ref={bufferElement}>
-      <For each={lines()}>{(line) => <div>{line}</div>}</For>
+      <For each={bufferLines()}>{(line) => <div>{line}</div>}</For>
 
       <div class={styles.promptContainer}>
         <div>$&nbsp;</div>
