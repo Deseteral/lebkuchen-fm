@@ -1,7 +1,7 @@
-import { executeCommand } from '../../services/command-service';
+import { executeCommand } from './command-service';
 
 async function fm(args: string[]): Promise<string[]> {
-  const response = await executeCommand(`/fm ${args.join(' ')}`);
+  const response = await executeCommand(args.join(' '));
   return response.split('\n');
 }
 
