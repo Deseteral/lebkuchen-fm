@@ -1,25 +1,21 @@
 {
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "esModuleInterop": true,
     "noUnusedLocals": true,
-    "noImplicitAny": true,
-    "declarationDir": "build/types",
-    "declaration": true,
+    "noUncheckedIndexedAccess": true,
     "strict": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "target": "ES2020",
-    "moduleResolution": "node",
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "noEmit": true,
     "baseUrl": ".",
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "*": ["node_modules/*"]
+      "@components/*": ["./src/components/*"]
     },
     "skipLibCheck": true
   },

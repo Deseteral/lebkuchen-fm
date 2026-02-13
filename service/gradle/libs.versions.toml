@@ -1,0 +1,53 @@
+[versions]
+kotlin = "2.3.10"
+ktor = "3.4.0"
+ktlint = "12.3.0"
+kord = "0.15.0"
+kotlin-logging = "7.0.3"
+kotlin-result = "2.1.0"
+logback = "1.5.27"
+mongodb = "5.6.3"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+
+[libraries]
+# Ktor client
+ktor-client-core = { module = "io.ktor:ktor-client-core" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth" }
+ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+
+# Ktor server
+ktor-server-core = { module = "io.ktor:ktor-server-core-jvm" }
+ktor-server-resources = { module = "io.ktor:ktor-server-resources-jvm" }
+ktor-server-host-common = { module = "io.ktor:ktor-server-host-common-jvm" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm" }
+ktor-server-config-yaml = { module = "io.ktor:ktor-server-config-yaml" }
+ktor-server-contentNegotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-server-sessions = { module = "io.ktor:ktor-server-sessions" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
+ktor-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host-jvm" }
+
+# Logging
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+
+# Result
+result = { module = "com.michael-bull.kotlin-result:kotlin-result", version.ref = "kotlin-result" }
+result-coroutines = { module = "com.michael-bull.kotlin-result:kotlin-result-coroutines", version.ref = "kotlin-result" }
+
+# MongoDB
+mongodb-driver-coroutine = { module = "org.mongodb:mongodb-driver-kotlin-coroutine", version.ref = "mongodb" }
+mongodb-serialization-bson = { module = "org.mongodb:bson-kotlinx", version.ref = "mongodb" }
+
+# Discord
+kord-core = { module = "dev.kord:kord-core", version.ref = "kord" }
+
+# Testing
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
