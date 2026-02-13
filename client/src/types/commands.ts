@@ -1,3 +1,3 @@
 export interface TextCommandResponse {
-  textResponse: string
+  textResponse: string;
 }
