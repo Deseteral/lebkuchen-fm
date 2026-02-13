@@ -42,9 +42,12 @@ RUN gradle buildFatJar --no-daemon
 FROM eclipse-temurin:${JDK_VERSION} AS runtime
 EXPOSE 8080:8080
 RUN mkdir /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl python3 \
+RUN apt-get update && apt-get install -y --no-install-recommends curl python3 unzip \
     && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
     && chmod a+rx /usr/local/bin/yt-dlp \
+    && curl -L https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip -o /tmp/deno.zip \
+    && unzip /tmp/deno.zip -d /usr/local/bin/ \
+    && rm /tmp/deno.zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /home/gradle/src/build/libs/*.jar /app/lebkuchenfm.jar
