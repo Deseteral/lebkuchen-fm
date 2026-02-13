@@ -14,6 +14,21 @@
   container-type: size;
 }
 
+.playerNative {
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  container-type: size;
+  display: flex;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: black;
+}
+
 .controls {
   display: flex;
   flex-direction: column;

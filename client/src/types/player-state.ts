@@ -4,6 +4,9 @@ interface Song {
   timesPlayed: number;
   trimStartSeconds: number | null;
   trimEndSeconds: number | null;
+  stream?: {
+    url: string;
+  };
 }
 
 interface CurrentlyPlaying {

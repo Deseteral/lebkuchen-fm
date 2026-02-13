@@ -2,6 +2,7 @@ import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { createSignal, onCleanup, onMount } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
+import { NativePlayer } from './components/NativePlayer/NativePlayer';
 import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Player.module.css';
 import { EventStreamClient } from '../../services/event-stream-client';
@@ -9,6 +10,8 @@ import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-
 import { PlayerControls } from './components/PlayerControls/PlayerControls';
 import { SongsQueue } from './components/SongsQueue/SongsQueue';
 import { Song } from '../../types/player-state';
+
+const USE_NATIVE_PLAYER = true;
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -81,7 +84,7 @@ function Player() {
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
             <section class={styles.player}>
-              <YouTubePlayer />
+              {USE_NATIVE_PLAYER ? <NativePlayer /> : <YouTubePlayer />}
             </section>
             <section class={styles.controls}>
               <h1 class={styles.songTitle}>
