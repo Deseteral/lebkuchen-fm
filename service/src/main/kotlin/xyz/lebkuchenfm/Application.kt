@@ -53,6 +53,7 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.platform.ProcessExecutor
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.security.SessionStorageMongo
@@ -66,6 +67,7 @@ import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.XSoundsMongoRepository
 import xyz.lebkuchenfm.external.youtube.YouTubeDataRepository
 import xyz.lebkuchenfm.external.youtube.YoutubeClient
+import xyz.lebkuchenfm.external.youtube.YtDlpVideoStreamRepository
 import kotlin.time.Duration.Companion.days
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -87,11 +89,20 @@ fun Application.module() {
         .also { runBlocking { it.createUniqueIndex() } }
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
 
+    val youtubeRepository = YouTubeDataRepository(youtubeClient)
+    val youTubeVideoStreamRepository = YtDlpVideoStreamRepository(ProcessExecutor())
+
+    val historyRepository = HistoryMongoRepository(database)
+
     val songsRepository = SongsMongoRepository(database)
         .also { runBlocking { it.createTextIndex() } }
-    val historyRepository = HistoryMongoRepository(database)
-    val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, Clock.System)
+    val songsService = SongsService(
+        songsRepository,
+        youtubeRepository,
+        historyRepository,
+        youTubeVideoStreamRepository,
+        Clock.System,
+    )
 
     val eventStream = WebSocketEventStream()
 

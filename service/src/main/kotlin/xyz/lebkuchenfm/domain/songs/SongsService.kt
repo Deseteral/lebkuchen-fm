@@ -1,11 +1,13 @@
 package xyz.lebkuchenfm.domain.songs
 
 import com.github.michaelbull.result.getOr
+import io.ktor.http.Url
 import kotlinx.datetime.Clock
 import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
+import xyz.lebkuchenfm.domain.youtube.YouTubeVideoStreamRepository
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideo
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
 
@@ -13,6 +15,7 @@ class SongsService(
     private val songsRepository: SongsRepository,
     private val youtubeRepository: YouTubeRepository,
     private val historyRepository: HistoryRepository,
+    private val youTubeVideoStreamRepository: YouTubeVideoStreamRepository,
     private val clock: Clock,
 ) {
     suspend fun getAllSongs(): List<Song> {
@@ -63,6 +66,11 @@ class SongsService(
         }.also {
             return it
         }
+    }
+
+    fun enrichSongWithVideoStreamUrl(song: Song): SongWithStream? {
+        val url = youTubeVideoStreamRepository.getVideoStreamUrl(song.youtubeId) ?: return null
+        return SongWithStream(song, SongWithStream.Stream(Url(url)))
     }
 
     private suspend fun createNewSong(youtubeId: YoutubeVideoId, songName: String): Song? {
