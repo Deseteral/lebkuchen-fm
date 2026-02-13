@@ -29,7 +29,7 @@ class DiscordClient(
     private lateinit var kord: Kord
 
     private val token: String? = config.propertyOrNull("discord.token")?.getString()
-    private val commandPrompt: String? = config.propertyOrNull("commandPrompt")?.getString()
+    private val commandPrompt: String? = config.propertyOrNull("discord.commandPrompt")?.getString()
     private val channelId: String? = config.propertyOrNull("discord.channelId")?.getString()
 
     suspend fun start() {
