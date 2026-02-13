@@ -42,8 +42,8 @@ RUN gradle buildFatJar --no-daemon
 FROM eclipse-temurin:${JDK_VERSION} AS runtime
 EXPOSE 8080:8080
 RUN mkdir /app
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
-    && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux -o /usr/local/bin/yt-dlp \
+RUN apt-get update && apt-get install -y --no-install-recommends curl python3 \
+    && curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp \
     && chmod a+rx /usr/local/bin/yt-dlp \
     && rm -rf /var/lib/apt/lists/*
 
