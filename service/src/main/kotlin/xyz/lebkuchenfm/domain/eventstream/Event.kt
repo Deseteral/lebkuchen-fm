@@ -1,6 +1,6 @@
 package xyz.lebkuchenfm.domain.eventstream
 
-import xyz.lebkuchenfm.domain.songs.SongWithVideoStream
+import xyz.lebkuchenfm.domain.songs.SongWithStream
 import java.util.UUID
 
 sealed interface Event {
@@ -9,7 +9,7 @@ sealed interface Event {
     ) : Event
 
     data class QueueSongs(
-        val songs: List<SongWithVideoStream>,
+        val songs: List<SongWithStream>,
     ) : Event
 
     data class Skip(

@@ -1,9 +1,9 @@
 interface Song {
   name: string;
   youtubeId: string;
-  timesPlayed: number;
-  trimStartSeconds: number | null;
-  trimEndSeconds: number | null;
+  stream: {
+    url: string;
+  }
 }
 
 interface CurrentlyPlaying {

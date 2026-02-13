@@ -11,11 +11,11 @@ data class Song(
     val trimEndSeconds: Int?,
 )
 
-data class SongWithVideoStream(
+data class SongWithStream(
     val song: Song,
-    val videoStream: VideoStream,
+    val stream: Stream,
 ) {
-    data class VideoStream(
+    data class Stream(
         val url: Url,
     )
 }

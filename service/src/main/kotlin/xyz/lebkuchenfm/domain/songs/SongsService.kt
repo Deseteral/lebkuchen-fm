@@ -68,9 +68,9 @@ class SongsService(
         }
     }
 
-    fun enrichSongWithVideoStreamUrl(song: Song): SongWithVideoStream? {
+    fun enrichSongWithVideoStreamUrl(song: Song): SongWithStream? {
         val url = youTubeVideoStreamRepository.getVideoStreamUrl(song.youtubeId) ?: return null
-        return SongWithVideoStream(song, SongWithVideoStream.VideoStream(Url(url)))
+        return SongWithStream(song, SongWithStream.Stream(Url(url)))
     }
 
     private suspend fun createNewSong(youtubeId: YoutubeVideoId, songName: String): Song? {
