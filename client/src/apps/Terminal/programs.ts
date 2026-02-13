@@ -7,10 +7,7 @@ async function fm(args: string[]): Promise<string[]> {
 
 async function help(): Promise<string[]> {
   const listOfCommands = Object.keys(programs).sort((a, b) => a.localeCompare(b));
-  return [
-    'Available commands:',
-    `  ${listOfCommands.join(', ')}`
-  ];
+  return ['Available commands:', `  ${listOfCommands.join(', ')}`];
 }
 
 export const programs: { [key: string]: (args: string[]) => Promise<string[]> } = {
