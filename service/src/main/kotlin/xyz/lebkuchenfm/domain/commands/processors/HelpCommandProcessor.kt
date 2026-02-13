@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 private val logger = KotlinLogging.logger {}
 
-class HelpCommandProcessor(private val commandPrompt: String) :
+class HelpCommandProcessor :
     CommandProcessor(
         key = "help",
         shortKey = null,
@@ -66,7 +66,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
             "```",
             "LebkuchenFM",
             "",
-            "For command specific information use `$commandPrompt help <command name>`",
+            "For command specific information use `help <command name>`",
             "",
             "Commands:",
             groupsText,
@@ -78,7 +78,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         val command = commandsRegistry.getProcessorByKey(commandName)
             ?: return error("No such command: $commandName", logger)
 
-        val exampleText = command.exampleUsages.joinToString("\n") { usage -> "  $commandPrompt $commandName $usage" }
+        val exampleText = command.exampleUsages.joinToString("\n") { usage -> "  $commandName $usage" }
 
         return CommandProcessingResult.fromMultilineMarkdown(
             "```",

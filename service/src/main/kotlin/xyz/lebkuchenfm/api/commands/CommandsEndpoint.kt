@@ -25,7 +25,7 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
         val processingResult = when {
             contentType.match(ContentType.Text.Plain) -> {
                 val text = call.receive<String>()
-                logger.info { "Received $text command from ${session.name}" }
+                logger.info { "Received '$text' command from ${session.name}" }
                 commandExecutorService.executeFromText(text, context)
             }
 
