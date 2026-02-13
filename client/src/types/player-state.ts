@@ -3,7 +3,7 @@ interface Song {
   youtubeId: string;
   stream: {
     url: string;
-  }
+  };
 }
 
 interface CurrentlyPlaying {
