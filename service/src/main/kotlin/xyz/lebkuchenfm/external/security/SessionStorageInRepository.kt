@@ -2,13 +2,12 @@ package xyz.lebkuchenfm.external.security
 
 import io.ktor.server.sessions.SessionStorage
 import io.ktor.util.collections.ConcurrentMap
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.serialization.json.Json
 import xyz.lebkuchenfm.domain.sessions.SessionsRepository
 import xyz.lebkuchenfm.domain.sessions.UserSession
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
-
 
 class SessionStorageInRepository(
     private val sessionsRepository: SessionsRepository,

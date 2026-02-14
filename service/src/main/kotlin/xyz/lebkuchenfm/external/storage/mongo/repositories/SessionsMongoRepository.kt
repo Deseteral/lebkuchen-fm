@@ -82,4 +82,4 @@ private data class SessionsEntity(
     val value: String,
     val userId: String?,
     @Contextual val expireAt: Instant,
-) {}
+)
