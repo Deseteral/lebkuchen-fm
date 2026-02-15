@@ -72,9 +72,9 @@ class HelpCommandProcessor :
         val command = commandsRegistry.getProcessorByKey(commandName)
             ?: return error("No such command: $commandName", logger)
 
-        val exampleText = command.exampleUsages.joinToString(
-            "\n",
-        ) { usage -> "  ${commandPromptPrefix}$commandName $usage" }
+        val exampleText = command.exampleUsages.joinToString("\n") { usage -> 
+            "  ${commandPromptPrefix}$commandName $usage" 
+        }
 
         return CommandProcessingResult.fromMultilineMarkdown(
             "```",
