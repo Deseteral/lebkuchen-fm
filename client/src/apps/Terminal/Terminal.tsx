@@ -60,7 +60,7 @@ function Buffer() {
   const clearPrompt = (): void => {
     setPromptHistoryIdx(-1);
     setPrompt('');
-  }
+  };
 
   const setPromptFromHistory = (offset: 1 | -1): void => {
     const nextIdx = Math.clamp(promptHistoryIdx() + offset, -1, promptHistory().length - 1);
@@ -131,7 +131,7 @@ function Buffer() {
 
               case 'Escape':
                 clearPrompt();
-                break
+                break;
             }
           }}
         />
