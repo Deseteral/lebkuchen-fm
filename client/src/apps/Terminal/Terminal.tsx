@@ -3,7 +3,7 @@ import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { For, createSignal } from 'solid-js';
 import styles from './Terminal.module.css';
-import { programs } from './programs';
+import { programs, TerminalProgram } from './programs';
 
 export function Terminal() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -46,6 +46,9 @@ function Buffer() {
 
   const [bufferLines, setBufferLines] = createSignal<string[]>([WELCOME_MESSAGE, '']);
 
+  const [promptHistory, setPromptHistory] = createSignal<string[]>([]);
+  const [promptHistoryIdx, setPromptHistoryIdx] = createSignal<number>(-1);
+
   const scrollToBottom = (): void => {
     bufferElement.scrollTop = bufferElement.scrollHeight;
   };
@@ -54,13 +57,30 @@ function Buffer() {
     promptElement.value = value;
   };
 
+  const clearPrompt = (): void => {
+    setPromptHistoryIdx(-1);
+    setPrompt('');
+  };
+
+  const setPromptFromHistory = (offset: 1 | -1): void => {
+    const nextIdx = Math.clamp(promptHistoryIdx() + offset, -1, promptHistory().length - 1);
+    setPromptHistoryIdx(nextIdx);
+    const prompt = nextIdx === -1 ? '' : promptHistory()[nextIdx]!;
+    setPrompt(prompt);
+  };
+
   const appendBufferLines = (newLines: string[]): void => {
     setBufferLines([...bufferLines(), ...newLines]);
     scrollToBottom();
   };
 
+  const appendPromptHistory = (prompt: string) => setPromptHistory([prompt, ...promptHistory()]);
+
   const evalPrompt = async (prompt: string): Promise<void> => {
     appendBufferLines([`> ${prompt}`]);
+
+    if (prompt && prompt !== promptHistory()[0]) appendPromptHistory(prompt);
+    clearPrompt();
 
     const [command, ...args] = prompt.split(' ').filter((s) => !!s);
     if (!command) {
@@ -68,7 +88,7 @@ function Buffer() {
       return;
     }
 
-    const program = programs[command];
+    const program: TerminalProgram | undefined = programs[command];
     if (!program) {
       appendBufferLines([`${command}: command not found`]);
       return;
@@ -99,7 +119,18 @@ function Buffer() {
             switch (e.key) {
               case 'Enter':
                 evalPrompt(promptElement.value.trim());
-                setPrompt('');
+                break;
+
+              case 'ArrowUp':
+                setPromptFromHistory(+1);
+                break;
+
+              case 'ArrowDown':
+                setPromptFromHistory(-1);
+                break;
+
+              case 'Escape':
+                clearPrompt();
                 break;
             }
           }}
