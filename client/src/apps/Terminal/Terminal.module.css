@@ -26,6 +26,7 @@
 .promptContainer {
   display: flex;
   flex-direction: row;
+  align-items: baseline;
   color: var(--app-terminal-color-prompt);
 }
 
@@ -34,6 +35,8 @@
   background-color: var(--app-terminal-color-background);
   padding: 0;
   width: 100%;
+  caret-shape: block;
+  caret-color: var(--app-terminal-color-prompt);
   outline: none;
   border: none;
   font-family: inherit;
