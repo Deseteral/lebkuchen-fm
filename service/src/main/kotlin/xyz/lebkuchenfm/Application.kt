@@ -79,7 +79,7 @@ fun Application.module() {
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
-    val sessionsRepository = SessionsMongoRepository(database)
+    val sessionsRepository = SessionsMongoRepository(database, clock)
         .also {
             runBlocking {
                 it.createUniqueIndex()

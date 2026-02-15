@@ -55,8 +55,8 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
 
         delete("{user_id}/sessions") {
             val userId = call.parameters["user_id"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            val sessionIds = sessionsService.getUserSessionsIds(userId)
-            sessionsService.deleteAllSessions(userId)
+            val sessionIds = sessionsService.getUserSessionIds(userId)
+            sessionsService.removeAllSessionsForUser(userId)
             sessionIds.forEach { sessionStorage.invalidate(it) }
             call.respond(HttpStatusCode.Accepted)
         }

@@ -5,5 +5,5 @@ interface SessionsRepository {
     suspend fun findBySessionId(sessionId: String): String?
     suspend fun findSessionIdsByUserId(userId: String): List<String>
     suspend fun remove(sessionId: String)
-    suspend fun removeAll(userId: String)
+    suspend fun removeAllByUserId(userId: String)
 }

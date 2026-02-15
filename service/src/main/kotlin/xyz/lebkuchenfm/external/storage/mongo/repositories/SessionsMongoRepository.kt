@@ -18,13 +18,13 @@ import xyz.lebkuchenfm.domain.sessions.SessionsRepository
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration.Companion.days
 
-class SessionsMongoRepository(database: MongoDatabase) : SessionsRepository {
+class SessionsMongoRepository(database: MongoDatabase, private val clock: Clock) : SessionsRepository {
     private val collection = database.getCollection<SessionsEntity>("sessions")
 
     suspend fun createExpirationIndex() {
         collection.updateMany(
             Filters.exists(SessionsEntity::expireAt.name, false),
-            Updates.set(SessionsEntity::expireAt.name, BsonDateTime(Clock.System.now().toEpochMilliseconds())),
+            Updates.set(SessionsEntity::expireAt.name, BsonDateTime(clock.now().toEpochMilliseconds())),
         )
         collection.createIndex(
             Indexes.ascending(SessionsEntity::expireAt.name),
@@ -69,11 +69,11 @@ class SessionsMongoRepository(database: MongoDatabase) : SessionsRepository {
         collection.deleteOne(eq(SessionsEntity::sessionId.name, sessionId))
     }
 
-    override suspend fun removeAll(userId: String) {
+    override suspend fun removeAllByUserId(userId: String) {
         collection.deleteMany(eq(SessionsEntity::userId.name, userId))
     }
 
-    private val sevenDaysFromNow: BsonDateTime get() = BsonDateTime((Clock.System.now() + 7.days).toEpochMilliseconds())
+    private val sevenDaysFromNow: BsonDateTime get() = BsonDateTime((clock.now() + 7.days).toEpochMilliseconds())
 }
 
 @Serializable

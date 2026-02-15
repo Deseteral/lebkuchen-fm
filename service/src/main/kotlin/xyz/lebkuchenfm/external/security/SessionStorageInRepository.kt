@@ -14,10 +14,7 @@ class SessionStorageInRepository(
     private val clock: Clock,
 ) : SessionStorage {
     private val cache = ConcurrentMap<String, CachedSession>()
-    private val expirationTime: Instant
-        get() {
-            return clock.now() + 1.hours
-        }
+    private val expirationTime: Instant get() = clock.now() + 1.hours
 
     override suspend fun write(id: String, value: String) {
         val userSession: UserSession = Json.decodeFromString(value)
@@ -28,7 +25,7 @@ class SessionStorageInRepository(
 
     override suspend fun read(id: String): String {
         return cache[id]
-            ?.takeIf { it.expireAt > clock.now() }?.value
+            ?.takeIf { clock.now() < it.expireAt }?.value
             ?: sessionsRepository.findBySessionId(id)
                 ?.also { cache[id] = CachedSession(it, expirationTime) }
             ?: throw NoSuchElementException("Session $id not found.")

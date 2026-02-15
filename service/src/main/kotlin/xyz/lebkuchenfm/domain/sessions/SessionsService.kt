@@ -3,11 +3,11 @@ package xyz.lebkuchenfm.domain.sessions
 class SessionsService(
     private val repository: SessionsRepository,
 ) {
-    suspend fun deleteAllSessions(userId: String) {
-        repository.removeAll(userId)
+    suspend fun removeAllSessionsForUser(userId: String) {
+        repository.removeAllByUserId(userId)
     }
 
-    suspend fun getUserSessionsIds(userId: String): List<String> {
+    suspend fun getUserSessionIds(userId: String): List<String> {
         return repository.findSessionIdsByUserId(userId)
     }
 }
