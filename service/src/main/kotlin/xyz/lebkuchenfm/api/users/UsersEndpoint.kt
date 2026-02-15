@@ -13,8 +13,8 @@ import io.ktor.server.routing.route
 import io.ktor.server.sessions.SessionStorage
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.User
@@ -29,7 +29,6 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
         }
 
         post {
-            val session = call.getUserSession()
             val newUser: NewUser = call.receive()
 
             usersService.addNewUser(newUser.username, newUser.discordId)
@@ -58,6 +57,7 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
             val sessionIds = sessionsService.getUserSessionIds(userId)
             sessionsService.removeAllSessionsForUser(userId)
             sessionIds.forEach { sessionStorage.invalidate(it) }
+            SessionInvalidationFlow.emit(userId)
             call.respond(HttpStatusCode.Accepted)
         }
     }
