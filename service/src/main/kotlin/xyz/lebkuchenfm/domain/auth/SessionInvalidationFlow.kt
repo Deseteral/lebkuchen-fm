@@ -14,6 +14,6 @@ object SessionInvalidationFlow {
     }
 
     fun subscribe(userName: String): Flow<Unit> {
-        return flow.filter { it == userName }.map { }
+        return flow.filter { it == userName }.map { Unit }
     }
 }
