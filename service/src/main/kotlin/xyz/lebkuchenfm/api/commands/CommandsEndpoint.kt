@@ -20,7 +20,9 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
     post("/commands/execute") {
         val contentType = call.request.contentType()
         val session = call.getUserSession()
-        val context = ExecutionContext(session)
+        val commandPrompt = call.request.headers["Command-Prompt"]
+
+        val context = ExecutionContext(session, commandPrompt)
 
         val processingResult = when {
             contentType.match(ContentType.Text.Plain) -> {
