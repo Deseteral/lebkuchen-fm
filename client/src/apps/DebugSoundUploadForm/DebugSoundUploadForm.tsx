@@ -5,6 +5,7 @@ import styles from './DebugSoundUploadForm.module.css';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
 import { SOUND_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
+import { apiFetch } from '../../services/api-fetch';
 
 /*
  * TODO: This is a very basic sound upload form that I've done just to have something to test
@@ -29,7 +30,7 @@ function DebugSoundUploadForm() {
     const form = e.target as HTMLFormElement;
 
     const formData = new FormData(form);
-    const response = await fetch('/api/x-sounds', { method: 'POST', body: formData });
+    const response = await apiFetch('/api/x-sounds', { method: 'POST', body: formData });
     const data = await response.json();
 
     if (response.status >= 200 && response.status < 300) {

@@ -1,7 +1,8 @@
 import { User } from '../types/user';
+import { apiFetch } from '../services/api-fetch';
 
 export async function getUsers() {
-  return fetch('/api/users')
+  return apiFetch('/api/users')
     .then((res) => res.json())
     .then((res) => res.users);
 }
@@ -18,7 +19,7 @@ export async function postUser(formData: FormData): Promise<User> {
     },
   };
 
-  const response = await fetch('/api/users', options);
+  const response = await apiFetch('/api/users', options);
 
   if (response.ok === false) {
     throw new Error(await response.text());
