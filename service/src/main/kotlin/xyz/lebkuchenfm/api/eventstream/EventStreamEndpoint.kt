@@ -2,7 +2,6 @@ package xyz.lebkuchenfm.api.eventstream
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.suitableCharset
-import io.ktor.server.auth.principal
 import io.ktor.server.routing.Route
 import io.ktor.server.sessions.SessionStorage
 import io.ktor.server.websocket.converter
@@ -18,12 +17,13 @@ import xyz.lebkuchenfm.api.eventstream.models.EventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDonationEventDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateDto
 import xyz.lebkuchenfm.api.eventstream.models.PlayerStateRequestEventDto
+import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
-import xyz.lebkuchenfm.domain.sessions.UserSession
 
 private val logger = KotlinLogging.logger {}
+private const val SESSION_INVALID_CLOSE_CODE: Short = 4401
 
 fun Route.eventStreamRouting(
     eventStream: WebSocketEventStream,
@@ -31,11 +31,7 @@ fun Route.eventStreamRouting(
     sessionStorage: SessionStorage,
 ) {
     webSocket("/event-stream") {
-        val userSession = call.principal<UserSession>() ?: run {
-            close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "Unauthorized"))
-            return@webSocket
-        }
-
+        val userSession = call.getUserSession()
         val sessionId = call.request.cookies[USER_SESSION_COOKIE_NAME]
         val connection = WebSocketConnection(session = this)
         val converter = checkNotNull(converter)
@@ -47,7 +43,7 @@ fun Route.eventStreamRouting(
                 SessionInvalidationFlow.subscribe(userSession.name).collect {
                     val sessionExists = sessionId != null && runCatching { sessionStorage.read(sessionId) }.isSuccess
                     if (!sessionExists) {
-                        runCatching { close(CloseReason(4401, "Session invalidated")) }
+                        runCatching { close(CloseReason(SESSION_INVALID_CLOSE_CODE, "Session invalidated")) }
                     }
                 }
             }
