@@ -15,6 +15,7 @@ class PlayerStateService {
   static initialize(playerState: PlayerState): void {
     if (!playerState) {
       console.log('Player state not initialized: Wrong player state', playerState);
+      return;
     }
 
     PlayerStateService.playerState = playerState;

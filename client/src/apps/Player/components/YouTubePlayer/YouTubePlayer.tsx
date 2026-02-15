@@ -1,5 +1,6 @@
 import { onMount, onCleanup } from 'solid-js';
 import { YoutubePlayerService } from '../../services/youtube-player-service';
+import styles from './YouTubePlayer.module.css';
 
 const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 
@@ -12,7 +13,7 @@ function YouTubePlayer() {
     YoutubePlayerService.cleanup();
   });
 
-  return <div id={YOUTUBE_PLAYER_DOM_ID} />;
+  return <div id={YOUTUBE_PLAYER_DOM_ID} class={styles.iframe} />;
 }
 
 export { YouTubePlayer };
