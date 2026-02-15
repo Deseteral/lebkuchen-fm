@@ -1,4 +1,8 @@
-import { type LocalEvent } from '../types/local-events';
+import {
+  type LocalEvent,
+  LocalEventTypes,
+  LocalWebsocketConnectionReadyEvent,
+} from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
 
 class SocketConnectionClient {
@@ -6,6 +10,10 @@ class SocketConnectionClient {
   private static eventListenerAbortController: AbortController | null = null;
 
   private static readonly RECONNECT_INTERVAL_MS = 2000;
+
+  static ready(): boolean {
+    return SocketConnectionClient.client?.readyState === WebSocket.OPEN;
+  }
 
   static connect(): void {
     if (!SocketConnectionClient.client) {
@@ -18,7 +26,13 @@ class SocketConnectionClient {
 
     SocketConnectionClient.client.addEventListener(
       'open',
-      () => console.log('Connected to event stream WebSocket.'),
+      () => {
+        console.log('Connected to event stream WebSocket.');
+        const id = LocalEventTypes.LocalWebsocketConnectionReady;
+        const eventData: LocalWebsocketConnectionReadyEvent = { id };
+
+        EventStreamClient.broadcast<LocalWebsocketConnectionReadyEvent>(id, eventData);
+      },
       { signal: SocketConnectionClient.eventListenerAbortController.signal },
     );
 

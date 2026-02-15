@@ -9,6 +9,7 @@ import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-
 import { PlayerControls } from './components/PlayerControls/PlayerControls';
 import { SongsQueue } from './components/SongsQueue/SongsQueue';
 import { Song } from '../../types/player-state';
+import clsx from 'clsx';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -76,7 +77,7 @@ function Player() {
             width: '600px',
             height: '500px',
             minWidth: '400px',
-            minHeight: '180px',
+            minHeight: '173px',
           }}
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
@@ -84,10 +85,12 @@ function Player() {
               <YouTubePlayer />
             </section>
             <section class={styles.controls}>
+              <p class={clsx(styles.nextSong, !playingNextSong() && styles.hidden)}>
+                Next: {playingNextSong() || ''}
+              </p>
               <h1 class={styles.songTitle}>
                 {currentlyPlayingSong() || 'No songs are currently playing.'}
               </h1>
-              {playingNextSong() && <p class={styles.nextSong}>Next: {playingNextSong()}</p>}
               <hr class={styles.divider} />
               <PlayerControls
                 queueButtonAction={() => setShowQueue((prev: boolean) => !prev)}

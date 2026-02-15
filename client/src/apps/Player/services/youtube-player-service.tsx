@@ -27,6 +27,10 @@ class YoutubePlayerService {
   private static player: YouTubePlayer;
   private static timeStateUpdateQueue: number | null = null;
 
+  static initialized(): boolean {
+    return !!YoutubePlayerService.player && !YoutubePlayerService.player.destroyed;
+  }
+
   static initialize(playerRootElementId: string): void {
     YoutubePlayerService.subscribeToSocketEvents();
     YoutubePlayerService.sendPlayerStateRequest();
@@ -66,7 +70,9 @@ class YoutubePlayerService {
 
   static cleanup(): void {
     PlayerStateService.reset();
-    YoutubePlayerService.player.destroy();
+    if (YoutubePlayerService.player && !YoutubePlayerService.player.destroyed) {
+      YoutubePlayerService.player.destroy();
+    }
 
     YoutubePlayerService.unsubscribeFromSocketEvents();
   }
