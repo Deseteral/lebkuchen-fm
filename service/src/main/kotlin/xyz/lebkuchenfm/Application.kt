@@ -31,7 +31,6 @@ import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.users.usersRouting
 import xyz.lebkuchenfm.api.xsounds.xSoundsRouting
 import xyz.lebkuchenfm.domain.auth.AuthService
-import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.TextCommandParser
@@ -48,6 +47,8 @@ import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
+import xyz.lebkuchenfm.domain.sessions.SessionsService
+import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.songs.SongsService
 import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
@@ -55,7 +56,7 @@ import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
-import xyz.lebkuchenfm.external.security.SessionStorageMongo
+import xyz.lebkuchenfm.external.security.SessionStorageInRepository
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
@@ -71,33 +72,41 @@ import kotlin.time.Duration.Companion.days
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
+    val clock = Clock.System
     val database = MongoDatabaseClient.getDatabase(environment.config)
     val dropboxClient = DropboxClient(environment.config)
     val youtubeClient = YoutubeClient(environment.config)
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
-    val passwordEncoder = Pbkdf2PasswordEncoder()
-    val secureGenerator = RandomSecureGenerator()
-    val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, Clock.System)
-    val authService = AuthService(usersService)
-
-    val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
+    val sessionsRepository = SessionsMongoRepository(database, clock)
+        .also {
+            runBlocking {
+                it.createUniqueIndex()
+                it.createExpirationIndex()
+            }
+        }
     val xSoundsRepository = XSoundsMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
-    val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
-
     val songsRepository = SongsMongoRepository(database)
         .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
-    val youtubeRepository = YouTubeDataRepository(youtubeClient)
-    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, Clock.System)
 
+    val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
+    val youtubeRepository = YouTubeDataRepository(youtubeClient)
+
+    val passwordEncoder = Pbkdf2PasswordEncoder()
+    val secureGenerator = RandomSecureGenerator()
     val eventStream = WebSocketEventStream()
 
-    val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
-
+    val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, clock)
+    val authService = AuthService(usersService)
+    val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
+    val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, clock)
     val soundboardService = SoundboardService(xSoundsService, eventStream)
+    val sessionsService = SessionsService(sessionsRepository)
+
+    val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
     val commandPrompt = environment.config.property("commandPrompt").getString()
     val textCommandParser = TextCommandParser(commandPrompt)
@@ -126,14 +135,13 @@ fun Application.module() {
     launch { discordClient.start() }
 
     val validateAuthHandler = ValidateAuthHandler(authService)
+    val sessionStorage = SessionStorageInRepository(sessionsRepository, clock)
 
     install(ContentNegotiation) {
         json()
     }
 
     install(Sessions) {
-        val sessionsMongoRepository = SessionsMongoRepository(database)
-        val sessionStorage = SessionStorageMongo(sessionsMongoRepository)
         cookie<UserSession>("user_session", sessionStorage) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 30.days.inWholeSeconds
@@ -180,7 +188,7 @@ fun Application.module() {
                     commandsRouting(commandExecutorService)
                     eventStreamRouting(eventStream, playerStateSynchronizer)
                     soundboardEndpoint(soundboardService)
-                    usersRouting(usersService)
+                    usersRouting(usersService, sessionsService, sessionStorage)
                 }
             }
         }

@@ -13,7 +13,7 @@ import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
-import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.users.UsersService
 
 fun Route.authRouting(usersService: UsersService) {
