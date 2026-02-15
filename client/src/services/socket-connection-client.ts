@@ -1,5 +1,8 @@
 import { type LocalEvent } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
+import { redirectTo } from './redirect-to';
+
+const SESSION_INVALIDATED_CLOSE_CODE = 4401;
 
 class SocketConnectionClient {
   private static client: WebSocket | null = null;
@@ -38,7 +41,13 @@ class SocketConnectionClient {
 
     SocketConnectionClient.client.addEventListener(
       'close',
-      () => {
+      (event: CloseEvent) => {
+        if (event.code === SESSION_INVALIDATED_CLOSE_CODE) {
+          console.log('Session invalidated. Redirecting to login.');
+          SocketConnectionClient.disconnect();
+          redirectTo('/login');
+          return;
+        }
         console.log('Disconnected by server from WebSocket event stream.');
         SocketConnectionClient.disconnect();
         SocketConnectionClient.startReconnectingProcedure();
