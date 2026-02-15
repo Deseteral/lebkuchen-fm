@@ -74,7 +74,7 @@ function Buffer() {
   const evalPrompt = async (prompt: string): Promise<void> => {
     appendBufferLines([`> ${prompt}`]);
 
-    if (!!prompt) appendPromptHistory(prompt);
+    if (prompt) appendPromptHistory(prompt);
     setPromptHistoryIdx(-1);
 
     const [command, ...args] = prompt.split(' ').filter((s) => !!s);
