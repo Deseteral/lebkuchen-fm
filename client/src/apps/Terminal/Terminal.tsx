@@ -57,6 +57,11 @@ function Buffer() {
     promptElement.value = value;
   };
 
+  const clearPrompt = (): void => {
+    setPromptHistoryIdx(-1);
+    setPrompt('');
+  }
+
   const setPromptFromHistory = (offset: 1 | -1): void => {
     const nextIdx = Math.clamp(promptHistoryIdx() + offset, -1, promptHistory().length - 1);
     setPromptHistoryIdx(nextIdx);
@@ -75,7 +80,7 @@ function Buffer() {
     appendBufferLines([`> ${prompt}`]);
 
     if (prompt) appendPromptHistory(prompt);
-    setPromptHistoryIdx(-1);
+    clearPrompt();
 
     const [command, ...args] = prompt.split(' ').filter((s) => !!s);
     if (!command) {
@@ -114,7 +119,6 @@ function Buffer() {
             switch (e.key) {
               case 'Enter':
                 evalPrompt(promptElement.value.trim());
-                setPrompt('');
                 break;
 
               case 'ArrowUp':
@@ -124,6 +128,10 @@ function Buffer() {
               case 'ArrowDown':
                 setPromptFromHistory(-1);
                 break;
+
+              case 'Escape':
+                clearPrompt();
+                break
             }
           }}
         />
