@@ -6,18 +6,21 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import io.ktor.server.sessions.SessionStorage
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
+import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
 
-fun Route.usersRouting(usersService: UsersService) {
+fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsService, sessionStorage: SessionStorage) {
     route("/users") {
         get {
             val users = usersService.getAll()
@@ -26,7 +29,6 @@ fun Route.usersRouting(usersService: UsersService) {
         }
 
         post {
-            val session = call.getUserSession()
             val newUser: NewUser = call.receive()
 
             usersService.addNewUser(newUser.username, newUser.discordId)
@@ -48,6 +50,15 @@ fun Route.usersRouting(usersService: UsersService) {
                             )
                     }
                 }
+        }
+
+        delete("{user_name}/sessions") {
+            val userName = call.parameters["user_name"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
+            val sessionIds = sessionsService.getUserSessionIds(userName)
+            sessionsService.removeAllSessionsForUser(userName)
+            sessionIds.forEach { sessionStorage.invalidate(it) }
+            SessionInvalidationFlow.emit(userName)
+            call.respond(HttpStatusCode.Accepted)
         }
     }
 }
