@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.api.eventstream
 
+import com.github.michaelbull.result.coroutines.runSuspendCatching
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.serialization.suitableCharset
 import io.ktor.server.routing.Route
@@ -41,9 +42,9 @@ fun Route.eventStreamRouting(
         try {
             launch {
                 SessionInvalidationFlow.subscribe(userSession.name).collect {
-                    val sessionExists = sessionId != null && runCatching { sessionStorage.read(sessionId) }.isSuccess
+                    val sessionExists = sessionId != null && runSuspendCatching { sessionStorage.read(sessionId) }.isOk
                     if (!sessionExists) {
-                        runCatching { close(CloseReason(SESSION_INVALID_CLOSE_CODE, "Session invalidated")) }
+                        runSuspendCatching { close(CloseReason(SESSION_INVALID_CLOSE_CODE, "Session invalidated")) }
                     }
                 }
             }
