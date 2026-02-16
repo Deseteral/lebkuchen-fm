@@ -142,7 +142,7 @@ fun Application.module() {
     }
 
     install(Sessions) {
-        cookie<UserSession>("user_session", sessionStorage) {
+        cookie<UserSession>(USER_SESSION_COOKIE_NAME, sessionStorage) {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 30.days.inWholeSeconds
             // TODO: The cookie should be signed, I guess?
@@ -186,7 +186,7 @@ fun Application.module() {
                     xSoundsRouting(xSoundsService)
                     songsRouting(songsService)
                     commandsRouting(commandExecutorService)
-                    eventStreamRouting(eventStream, playerStateSynchronizer)
+                    eventStreamRouting(eventStream, playerStateSynchronizer, sessionStorage)
                     soundboardEndpoint(soundboardService)
                     usersRouting(usersService, sessionsService, sessionStorage)
                 }
@@ -200,3 +200,5 @@ fun Application.module() {
         }
     }
 }
+
+const val USER_SESSION_COOKIE_NAME = "user_session"
