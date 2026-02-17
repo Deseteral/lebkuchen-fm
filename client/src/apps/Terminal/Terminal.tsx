@@ -111,7 +111,7 @@ function Buffer() {
 
   return (
     <div class={styles.buffer} ref={bufferElement} onClick={() => promptElement.focus()}>
-      <For each={bufferLines()}>{(line) => <div>{line}</div>}</For>
+      <For each={bufferLines()}>{(line) => <pre>{line}</pre>}</For>
 
       <div class={styles.promptContainer}>
         <div>$&nbsp;</div>
