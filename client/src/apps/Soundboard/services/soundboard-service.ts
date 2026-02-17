@@ -1,19 +1,20 @@
 import { XSound } from '../../../types/x-sound';
+import { apiFetch } from '../../../services/api-fetch';
 
 export abstract class SoundboardService {
   static async playXSound(soundName: string) {
     const url = `/api/soundboard/play?soundName=${encodeURIComponent(soundName)}`;
-    return fetch(url, { method: 'POST' }).catch((err) => console.error(err));
+    return apiFetch(url, { method: 'POST' }).catch((err) => console.error(err));
   }
 
   static async getXSounds() {
-    return fetch('/api/x-sounds')
+    return apiFetch('/api/x-sounds')
       .then((res) => res.json())
       .then((res) => res.sounds);
   }
 
   static async getXSoundsTags() {
-    return fetch('/api/x-sounds/tags')
+    return apiFetch('/api/x-sounds/tags')
       .then((res) => res.json())
       .then((res) => res.tags);
   }

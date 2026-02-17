@@ -1,3 +1,5 @@
+import { apiFetch } from '../../../services/api-fetch';
+
 class PlayerActions {
   static searchAndPlaySong(phrase: string) {
     if (phrase.startsWith('/q')) {
@@ -38,7 +40,7 @@ class PlayerActions {
   }
 
   private static runCommand(command: string) {
-    fetch('/api/commands/execute', {
+    apiFetch('/api/commands/execute', {
       method: 'POST',
       body: command,
     });

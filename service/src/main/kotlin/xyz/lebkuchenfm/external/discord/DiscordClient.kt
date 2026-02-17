@@ -14,9 +14,9 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
