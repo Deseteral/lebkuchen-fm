@@ -4,6 +4,7 @@ import '@phosphor-icons/web/bold';
 import '@phosphor-icons/web/fill';
 import { Desktop } from './views/Desktop/Desktop';
 import { Login } from './views/Login/Login';
+import './utils';
 import './styles.css';
 
 console.log(
