@@ -1,7 +1,7 @@
 import { TERMINAL_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
-import { For, createSignal } from 'solid-js';
+import { For, createSignal, onMount } from 'solid-js';
 import styles from './Terminal.module.css';
 import { programs } from './programs';
 
@@ -43,6 +43,10 @@ const WELCOME_MESSAGE = 'Welcome to LebkuchenFM!';
 function Buffer() {
   let bufferElement!: HTMLDivElement;
   let promptElement!: HTMLInputElement;
+
+  onMount(() => {
+    promptElement.focus();
+  });
 
   const [bufferLines, setBufferLines] = createSignal<string[]>([WELCOME_MESSAGE, '']);
 
@@ -86,7 +90,7 @@ function Buffer() {
   };
 
   return (
-    <div class={styles.buffer} ref={bufferElement}>
+    <div class={styles.buffer} ref={bufferElement} onClick={() => promptElement.focus()}>
       <For each={bufferLines()}>{(line) => <div>{line}</div>}</For>
 
       <div class={styles.promptContainer}>
