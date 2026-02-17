@@ -23,6 +23,10 @@
   }
 }
 
+.bufferLine {
+  white-space: pre-wrap;
+}
+
 .promptContainer {
   display: flex;
   flex-direction: row;
