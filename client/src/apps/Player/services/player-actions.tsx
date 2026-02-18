@@ -16,27 +16,27 @@ class PlayerActions {
   }
 
   static skipSong() {
-    PlayerActions.runCommand('/fm skip 1');
+    PlayerActions.runCommand('playback-skip 1');
   }
 
   static playerPause() {
-    PlayerActions.runCommand('/fm pause');
+    PlayerActions.runCommand('playback-pause');
   }
 
   static playerResume() {
-    PlayerActions.runCommand('/fm resume');
+    PlayerActions.runCommand('playback-resume');
   }
 
   private static playRandomSongFromHistory(phrase?: string) {
-    PlayerActions.runCommand(`/fm random ${phrase || ''}`);
+    PlayerActions.runCommand(`song-random ${phrase || ''}`);
   }
 
   private static playSongByYoutubeId(youtubeId: string) {
-    PlayerActions.runCommand(`/fm q ${youtubeId}`);
+    PlayerActions.runCommand(`song-queue ${youtubeId}`);
   }
 
   private static playSongByPhrase(phrase: string) {
-    PlayerActions.runCommand(`/fm s ${phrase}`);
+    PlayerActions.runCommand(`song-search ${phrase}`);
   }
 
   private static runCommand(command: string) {

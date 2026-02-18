@@ -108,9 +108,8 @@ fun Application.module() {
 
     val playerStateSynchronizer = PlayerStateSynchronizer(eventStream, DefaultPlayerStateDtoProvider)
 
-    val commandPrompt = environment.config.property("commandPrompt").getString()
-    val textCommandParser = TextCommandParser(commandPrompt)
-    val helpCommandProcessor = HelpCommandProcessor(commandPrompt)
+    val textCommandParser = TextCommandParser()
+    val helpCommandProcessor = HelpCommandProcessor()
     val commandProcessorRegistry = CommandProcessorRegistry(
         listOf(
             XCommandProcessor(soundboardService),
@@ -129,7 +128,7 @@ fun Application.module() {
     )
     helpCommandProcessor.setCommandRegistry(commandProcessorRegistry)
 
-    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry, commandPrompt)
+    val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
 
     val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
     launch { discordClient.start() }

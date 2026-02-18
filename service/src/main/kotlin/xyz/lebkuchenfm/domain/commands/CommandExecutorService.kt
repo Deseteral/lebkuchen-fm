@@ -11,7 +11,6 @@ private val logger = KotlinLogging.logger {}
 class CommandExecutorService(
     private val parser: TextCommandParser,
     private val registry: CommandProcessorRegistry,
-    private val commandPrompt: String,
 ) {
     private suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val processor = registry.getProcessorByKey(command.key)
@@ -27,10 +26,9 @@ class CommandExecutorService(
                 logger.error { "Could not parse command '$text'." }
                 CommandProcessingResult.fromMultilineMarkdown(
                     when (err) {
-                        CommandParsingError.IncorrectPrompt -> "Given text is not a command."
                         CommandParsingError.RequiredTokensMissing -> "The command must perform some action."
                     },
-                    "For more information checkout `$commandPrompt help`.",
+                    "For more information checkout `help` command.",
                 )
             }
     }

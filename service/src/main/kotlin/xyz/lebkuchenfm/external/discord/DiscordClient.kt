@@ -29,7 +29,7 @@ class DiscordClient(
     private lateinit var kord: Kord
 
     private val token: String? = config.propertyOrNull("discord.token")?.getString()
-    private val commandPrompt: String? = config.propertyOrNull("commandPrompt")?.getString()
+    private val commandPrompt: String? = config.propertyOrNull("discord.commandPrompt")?.getString()
     private val channelId: String? = config.propertyOrNull("discord.channelId")?.getString()
 
     suspend fun start() {
@@ -75,8 +75,9 @@ class DiscordClient(
                     }
 
                     else -> {
-                        val context = ExecutionContext(UserSession(user.data.name))
-                        val result = commandExecutorService.executeFromText(it.content, context)
+                        val context = ExecutionContext(UserSession(user.data.name), commandPrompt)
+                        val commandText = it.content.replace("$commandPrompt ", "")
+                        val result = commandExecutorService.executeFromText(commandText, context)
                         it.reply { content = result.message.markdown }
                     }
                 }
