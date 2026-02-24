@@ -30,7 +30,7 @@
 
 .nextSong {
   margin-bottom: 5px;
-  text-wrap: nowrap;
+  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
