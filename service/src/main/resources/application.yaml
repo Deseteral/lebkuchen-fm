@@ -22,5 +22,4 @@ youtube:
 discord:
   token: $?DISCORD_TOKEN
   channelId: $?DISCORD_CHANNEL_ID
-
-commandPrompt: "$COMMAND_PROMPT:/fm"
+  commandPrompt: "$COMMAND_PROMPT:/fm"

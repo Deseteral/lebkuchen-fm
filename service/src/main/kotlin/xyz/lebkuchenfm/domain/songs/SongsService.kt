@@ -2,9 +2,9 @@ package xyz.lebkuchenfm.domain.songs
 
 import com.github.michaelbull.result.getOr
 import kotlinx.datetime.Clock
-import xyz.lebkuchenfm.domain.auth.UserSession
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
+import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideo
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId

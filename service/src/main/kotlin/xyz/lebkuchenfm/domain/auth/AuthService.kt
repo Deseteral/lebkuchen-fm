@@ -7,6 +7,7 @@ import com.github.michaelbull.result.flatten
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.SetPasswordError
 import xyz.lebkuchenfm.domain.users.UsersService

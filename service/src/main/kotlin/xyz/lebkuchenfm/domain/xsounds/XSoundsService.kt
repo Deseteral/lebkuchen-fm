@@ -5,7 +5,7 @@ import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.get
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
-import xyz.lebkuchenfm.domain.auth.UserSession
+import xyz.lebkuchenfm.domain.sessions.UserSession
 
 private val logger = KotlinLogging.logger {}
 

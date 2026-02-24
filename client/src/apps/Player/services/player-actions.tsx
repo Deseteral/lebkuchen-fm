@@ -1,3 +1,5 @@
+import { apiFetch } from '../../../services/api-fetch';
+
 class PlayerActions {
   static searchAndPlaySong(phrase: string) {
     if (phrase.startsWith('/q')) {
@@ -14,31 +16,31 @@ class PlayerActions {
   }
 
   static skipSong() {
-    PlayerActions.runCommand('skip 1');
+    PlayerActions.runCommand('playback-skip 1');
   }
 
   static playerPause() {
-    PlayerActions.runCommand('pause');
+    PlayerActions.runCommand('playback-pause');
   }
 
   static playerResume() {
-    PlayerActions.runCommand('resume');
+    PlayerActions.runCommand('playback-resume');
   }
 
   private static playRandomSongFromHistory(phrase?: string) {
-    PlayerActions.runCommand(`random ${phrase || ''}`);
+    PlayerActions.runCommand(`song-random ${phrase || ''}`);
   }
 
   private static playSongByYoutubeId(youtubeId: string) {
-    PlayerActions.runCommand(`q ${youtubeId}`);
+    PlayerActions.runCommand(`song-queue ${youtubeId}`);
   }
 
   private static playSongByPhrase(phrase: string) {
-    PlayerActions.runCommand(`s ${phrase}`);
+    PlayerActions.runCommand(`song-search ${phrase}`);
   }
 
   private static runCommand(command: string) {
-    fetch('/api/commands/execute', {
+    apiFetch('/api/commands/execute', {
       method: 'POST',
       body: command,
     });

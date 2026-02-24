@@ -1,12 +1,9 @@
 import { redirectTo } from './redirect-to';
+import { apiFetch } from './api-fetch';
 
 class UserAccountService {
   static checkLoginStateAndRedirect() {
-    fetch('/api/auth').then((res) => {
-      if (res.status === 401 && window.location.pathname !== '/login') {
-        redirectTo('/login');
-      }
-    });
+    apiFetch('/api/auth');
   }
 
   static async userLogin(username: string, password: string) {
@@ -28,7 +25,7 @@ class UserAccountService {
   }
 
   static userLogout() {
-    fetch('/api/auth/logout', { method: 'POST' }).then(() => redirectTo('/login'));
+    apiFetch('/api/auth/logout', { method: 'POST' }).then(() => redirectTo('/login'));
   }
 }
 
