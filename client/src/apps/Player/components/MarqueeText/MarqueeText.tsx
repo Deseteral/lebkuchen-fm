@@ -3,7 +3,7 @@ import styles from './MarqueeText.module.css';
 import clsx from 'clsx';
 
 const SCROLL_SPEED_PX_PER_SEC = 50;
-const SEPARATOR = ' \u2022\u2022\u2022 ';
+const SEPARATOR = ' ••• ';
 
 interface MarqueeTextProps {
   text: string;
