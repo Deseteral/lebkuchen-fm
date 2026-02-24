@@ -3,7 +3,7 @@ import { YoutubePlayerService } from '../../services/youtube-player-service';
 import { EventStreamClient } from '../../../../services/event-stream-client';
 import {
   LocalEventTypes,
-  LocalWebsocketConnectionReadyEvent,
+  LocalWebSocketConnectionReadyEvent,
 } from '../../../../types/local-events';
 import { SocketConnectionClient } from '../../../../services/socket-connection-client';
 
@@ -11,36 +11,31 @@ const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 
 function YouTubePlayer() {
   const initializeYoutubePlayer = () => {
-    if (SocketConnectionClient.ready() && !YoutubePlayerService.initialized()) {
+    if (SocketConnectionClient.isReady() && !YoutubePlayerService.isInitialized()) {
       console.log('[YouTubePlayer] Service initializing.');
       YoutubePlayerService.initialize(YOUTUBE_PLAYER_DOM_ID);
     }
   };
 
-  const onWebsocketConnectionReady = () => {
-    console.log('[YouTubePlayer] Websocket connection ready event.');
+  const onWebSocketConnectionReady = () => {
+    console.log('[YouTubePlayer] WebSocket connection ready event.');
     initializeYoutubePlayer();
   };
-
-  const unsubscribeFromWebsocketConnectionReadyEvent = () => {
-    EventStreamClient.unsubscribe<LocalWebsocketConnectionReadyEvent>(
-      LocalEventTypes.LocalWebsocketConnectionReady,
-      onWebsocketConnectionReady,
-    );
-  };
-
-  EventStreamClient.subscribe<LocalWebsocketConnectionReadyEvent>(
-    LocalEventTypes.LocalWebsocketConnectionReady,
-    onWebsocketConnectionReady,
-  );
 
   onMount(() => {
     initializeYoutubePlayer();
+    EventStreamClient.subscribe<LocalWebSocketConnectionReadyEvent>(
+      LocalEventTypes.LocalWebSocketConnectionReady,
+      onWebSocketConnectionReady,
+    );
   });
 
   onCleanup(() => {
     YoutubePlayerService.cleanup();
-    unsubscribeFromWebsocketConnectionReadyEvent();
+    EventStreamClient.unsubscribe<LocalWebSocketConnectionReadyEvent>(
+      LocalEventTypes.LocalWebSocketConnectionReady,
+      onWebSocketConnectionReady,
+    );
   });
 
   return <div id={YOUTUBE_PLAYER_DOM_ID} />;

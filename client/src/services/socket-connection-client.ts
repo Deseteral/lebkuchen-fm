@@ -1,7 +1,7 @@
 import {
   type LocalEvent,
   LocalEventTypes,
-  LocalWebsocketConnectionReadyEvent,
+  LocalWebSocketConnectionReadyEvent,
 } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
 
@@ -11,7 +11,7 @@ class SocketConnectionClient {
 
   private static readonly RECONNECT_INTERVAL_MS = 2000;
 
-  static ready(): boolean {
+  static isReady(): boolean {
     return SocketConnectionClient.client?.readyState === WebSocket.OPEN;
   }
 
@@ -28,10 +28,10 @@ class SocketConnectionClient {
       'open',
       () => {
         console.log('[SocketConnectionClient] Connected to event stream WebSocket.');
-        const id = LocalEventTypes.LocalWebsocketConnectionReady;
-        const eventData: LocalWebsocketConnectionReadyEvent = { id };
+        const id = LocalEventTypes.LocalWebSocketConnectionReady;
+        const eventData: LocalWebSocketConnectionReadyEvent = { id };
 
-        EventStreamClient.broadcast<LocalWebsocketConnectionReadyEvent>(id, eventData);
+        EventStreamClient.broadcast<LocalWebSocketConnectionReadyEvent>(id, eventData);
       },
       { signal: SocketConnectionClient.eventListenerAbortController.signal },
     );

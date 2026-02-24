@@ -27,7 +27,7 @@ class YoutubePlayerService {
   private static player: YouTubePlayer;
   private static timeStateUpdateQueue: number | null = null;
 
-  static initialized(): boolean {
+  static isInitialized(): boolean {
     return !!YoutubePlayerService.player && !YoutubePlayerService.player.destroyed;
   }
 

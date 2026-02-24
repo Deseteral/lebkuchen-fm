@@ -3,7 +3,7 @@ import { EventData } from './event-data';
 
 enum LocalEventTypes {
   LocalPlayerStateUpdate = 'LocalPlayerStateUpdate',
-  LocalWebsocketConnectionReady = 'LocalWebsocketConnectionReady',
+  LocalWebSocketConnectionReady = 'LocalWebSocketConnectionReady',
 }
 
 interface LocalPlayerStateUpdateEvent {
@@ -11,15 +11,15 @@ interface LocalPlayerStateUpdateEvent {
   state: PlayerState | null;
 }
 
-interface LocalWebsocketConnectionReadyEvent {
-  id: LocalEventTypes.LocalWebsocketConnectionReady;
+interface LocalWebSocketConnectionReadyEvent {
+  id: LocalEventTypes.LocalWebSocketConnectionReady;
 }
 
-type LocalEvent = EventData | LocalPlayerStateUpdateEvent | LocalWebsocketConnectionReadyEvent;
+type LocalEvent = EventData | LocalPlayerStateUpdateEvent | LocalWebSocketConnectionReadyEvent;
 
 export {
   LocalEventTypes,
   type LocalEvent,
   type LocalPlayerStateUpdateEvent,
-  type LocalWebsocketConnectionReadyEvent,
+  type LocalWebSocketConnectionReadyEvent,
 };
