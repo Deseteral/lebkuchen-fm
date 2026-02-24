@@ -4,7 +4,9 @@ import { apiFetch } from '../../../services/api-fetch';
 export abstract class SoundboardService {
   static async playXSound(soundName: string) {
     const url = `/api/soundboard/play?soundName=${encodeURIComponent(soundName)}`;
-    return apiFetch(url, { method: 'POST' }).catch((err) => console.error(err));
+    return apiFetch(url, { method: 'POST' }).catch((err) =>
+      console.error('[SoundboardService] Failed to play x-sound.', err),
+    );
   }
 
   static async getXSounds() {

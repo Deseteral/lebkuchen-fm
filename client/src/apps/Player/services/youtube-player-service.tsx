@@ -27,6 +27,10 @@ class YoutubePlayerService {
   private static player: YouTubePlayer;
   private static timeStateUpdateQueue: number | null = null;
 
+  static isInitialized(): boolean {
+    return !!YoutubePlayerService.player && !YoutubePlayerService.player.destroyed;
+  }
+
   static initialize(playerRootElementId: string): void {
     YoutubePlayerService.subscribeToSocketEvents();
     YoutubePlayerService.sendPlayerStateRequest();
@@ -66,7 +70,9 @@ class YoutubePlayerService {
 
   static cleanup(): void {
     PlayerStateService.reset();
-    YoutubePlayerService.player.destroy();
+    if (YoutubePlayerService.player && !YoutubePlayerService.player.destroyed) {
+      YoutubePlayerService.player.destroy();
+    }
 
     YoutubePlayerService.unsubscribeFromSocketEvents();
   }
@@ -123,7 +129,7 @@ class YoutubePlayerService {
     try {
       const playerState = PlayerStateService.get();
 
-      console.log('Local PlayerState requested:', playerState);
+      console.log('[YoutubePlayerService] Local PlayerState requested.', playerState);
       SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
         id: 'PlayerStateDonationEvent',
         requestHandle: event.requestHandle,
@@ -131,7 +137,7 @@ class YoutubePlayerService {
       });
     } catch (error) {
       if (error instanceof PlayerStateNotInitializedError) {
-        console.log('Local PlayerState requested but not initialized');
+        console.log('[YoutubePlayerService] Local PlayerState requested but not initialized.');
       }
     }
   }
