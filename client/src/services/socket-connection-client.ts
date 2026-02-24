@@ -27,7 +27,7 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener(
       'open',
       () => {
-        console.log('Connected to event stream WebSocket.');
+        console.log('[SocketConnectionClient] Connected to event stream WebSocket.');
         const id = LocalEventTypes.LocalWebsocketConnectionReady;
         const eventData: LocalWebsocketConnectionReadyEvent = { id };
 
@@ -44,7 +44,7 @@ class SocketConnectionClient {
           return;
         }
 
-        console.log('Received event from event stream.', eventData);
+        console.log('[SocketConnectionClient] Received event from event stream.', eventData);
         EventStreamClient.broadcast(eventData.id, eventData);
       },
       { signal: SocketConnectionClient.eventListenerAbortController.signal },
@@ -53,7 +53,7 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener(
       'close',
       () => {
-        console.log('Disconnected by server from WebSocket event stream.');
+        console.log('[SocketConnectionClient] Disconnected by server from WebSocket event stream.');
         SocketConnectionClient.disconnect();
         SocketConnectionClient.startReconnectingProcedure();
       },
@@ -63,7 +63,10 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener(
       'error',
       (err) => {
-        console.error('Socket encountered error. Closing the socket.', err);
+        console.error(
+          '[SocketConnectionClient] Socket encountered error. Closing the socket.',
+          err,
+        );
         SocketConnectionClient.disconnect();
         SocketConnectionClient.startReconnectingProcedure();
       },
@@ -78,24 +81,25 @@ class SocketConnectionClient {
     SocketConnectionClient.client?.close();
     SocketConnectionClient.client = null;
 
-    console.log('Disconnected from WebSocket event stream');
+    console.log('[SocketConnectionClient] Disconnected from WebSocket event stream.');
   }
 
   private static startReconnectingProcedure(): void {
     setTimeout(() => {
-      console.log('Reconnecting to event stream WebSocket...');
+      console.log('[SocketConnectionClient] Reconnecting to event stream WebSocket...');
       SocketConnectionClient.connect();
     }, SocketConnectionClient.RECONNECT_INTERVAL_MS);
   }
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
     if (!SocketConnectionClient.client) {
-      console.log('Could not send WebSocket message because it is not initialized.');
+      // eslint-disable-next-line prettier/prettier
+      console.log('[SocketConnectionClient] Could not send WebSocket message because it is not initialized.');
       return;
     }
 
     SocketConnectionClient.client.send(JSON.stringify(messageData));
-    console.log('Sent message to event stream', messageData);
+    console.log('[SocketConnectionClient] Sent message to event stream.', messageData);
   }
 
   private static getWebSocketUrl(): string {
@@ -107,7 +111,10 @@ class SocketConnectionClient {
     try {
       return JSON.parse(data);
     } catch (err) {
-      console.log('Could not parse WebSocket event stream message.', err);
+      console.error(
+        '[SocketConnectionClient] Could not parse WebSocket event stream message.',
+        err,
+      );
       return null;
     }
   }

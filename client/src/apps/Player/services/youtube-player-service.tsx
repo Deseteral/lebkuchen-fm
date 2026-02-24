@@ -129,7 +129,7 @@ class YoutubePlayerService {
     try {
       const playerState = PlayerStateService.get();
 
-      console.log('Local PlayerState requested:', playerState);
+      console.log('[YoutubePlayerService] Local PlayerState requested.', playerState);
       SocketConnectionClient.sendSocketMessage<PlayerStateDonationEvent>({
         id: 'PlayerStateDonationEvent',
         requestHandle: event.requestHandle,
@@ -137,7 +137,7 @@ class YoutubePlayerService {
       });
     } catch (error) {
       if (error instanceof PlayerStateNotInitializedError) {
-        console.log('Local PlayerState requested but not initialized');
+        console.log('[YoutubePlayerService] Local PlayerState requested but not initialized.');
       }
     }
   }

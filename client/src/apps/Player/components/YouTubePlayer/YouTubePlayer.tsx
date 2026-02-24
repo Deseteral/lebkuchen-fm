@@ -12,13 +12,13 @@ const YOUTUBE_PLAYER_DOM_ID = 'youtube-player';
 function YouTubePlayer() {
   const initializeYoutubePlayer = () => {
     if (SocketConnectionClient.ready() && !YoutubePlayerService.initialized()) {
-      console.log('[YouTubePlayer] Service initializing');
+      console.log('[YouTubePlayer] Service initializing.');
       YoutubePlayerService.initialize(YOUTUBE_PLAYER_DOM_ID);
     }
   };
 
   const onWebsocketConnectionReady = () => {
-    console.log('[YouTubePlayer] Websocket connection ready event');
+    console.log('[YouTubePlayer] Websocket connection ready event.');
     initializeYoutubePlayer();
   };
 

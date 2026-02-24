@@ -30,7 +30,7 @@ function Player() {
   };
 
   const onPlayerStateUpdate = (event: LocalPlayerStateUpdateEvent) => {
-    console.log('Player state update in player:', event.state);
+    console.log('[Player] Player state update.', event.state);
     const newCurrentlyPlayingSong = event.state?.currentlyPlaying?.song?.name;
     const queue = event.state?.queue;
     const newPlayingNextSong = queue?.[0] ? queue[0].name : null;
@@ -78,7 +78,7 @@ function Player() {
             width: '600px',
             height: '500px',
             minWidth: '400px',
-            minHeight: '173px',
+            minHeight: '157px',
           }}
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
@@ -87,11 +87,11 @@ function Player() {
             </section>
             <section class={styles.controls}>
               <p class={clsx(styles.nextSong, !playingNextSong() && styles.hidden)}>
-                Next: {playingNextSong() || ''}
+                Next: {playingNextSong()}
               </p>
               <h1 class={styles.songTitle}>
-                <Show when={currentlyPlayingSong() || true} fallback="No songs are currently playing.">
-                  <MarqueeText text={"Bardzo długi tytuł piosenki, który z pewnością nie zmieściłby się w jednej linijce"} />
+                <Show when={!!currentlyPlayingSong()} fallback="No songs are currently playing.">
+                  <MarqueeText text={currentlyPlayingSong()!} />
                 </Show>
               </h1>
               <hr class={styles.divider} />

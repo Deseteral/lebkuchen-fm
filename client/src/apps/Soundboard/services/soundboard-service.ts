@@ -3,7 +3,9 @@ import { XSound } from '../../../types/x-sound';
 export abstract class SoundboardService {
   static async playXSound(soundName: string) {
     const url = `/api/soundboard/play?soundName=${encodeURIComponent(soundName)}`;
-    return fetch(url, { method: 'POST' }).catch((err) => console.error(err));
+    return fetch(url, { method: 'POST' }).catch((err) =>
+      console.error('[SoundboardService] Failed to play x-sound.', err),
+    );
   }
 
   static async getXSounds() {

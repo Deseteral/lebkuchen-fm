@@ -11,7 +11,7 @@ class UserPreferencesService {
     try {
       localStorage.setItem(key, JSON.stringify(value));
     } catch (err) {
-      console.error(`Cannot set user preference "${key}"`, err);
+      console.error(`[UserPreferencesService] Cannot set user preference "${key}".`, err);
     }
   }
 
@@ -36,7 +36,7 @@ class UserPreferencesService {
     try {
       return localStorage.getItem(key);
     } catch (err) {
-      console.error(`Cannot get user preference "${key}"`, err);
+      console.error(`[UserPreferencesService] Cannot get user preference "${key}".`, err);
       return null;
     }
   }
