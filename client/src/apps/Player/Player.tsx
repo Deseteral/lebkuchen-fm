@@ -1,5 +1,5 @@
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
-import { createSignal, onCleanup, onMount } from 'solid-js';
+import { Show, createSignal, onCleanup, onMount } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
 import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
@@ -8,6 +8,7 @@ import { EventStreamClient } from '../../services/event-stream-client';
 import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-events';
 import { PlayerControls } from './components/PlayerControls/PlayerControls';
 import { SongsQueue } from './components/SongsQueue/SongsQueue';
+import { MarqueeText } from './components/MarqueeText/MarqueeText';
 import { Song } from '../../types/player-state';
 import clsx from 'clsx';
 
@@ -89,7 +90,9 @@ function Player() {
                 Next: {playingNextSong() || ''}
               </p>
               <h1 class={styles.songTitle}>
-                {currentlyPlayingSong() || 'No songs are currently playing.'}
+                <Show when={currentlyPlayingSong() || true} fallback="No songs are currently playing.">
+                  <MarqueeText text={"Bardzo długi tytuł piosenki, który z pewnością nie zmieściłby się w jednej linijce"} />
+                </Show>
               </h1>
               <hr class={styles.divider} />
               <PlayerControls

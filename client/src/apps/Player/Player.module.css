@@ -25,9 +25,6 @@
 
 .songTitle {
   font-size: 1.2em;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow: hidden;
 }
 
