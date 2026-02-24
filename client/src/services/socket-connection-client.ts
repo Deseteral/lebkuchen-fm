@@ -93,8 +93,10 @@ class SocketConnectionClient {
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
     if (!SocketConnectionClient.client) {
-      // eslint-disable-next-line prettier/prettier
-      console.log('[SocketConnectionClient] Could not send WebSocket message because it is not initialized.');
+      // prettier-ignore
+      console.log(
+        '[SocketConnectionClient] Could not send WebSocket message because it is not initialized.',
+      );
       return;
     }
 

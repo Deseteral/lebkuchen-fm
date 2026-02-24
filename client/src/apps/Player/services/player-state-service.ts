@@ -14,7 +14,7 @@ class PlayerStateService {
 
   static initialize(playerState: PlayerState): void {
     if (!playerState) {
-      // eslint-disable-next-line prettier/prettier
+      // prettier-ignore
       console.log('[PlayerStateService] Player state not initialized: Wrong player state.', playerState);
     }
 
