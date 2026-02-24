@@ -14,27 +14,27 @@ class PlayerActions {
   }
 
   static skipSong() {
-    PlayerActions.runCommand('/fm skip 1');
+    PlayerActions.runCommand('skip 1');
   }
 
   static playerPause() {
-    PlayerActions.runCommand('/fm pause');
+    PlayerActions.runCommand('pause');
   }
 
   static playerResume() {
-    PlayerActions.runCommand('/fm resume');
+    PlayerActions.runCommand('resume');
   }
 
   private static playRandomSongFromHistory(phrase?: string) {
-    PlayerActions.runCommand(`/fm random ${phrase || ''}`);
+    PlayerActions.runCommand(`random ${phrase || ''}`);
   }
 
   private static playSongByYoutubeId(youtubeId: string) {
-    PlayerActions.runCommand(`/fm q ${youtubeId}`);
+    PlayerActions.runCommand(`q ${youtubeId}`);
   }
 
   private static playSongByPhrase(phrase: string) {
-    PlayerActions.runCommand(`/fm s ${phrase}`);
+    PlayerActions.runCommand(`s ${phrase}`);
   }
 
   private static runCommand(command: string) {
