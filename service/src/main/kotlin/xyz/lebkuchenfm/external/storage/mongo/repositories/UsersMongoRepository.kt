@@ -151,7 +151,7 @@ private data class UserEntity(
             discordId = discordId,
             creationDate = creationDate,
             lastLoggedIn = lastLoggedIn,
-            roles = roles.mapNotNull { Role.fromString(it) }.toSet(),
+            roles = roles.mapNotNull { Role.fromName(it) }.toSet(),
             deniedScopes = deniedScopes.mapNotNull { Scope.fromValue(it) }.toSet(),
         )
     }
@@ -180,8 +180,8 @@ private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
     discordId = discordId,
     creationDate = creationDate,
     lastLoggedIn = lastLoggedIn,
-    roles = roles.map { it.name },
-    deniedScopes = deniedScopes.map { it.value },
+    roles = roles.map { it.name }.sorted(),
+    deniedScopes = deniedScopes.map { it.value }.sorted(),
 )
 
 private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(

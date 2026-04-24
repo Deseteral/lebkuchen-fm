@@ -5,6 +5,8 @@ enum class Role(val scopes: Set<Scope>) {
     ;
 
     companion object {
-        fun fromString(value: String): Role? = entries.find { it.name == value }
+        private val map = entries.associateBy { it.name }
+
+        fun fromName(value: String): Role? = map[value]
     }
 }

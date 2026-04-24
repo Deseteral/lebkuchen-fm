@@ -88,7 +88,7 @@ fun User.toResponse(): UserResponse {
         discordId = this.data.discordId,
         creationDate = this.data.creationDate,
         lastLoggedIn = this.data.lastLoggedIn,
-        roles = this.data.roles.map { it.name },
-        deniedScopes = this.data.deniedScopes.map { it.value },
+        roles = this.data.roles.map { it.name }.sorted(),
+        deniedScopes = this.data.deniedScopes.map { it.value }.sorted(),
     )
 }
