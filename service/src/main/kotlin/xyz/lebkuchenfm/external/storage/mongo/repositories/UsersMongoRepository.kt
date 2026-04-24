@@ -22,6 +22,8 @@ import kotlinx.datetime.Instant
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
+import xyz.lebkuchenfm.domain.auth.Role
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
@@ -141,12 +143,16 @@ private data class UserEntity(
         val discordId: String?,
         @Contextual val creationDate: Instant,
         @Contextual val lastLoggedIn: Instant,
+        val roles: List<String> = emptyList(),
+        val deniedScopes: List<String> = emptyList(),
     ) {
         fun toDomain() = User.UserData(
             name = name,
             discordId = discordId,
             creationDate = creationDate,
             lastLoggedIn = lastLoggedIn,
+            roles = roles.mapNotNull { Role.fromString(it) }.toSet(),
+            deniedScopes = deniedScopes.mapNotNull { Scope.fromValue(it) }.toSet(),
         )
     }
 
@@ -174,6 +180,8 @@ private fun User.UserData.toEntity() = UserEntity.UserDataEntity(
     discordId = discordId,
     creationDate = creationDate,
     lastLoggedIn = lastLoggedIn,
+    roles = roles.map { it.name },
+    deniedScopes = deniedScopes.map { it.value },
 )
 
 private fun User.UserSecret.toEntity() = UserEntity.UserSecretEntity(

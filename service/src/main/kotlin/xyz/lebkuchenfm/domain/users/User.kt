@@ -1,6 +1,8 @@
 package xyz.lebkuchenfm.domain.users
 
 import kotlinx.datetime.Instant
+import xyz.lebkuchenfm.domain.auth.Role
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 
 data class User(
@@ -14,6 +16,8 @@ data class User(
         val discordId: String?,
         val creationDate: Instant,
         val lastLoggedIn: Instant,
+        val roles: Set<Role> = emptySet(),
+        val deniedScopes: Set<Scope> = emptySet(),
     )
 
     data class UserSecret(

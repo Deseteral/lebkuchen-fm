@@ -78,6 +78,8 @@ data class UserResponse(
     val discordId: String?,
     val creationDate: Instant,
     val lastLoggedIn: Instant,
+    val roles: List<String>,
+    val deniedScopes: List<String>,
 )
 
 fun User.toResponse(): UserResponse {
@@ -86,5 +88,7 @@ fun User.toResponse(): UserResponse {
         discordId = this.data.discordId,
         creationDate = this.data.creationDate,
         lastLoggedIn = this.data.lastLoggedIn,
+        roles = this.data.roles.map { it.name },
+        deniedScopes = this.data.deniedScopes.map { it.value },
     )
 }
