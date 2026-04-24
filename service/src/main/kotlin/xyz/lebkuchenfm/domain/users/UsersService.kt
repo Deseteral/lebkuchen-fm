@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.domain.users
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -67,6 +68,30 @@ class UsersService(
             }
     }
 
+    suspend fun createFirstUser(username: String, password: String): Result<User, CreateFirstUserError> {
+        if (getUsersCount() != 0L) {
+            return Err(CreateFirstUserError.UsersAlreadyExist)
+        }
+
+        return addNewUser(username, roles = setOf(Role.OWNER))
+            .mapError { CreateFirstUserError.UnknownError }
+            .andThen { user ->
+                setPassword(user, password)
+                    .mapError { CreateFirstUserError.UnknownError }
+            }
+    }
+
+    suspend fun assignOwnerToOldestUserIfNoneExists() {
+        val owners = repository.findByRole(Role.OWNER)
+        if (owners.isNotEmpty()) return
+
+        val oldestUser = repository.findOldestUser() ?: return
+        val updatedRoles = oldestUser.data.roles + Role.OWNER
+
+        repository.updateRoles(oldestUser, updatedRoles)
+            .onSuccess { logger.info { "Assigned OWNER role to oldest user '${it.data.name}'." } }
+    }
+
     fun checkPassword(user: User, password: String): Boolean {
         if (user.secret == null) {
             return false
@@ -118,4 +143,9 @@ sealed class SetPasswordError {
     data class ValidationError(val tooShort: Boolean) : SetPasswordError()
     data object UserDoesNotExist : SetPasswordError()
     data object UnknownError : SetPasswordError()
+}
+
+sealed class CreateFirstUserError {
+    data object UsersAlreadyExist : CreateFirstUserError()
+    data object UnknownError : CreateFirstUserError()
 }

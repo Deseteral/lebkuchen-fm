@@ -100,6 +100,7 @@ fun Application.module() {
     val eventStream = WebSocketEventStream()
 
     val usersService = UsersService(usersRepository, passwordEncoder, secureGenerator, clock)
+    runBlocking { usersService.assignOwnerToOldestUserIfNoneExists() }
     val authService = AuthService(usersService)
     val xSoundsService = XSoundsService(xSoundsRepository, xSoundsFileRepository)
     val songsService = SongsService(songsRepository, youtubeRepository, historyRepository, clock)

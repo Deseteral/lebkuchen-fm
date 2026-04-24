@@ -12,6 +12,7 @@ import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -26,6 +27,7 @@ import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
 import xyz.lebkuchenfm.domain.users.InsertUserError
+import xyz.lebkuchenfm.domain.users.UpdateRolesError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
@@ -80,6 +82,25 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
+    override suspend fun findOldestUser(): User? {
+        val creationDateFieldName =
+            "${UserEntity::data.name}.${UserEntity.UserDataEntity::creationDate.name}"
+        return collection
+            .find()
+            .sort(Sorts.ascending(creationDateFieldName))
+            .limit(1)
+            .firstOrNull()
+            ?.toDomain()
+    }
+
+    override suspend fun findByRole(role: Role): List<User> {
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        return collection
+            .find(eq(rolesFieldName, role.name))
+            .map { it.toDomain() }
+            .toList()
+    }
+
     override suspend fun countUsers(): Long {
         // We should not return zero on errors here!
         // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
@@ -123,6 +144,21 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         } catch (ex: Exception) {
             logger.error(ex) { "An error occurred while updating user '${user.data.name}' secret." }
             Err(UpdateSecretError.WriteError)
+        }
+    }
+
+    override suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRolesError> {
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        return try {
+            collection.findOneAndUpdate(
+                eq(nameFieldName, user.data.name),
+                Updates.set(rolesFieldName, roles.map { it.name }.sorted()),
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+            )?.toDomain()?.let { Ok(it) } ?: Err(UpdateRolesError.UserNotFound)
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while updating user '${user.data.name}' roles." }
+            Err(UpdateRolesError.WriteError)
         }
     }
 }
