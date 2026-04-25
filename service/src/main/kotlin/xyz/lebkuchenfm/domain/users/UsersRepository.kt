@@ -11,8 +11,8 @@ interface UsersRepository {
     suspend fun findByDiscordId(discordId: String): User?
     suspend fun findOldestUser(): User?
     suspend fun findByRole(role: Role): List<User>
-    suspend fun countUsers(): Long
     suspend fun insert(user: User): Result<User, InsertUserError>
+    suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError>
     suspend fun updateLastLoginDate(user: User, date: Instant): User?
     suspend fun updateSecret(user: User, secret: User.UserSecret): Result<User, UpdateSecretError>
     suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRolesError>
@@ -31,4 +31,9 @@ sealed class UpdateSecretError {
 sealed class UpdateRolesError {
     data object UserNotFound : UpdateRolesError()
     data object WriteError : UpdateRolesError()
+}
+
+sealed class InsertFirstUserError {
+    data object UsersAlreadyExist : InsertFirstUserError()
+    data object WriteError : InsertFirstUserError()
 }

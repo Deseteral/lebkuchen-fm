@@ -26,6 +26,7 @@ import org.bson.BsonDateTime
 import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.users.InsertFirstUserError
 import xyz.lebkuchenfm.domain.users.InsertUserError
 import xyz.lebkuchenfm.domain.users.UpdateRolesError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
@@ -101,12 +102,6 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             .toList()
     }
 
-    override suspend fun countUsers(): Long {
-        // We should not return zero on errors here!
-        // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
-        return collection.countDocuments()
-    }
-
     override suspend fun insert(user: User): Result<User, InsertUserError> {
         return runSuspendCatching { collection.insertOne(user.toEntity()) }
             .map { user }
@@ -116,6 +111,31 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
                     else -> {
                         logger.error(ex) { "An error occurred while inserting new user document." }
                         InsertUserError.WriteError
+                    }
+                }
+                return Err(error)
+            }
+    }
+
+    override suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError> {
+        val count = try {
+            collection.countDocuments()
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while counting users for first user insertion." }
+            return Err(InsertFirstUserError.WriteError)
+        }
+
+        if (count > 0) return Err(InsertFirstUserError.UsersAlreadyExist)
+
+        return runSuspendCatching { collection.insertOne(user.toEntity()) }
+            .map { user }
+            .mapError { ex ->
+                val error = when {
+                    ex is MongoWriteException && ex.isDuplicateKeyException ->
+                        InsertFirstUserError.UsersAlreadyExist
+                    else -> {
+                        logger.error(ex) { "An error occurred while inserting first user document." }
+                        InsertFirstUserError.WriteError
                     }
                 }
                 return Err(error)

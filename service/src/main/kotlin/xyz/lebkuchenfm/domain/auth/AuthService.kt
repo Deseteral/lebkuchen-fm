@@ -30,6 +30,9 @@ class AuthService(private val usersService: UsersService) {
                                 logger.info { "User '$username' tried to log in, but does not exist." }
                                 AuthError.UserDoesNotExistError
                             }
+                            is CreateFirstUserError.PasswordValidationError -> {
+                                AuthError.CannotSetPasswordError(it.error)
+                            }
                             CreateFirstUserError.UnknownError -> {
                                 logger.error { "Something went wrong while creating first user '$username'." }
                                 AuthError.UnknownError

@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.users
 
 import com.github.michaelbull.result.Err
+import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
 import com.github.michaelbull.result.mapError
@@ -25,10 +26,6 @@ class UsersService(
 
     suspend fun getByName(username: String): User? {
         return repository.findByName(username)
-    }
-
-    suspend fun getUsersCount(): Long {
-        return repository.countUsers()
     }
 
     suspend fun getByDiscordId(discordId: String): User? {
@@ -69,15 +66,29 @@ class UsersService(
     }
 
     suspend fun createFirstUser(username: String, password: String): Result<User, CreateFirstUserError> {
-        if (getUsersCount() != 0L) {
-            return Err(CreateFirstUserError.UsersAlreadyExist)
-        }
+        return createUserSecret(password)
+            .mapError { CreateFirstUserError.PasswordValidationError(it) }
+            .andThen { secret ->
+                val now = clock.now()
+                val user = User(
+                    data = User.UserData(
+                        name = username,
+                        discordId = null,
+                        creationDate = now,
+                        lastLoggedIn = now,
+                        roles = setOf(Role.OWNER),
+                    ),
+                    secret = secret,
+                )
 
-        return addNewUser(username, roles = setOf(Role.OWNER))
-            .mapError { CreateFirstUserError.UnknownError }
-            .andThen { user ->
-                setPassword(user, password)
-                    .mapError { CreateFirstUserError.UnknownError }
+                repository.insertFirstUser(user)
+                    .onSuccess { logger.info { "Created first user '${it.data.name}' with OWNER role." } }
+                    .mapError {
+                        when (it) {
+                            InsertFirstUserError.UsersAlreadyExist -> CreateFirstUserError.UsersAlreadyExist
+                            InsertFirstUserError.WriteError -> CreateFirstUserError.UnknownError
+                        }
+                    }
             }
     }
 
@@ -102,7 +113,26 @@ class UsersService(
     }
 
     suspend fun setPassword(user: User, password: String): Result<User, SetPasswordError> {
-        // TODO: Create password validator service.
+        return createUserSecret(password)
+            .andThen { secret ->
+                repository.updateSecret(user, secret)
+                    .onSuccess { logger.info { "User '${user.data.name}' set new password." } }
+                    .mapError {
+                        when (it) {
+                            UpdateSecretError.UserNotFound -> {
+                                logger.error {
+                                    "Tried to update user '${user.data.name} secret, but that user doesn't exist."
+                                }
+                                SetPasswordError.UserDoesNotExist
+                            }
+                            UpdateSecretError.WriteError -> SetPasswordError.UnknownError
+                        }
+                    }
+            }
+    }
+
+    // TODO: Create password validator service.
+    private fun createUserSecret(password: String): Result<User.UserSecret, SetPasswordError.ValidationError> {
         if (password.length < 6) {
             return Err(SetPasswordError.ValidationError(tooShort = true))
         }
@@ -110,19 +140,7 @@ class UsersService(
         val salt = secureGenerator.generateSalt()
         val hashedPassword = passwordEncoder.encode(password, salt)
         val apiToken = secureGenerator.generateApiToken()
-        val secret = User.UserSecret(hashedPassword, salt, apiToken)
-
-        return repository.updateSecret(user, secret)
-            .onSuccess { logger.info { "User '${user.data.name}' set new password." } }
-            .mapError {
-                when (it) {
-                    UpdateSecretError.UserNotFound -> {
-                        logger.error { "Tried to update user '${user.data.name} secret, but that user doesn't exist." }
-                        SetPasswordError.UserDoesNotExist
-                    }
-                    UpdateSecretError.WriteError -> SetPasswordError.UnknownError
-                }
-            }
+        return Ok(User.UserSecret(hashedPassword, salt, apiToken))
     }
 
     suspend fun updateLastLoginDate(user: User) {
@@ -146,6 +164,7 @@ sealed class SetPasswordError {
 }
 
 sealed class CreateFirstUserError {
+    data class PasswordValidationError(val error: SetPasswordError.ValidationError) : CreateFirstUserError()
     data object UsersAlreadyExist : CreateFirstUserError()
     data object UnknownError : CreateFirstUserError()
 }
