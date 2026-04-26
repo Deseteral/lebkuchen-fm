@@ -1,9 +1,12 @@
 package xyz.lebkuchenfm.domain.auth
 
+import kotlinx.serialization.Serializable
+
 /**
  * Represents a granular permission in the system.
  * Values follow the OAuth2 scope naming convention: "resource:action".
  */
+@Serializable
 enum class Scope(val value: String) {
     PLAYER_QUEUE("player:queue"),
     XSOUNDS_PLAY("xsounds:play"),

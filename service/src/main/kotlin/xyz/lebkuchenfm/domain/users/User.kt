@@ -11,6 +11,9 @@ data class User(
 ) {
     val hasPasswordSet: Boolean get() = secret != null
 
+    val effectiveScopes: Set<Scope>
+        get() = data.roles.flatMapTo(mutableSetOf()) { it.scopes } - data.deniedScopes
+
     data class UserData(
         val name: String,
         val discordId: String?,

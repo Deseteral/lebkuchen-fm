@@ -54,7 +54,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
 
         eventStream.sendToEveryone(Event.QueueSongs(songs))
 
-        songs.forEach { songsService.incrementPlayCount(it, context.session) }
+        songs.forEach { songsService.incrementPlayCount(it, context.username) }
 
         val messageLines = buildMessage(songs)
         return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
