@@ -79,7 +79,6 @@ data class UserResponse(
     val creationDate: Instant,
     val lastLoggedIn: Instant,
     val roles: List<String>,
-    val deniedScopes: List<String>,
 )
 
 fun User.toResponse(): UserResponse {
@@ -89,6 +88,5 @@ fun User.toResponse(): UserResponse {
         creationDate = this.data.creationDate,
         lastLoggedIn = this.data.lastLoggedIn,
         roles = this.data.roles.map { it.name }.sorted(),
-        deniedScopes = this.data.deniedScopes.map { it.value }.sorted(),
     )
 }
