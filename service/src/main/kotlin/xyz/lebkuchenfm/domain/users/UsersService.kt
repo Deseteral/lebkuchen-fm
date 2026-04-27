@@ -6,6 +6,7 @@ import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.Clock
+import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.PasswordEncoder
 import xyz.lebkuchenfm.domain.security.SecureGenerator
 
@@ -33,7 +34,11 @@ class UsersService(
         return repository.findByDiscordId(discordId)
     }
 
-    suspend fun addNewUser(username: String, discordId: String? = null): Result<User, AddNewUserError> {
+    suspend fun addNewUser(
+        username: String,
+        discordId: String? = null,
+        roles: Set<Role> = emptySet(),
+    ): Result<User, AddNewUserError> {
         val now = clock.now()
         val user = User(
             data = User.UserData(
@@ -41,6 +46,7 @@ class UsersService(
                 discordId = discordId,
                 creationDate = now,
                 lastLoggedIn = now,
+                roles = roles,
             ),
             secret = null,
         )
