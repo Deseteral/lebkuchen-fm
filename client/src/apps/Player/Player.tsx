@@ -1,5 +1,5 @@
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
-import { createSignal, onCleanup, onMount } from 'solid-js';
+import { Show, createSignal, onCleanup, onMount } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { YouTubePlayer } from './components/YouTubePlayer/YouTubePlayer';
 import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
@@ -8,7 +8,9 @@ import { EventStreamClient } from '../../services/event-stream-client';
 import { LocalEventTypes, LocalPlayerStateUpdateEvent } from '../../types/local-events';
 import { PlayerControls } from './components/PlayerControls/PlayerControls';
 import { SongsQueue } from './components/SongsQueue/SongsQueue';
+import { MarqueeText } from './components/MarqueeText/MarqueeText';
 import { Song } from '../../types/player-state';
+import clsx from 'clsx';
 
 function Player() {
   const [showWindow, setShowWindow] = createSignal(false);
@@ -28,7 +30,7 @@ function Player() {
   };
 
   const onPlayerStateUpdate = (event: LocalPlayerStateUpdateEvent) => {
-    console.log('Player state update in player:', event.state);
+    console.log('[Player] Player state update.', event.state);
     const newCurrentlyPlayingSong = event.state?.currentlyPlaying?.song?.name;
     const queue = event.state?.queue;
     const newPlayingNextSong = queue?.[0] ? queue[0].name : null;
@@ -76,7 +78,7 @@ function Player() {
             width: '600px',
             height: '500px',
             minWidth: '400px',
-            minHeight: '180px',
+            minHeight: '157px',
           }}
         >
           <div class={styles.playerContainer} ref={(el: HTMLDivElement) => (containerRef = el)}>
@@ -84,10 +86,14 @@ function Player() {
               <YouTubePlayer />
             </section>
             <section class={styles.controls}>
+              <p class={clsx(styles.nextSong, !playingNextSong() && styles.hidden)}>
+                Next: {playingNextSong()}
+              </p>
               <h1 class={styles.songTitle}>
-                {currentlyPlayingSong() || 'No songs are currently playing.'}
+                <Show when={!!currentlyPlayingSong()} fallback="No songs are currently playing.">
+                  <MarqueeText text={currentlyPlayingSong()!} />
+                </Show>
               </h1>
-              {playingNextSong() && <p class={styles.nextSong}>Next: {playingNextSong()}</p>}
               <hr class={styles.divider} />
               <PlayerControls
                 queueButtonAction={() => setShowQueue((prev: boolean) => !prev)}

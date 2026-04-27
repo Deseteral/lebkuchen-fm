@@ -14,7 +14,8 @@ class PlayerStateService {
 
   static initialize(playerState: PlayerState): void {
     if (!playerState) {
-      console.log('Player state not initialized: Wrong player state', playerState);
+      // prettier-ignore
+      console.log('[PlayerStateService] Player state not initialized: Wrong player state.', playerState);
     }
 
     PlayerStateService.playerState = playerState;
