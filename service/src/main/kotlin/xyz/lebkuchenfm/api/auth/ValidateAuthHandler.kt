@@ -12,7 +12,6 @@ import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.AuthError
 import xyz.lebkuchenfm.domain.auth.AuthService
 import xyz.lebkuchenfm.domain.sessions.UserSession
-import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.SetPasswordError
 
 class ValidateAuthHandler(private val authService: AuthService) {
@@ -29,14 +28,11 @@ class ValidateAuthHandler(private val authService: AuthService) {
                         )
                     }
 
-                    is AuthError.CannotAddNewUserError -> {
+                    AuthError.UnknownError -> {
                         call.respondWithProblem(
-                            title = "Could not create new user.",
-                            detail = when (error.addNewUserError) {
-                                AddNewUserError.UserAlreadyExists -> "User already exists."
-                                AddNewUserError.UnknownError -> "Something went wrong."
-                            },
-                            status = HttpStatusCode.Unauthorized,
+                            title = "Could not authenticate.",
+                            detail = "Something went wrong.",
+                            status = HttpStatusCode.InternalServerError,
                         )
                     }
 

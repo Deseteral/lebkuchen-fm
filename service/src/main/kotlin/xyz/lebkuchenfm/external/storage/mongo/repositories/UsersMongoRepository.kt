@@ -12,6 +12,7 @@ import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.IndexOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.ReturnDocument
+import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.Updates
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -24,7 +25,9 @@ import kotlinx.serialization.Serializable
 import org.bson.BsonDateTime
 import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.security.HashedPasswordHexEncoded
+import xyz.lebkuchenfm.domain.users.InsertFirstUserError
 import xyz.lebkuchenfm.domain.users.InsertUserError
+import xyz.lebkuchenfm.domain.users.UpdateRolesError
 import xyz.lebkuchenfm.domain.users.UpdateSecretError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersRepository
@@ -79,10 +82,23 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
             ?.toDomain()
     }
 
-    override suspend fun countUsers(): Long {
-        // We should not return zero on errors here!
-        // Returning zero will mean that any credentials will be able to authorize - which is a major breach of security.
-        return collection.countDocuments()
+    override suspend fun findOldestUser(): User? {
+        val creationDateFieldName =
+            "${UserEntity::data.name}.${UserEntity.UserDataEntity::creationDate.name}"
+        return collection
+            .find()
+            .sort(Sorts.ascending(creationDateFieldName))
+            .limit(1)
+            .firstOrNull()
+            ?.toDomain()
+    }
+
+    override suspend fun findByRole(role: Role): List<User> {
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        return collection
+            .find(eq(rolesFieldName, role.name))
+            .map { it.toDomain() }
+            .toList()
     }
 
     override suspend fun insert(user: User): Result<User, InsertUserError> {
@@ -94,6 +110,31 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
                     else -> {
                         logger.error(ex) { "An error occurred while inserting new user document." }
                         InsertUserError.WriteError
+                    }
+                }
+                return Err(error)
+            }
+    }
+
+    override suspend fun insertFirstUser(user: User): Result<User, InsertFirstUserError> {
+        val count = try {
+            collection.countDocuments()
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while counting users for first user insertion." }
+            return Err(InsertFirstUserError.WriteError)
+        }
+
+        if (count > 0) return Err(InsertFirstUserError.UsersAlreadyExist)
+
+        return runSuspendCatching { collection.insertOne(user.toEntity()) }
+            .map { user }
+            .mapError { ex ->
+                val error = when {
+                    ex is MongoWriteException && ex.isDuplicateKeyException ->
+                        InsertFirstUserError.UsersAlreadyExist
+                    else -> {
+                        logger.error(ex) { "An error occurred while inserting first user document." }
+                        InsertFirstUserError.WriteError
                     }
                 }
                 return Err(error)
@@ -122,6 +163,21 @@ class UsersMongoRepository(database: MongoDatabase) : UsersRepository {
         } catch (ex: Exception) {
             logger.error(ex) { "An error occurred while updating user '${user.data.name}' secret." }
             Err(UpdateSecretError.WriteError)
+        }
+    }
+
+    override suspend fun updateRoles(user: User, roles: Set<Role>): Result<User, UpdateRolesError> {
+        val nameFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::name.name}"
+        val rolesFieldName = "${UserEntity::data.name}.${UserEntity.UserDataEntity::roles.name}"
+        return try {
+            collection.findOneAndUpdate(
+                eq(nameFieldName, user.data.name),
+                Updates.set(rolesFieldName, roles.map { it.name }.sorted()),
+                FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER),
+            )?.toDomain()?.let { Ok(it) } ?: Err(UpdateRolesError.UserNotFound)
+        } catch (ex: Exception) {
+            logger.error(ex) { "An error occurred while updating user '${user.data.name}' roles." }
+            Err(UpdateRolesError.WriteError)
         }
     }
 }
