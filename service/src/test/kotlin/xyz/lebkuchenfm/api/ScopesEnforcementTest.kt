@@ -25,6 +25,7 @@ import xyz.lebkuchenfm.domain.sessions.UserSession
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ScopesEnforcementTest {
 
@@ -76,6 +77,15 @@ class ScopesEnforcementTest {
         scopesTestApp(grantedScopes = emptySet()) { client ->
             val response = client.get("/with-scopes-test")
             assertEquals(HttpStatusCode.Forbidden, response.status)
+        }
+    }
+
+    @Test
+    fun `withScopes handler executes on 200`() {
+        scopesTestApp(grantedScopes = setOf(Scope.XSOUNDS_UPLOAD)) { client ->
+            client.get("/with-scopes-test")
+            val flagResponse = client.get("/handler-executed")
+            assertTrue(flagResponse.bodyAsText().toBoolean())
         }
     }
 
