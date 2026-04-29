@@ -38,7 +38,7 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
             ?: return error("Could not find a song with provided phrase.", logger)
 
         eventStream.sendToEveryone(Event.QueueSongs(listOf(song)))
-        songsService.incrementPlayCount(song, context.session)
+        songsService.incrementPlayCount(song, context.username)
 
         val messageLines = buildMessage(listOf(song))
         return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())

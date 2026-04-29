@@ -4,7 +4,6 @@ import com.github.michaelbull.result.getOr
 import kotlinx.datetime.Clock
 import xyz.lebkuchenfm.domain.history.HistoryEntry
 import xyz.lebkuchenfm.domain.history.HistoryRepository
-import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.youtube.YouTubeRepository
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideo
 import xyz.lebkuchenfm.domain.youtube.YoutubeVideoId
@@ -23,9 +22,9 @@ class SongsService(
         return songsRepository.findRandom(limit, phrase)
     }
 
-    suspend fun incrementPlayCount(song: Song, userSession: UserSession): Song? {
+    suspend fun incrementPlayCount(song: Song, username: String): Song? {
         return songsRepository.incrementPlayCountByName(song.name)?.also {
-            historyRepository.insert(HistoryEntry(clock.now(), it.youtubeId, userSession.name))
+            historyRepository.insert(HistoryEntry(clock.now(), it.youtubeId, username))
         }
     }
 
