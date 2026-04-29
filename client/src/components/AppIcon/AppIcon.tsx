@@ -2,7 +2,7 @@ import appIconsSpreadsheet from '../../icons/app-icons-spritesheet.png';
 import { createEffect, createSignal } from 'solid-js';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 
-const ICON_SPREADSHEET_ROW_COUNT = 2;
+const ICON_SPREADSHEET_ROW_COUNT = 3;
 const ICON_SPREADSHEET_COLUMN_COUNT = 4;
 
 interface AppIconProps {

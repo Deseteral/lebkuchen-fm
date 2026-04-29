@@ -12,7 +12,7 @@ data class User(
     val hasPasswordSet: Boolean get() = secret != null
 
     val effectiveScopes: Set<Scope>
-        get() = data.roles.flatMapTo(mutableSetOf()) { it.scopes } - data.deniedScopes
+        get() = data.roles.flatMapTo(mutableSetOf()) { it.scopes }
 
     data class UserData(
         val name: String,
@@ -20,7 +20,6 @@ data class User(
         val creationDate: Instant,
         val lastLoggedIn: Instant,
         val roles: Set<Role> = emptySet(),
-        val deniedScopes: Set<Scope> = emptySet(),
     )
 
     data class UserSecret(

@@ -7,11 +7,10 @@ import xyz.lebkuchenfm.domain.commands.CommandProcessorRegistry
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
-import java.util.concurrent.ConcurrentHashMap
 
 private val logger = KotlinLogging.logger {}
 
-class HelpCommandProcessor(private val commandPrompt: String) :
+class HelpCommandProcessor :
     CommandProcessor(
         key = "help",
         shortKey = null,
@@ -32,7 +31,10 @@ class HelpCommandProcessor(private val commandPrompt: String) :
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val commandName = command.rawArgs
-        return commandName?.let { resultByCommand[it] } ?: generalHelpResult
+        val commandPromptPrefix = context.commandPrompt?.let { "$it " } ?: ""
+        return commandName
+            ?.let { getHelpForCommand(it, commandPromptPrefix) }
+            ?: getGeneralHelp(commandPromptPrefix)
     }
 
     private val uniqueCommands: List<CommandProcessor> by lazy {
@@ -42,15 +44,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
             .sortedBy { it.key }
     }
 
-    private val resultByCommand = LazyMap<String, CommandProcessingResult> { commandName ->
-        getHelpForCommand(commandName)
-    }
-
-    private val generalHelpResult: CommandProcessingResult by lazy {
-        getGeneralHelp()
-    }
-
-    private fun getGeneralHelp(): CommandProcessingResult {
+    private fun getGeneralHelp(commandPromptPrefix: String): CommandProcessingResult {
         val groups = mutableMapOf<String, MutableList<String>>()
 
         uniqueCommands.forEach { command ->
@@ -66,7 +60,7 @@ class HelpCommandProcessor(private val commandPrompt: String) :
             "```",
             "LebkuchenFM",
             "",
-            "For command specific information use `$commandPrompt help <command name>`",
+            "For command specific information use `${commandPromptPrefix}help <command name>`",
             "",
             "Commands:",
             groupsText,
@@ -74,11 +68,13 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         )
     }
 
-    private fun getHelpForCommand(commandName: String): CommandProcessingResult {
+    private fun getHelpForCommand(commandName: String, commandPromptPrefix: String): CommandProcessingResult {
         val command = commandsRegistry.getProcessorByKey(commandName)
             ?: return error("No such command: $commandName", logger)
 
-        val exampleText = command.exampleUsages.joinToString("\n") { usage -> "  $commandPrompt $commandName $usage" }
+        val exampleText = command.exampleUsages.joinToString("\n") { usage ->
+            "  ${commandPromptPrefix}$commandName $usage"
+        }
 
         return CommandProcessingResult.fromMultilineMarkdown(
             "```",
@@ -112,13 +108,5 @@ class HelpCommandProcessor(private val commandPrompt: String) :
         val shortKey = definition.shortKey
         val shortKeyFragment = shortKey?.let { " ($it)" } ?: ""
         return "${key}$shortKeyFragment"
-    }
-
-    private class LazyMap<K, V>(
-        private val compute: (K) -> V,
-    ) {
-        private val map = ConcurrentHashMap<K, V>()
-
-        operator fun get(key: K): V? = map.getOrPut(key) { compute(key) }
     }
 }
