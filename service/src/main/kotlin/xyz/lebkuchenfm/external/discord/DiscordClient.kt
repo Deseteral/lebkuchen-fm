@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
-import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
@@ -75,7 +74,11 @@ class DiscordClient(
                     }
 
                     else -> {
-                        val context = ExecutionContext(UserSession(user.data.name), commandPrompt)
+                        val context = ExecutionContext(
+                            username = user.data.name,
+                            grantedScopes = user.effectiveScopes,
+                            commandPrompt = commandPrompt,
+                        )
                         val commandText = it.content.replace("$commandPrompt ", "")
                         val result = commandExecutorService.executeFromText(commandText, context)
                         it.reply { content = result.message.markdown }
