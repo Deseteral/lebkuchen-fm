@@ -143,6 +143,27 @@ class UsersService(
         return Ok(User.UserSecret(hashedPassword, salt, apiToken))
     }
 
+    suspend fun updateUserRoles(username: String, roles: Set<Role>): Result<User, UpdateUserRolesError> {
+        val user = repository.findByName(username)
+            ?: return Err(UpdateUserRolesError.UserNotFound)
+
+        if (Role.OWNER !in roles && Role.OWNER in user.data.roles) {
+            val owners = repository.findByRole(Role.OWNER)
+            if (owners.none { it.data.name != username }) {
+                return Err(UpdateUserRolesError.WouldRemoveLastOwner)
+            }
+        }
+
+        return repository.updateRoles(user, roles)
+            .onSuccess { logger.info { "Updated roles for user '$username' to $roles." } }
+            .mapError {
+                when (it) {
+                    UpdateRolesError.UserNotFound -> UpdateUserRolesError.UserNotFound
+                    UpdateRolesError.WriteError -> UpdateUserRolesError.UnknownError
+                }
+            }
+    }
+
     suspend fun updateLastLoginDate(user: User) {
         repository.updateLastLoginDate(user, clock.now())
     }
@@ -167,4 +188,10 @@ sealed class CreateFirstUserError {
     data class PasswordValidationError(val error: SetPasswordError.ValidationError) : CreateFirstUserError()
     data object UsersAlreadyExist : CreateFirstUserError()
     data object UnknownError : CreateFirstUserError()
+}
+
+sealed class UpdateUserRolesError {
+    data object UserNotFound : UpdateUserRolesError()
+    data object WouldRemoveLastOwner : UpdateUserRolesError()
+    data object UnknownError : UpdateUserRolesError()
 }
