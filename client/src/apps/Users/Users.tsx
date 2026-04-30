@@ -1,20 +1,23 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
-import { createSignal, createEffect, For } from 'solid-js';
+import { createSignal, createEffect, For, Show } from 'solid-js';
 import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Users.module.css';
-import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
-import { getUsers, postUser } from '../../services/users-service';
+import { getUsers } from '../../services/users-service';
 import { User } from '../../types/user';
+import { NewUserDialog } from './NewUserDialog';
+import { UserPropertiesDialog } from './UserPropertiesDialog';
 
-/*
- * TODO: This is a very basic app.
- *       We should replace it with correct user management component or at least polish this one.
- */
 function Users() {
   const [showWindow, setShowWindow] = createSignal(false);
+  const [showNewUserDialog, setShowNewUserDialog] = createSignal(false);
+  const [showPropertiesDialog, setShowPropertiesDialog] = createSignal(false);
+  const [users, setUsers] = createSignal<User[]>([]);
+  const [selectedUsername, setSelectedUsername] = createSignal<string | null>(null);
+
   let buttonRef!: HTMLButtonElement;
+
   const toggleWindow = () => {
     setShowWindow((prev: boolean) => !prev);
     if (buttonRef) {
@@ -22,28 +25,13 @@ function Users() {
     }
   };
 
-  const [error, setError] = createSignal('');
-  const [users, setUsers] = createSignal([]);
-
   const refreshUserList = () => {
     getUsers().then((users) => {
       setUsers(users);
     });
   };
 
-  const onSubmit = async (e: Event) => {
-    setError('');
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
-
-    await postUser(formData)
-      .then((user) => setError(JSON.stringify(user)))
-      .catch((error) => setError(error.message));
-
-    form.reset();
-    refreshUserList();
-  };
+  const selectedUser = () => users().find((u) => u.username === selectedUsername()) ?? null;
 
   createEffect(() => {
     refreshUserList();
@@ -59,9 +47,9 @@ function Users() {
       />
       {showWindow() && (
         <AppWindow
-          title="[WIP] Users management"
+          title="Users"
           close={() => setShowWindow(false)}
-          startSize={{ width: '600px', height: '600px' }}
+          startSize={{ width: '600px', height: '400px' }}
           iconIndex={USER_MANAGER_ICON_INDEX}
         >
           <div class={styles.container}>
@@ -70,43 +58,54 @@ function Users() {
                 <thead>
                   <tr>
                     <th scope="col">Username</th>
-                    <th scope="col">DiscordId</th>
+                    <th scope="col">Roles</th>
+                    <th scope="col">Discord ID</th>
                     <th scope="col">Created</th>
                     <th scope="col">Last logged in</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {users() == undefined && (
-                    <tr>
-                      <td>Something went wrong.</td>
-                    </tr>
-                  )}
-                  <For each={users()}>{(user: User) => UserLine(user)}</For>
+                  <For each={users()}>
+                    {(user: User) => (
+                      <tr
+                        class={
+                          selectedUsername() === user.username ? styles.selectedRow : undefined
+                        }
+                        onClick={() => setSelectedUsername(user.username)}
+                      >
+                        <td>{user.username}</td>
+                        <td>{user.roles.join(', ')}</td>
+                        <td>{user.discordId ?? ''}</td>
+                        <td>{new Date(user.creationDate).toLocaleDateString('en-GB')}</td>
+                        <td>{new Date(user.lastLoggedIn).toLocaleString('en-GB')}</td>
+                      </tr>
+                    )}
+                  </For>
                 </tbody>
               </table>
             </div>
-            <h1>Add new user</h1>
-            <form onSubmit={onSubmit}>
-              <Input type="user" required placeholder="Username" name="username" />
-              <Input type="text" placeholder="DiscordId" name="discordId" />
-              <Button fullWidth>Create</Button>
-            </form>
-            <span class={styles.error}>{error()}</span>
+            <div class={styles.toolbar}>
+              <Button onClick={() => setShowNewUserDialog(true)}>New</Button>
+              <Button disabled={!selectedUser()} onClick={() => setShowPropertiesDialog(true)}>
+                Edit
+              </Button>
+            </div>
           </div>
         </AppWindow>
       )}
-    </>
-  );
-}
 
-function UserLine(user: User) {
-  return (
-    <tr>
-      <td>{`${user.username}`}</td>
-      <td>{`${user.discordId ?? ''}`}</td>
-      <td>{`${new Date(user.creationDate).toLocaleDateString('en-GB')}`}</td>
-      <td>{`${new Date(user.lastLoggedIn).toLocaleString('en-GB')}`}</td>
-    </tr>
+      <Show when={showNewUserDialog()}>
+        <NewUserDialog close={() => setShowNewUserDialog(false)} onUserCreated={refreshUserList} />
+      </Show>
+
+      <Show when={showPropertiesDialog() && selectedUser()}>
+        <UserPropertiesDialog
+          user={selectedUser()!}
+          close={() => setShowPropertiesDialog(false)}
+          onSaved={refreshUserList}
+        />
+      </Show>
+    </>
   );
 }
 

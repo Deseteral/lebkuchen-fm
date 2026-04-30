@@ -3,6 +3,7 @@ interface User {
   discordId: string | null;
   creationDate: Date;
   lastLoggedIn: Date;
+  roles: string[];
 }
 
 export { User };
