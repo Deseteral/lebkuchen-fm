@@ -3,6 +3,7 @@ package xyz.lebkuchenfm.domain.commands.processors
 import com.github.michaelbull.result.getOrElse
 import com.github.michaelbull.result.map
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -25,6 +26,7 @@ class TagRemoveCommandProcessor(private val xSoundsService: XSoundsService) :
             ),
             delimiter = "|",
         ),
+        requiredScopes = setOf(Scope.XSOUNDS_MANAGE),
     ) {
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val args = command.args

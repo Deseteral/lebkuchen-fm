@@ -14,8 +14,10 @@ import io.ktor.server.routing.route
 import io.ktor.server.sessions.SessionStorage
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import xyz.lebkuchenfm.api.plugins.withScopes
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.Role
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.users.AddNewUserError
@@ -25,92 +27,101 @@ import xyz.lebkuchenfm.domain.users.UsersService
 
 fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsService, sessionStorage: SessionStorage) {
     route("/users") {
-        get {
-            val users = usersService.getAll()
-            val response = UsersResponse(users.map { it.toResponse() })
-            call.respond(HttpStatusCode.OK, response)
-        }
+        getUsers(usersService)
 
-        post {
-            val newUser: NewUser = call.receive()
-
-            usersService.addNewUser(newUser.username, newUser.discordId)
-                .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
-                .mapError { error ->
-                    when (error) {
-                        AddNewUserError.UserAlreadyExists ->
-                            call.respondWithProblem(
-                                title = "Could not create user.",
-                                detail = "User already exists.",
-                                status = HttpStatusCode.Conflict,
-                            )
-
-                        AddNewUserError.UnknownError ->
-                            call.respondWithProblem(
-                                title = "Could not create user.",
-                                detail = "Unknown error.",
-                                status = HttpStatusCode.InternalServerError,
-                            )
-                    }
-                }
-        }
-
-        put("{user_name}/roles") {
-            val userName = call.parameters["user_name"]
-                ?: return@put call.respond(HttpStatusCode.BadRequest)
-
-            val body: UpdateRolesRequest = call.receive()
-
-            val roles = body.roles.map { roleName ->
-                Role.fromName(roleName)
-                    ?: return@put call.respondWithProblem(
-                        title = "Invalid role.",
-                        detail = "Unknown role: $roleName.",
-                        status = HttpStatusCode.BadRequest,
-                    )
-            }.toSet()
-
-            usersService.updateUserRoles(userName, roles)
-                .onSuccess {
-                    SessionInvalidationFlow.emit(userName)
-                    call.respond(HttpStatusCode.OK, it.toResponse())
-                }
-                .mapError { error ->
-                    when (error) {
-                        UpdateUserRolesError.UserNotFound ->
-                            call.respondWithProblem(
-                                title = "User not found.",
-                                detail = "User '$userName' does not exist.",
-                                status = HttpStatusCode.NotFound,
-                            )
-
-                        UpdateUserRolesError.WouldRemoveLastOwner ->
-                            call.respondWithProblem(
-                                title = "Cannot remove last owner.",
-                                detail = "At least one user must have the OWNER role.",
-                                status = HttpStatusCode.Conflict,
-                            )
-
-                        UpdateUserRolesError.UnknownError ->
-                            call.respondWithProblem(
-                                title = "Could not update roles.",
-                                detail = "Unknown error.",
-                                status = HttpStatusCode.InternalServerError,
-                            )
-                    }
-                }
-        }
-
-        delete("{user_name}/sessions") {
-            val userName = call.parameters["user_name"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            val sessionIds = sessionsService.getUserSessionIds(userName)
-            sessionsService.removeAllSessionsForUser(userName)
-            sessionIds.forEach { sessionStorage.invalidate(it) }
-            SessionInvalidationFlow.emit(userName)
-            call.respond(HttpStatusCode.Accepted)
+        withScopes(Scope.USERS_MANAGE) {
+            postUser(usersService)
+            putUserRoles(usersService)
+            deleteUserSessions(sessionsService, sessionStorage)
         }
     }
 }
+
+private fun Route.getUsers(usersService: UsersService) = get {
+    val users = usersService.getAll()
+    val response = UsersResponse(users.map { it.toResponse() })
+    call.respond(HttpStatusCode.OK, response)
+}
+
+private fun Route.postUser(usersService: UsersService) = post {
+    val newUser: NewUser = call.receive()
+
+    usersService.addNewUser(newUser.username, newUser.discordId)
+        .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
+        .mapError { error ->
+            when (error) {
+                AddNewUserError.UserAlreadyExists ->
+                    call.respondWithProblem(
+                        title = "Could not create user.",
+                        detail = "User already exists.",
+                        status = HttpStatusCode.Conflict,
+                    )
+
+                AddNewUserError.UnknownError ->
+                    call.respondWithProblem(
+                        title = "Could not create user.",
+                        detail = "Unknown error.",
+                        status = HttpStatusCode.InternalServerError,
+                    )
+            }
+        }
+}
+
+private fun Route.putUserRoles(usersService: UsersService) = put("{user_name}/roles") {
+    val userName = call.parameters["user_name"]
+        ?: return@put call.respond(HttpStatusCode.BadRequest)
+
+    val body: UpdateRolesRequest = call.receive()
+
+    val roles = body.roles.map { roleName ->
+        Role.fromName(roleName)
+            ?: return@put call.respondWithProblem(
+                title = "Invalid role.",
+                detail = "Unknown role: $roleName.",
+                status = HttpStatusCode.BadRequest,
+            )
+    }.toSet()
+
+    usersService.updateUserRoles(userName, roles)
+        .onSuccess {
+            SessionInvalidationFlow.emit(userName)
+            call.respond(HttpStatusCode.OK, it.toResponse())
+        }
+        .mapError { error ->
+            when (error) {
+                UpdateUserRolesError.UserNotFound ->
+                    call.respondWithProblem(
+                        title = "User not found.",
+                        detail = "User '$userName' does not exist.",
+                        status = HttpStatusCode.NotFound,
+                    )
+
+                UpdateUserRolesError.WouldRemoveLastOwner ->
+                    call.respondWithProblem(
+                        title = "Cannot remove last owner.",
+                        detail = "At least one user must have the OWNER role.",
+                        status = HttpStatusCode.Conflict,
+                    )
+
+                UpdateUserRolesError.UnknownError ->
+                    call.respondWithProblem(
+                        title = "Could not update roles.",
+                        detail = "Unknown error.",
+                        status = HttpStatusCode.InternalServerError,
+                    )
+            }
+        }
+}
+
+private fun Route.deleteUserSessions(sessionsService: SessionsService, sessionStorage: SessionStorage) =
+    delete("{user_name}/sessions") {
+        val userName = call.parameters["user_name"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
+        val sessionIds = sessionsService.getUserSessionIds(userName)
+        sessionsService.removeAllSessionsForUser(userName)
+        sessionIds.forEach { sessionStorage.invalidate(it) }
+        SessionInvalidationFlow.emit(userName)
+        call.respond(HttpStatusCode.Accepted)
+    }
 
 @Serializable
 data class NewUser(

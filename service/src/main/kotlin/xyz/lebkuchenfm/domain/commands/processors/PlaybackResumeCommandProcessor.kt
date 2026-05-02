@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -17,6 +18,7 @@ class PlaybackResumeCommandProcessor(private val eventStream: EventStream<*>) :
         parameters = CommandParameters(
             parameters = emptyList(),
         ),
+        requiredScopes = setOf(Scope.PLAYER_CONTROL),
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {

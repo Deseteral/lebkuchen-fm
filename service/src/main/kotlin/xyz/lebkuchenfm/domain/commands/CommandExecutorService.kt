@@ -16,6 +16,10 @@ class CommandExecutorService(
         val processor = registry.getProcessorByKey(command.key)
             ?: return CommandProcessingResult.fromMarkdown("Command ${command.key} does not exist.")
 
+        if (!context.grantedScopes.containsAll(processor.requiredScopes)) {
+            return CommandProcessingResult.fromMarkdown("You don't have permission to use this command.")
+        }
+
         return processor.execute(command, context)
     }
 
