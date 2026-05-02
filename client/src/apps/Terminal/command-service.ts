@@ -7,10 +7,7 @@ export async function executeCommand(prompt: string): Promise<string> {
     headers: { 'Command-Prompt': 'fm' },
   });
 
-  if (!response.ok) {
-    throw new Error('Request to LebkuchenFM service failed.');
-  }
-
-  const data: TextCommandResponse = await response.json();
-  return data.textResponse;
+  const data = await response.json();
+  if (data.textResponse) return (data as TextCommandResponse).textResponse;
+  throw new Error('Request to LebkuchenFM service failed.');
 }
