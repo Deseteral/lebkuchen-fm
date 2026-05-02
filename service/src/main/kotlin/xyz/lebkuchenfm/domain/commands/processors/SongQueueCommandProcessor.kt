@@ -59,7 +59,7 @@ class SongQueueCommandProcessor(private val songsService: SongsService, private 
         songs.forEach { songsService.incrementPlayCount(it, context.username) }
 
         val messageLines = buildMessage(songs)
-        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
+        return CommandProcessingResult.Success.fromMultilineMarkdown(*messageLines.toTypedArray())
     }
 
     companion object {

@@ -48,7 +48,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
         songs.forEach { songsService.incrementPlayCount(it, context.username) }
 
         val messageLines = buildMessage(songs, amount)
-        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
+        return CommandProcessingResult.Success.fromMultilineMarkdown(*messageLines.toTypedArray())
     }
 
     private fun getAmountAndKeywordsFromArgs(args: List<String>): Pair<Int, String> {

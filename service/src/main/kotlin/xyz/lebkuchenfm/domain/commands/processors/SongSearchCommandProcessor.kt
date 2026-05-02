@@ -43,6 +43,6 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
         songsService.incrementPlayCount(song, context.username)
 
         val messageLines = buildMessage(listOf(song))
-        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
+        return CommandProcessingResult.Success.fromMultilineMarkdown(*messageLines.toTypedArray())
     }
 }

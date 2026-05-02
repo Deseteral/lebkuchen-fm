@@ -81,7 +81,7 @@ class DiscordClient(
                         )
                         val commandText = it.content.replace("$commandPrompt ", "")
                         val result = commandExecutorService.executeFromText(commandText, context)
-                        it.reply { content = result.message.markdown }
+                        it.reply { content = result.markdown }
                     }
                 }
             }

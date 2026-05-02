@@ -36,7 +36,7 @@ class PlaybackSkipCommandProcessor(private val eventStream: EventStream<*>) :
     }
 
     private val successfulResult: CommandProcessingResult by lazy {
-        CommandProcessingResult.fromMarkdown("Moving forward.")
+        CommandProcessingResult.Success("Moving forward.")
     }
     private val errorResult: CommandProcessingResult by lazy {
         error("Commands accepts only natural numbers or \"all\" string as an argument.", logger)

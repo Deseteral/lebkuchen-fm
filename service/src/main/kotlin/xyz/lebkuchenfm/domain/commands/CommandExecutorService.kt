@@ -14,10 +14,10 @@ class CommandExecutorService(
 ) {
     private suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val processor = registry.getProcessorByKey(command.key)
-            ?: return CommandProcessingResult.fromMarkdown("Command ${command.key} does not exist.")
+            ?: return CommandProcessingResult.Error("Command ${command.key} does not exist.")
 
         if (!context.grantedScopes.containsAll(processor.requiredScopes)) {
-            return CommandProcessingResult.fromMarkdown("You don't have permission to use this command.")
+            return CommandProcessingResult.InsufficientPermissions("You don't have permission to use this command.")
         }
 
         return processor.execute(command, context)
@@ -26,12 +26,10 @@ class CommandExecutorService(
     suspend fun executeFromText(text: String, context: ExecutionContext): CommandProcessingResult {
         return parser.parseFromText(text)
             .map { execute(it, context) }
-            .getOrElse { err ->
+            .getOrElse {
                 logger.error { "Could not parse command '$text'." }
-                CommandProcessingResult.fromMultilineMarkdown(
-                    when (err) {
-                        CommandParsingError.RequiredTokensMissing -> "The command must perform some action."
-                    },
+                CommandProcessingResult.Error.fromMultilineMarkdown(
+                    "The command must perform some action.",
                     "For more information checkout `help` command.",
                 )
             }

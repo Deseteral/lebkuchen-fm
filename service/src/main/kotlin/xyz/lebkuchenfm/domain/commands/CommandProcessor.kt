@@ -15,9 +15,9 @@ abstract class CommandProcessor(
 ) {
     abstract suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult
 
-    fun error(markdown: String, logger: KLogger, message: String? = null): CommandProcessingResult {
+    fun error(markdown: String, logger: KLogger, message: String? = null): CommandProcessingResult.Error {
         logger.error { message ?: markdown }
-        return CommandProcessingResult.fromMarkdown(markdown)
+        return CommandProcessingResult.Error(markdown)
     }
 
     val Command.args: List<String>

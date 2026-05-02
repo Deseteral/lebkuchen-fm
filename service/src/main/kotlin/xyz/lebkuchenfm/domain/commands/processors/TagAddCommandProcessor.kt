@@ -43,7 +43,7 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
         val (tagName, soundName) = args
 
         return xSoundsService.addTagToXSound(soundName, tagName)
-            .map { CommandProcessingResult.fromMarkdown("Added $tagName tag to $soundName sound.") }
+            .map { CommandProcessingResult.Success("Added $tagName tag to $soundName sound.") }
             .getOrElse { err ->
                 error(
                     when (err) {

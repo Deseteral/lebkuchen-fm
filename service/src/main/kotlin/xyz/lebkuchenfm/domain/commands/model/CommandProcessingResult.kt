@@ -1,19 +1,21 @@
 package xyz.lebkuchenfm.domain.commands.model
 
-data class CommandProcessingResult(
-    val message: CommandProcessingResultMessage,
-) {
-    data class CommandProcessingResultMessage(
-        val markdown: String,
-    )
+sealed class CommandProcessingResult {
+    abstract val markdown: String
 
-    companion object {
-        fun fromMarkdown(markdown: String): CommandProcessingResult {
-            return CommandProcessingResult(message = CommandProcessingResultMessage(markdown))
-        }
-
-        fun fromMultilineMarkdown(vararg markdownLines: String): CommandProcessingResult {
-            return fromMarkdown(markdownLines.joinToString(separator = "\n"))
+    data class Success(override val markdown: String) : CommandProcessingResult() {
+        companion object {
+            fun fromMultilineMarkdown(vararg markdownLines: String): Success =
+                Success(markdownLines.joinToString(separator = "\n"))
         }
     }
+
+    data class Error(override val markdown: String) : CommandProcessingResult() {
+        companion object {
+            fun fromMultilineMarkdown(vararg markdownLines: String): Error =
+                Error(markdownLines.joinToString(separator = "\n"))
+        }
+    }
+
+    data class InsufficientPermissions(override val markdown: String) : CommandProcessingResult()
 }

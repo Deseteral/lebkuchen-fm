@@ -13,6 +13,7 @@ import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 
 private val logger = KotlinLogging.logger {}
 
@@ -44,8 +45,12 @@ fun Route.commandsRouting(commandExecutorService: CommandExecutorService) {
             }
         }
 
-        val response = TextCommandResponse(textResponse = processingResult.message.markdown)
-        call.respond(response)
+        val response = TextCommandResponse(textResponse = processingResult.markdown)
+        when (processingResult) {
+            is CommandProcessingResult.Success -> call.respond(HttpStatusCode.OK, response)
+            is CommandProcessingResult.Error -> call.respond(HttpStatusCode.BadRequest, response)
+            is CommandProcessingResult.InsufficientPermissions -> call.respond(HttpStatusCode.Forbidden, response)
+        }
     }
 }
 

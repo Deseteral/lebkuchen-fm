@@ -42,7 +42,7 @@ class TagRemoveCommandProcessor(private val xSoundsService: XSoundsService) :
         val (tagName, soundName) = args
 
         return xSoundsService.removeTagFromXSound(soundName, tagName)
-            .map { CommandProcessingResult.fromMarkdown("$soundName sound is no longer tagged with $tagName.") }
+            .map { CommandProcessingResult.Success("$soundName sound is no longer tagged with $tagName.") }
             .getOrElse { err ->
                 error(
                     when (err) {

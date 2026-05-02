@@ -31,7 +31,7 @@ class XCommandProcessor(private val soundboardService: SoundboardService) :
             ?: return error("You have to provide sound name.", logger)
 
         return soundboardService.playXSound(soundName).mapBoth(
-            { CommandProcessingResult.fromMarkdown("Played $soundName sound.") },
+            { CommandProcessingResult.Success("Played $soundName sound.") },
             { error ->
                 val message = when (error) {
                     PlayXSoundError.SoundNotFound -> "Sound '$soundName' does not exist."
