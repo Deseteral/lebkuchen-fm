@@ -56,7 +56,7 @@ class HelpCommandProcessor :
 
         val groupsText = groups.values.joinToString("\n\n") { it.joinToString("\n") }
 
-        return CommandProcessingResult.fromMultilineMarkdown(
+        return CommandProcessingResult.Success.fromMultilineMarkdown(
             "```",
             "LebkuchenFM",
             "",
@@ -76,7 +76,7 @@ class HelpCommandProcessor :
             "  ${commandPromptPrefix}$commandName $usage"
         }
 
-        return CommandProcessingResult.fromMultilineMarkdown(
+        return CommandProcessingResult.Success.fromMultilineMarkdown(
             "```",
             this.getCommandWithParamsLine(command),
             "",

@@ -18,7 +18,7 @@ internal class ScopesRouteSelector(private val scopes: Set<Scope>) : RouteSelect
         return RouteSelectorEvaluation.Transparent
     }
 
-    override fun toString(): String = "(scopes: ${scopes.joinToString { it.value }})"
+    override fun toString(): String = "(scopes: ${scopes.joinToString()})"
 }
 
 private object ScopesCheckHook : Hook<suspend (ApplicationCall) -> Unit> {
@@ -48,7 +48,7 @@ val ScopesCheckPlugin = createRouteScopedPlugin("ScopesCheckPlugin", ::ScopesChe
             val missing = requiredScopes - session.scopes
             call.respondWithProblem(
                 title = "Insufficient permissions.",
-                detail = "Missing required scopes: ${missing.joinToString { it.value }}.",
+                detail = "Missing required scopes: ${missing.joinToString()}.",
                 status = HttpStatusCode.Forbidden,
             )
         }

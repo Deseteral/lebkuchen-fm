@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -23,6 +24,7 @@ class PlaybackSkipCommandProcessor(private val eventStream: EventStream<*>) :
                 CommandParameters.OptionalCommandParameter("amount"),
             ),
         ),
+        requiredScopes = setOf(Scope.PLAYER_SKIP),
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
@@ -34,7 +36,7 @@ class PlaybackSkipCommandProcessor(private val eventStream: EventStream<*>) :
     }
 
     private val successfulResult: CommandProcessingResult by lazy {
-        CommandProcessingResult.fromMarkdown("Moving forward.")
+        CommandProcessingResult.Success("Moving forward.")
     }
     private val errorResult: CommandProcessingResult by lazy {
         error("Commands accepts only natural numbers or \"all\" string as an argument.", logger)

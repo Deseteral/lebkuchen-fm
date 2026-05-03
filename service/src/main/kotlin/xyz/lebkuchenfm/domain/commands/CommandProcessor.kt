@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands
 
 import io.github.oshai.kotlinlogging.KLogger
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
 
@@ -10,12 +11,13 @@ abstract class CommandProcessor(
     val helpMessage: String,
     val exampleUsages: List<String>,
     val parameters: CommandParameters,
+    val requiredScopes: Set<Scope> = emptySet(),
 ) {
     abstract suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult
 
-    fun error(markdown: String, logger: KLogger, message: String? = null): CommandProcessingResult {
+    fun error(markdown: String, logger: KLogger, message: String? = null): CommandProcessingResult.Error {
         logger.error { message ?: markdown }
-        return CommandProcessingResult.fromMarkdown(markdown)
+        return CommandProcessingResult.Error(markdown)
     }
 
     val Command.args: List<String>

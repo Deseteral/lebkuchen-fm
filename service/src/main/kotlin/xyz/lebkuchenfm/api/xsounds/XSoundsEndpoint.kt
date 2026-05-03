@@ -15,6 +15,8 @@ import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.api.plugins.withScopes
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 
@@ -29,41 +31,43 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
             call.respond(response)
         }
 
-        post {
-            val session = call.getUserSession()
+        withScopes(Scope.XSOUNDS_UPLOAD) {
+            post {
+                val session = call.getUserSession()
 
-            var soundName = ""
-            var tags: List<String> = emptyList()
-            var fileBytes: ByteArray? = null
+                var soundName = ""
+                var tags: List<String> = emptyList()
+                var fileBytes: ByteArray? = null
 
-            val multipartData = call.receiveMultipart()
+                val multipartData = call.receiveMultipart()
 
-            multipartData.forEachPart { part ->
-                when (part) {
-                    is PartData.FormItem -> {
-                        if (part.name == "soundName") {
-                            // TODO: `soundName` validation
-                            //  ((null, empty, special characters, no file extension in name))
-                            soundName = part.value
-                        } else if (part.name == "tags") {
-                            tags = part.value.split(',').map { it.trim() }
+                multipartData.forEachPart { part ->
+                    when (part) {
+                        is PartData.FormItem -> {
+                            if (part.name == "soundName") {
+                                // TODO: `soundName` validation
+                                //  ((null, empty, special characters, no file extension in name))
+                                soundName = part.value
+                            } else if (part.name == "tags") {
+                                tags = part.value.split(',').map { it.trim() }
+                            }
                         }
-                    }
 
-                    is PartData.FileItem -> {
-                        // TODO: handle "no file" error
-                        fileBytes = part.provider().readRemaining().readByteArray()
-                    }
+                        is PartData.FileItem -> {
+                            // TODO: handle "no file" error
+                            fileBytes = part.provider().readRemaining().readByteArray()
+                        }
 
-                    else -> {}
+                        else -> {}
+                    }
+                    part.dispose()
                 }
-                part.dispose()
-            }
 
-            fileBytes?.let { bytes ->
-                xSoundsService.addNewXSound(soundName, tags, bytes, session)
-                    .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
-                    .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
+                fileBytes?.let { bytes ->
+                    xSoundsService.addNewXSound(soundName, tags, bytes, session)
+                        .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
+                        .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
+                }
             }
         }
 

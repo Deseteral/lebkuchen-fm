@@ -4,6 +4,7 @@ import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.andThen
+import com.github.michaelbull.result.map
 import com.github.michaelbull.result.mapError
 import com.github.michaelbull.result.onSuccess
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -57,6 +58,7 @@ class UsersService(
                         logger.info { "Tried to create a new user '${user.data.name}', but it already exists." }
                         AddNewUserError.UserAlreadyExists
                     }
+
                     InsertUserError.WriteError -> {
                         logger.error { "Something went wrong while inserting user into repository." }
                         AddNewUserError.UnknownError
@@ -125,6 +127,7 @@ class UsersService(
                                 }
                                 SetPasswordError.UserDoesNotExist
                             }
+
                             UpdateSecretError.WriteError -> SetPasswordError.UnknownError
                         }
                     }
@@ -143,9 +146,16 @@ class UsersService(
         return Ok(User.UserSecret(hashedPassword, salt, apiToken))
     }
 
-    suspend fun updateUserRoles(username: String, newRoles: Set<Role>): Result<User, UpdateUserRolesError> {
+    suspend fun updateUserRoles(
+        username: String,
+        newRoles: Set<Role>,
+    ): Result<UpdateUserRolesResult, UpdateUserRolesError> {
         val user = repository.findByName(username)
             ?: return Err(UpdateUserRolesError.UserNotFound)
+
+        if (user.data.roles == newRoles) {
+            return Ok(UpdateUserRolesResult.Unchanged(user))
+        }
 
         if (Role.OWNER in user.data.roles && Role.OWNER !in newRoles) {
             val otherOwners = repository.findByRole(Role.OWNER).filter { it.data.name != username }
@@ -162,6 +172,7 @@ class UsersService(
                     UpdateRolesError.WriteError -> UpdateUserRolesError.UnknownError
                 }
             }
+            .map { UpdateUserRolesResult.Updated(it) }
     }
 
     suspend fun updateLastLoginDate(user: User) {
@@ -188,6 +199,13 @@ sealed class CreateFirstUserError {
     data class PasswordValidationError(val error: SetPasswordError.ValidationError) : CreateFirstUserError()
     data object UsersAlreadyExist : CreateFirstUserError()
     data object UnknownError : CreateFirstUserError()
+}
+
+sealed class UpdateUserRolesResult {
+    abstract val user: User
+
+    data class Updated(override val user: User) : UpdateUserRolesResult()
+    data class Unchanged(override val user: User) : UpdateUserRolesResult()
 }
 
 sealed class UpdateUserRolesError {
