@@ -1,0 +1,32 @@
+.container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.icon {
+  color: crimson;
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.message {
+  font-size: 12px;
+  margin: 0;
+  padding-top: 6px;
+  word-break: break-word;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}

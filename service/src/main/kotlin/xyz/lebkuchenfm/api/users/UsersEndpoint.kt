@@ -9,14 +9,17 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.delete
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
+import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 import io.ktor.server.sessions.SessionStorage
 import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.respondWithProblem
+import xyz.lebkuchenfm.domain.auth.Role
 import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.users.AddNewUserError
+import xyz.lebkuchenfm.domain.users.UpdateUserRolesError
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
 
@@ -52,6 +55,52 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
                 }
         }
 
+        put("{user_name}/roles") {
+            val userName = call.parameters["user_name"]
+                ?: return@put call.respond(HttpStatusCode.BadRequest)
+
+            val body: UpdateRolesRequest = call.receive()
+
+            val roles = body.roles.map { roleName ->
+                Role.fromName(roleName)
+                    ?: return@put call.respondWithProblem(
+                        title = "Invalid role.",
+                        detail = "Unknown role: $roleName.",
+                        status = HttpStatusCode.BadRequest,
+                    )
+            }.toSet()
+
+            usersService.updateUserRoles(userName, roles)
+                .onSuccess {
+                    SessionInvalidationFlow.emit(userName)
+                    call.respond(HttpStatusCode.OK, it.toResponse())
+                }
+                .mapError { error ->
+                    when (error) {
+                        UpdateUserRolesError.UserNotFound ->
+                            call.respondWithProblem(
+                                title = "User not found.",
+                                detail = "User '$userName' does not exist.",
+                                status = HttpStatusCode.NotFound,
+                            )
+
+                        UpdateUserRolesError.WouldRemoveLastOwner ->
+                            call.respondWithProblem(
+                                title = "Cannot remove last owner.",
+                                detail = "At least one user must have the OWNER role.",
+                                status = HttpStatusCode.Conflict,
+                            )
+
+                        UpdateUserRolesError.UnknownError ->
+                            call.respondWithProblem(
+                                title = "Could not update roles.",
+                                detail = "Unknown error.",
+                                status = HttpStatusCode.InternalServerError,
+                            )
+                    }
+                }
+        }
+
         delete("{user_name}/sessions") {
             val userName = call.parameters["user_name"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
             val sessionIds = sessionsService.getUserSessionIds(userName)
@@ -67,6 +116,11 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
 data class NewUser(
     val username: String,
     val discordId: String?,
+)
+
+@Serializable
+data class UpdateRolesRequest(
+    val roles: List<String>,
 )
 
 @Serializable
