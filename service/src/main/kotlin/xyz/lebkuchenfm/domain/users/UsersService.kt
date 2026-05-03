@@ -143,19 +143,19 @@ class UsersService(
         return Ok(User.UserSecret(hashedPassword, salt, apiToken))
     }
 
-    suspend fun updateUserRoles(username: String, roles: Set<Role>): Result<User, UpdateUserRolesError> {
+    suspend fun updateUserRoles(username: String, newRoles: Set<Role>): Result<User, UpdateUserRolesError> {
         val user = repository.findByName(username)
             ?: return Err(UpdateUserRolesError.UserNotFound)
 
-        if (Role.OWNER !in roles && Role.OWNER in user.data.roles) {
-            val owners = repository.findByRole(Role.OWNER)
-            if (owners.none { it.data.name != username }) {
+        if (Role.OWNER in user.data.roles && Role.OWNER !in newRoles) {
+            val otherOwners = repository.findByRole(Role.OWNER).filter { it.data.name != username }
+            if (otherOwners.isEmpty()) {
                 return Err(UpdateUserRolesError.WouldRemoveLastOwner)
             }
         }
 
-        return repository.updateRoles(user, roles)
-            .onSuccess { logger.info { "Updated roles for user '$username' to $roles." } }
+        return repository.updateRoles(user, newRoles)
+            .onSuccess { logger.info { "Updated roles for user '$username' to $newRoles." } }
             .mapError {
                 when (it) {
                     UpdateRolesError.UserNotFound -> UpdateUserRolesError.UserNotFound
