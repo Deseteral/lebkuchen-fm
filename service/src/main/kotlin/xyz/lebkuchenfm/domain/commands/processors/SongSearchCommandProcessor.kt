@@ -1,6 +1,7 @@
 package xyz.lebkuchenfm.domain.commands.processors
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -25,6 +26,7 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
             ),
             delimiter = " ",
         ),
+        requiredScopes = setOf(Scope.PLAYER_QUEUE),
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
@@ -38,9 +40,9 @@ class SongSearchCommandProcessor(private val songsService: SongsService, private
             ?: return error("Could not find a song with provided phrase.", logger)
 
         eventStream.sendToEveryone(Event.QueueSongs(listOf(song)))
-        songsService.incrementPlayCount(song, context.session)
+        songsService.incrementPlayCount(song, context.username)
 
         val messageLines = buildMessage(listOf(song))
-        return CommandProcessingResult.fromMultilineMarkdown(*messageLines.toTypedArray())
+        return CommandProcessingResult.Success.fromMultilineMarkdown(*messageLines.toTypedArray())
     }
 }

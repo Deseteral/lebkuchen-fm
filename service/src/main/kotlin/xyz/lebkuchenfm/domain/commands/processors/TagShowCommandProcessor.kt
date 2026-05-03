@@ -39,7 +39,7 @@ class TagShowCommandProcessor(private val xSoundsService: XSoundsService) :
 
         return xSoundsService.listTagsForSound(soundName)
             .map { tags ->
-                return CommandProcessingResult.fromMultilineMarkdown(
+                return CommandProcessingResult.Success.fromMultilineMarkdown(
                     "*Sound $soundName has ${tags.size} tags${if (tags.isNotEmpty()) ":" else ""}*",
                     *tags.map { "- $it" }.toTypedArray(),
                 )

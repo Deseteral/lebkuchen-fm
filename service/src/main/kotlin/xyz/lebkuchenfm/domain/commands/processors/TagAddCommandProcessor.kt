@@ -3,6 +3,7 @@ package xyz.lebkuchenfm.domain.commands.processors
 import com.github.michaelbull.result.getOrElse
 import com.github.michaelbull.result.map
 import io.github.oshai.kotlinlogging.KotlinLogging
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.CommandParameters
 import xyz.lebkuchenfm.domain.commands.CommandProcessor
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
@@ -26,6 +27,7 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
             ),
             delimiter = "|",
         ),
+        requiredScopes = setOf(Scope.XSOUNDS_MANAGE),
     ) {
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
         val args = command.args
@@ -41,7 +43,7 @@ class TagAddCommandProcessor(private val xSoundsService: XSoundsService) :
         val (tagName, soundName) = args
 
         return xSoundsService.addTagToXSound(soundName, tagName)
-            .map { CommandProcessingResult.fromMarkdown("Added $tagName tag to $soundName sound.") }
+            .map { CommandProcessingResult.Success("Added $tagName tag to $soundName sound.") }
             .getOrElse { err ->
                 error(
                     when (err) {

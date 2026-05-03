@@ -29,7 +29,7 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
         if (args.isEmpty()) {
             return xSoundsService.listTags()
                 .map { tags ->
-                    return CommandProcessingResult.fromMultilineMarkdown(
+                    return CommandProcessingResult.Success.fromMultilineMarkdown(
                         "*There are ${tags.size} tags:*",
                         *tags.map { "- $it" }.toTypedArray(),
                     )
@@ -47,7 +47,7 @@ class TagListCommandProcessor(private val xSoundsService: XSoundsService) :
 
         return xSoundsService.listXSoundsWithTag(tagName)
             .map { soundList ->
-                return CommandProcessingResult.fromMultilineMarkdown(
+                return CommandProcessingResult.Success.fromMultilineMarkdown(
                     "*There are ${soundList.size} sounds tagged with $tagName: *",
                     *soundList.map { "- ${it.name}" }.toTypedArray(),
                 )

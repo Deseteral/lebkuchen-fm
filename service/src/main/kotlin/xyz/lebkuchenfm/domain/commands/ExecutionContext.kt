@@ -1,5 +1,5 @@
 package xyz.lebkuchenfm.domain.commands
 
-import xyz.lebkuchenfm.domain.sessions.UserSession
+import xyz.lebkuchenfm.domain.auth.Scope
 
-data class ExecutionContext(val session: UserSession, val commandPrompt: String?)
+data class ExecutionContext(val username: String, val grantedScopes: Set<Scope>, val commandPrompt: String?)
