@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 enum class Scope(val value: String) {
-    PLAYER_PLAYBACK_CONTROL("player:control"),
+    PLAYER_PLAYBACK_CONTROL("player:playback-control"),
     PLAYER_QUEUE("player:queue"),
     PLAYER_SKIP("player:skip"),
     XSOUNDS_PLAY("xsounds:play"),
