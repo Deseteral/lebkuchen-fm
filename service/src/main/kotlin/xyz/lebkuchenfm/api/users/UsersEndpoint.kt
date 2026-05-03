@@ -22,6 +22,7 @@ import xyz.lebkuchenfm.domain.auth.SessionInvalidationFlow
 import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.users.AddNewUserError
 import xyz.lebkuchenfm.domain.users.UpdateUserRolesError
+import xyz.lebkuchenfm.domain.users.UpdateUserRolesResult
 import xyz.lebkuchenfm.domain.users.User
 import xyz.lebkuchenfm.domain.users.UsersService
 
@@ -31,7 +32,7 @@ fun Route.usersRouting(usersService: UsersService, sessionsService: SessionsServ
 
         withScopes(Scope.USERS_MANAGE) {
             postUser(usersService)
-            putUserRoles(usersService)
+            putUserRoles(usersService, sessionsService, sessionStorage)
             deleteUserSessions(sessionsService, sessionStorage)
         }
     }
@@ -67,7 +68,11 @@ private fun Route.postUser(usersService: UsersService) = post {
         }
 }
 
-private fun Route.putUserRoles(usersService: UsersService) = put("{user_name}/roles") {
+private fun Route.putUserRoles(
+    usersService: UsersService,
+    sessionsService: SessionsService,
+    sessionStorage: SessionStorage,
+) = put("{user_name}/roles") {
     val userName = call.parameters["user_name"]
         ?: return@put call.respond(HttpStatusCode.BadRequest)
 
@@ -83,9 +88,14 @@ private fun Route.putUserRoles(usersService: UsersService) = put("{user_name}/ro
     }.toSet()
 
     usersService.updateUserRoles(userName, roles)
-        .onSuccess {
-            SessionInvalidationFlow.emit(userName)
-            call.respond(HttpStatusCode.OK, it.toResponse())
+        .onSuccess { result ->
+            if (result is UpdateUserRolesResult.Updated) {
+                val sessionIds = sessionsService.getUserSessionIds(userName)
+                sessionsService.removeAllSessionsForUser(userName)
+                sessionIds.forEach { sessionStorage.invalidate(it) }
+                SessionInvalidationFlow.emit(userName)
+            }
+            call.respond(HttpStatusCode.OK, result.user.toResponse())
         }
         .mapError { error ->
             when (error) {
