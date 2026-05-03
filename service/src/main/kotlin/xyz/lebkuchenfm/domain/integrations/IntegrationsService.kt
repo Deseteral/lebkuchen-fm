@@ -2,9 +2,6 @@ package xyz.lebkuchenfm.domain.integrations
 
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.map
-import io.github.oshai.kotlinlogging.KotlinLogging
-
-private val logger = KotlinLogging.logger {}
 
 class IntegrationsService(private val repository: IntegrationsRepository) {
 
@@ -12,7 +9,14 @@ class IntegrationsService(private val repository: IntegrationsRepository) {
         return repository.get() ?: Integrations()
     }
 
-    suspend fun patchIntegrations(patch: IntegrationsPatch): Result<Integrations, IntegrationsRepositoryError> {
+    /**
+     * Merges [patch] onto the current integrations config and persists the result.
+     *
+     * Within the patch, `null` groups are skipped (no change). Within a group,
+     * `null` fields mean no change, `""` (empty string) clears the value,
+     * and any other string sets a new value.
+     */
+    suspend fun patchIntegrations(patch: Integrations): Result<Integrations, IntegrationsRepositoryError> {
         val current = getIntegrations()
         val merged = current.applyPatch(patch)
         return repository.upsert(merged).map { it }
@@ -31,7 +35,7 @@ private fun mergeField(patch: String?, current: String?): String? = when (patch)
     else -> patch
 }
 
-private fun Integrations.applyPatch(patch: IntegrationsPatch): Integrations = copy(
+private fun Integrations.applyPatch(patch: Integrations): Integrations = copy(
     dropbox = patch.dropbox?.let { p ->
         val current = dropbox ?: DropboxIntegration()
         current.copy(
@@ -55,27 +59,4 @@ private fun Integrations.applyPatch(patch: IntegrationsPatch): Integrations = co
             commandPrompt = mergeField(p.commandPrompt, current.commandPrompt),
         )
     } ?: discord,
-)
-
-data class IntegrationsPatch(
-    val dropbox: DropboxIntegrationPatch? = null,
-    val youtube: YoutubeIntegrationPatch? = null,
-    val discord: DiscordIntegrationPatch? = null,
-)
-
-data class DropboxIntegrationPatch(
-    val appKey: String? = null,
-    val appSecret: String? = null,
-    val refreshToken: String? = null,
-    val xSoundsPath: String? = null,
-)
-
-data class YoutubeIntegrationPatch(
-    val apiKey: String? = null,
-)
-
-data class DiscordIntegrationPatch(
-    val token: String? = null,
-    val channelId: String? = null,
-    val commandPrompt: String? = null,
 )
