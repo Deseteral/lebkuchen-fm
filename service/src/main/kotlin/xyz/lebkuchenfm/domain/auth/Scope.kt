@@ -33,6 +33,9 @@ enum class Scope {
 
     @SerialName("users:manage")
     USERS_MANAGE,
+
+    @SerialName("integrations:manage")
+    INTEGRATIONS_MANAGE,
     ;
 
     override fun toString(): String = serializer().descriptor.getElementName(ordinal)

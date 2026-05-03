@@ -9,7 +9,13 @@ services:
     environment:
       NODE_ENV: production
       MONGODB_URI: mongodb://mongo:27017
+      # Required — 256-bit base64 key for encrypting secrets at rest.
+      # Generate with: openssl rand -base64 32
+      # See docs/configuration.md for details.
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
     ports:
+      # Left side is the host port (change freely); right side is the container port
+      # controlled by the PORT env var (defaults to 8080).
       - 8080:8080
     networks:
       - lebkuchen-network
