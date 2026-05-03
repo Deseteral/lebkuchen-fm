@@ -13,7 +13,6 @@ import xyz.lebkuchenfm.api.plugins.withScopes
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.integrations.Integrations
-import xyz.lebkuchenfm.domain.integrations.IntegrationsPatch
 import xyz.lebkuchenfm.domain.integrations.IntegrationsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
 import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
@@ -63,7 +62,7 @@ fun Route.integrationsRouting(
 }
 
 private suspend fun reconfigureAffectedClients(
-    patch: IntegrationsPatch,
+    patch: Integrations,
     updated: Integrations,
     dropboxClient: DropboxClient,
     xSoundsDropboxFileRepository: XSoundsDropboxFileRepository,

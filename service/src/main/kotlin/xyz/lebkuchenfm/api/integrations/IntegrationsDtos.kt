@@ -1,11 +1,10 @@
 package xyz.lebkuchenfm.api.integrations
 
 import kotlinx.serialization.Serializable
-import xyz.lebkuchenfm.domain.integrations.DiscordIntegrationPatch
-import xyz.lebkuchenfm.domain.integrations.DropboxIntegrationPatch
+import xyz.lebkuchenfm.domain.integrations.DiscordIntegration
+import xyz.lebkuchenfm.domain.integrations.DropboxIntegration
 import xyz.lebkuchenfm.domain.integrations.Integrations
-import xyz.lebkuchenfm.domain.integrations.IntegrationsPatch
-import xyz.lebkuchenfm.domain.integrations.YoutubeIntegrationPatch
+import xyz.lebkuchenfm.domain.integrations.YoutubeIntegration
 
 private const val SECRET_HINT_LENGTH = 4
 private const val SECRET_HINT_MIN_VALUE_LENGTH = 8
@@ -70,17 +69,17 @@ private fun String?.toSecretState(): SecretState = when {
     else -> SecretState(set = true)
 }
 
-// --- Patch request DTOs ---
+// --- Patch request DTO ---
 
 @Serializable
 data class IntegrationsPatchRequest(
-    val dropbox: DropboxIntegrationPatchDto? = null,
-    val youtube: YoutubeIntegrationPatchDto? = null,
-    val discord: DiscordIntegrationPatchDto? = null,
+    val dropbox: DropboxPatchRequest? = null,
+    val youtube: YoutubePatchRequest? = null,
+    val discord: DiscordPatchRequest? = null,
 )
 
 @Serializable
-data class DropboxIntegrationPatchDto(
+data class DropboxPatchRequest(
     val appKey: String? = null,
     val appSecret: String? = null,
     val refreshToken: String? = null,
@@ -88,21 +87,21 @@ data class DropboxIntegrationPatchDto(
 )
 
 @Serializable
-data class YoutubeIntegrationPatchDto(
+data class YoutubePatchRequest(
     val apiKey: String? = null,
 )
 
 @Serializable
-data class DiscordIntegrationPatchDto(
+data class DiscordPatchRequest(
     val token: String? = null,
     val channelId: String? = null,
     val commandPrompt: String? = null,
 )
 
-fun IntegrationsPatchRequest.toDomain(): IntegrationsPatch {
-    return IntegrationsPatch(
+fun IntegrationsPatchRequest.toDomain(): Integrations {
+    return Integrations(
         dropbox = dropbox?.let {
-            DropboxIntegrationPatch(
+            DropboxIntegration(
                 appKey = it.appKey,
                 appSecret = it.appSecret,
                 refreshToken = it.refreshToken,
@@ -110,12 +109,12 @@ fun IntegrationsPatchRequest.toDomain(): IntegrationsPatch {
             )
         },
         youtube = youtube?.let {
-            YoutubeIntegrationPatch(
+            YoutubeIntegration(
                 apiKey = it.apiKey,
             )
         },
         discord = discord?.let {
-            DiscordIntegrationPatch(
+            DiscordIntegration(
                 token = it.token,
                 channelId = it.channelId,
                 commandPrompt = it.commandPrompt,
