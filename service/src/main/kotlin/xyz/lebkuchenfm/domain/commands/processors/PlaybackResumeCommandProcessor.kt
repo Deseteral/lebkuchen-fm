@@ -18,7 +18,7 @@ class PlaybackResumeCommandProcessor(private val eventStream: EventStream<*>) :
         parameters = CommandParameters(
             parameters = emptyList(),
         ),
-        requiredScopes = setOf(Scope.PLAYER_CONTROL),
+        requiredScopes = setOf(Scope.PLAYER_PLAYBACK_CONTROL),
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {

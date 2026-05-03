@@ -8,6 +8,9 @@ export async function executeCommand(prompt: string): Promise<string> {
   });
 
   const data = await response.json();
-  if (data.textResponse) return (data as TextCommandResponse).textResponse;
-  throw new Error('Request to LebkuchenFM service failed.');
+  if (data.textResponse) {
+    return (data as TextCommandResponse).textResponse;
+  } else {
+    throw new Error('Request to LebkuchenFM service failed.');
+  }
 }

@@ -1,5 +1,6 @@
 package xyz.lebkuchenfm.domain.commands
 
+import kotlinx.coroutines.runBlocking
 import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.commands.model.Command
 import xyz.lebkuchenfm.domain.commands.model.CommandProcessingResult
@@ -11,19 +12,16 @@ class CommandScopesEnforcementTest {
 
     private val parser = TextCommandParser()
 
-    private fun makeProcessor(requiredScopes: Set<Scope>): CommandProcessor {
-        return object : CommandProcessor(
-            key = "test-cmd",
-            shortKey = null,
-            helpMessage = "Test command.",
-            exampleUsages = emptyList(),
-            parameters = CommandParameters(parameters = emptyList()),
-            requiredScopes = requiredScopes,
-        ) {
-            override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
-                return CommandProcessingResult.Success("executed")
-            }
-        }
+    private fun makeProcessor(requiredScopes: Set<Scope>): CommandProcessor = object : CommandProcessor(
+        key = "test-cmd",
+        shortKey = null,
+        helpMessage = "Test command.",
+        exampleUsages = emptyList(),
+        parameters = CommandParameters(parameters = emptyList()),
+        requiredScopes = requiredScopes,
+    ) {
+        override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult =
+            CommandProcessingResult.Success("executed")
     }
 
     private fun makeExecutor(processor: CommandProcessor): CommandExecutorService {
@@ -43,7 +41,7 @@ class CommandScopesEnforcementTest {
         )
 
         // when
-        val result = kotlinx.coroutines.runBlocking {
+        val result = runBlocking {
             executor.executeFromText("test-cmd", context)
         }
 
@@ -64,7 +62,7 @@ class CommandScopesEnforcementTest {
         )
 
         // when
-        val result = kotlinx.coroutines.runBlocking {
+        val result = runBlocking {
             executor.executeFromText("test-cmd", context)
         }
 
@@ -85,7 +83,7 @@ class CommandScopesEnforcementTest {
         )
 
         // when
-        val result = kotlinx.coroutines.runBlocking {
+        val result = runBlocking {
             executor.executeFromText("test-cmd", context)
         }
 
