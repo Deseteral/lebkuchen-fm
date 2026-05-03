@@ -21,7 +21,7 @@ export async function postUser(formData: FormData): Promise<User> {
 
   const response = await apiFetch('/api/users', options);
 
-  if (response.ok === false) {
+  if (!response.ok) {
     throw new Error(await response.text());
   }
 
@@ -38,7 +38,7 @@ export async function putUserRoles(username: string, roles: string[]): Promise<U
     },
   });
 
-  if (response.ok === false) {
+  if (!response.ok) {
     throw new Error(await response.text());
   }
 

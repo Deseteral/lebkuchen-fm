@@ -58,6 +58,7 @@ class UsersService(
                         logger.info { "Tried to create a new user '${user.data.name}', but it already exists." }
                         AddNewUserError.UserAlreadyExists
                     }
+
                     InsertUserError.WriteError -> {
                         logger.error { "Something went wrong while inserting user into repository." }
                         AddNewUserError.UnknownError
@@ -126,6 +127,7 @@ class UsersService(
                                 }
                                 SetPasswordError.UserDoesNotExist
                             }
+
                             UpdateSecretError.WriteError -> SetPasswordError.UnknownError
                         }
                     }
@@ -146,24 +148,24 @@ class UsersService(
 
     suspend fun updateUserRoles(
         username: String,
-        roles: Set<Role>,
+        newRoles: Set<Role>,
     ): Result<UpdateUserRolesResult, UpdateUserRolesError> {
         val user = repository.findByName(username)
             ?: return Err(UpdateUserRolesError.UserNotFound)
 
-        if (user.data.roles == roles) {
+        if (user.data.roles == newRoles) {
             return Ok(UpdateUserRolesResult.Unchanged(user))
         }
 
-        if (Role.OWNER !in roles && Role.OWNER in user.data.roles) {
-            val owners = repository.findByRole(Role.OWNER)
-            if (owners.none { it.data.name != username }) {
+        if (Role.OWNER in user.data.roles && Role.OWNER !in newRoles) {
+            val otherOwners = repository.findByRole(Role.OWNER).filter { it.data.name != username }
+            if (otherOwners.isEmpty()) {
                 return Err(UpdateUserRolesError.WouldRemoveLastOwner)
             }
         }
 
-        return repository.updateRoles(user, roles)
-            .onSuccess { logger.info { "Updated roles for user '$username' to $roles." } }
+        return repository.updateRoles(user, newRoles)
+            .onSuccess { logger.info { "Updated roles for user '$username' to $newRoles." } }
             .mapError {
                 when (it) {
                     UpdateRolesError.UserNotFound -> UpdateUserRolesError.UserNotFound
