@@ -12,9 +12,8 @@ class IntegrationsService(private val repository: IntegrationsRepository) {
     /**
      * Merges [patch] onto the current integrations config and persists the result.
      *
-     * Within the patch, `null` groups are skipped (no change). Within a group,
-     * `null` fields mean no change, `""` (empty string) clears the value,
-     * and any other string sets a new value.
+     * Within the patch, `null` groups are skipped (no change).
+     * Within a group, check fields merge logic below.
      */
     suspend fun patchIntegrations(patch: Integrations): Result<Integrations, IntegrationsRepositoryError> {
         val current = getIntegrations()
