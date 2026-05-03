@@ -8,18 +8,6 @@ ktor:
 storage:
   mongodb:
     connectionString: "$MONGODB_URI:mongodb://localhost:27017"
-  dropbox:
-    auth:
-      refreshToken: $?DROPBOX_REFRESH_TOKEN
-      appKey: $?DROPBOX_CLIENT_ID
-      appSecret: $?DROPBOX_SECRET
-    paths:
-      xSounds: "$DROPBOX_X_SOUNDS_PATH:/xsounds/"
 
-youtube:
-  apiKey: $?YOUTUBE_API_KEY
-
-discord:
-  token: $?DISCORD_TOKEN
-  channelId: $?DISCORD_CHANNEL_ID
-  commandPrompt: "$COMMAND_PROMPT:/fm"
+security:
+  encryptionKey: $SECRET_ENCRYPTION_KEY

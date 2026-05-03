@@ -42,6 +42,20 @@ yarn run dev
 This will start a development server on `localhost:9090` with hot-reloading enabled and a proxy to the backend service
 running on `localhost:8080`.
 
+### Two-port dev setup
+
+During development two servers run simultaneously:
+
+- The **Vite dev server** on `:9090` — serves the frontend with hot module replacement.
+- The **Ktor backend** on `:8080` — serves the API.
+
+Vite automatically proxies all `/api` requests (including the WebSocket at
+`/api/event-stream`) to `:8080` — no extra configuration is needed. Open the app at
+`http://localhost:9090` during development.
+
+In production there is only one port: the backend serves the compiled frontend as static
+files, so the Vite dev server is not involved.
+
 ## Building
 To build a production bundle run:
 ```sh

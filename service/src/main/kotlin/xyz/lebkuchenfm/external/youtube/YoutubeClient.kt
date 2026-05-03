@@ -17,15 +17,21 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.parameters
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.domain.integrations.YoutubeIntegration
 
 private val logger = KotlinLogging.logger {}
 
-class YoutubeClient(config: ApplicationConfig) {
-    private val youtubeClient: HttpClient by lazy { prepareHttpClient() }
-    private val apiKey: String? by lazy { config.propertyOrNull("youtube.apiKey")?.getString() }
+class YoutubeClient(integration: YoutubeIntegration?) {
+    private var apiKey: String? = integration?.apiKey
+    private var youtubeClient: HttpClient = buildHttpClient()
+
+    fun reconfigure(integration: YoutubeIntegration?) {
+        apiKey = integration?.apiKey
+        youtubeClient.close()
+        youtubeClient = buildHttpClient()
+    }
 
     suspend fun getVideoName(id: String): Result<String, YoutubeClientError> {
         apiKey ?: run {
@@ -115,7 +121,7 @@ class YoutubeClient(config: ApplicationConfig) {
         )
     }
 
-    private fun prepareHttpClient(): HttpClient {
+    private fun buildHttpClient(): HttpClient {
         return HttpClient(OkHttp) {
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
             install(DefaultRequest) {
