@@ -9,10 +9,18 @@ enum PhIconType {
 interface PhIconProps {
   type: PhIconType;
   icon: string;
+  size?: number;
 }
 
 function PhIcon(props: PhIconProps) {
-  return <i class={clsx(styles.phIcon, `ph-${props.type}`, `ph-${props.icon}`)} />;
+  const size = () => `${props.size ?? 24}px`;
+
+  return (
+    <i
+      class={clsx(styles.phIcon, `ph-${props.type}`, `ph-${props.icon}`)}
+      style={{ width: size(), height: size(), 'line-height': size(), 'font-size': size() }}
+    />
+  );
 }
 
 export { PhIcon, PhIconType };
