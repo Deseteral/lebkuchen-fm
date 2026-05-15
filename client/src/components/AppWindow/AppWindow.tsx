@@ -3,6 +3,7 @@ import { JSX } from 'solid-js';
 import styles from './AppWindow.module.css';
 import { AppIcon } from '@components/AppIcon/AppIcon';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
+import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
 
 interface AppWindowProps {
   children: JSX.Element;
@@ -19,7 +20,8 @@ interface AppWindowProps {
   title: string;
   close?: () => void;
   centered?: boolean;
-  iconIndex: IconSpriteIndex;
+  iconIndex?: IconSpriteIndex;
+  phIcon?: { type: PhIconType; icon: string };
 }
 
 function AppWindow(props: AppWindowProps) {
@@ -119,7 +121,8 @@ function AppWindow(props: AppWindowProps) {
       }}
     >
       <div class={styles.title} onMouseDown={dragMouseDown}>
-        <AppIcon size={16} iconIndex={props.iconIndex} />
+        {props.iconIndex && <AppIcon size={16} iconIndex={props.iconIndex} />}
+        {props.phIcon && <PhIcon type={props.phIcon.type} icon={props.phIcon.icon} size={16} />}
         <p class={styles.titleText}>{props.title}</p>
         {!!props.close && (
           <button type="button" class={styles.close} onClick={closeWindow}>
