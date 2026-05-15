@@ -6,9 +6,6 @@ import xyz.lebkuchenfm.domain.integrations.DropboxIntegration
 import xyz.lebkuchenfm.domain.integrations.Integrations
 import xyz.lebkuchenfm.domain.integrations.YoutubeIntegration
 
-private const val SECRET_HINT_LENGTH = 4
-private const val SECRET_HINT_MIN_VALUE_LENGTH = 8
-
 // --- Response DTOs ---
 
 @Serializable
@@ -65,8 +62,11 @@ fun Integrations.toResponse(): IntegrationsResponse {
 
 private fun String?.toSecretState(): SecretState = when {
     this == null -> SecretState(set = false)
-    this.length >= SECRET_HINT_MIN_VALUE_LENGTH -> SecretState(set = true, hint = this.takeLast(SECRET_HINT_LENGTH))
-    else -> SecretState(set = true)
+    else -> {
+        val revealCount = minOf(this.length / 4, 4)
+        val masked = "*".repeat(this.length - revealCount) + this.takeLast(revealCount)
+        SecretState(set = true, hint = masked)
+    }
 }
 
 // --- Patch request DTO ---
