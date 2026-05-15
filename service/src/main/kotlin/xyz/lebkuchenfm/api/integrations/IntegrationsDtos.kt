@@ -11,7 +11,8 @@ import xyz.lebkuchenfm.domain.integrations.YoutubeIntegration
 @Serializable
 data class SecretState(
     val set: Boolean,
-    val hint: String? = null,
+    val suffix: String? = null,
+    val length: Int? = null,
 )
 
 @Serializable
@@ -64,8 +65,7 @@ private fun String?.toSecretState(): SecretState = when {
     this == null -> SecretState(set = false)
     else -> {
         val revealCount = minOf(this.length / 4, 4)
-        val masked = "*".repeat(this.length - revealCount) + this.takeLast(revealCount)
-        SecretState(set = true, hint = masked)
+        SecretState(set = true, suffix = this.takeLast(revealCount), length = this.length)
     }
 }
 
