@@ -2,16 +2,19 @@ package xyz.lebkuchenfm.external.storage.dropbox
 
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.mapError
-import io.ktor.server.config.ApplicationConfig
 import xyz.lebkuchenfm.domain.xsounds.UploadXSoundFileError
 import xyz.lebkuchenfm.domain.xsounds.XSoundsFileRepository
 import java.nio.file.Paths
 
 class XSoundsDropboxFileRepository(
     private val dropboxClient: DropboxClient,
-    config: ApplicationConfig,
+    xSoundsPath: String?,
 ) : XSoundsFileRepository {
-    private val storageFolderPath = config.property(DROPBOX_X_SOUND_PATH_PROPERTY_PATH).getString()
+    private var storageFolderPath: String = xSoundsPath ?: DEFAULT_X_SOUNDS_PATH
+
+    fun setStoragePath(xSoundsPath: String?) {
+        storageFolderPath = xSoundsPath ?: DEFAULT_X_SOUNDS_PATH
+    }
 
     override suspend fun uploadXSoundFile(
         soundName: String,
@@ -23,6 +26,6 @@ class XSoundsDropboxFileRepository(
     }
 
     private companion object {
-        const val DROPBOX_X_SOUND_PATH_PROPERTY_PATH = "storage.dropbox.paths.xSounds"
+        const val DEFAULT_X_SOUNDS_PATH = "/xsounds/"
     }
 }

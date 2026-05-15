@@ -25,8 +25,8 @@ import io.ktor.http.encodeURLQueryComponent
 import io.ktor.http.isSuccess
 import io.ktor.http.parameters
 import io.ktor.serialization.kotlinx.json.json
-import io.ktor.server.config.ApplicationConfig
 import kotlinx.serialization.json.Json
+import xyz.lebkuchenfm.domain.integrations.DropboxIntegration
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharing
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharingResponse
 import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxFileSharingSettings
@@ -36,12 +36,22 @@ import xyz.lebkuchenfm.external.storage.dropbox.models.DropboxTokenInfo
 
 private val logger = KotlinLogging.logger {}
 
-class DropboxClient(config: ApplicationConfig) {
-    private val client by lazy { authorizedClient }
+class DropboxClient(integration: DropboxIntegration?) {
+    private var refreshToken: String? = integration?.refreshToken
+    private var appKey: String? = integration?.appKey
+    private var appSecret: String? = integration?.appSecret
+
     private val bearerTokenStorage = mutableListOf<BearerTokens>()
-    private val refreshToken by lazy { config.propertyOrNull(DROPBOX_REFRESH_TOKEN_PROPERTY_PATH)?.getString() }
-    private val appKey by lazy { config.propertyOrNull(DROPBOX_APP_KEY_PROPERTY_PATH)?.getString() }
-    private val appSecret by lazy { config.propertyOrNull(DROPBOX_APP_SECRET_PROPERTY_PATH)?.getString() }
+    private var client: HttpClient = buildAuthorizedClient()
+
+    fun reconfigure(integration: DropboxIntegration?) {
+        refreshToken = integration?.refreshToken
+        appKey = integration?.appKey
+        appSecret = integration?.appSecret
+        bearerTokenStorage.clear()
+        client.close()
+        client = buildAuthorizedClient()
+    }
 
     /**
      * [path] must contain destination folder, file name and its extension
@@ -108,7 +118,7 @@ class DropboxClient(config: ApplicationConfig) {
         bearerTokenStorage.add(BearerTokens(tokenInfo.accessToken, refreshToken))
     }
 
-    private val authorizedClient: HttpClient = HttpClient(OkHttp) {
+    private fun buildAuthorizedClient(): HttpClient = HttpClient(OkHttp) {
         install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
         install(Auth) {
             bearer {
@@ -158,9 +168,6 @@ class DropboxClient(config: ApplicationConfig) {
         const val API_FILE_UPLOAD_URL = "https://content.dropboxapi.com/2/files/upload"
         const val API_OAUTH_TOKEN_URL = "https://api.dropbox.com/oauth2/token"
         const val API_FILE_SHARING_URL = "https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings"
-        const val DROPBOX_REFRESH_TOKEN_PROPERTY_PATH = "storage.dropbox.auth.refreshToken"
-        const val DROPBOX_APP_KEY_PROPERTY_PATH = "storage.dropbox.auth.appKey"
-        const val DROPBOX_APP_SECRET_PROPERTY_PATH = "storage.dropbox.auth.appSecret"
     }
 
     sealed class DropboxClientError {

@@ -8,56 +8,79 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.server.config.ApplicationConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.integrations.DiscordIntegration
 import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
 
 class DiscordClient(
-    config: ApplicationConfig,
+    integration: DiscordIntegration?,
     private val commandExecutorService: CommandExecutorService,
     private val userService: UsersService,
 ) {
-    private lateinit var kord: Kord
+    private var token: String? = integration?.token
+    private var commandPrompt: String? = integration?.effectiveCommandPrompt
+    private var channelId: String? = integration?.channelId
 
-    private val token: String? = config.propertyOrNull("discord.token")?.getString()
-    private val commandPrompt: String? = config.propertyOrNull("discord.commandPrompt")?.getString()
-    private val channelId: String? = config.propertyOrNull("discord.channelId")?.getString()
+    private var scope: CoroutineScope? = null
+    private var kord: Kord? = null
+    private var activeJob: Job? = null
 
-    suspend fun start() {
-        if (token == null) {
+    fun start(scope: CoroutineScope) {
+        this.scope = scope
+        activeJob = scope.launch { connect() }
+    }
+
+    suspend fun reconfigure(integration: DiscordIntegration?) {
+        activeJob?.cancel()
+        activeJob = null
+        kord?.shutdown()
+        kord = null
+
+        token = integration?.token
+        commandPrompt = integration?.effectiveCommandPrompt
+        channelId = integration?.channelId
+
+        scope?.let { start(it) }
+    }
+
+    private suspend fun connect() {
+        val currentToken = token
+        if (currentToken == null) {
             logger.warn { "Discord Bot token not provided." }
             return
         }
 
-        if (commandPrompt == null) {
+        val currentCommandPrompt = commandPrompt
+        if (currentCommandPrompt == null) {
             logger.warn { "CommandPrompt prompt not provided." }
             return
         }
 
-        if (channelId == null) {
+        val currentChannelId = channelId
+        if (currentChannelId == null) {
             logger.warn { "Channel id not provided." }
             return
         }
 
-        if (this::kord.isInitialized) {
-            return
-        }
+        val newKord = Kord(currentToken)
+        kord = newKord
 
-        kord = Kord(token)
-
-        kord.events
+        newKord.events
             .filterIsInstance<MessageCreateEvent>()
             .map { it.message }
-            .filter { it.channelId.value.toString() == channelId }
-            .filter { it.content.split(' ').firstOrNull() == commandPrompt }
+            .filter { it.channelId.value.toString() == currentChannelId }
+            .filter { it.content.split(' ').firstOrNull() == currentCommandPrompt }
             .filter { it.author != null }
             .filter { it.author?.isBot == false }
             .onEach {
@@ -77,17 +100,17 @@ class DiscordClient(
                         val context = ExecutionContext(
                             username = user.data.name,
                             grantedScopes = user.effectiveScopes,
-                            commandPrompt = commandPrompt,
+                            commandPrompt = currentCommandPrompt,
                         )
-                        val commandText = it.content.replace("$commandPrompt ", "")
+                        val commandText = it.content.replace("$currentCommandPrompt ", "")
                         val result = commandExecutorService.executeFromText(commandText, context)
                         it.reply { content = result.markdown }
                     }
                 }
             }
-            .launchIn(kord)
+            .launchIn(newKord)
 
-        kord.login {
+        newKord.login {
             @OptIn(PrivilegedIntent::class)
             intents = Intents(
                 Intent.Guilds,
