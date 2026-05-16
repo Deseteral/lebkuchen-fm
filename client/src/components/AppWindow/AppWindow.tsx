@@ -11,6 +11,7 @@ import {
   getActiveWindowPosition,
   registerWindow,
   unregisterWindow,
+  isInActiveGroup,
 } from '../../services/window-manager';
 import { saveWindowRect, loadWindowRect } from '../../services/window-storage';
 
@@ -32,7 +33,9 @@ interface AppWindowProps {
   centered?: boolean;
   iconIndex?: IconSpriteIndex;
   phIcon?: { type: PhIconType; icon: string };
-  onPositionChange?: (x: number, y: number) => void;
+  onRectChange?: (x: number, y: number, width: number, height: number) => void;
+  parentAppId?: string;
+  closeWithParent?: boolean;
 }
 
 const SPAWN_OFFSET = 40;
@@ -74,6 +77,8 @@ function AppWindow(props: AppWindowProps) {
   const defaultWidth = () => props.startSize?.width || '320px';
   const defaultHeight = () => props.startSize?.height || '240px';
 
+  const isActive = () => activeWindowEl() === windowRef;
+
   const getBiggestZIndex = () => {
     let biggestZIndex = 0;
     if (windowRef) {
@@ -93,15 +98,19 @@ function AppWindow(props: AppWindowProps) {
       const currentZIndex = windowRef.style.zIndex;
       const biggestZIndex = getBiggestZIndex();
       if (biggestZIndex > +currentZIndex) {
-        windowRef.style.zIndex = `${getBiggestZIndex() + 1}`;
+        windowRef.style.zIndex = `${biggestZIndex + 1}`;
       }
       setActiveWindow(windowRef);
     }
   };
 
   const saveRect = () => {
-    if (props.appId && windowRef) {
-      saveWindowRect(props.appId, getCurrentRect(windowRef));
+    if (windowRef) {
+      const rect = getCurrentRect(windowRef);
+      if (props.appId) {
+        saveWindowRect(props.appId, rect);
+      }
+      props.onRectChange?.(rect.x, rect.y, rect.width, rect.height);
     }
   };
 
@@ -109,7 +118,6 @@ function AppWindow(props: AppWindowProps) {
     document.onmouseup = null;
     document.onmousemove = null;
     if (windowRef) {
-      props.onPositionChange?.(windowRef.offsetLeft, windowRef.offsetTop);
       saveRect();
     }
   };
@@ -155,7 +163,7 @@ function AppWindow(props: AppWindowProps) {
 
   createEffect(() => {
     if (!titleRef) return;
-    if (activeWindowEl() === windowRef) {
+    if (isActive()) {
       titleRef.classList.add(styles.titleActive);
     } else {
       titleRef.classList.remove(styles.titleActive);
@@ -173,7 +181,16 @@ function AppWindow(props: AppWindowProps) {
         const height = defaultHeight();
 
         // Register window metadata for menu bar integration
-        registerWindow(el, props.appId ?? null, props.title, { width, height }, props.close);
+        registerWindow(
+          el,
+          props.appId ?? null,
+          props.title,
+          { width, height },
+          props.close,
+          moveWindowToFront,
+          props.parentAppId,
+          props.closeWithParent,
+        );
 
         // Try to restore saved position/size
         const savedRect = props.appId ? loadWindowRect(props.appId) : null;
@@ -190,7 +207,6 @@ function AppWindow(props: AppWindowProps) {
             el.style.transform = '';
             x = rect.left;
             y = rect.top;
-            props.onPositionChange?.(x, y);
             saveRect();
           });
         } else if (savedRect && !props.startPosition) {
@@ -201,7 +217,7 @@ function AppWindow(props: AppWindowProps) {
           el.style.height = `${clamped.height}px`;
           x = clamped.x;
           y = clamped.y;
-          props.onPositionChange?.(x, y);
+          saveRect();
         } else {
           if (!props.startPosition) {
             const activePos = untrack(() => getActiveWindowPosition());
@@ -212,7 +228,6 @@ function AppWindow(props: AppWindowProps) {
           }
           el.style.top = `${y}px`;
           el.style.left = `${x}px`;
-          props.onPositionChange?.(x, y);
         }
 
         el.style.zIndex = `${getBiggestZIndex() + 1}`;
@@ -258,7 +273,12 @@ function AppWindow(props: AppWindowProps) {
           </button>
         )}
       </div>
-      <div class={styles.content}>{props.children}</div>
+      <div class={styles.content}>
+        {props.children}
+        {!isInActiveGroup(windowRef) && (
+          <div class={styles.clickGuard} onMouseDown={moveWindowToFront} />
+        )}
+      </div>
     </Portal>
   );
 }

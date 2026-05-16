@@ -35,11 +35,18 @@
 }
 
 .content {
+  position: relative;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: var(--secondary-color);
   height: 100%;
   width: 100%;
+}
+
+.clickGuard {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .close {

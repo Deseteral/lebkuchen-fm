@@ -1,41 +1,19 @@
 import { TERMINAL_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
-import { AppWindow } from '@components/AppWindow/AppWindow';
-import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
+import { DesktopApp } from '@components/DesktopApp/DesktopApp';
 import { For, createSignal, onMount } from 'solid-js';
 import styles from './Terminal.module.css';
 import { programs, TerminalProgram } from './programs';
 
 export function Terminal() {
-  const [showWindow, setShowWindow] = createSignal(false);
-  let buttonRef!: HTMLButtonElement;
-  const closeWindow = () => setShowWindow(false);
-  const toggleWindow = () => {
-    setShowWindow((prev: boolean) => !prev);
-    if (buttonRef) {
-      buttonRef.blur();
-    }
-  };
-
   return (
-    <>
-      <DesktopIcon
-        label="Terminal"
-        buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
-        iconIndex={TERMINAL_ICON_INDEX}
-      />
-      {showWindow() && (
-        <AppWindow
-          appId="terminal"
-          title="Terminal"
-          close={closeWindow}
-          startSize={{ width: '624px', height: '400px' }}
-          iconIndex={TERMINAL_ICON_INDEX}
-        >
-          <Buffer />
-        </AppWindow>
-      )}
-    </>
+    <DesktopApp
+      id="terminal"
+      title="Terminal"
+      iconIndex={TERMINAL_ICON_INDEX}
+      startSize={{ width: '624px', height: '400px' }}
+    >
+      <Buffer />
+    </DesktopApp>
   );
 }
 

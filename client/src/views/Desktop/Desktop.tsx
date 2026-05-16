@@ -7,21 +7,24 @@ import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
+import { PlayerDaemon } from '../../services/player-daemon';
 import { SoundUpload } from '../../apps/SoundUpload/SoundUpload';
 import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
-import { clearAllActive } from '../../services/window-manager';
+import { DesktopManager } from '../../services/desktop-manager';
 
 function Desktop() {
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.connect();
     PlayXSoundEventHandler.initialize();
+    PlayerDaemon.initialize();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
     PlayXSoundEventHandler.cleanup();
+    PlayerDaemon.cleanup();
   });
 
   return (
@@ -30,7 +33,7 @@ function Desktop() {
       <main
         class={styles.desktop}
         onMouseDown={(e) => {
-          if (e.target === e.currentTarget) clearAllActive();
+          if (e.target === e.currentTarget) DesktopManager.clearAll();
         }}
       >
         <Player />

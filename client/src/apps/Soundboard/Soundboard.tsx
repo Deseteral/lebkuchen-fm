@@ -1,5 +1,4 @@
-import { AppWindow } from '@components/AppWindow/AppWindow';
-import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
+import { DesktopApp } from '@components/DesktopApp/DesktopApp';
 import { createEffect, createSignal, For } from 'solid-js';
 import styles from './Soundboard.module.css';
 import { XSound } from '../../types/x-sound';
@@ -9,17 +8,9 @@ import { playAudioFromUrl } from '../../services/audio-service';
 import { UserPreferencesService } from '../../services/user-preferences-service';
 
 function Soundboard() {
-  const [showWindow, setShowWindow] = createSignal(false);
   const [filteredXSounds, setFilteredXSounds] = createSignal([]);
   const [xsounds, setXsounds] = createSignal([]);
   const [tags, setTags] = createSignal([]);
-  let buttonRef!: HTMLButtonElement;
-  const toggleWindow = () => {
-    setShowWindow((prev: boolean) => !prev);
-    if (buttonRef) {
-      buttonRef.blur();
-    }
-  };
 
   function playXSound(sound: XSound, event: MouseEvent) {
     if (event.metaKey || event.altKey) {
@@ -59,53 +50,42 @@ function Soundboard() {
   };
 
   return (
-    <>
-      <DesktopIcon
-        label="Soundboard"
-        buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
-        iconIndex={SOUNDBOARD_ICON_INDEX}
+    <DesktopApp
+      id="soundboard"
+      title="Soundboard"
+      iconIndex={SOUNDBOARD_ICON_INDEX}
+      startSize={{ width: '600px', height: '600px' }}
+    >
+      <h4 class={styles.title}>Search</h4>
+      <input
+        class={styles.search}
+        type="text"
+        placeholder="phrase"
+        name="phrase"
+        onInput={onSearchChange}
       />
-      {showWindow() && (
-        <AppWindow
-          appId="soundboard"
-          title="Soundboard"
-          close={() => setShowWindow(false)}
-          startSize={{ width: '600px', height: '600px' }}
-          iconIndex={SOUNDBOARD_ICON_INDEX}
-        >
-          <h4 class={styles.title}>Search</h4>
-          <input
-            class={styles.search}
-            type="text"
-            placeholder="phrase"
-            name="phrase"
-            onInput={onSearchChange}
-          />
-          <input
-            list="tags"
-            class={styles.search}
-            type="text"
-            placeholder="tags"
-            name="tags"
-            onInput={onSearchChange}
-          />
-          <datalist id="tags">
-            <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
-          </datalist>
-          <h4 class={styles.title}>Sounds</h4>
-          {filteredXSounds().length === 0 && <p class={styles.noResults}>No result</p>}
-          <div class={styles.container}>
-            {filteredXSounds() &&
-              filteredXSounds().map((xsound: XSound) => (
-                <button class={styles.button} onClick={(event) => playXSound(xsound, event)}>
-                  {xsound.name}
-                </button>
-              ))}
-          </div>
-        </AppWindow>
-      )}
-    </>
+      <input
+        list="tags"
+        class={styles.search}
+        type="text"
+        placeholder="tags"
+        name="tags"
+        onInput={onSearchChange}
+      />
+      <datalist id="tags">
+        <For each={tags()}>{(tag: string) => <option value={tag}>{tag}</option>}</For>
+      </datalist>
+      <h4 class={styles.title}>Sounds</h4>
+      {filteredXSounds().length === 0 && <p class={styles.noResults}>No result</p>}
+      <div class={styles.container}>
+        {filteredXSounds() &&
+          filteredXSounds().map((xsound: XSound) => (
+            <button class={styles.button} onClick={(event) => playXSound(xsound, event)}>
+              {xsound.name}
+            </button>
+          ))}
+      </div>
+    </DesktopApp>
   );
 }
 

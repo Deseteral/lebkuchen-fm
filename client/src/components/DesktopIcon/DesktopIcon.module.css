@@ -2,13 +2,32 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px;
-  cursor: pointer;
-  border: none;
+  gap: 4px;
   background: none;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 6px;
   color: white;
+  cursor: default;
+  width: 90px;
 }
 
 .app:focus {
   outline: 2px dotted mediumpurple;
+}
+
+.label {
+  font-size: 0.85rem;
+  text-align: center;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+.selected {
+  border-color: rgba(147, 112, 219, 0.4);
+  background-color: rgba(147, 112, 219, 0.1);
+}
+
+.selected .label {
+  background-color: rgba(147, 112, 219, 0.6);
 }

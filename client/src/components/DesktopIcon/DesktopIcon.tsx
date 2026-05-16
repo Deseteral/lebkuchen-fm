@@ -4,22 +4,23 @@ import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 
 interface DesktopIconProps {
   label: string;
-  buttonRef: (el: HTMLButtonElement) => HTMLButtonElement;
-  toggleWindow: () => void;
   iconIndex: IconSpriteIndex;
+  selected: boolean;
+  onClick: () => void;
+  onDoubleClick: () => void;
 }
 
 function DesktopIcon(props: DesktopIconProps) {
   return (
     <button
       type="button"
-      ref={props.buttonRef}
-      class={styles.app}
-      onDblClick={() => props.toggleWindow()}
-      onKeyDown={(e) => e.key === 'Enter' && props.toggleWindow()}
+      class={`${styles.app} ${props.selected ? styles.selected : ''}`}
+      onClick={() => props.onClick()}
+      onDblClick={() => props.onDoubleClick()}
+      onKeyDown={(e) => e.key === 'Enter' && props.onDoubleClick()}
     >
       <AppIcon size={64} iconIndex={props.iconIndex} />
-      {props.label}
+      <span class={styles.label}>{props.label}</span>
     </button>
   );
 }

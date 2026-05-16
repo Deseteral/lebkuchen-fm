@@ -1,6 +1,6 @@
 .desktop {
   height: calc(100vh - var(--menu-bar-height));
-  width: max-content;
+  width: 100%;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
