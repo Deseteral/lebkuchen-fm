@@ -36,6 +36,7 @@ function SettingsWindow(props: SettingsWindowProps) {
 
   return (
     <AppWindow
+      appId="settings"
       title="Settings"
       close={props.close}
       startSize={{ width: '400px', height: '240px' }}

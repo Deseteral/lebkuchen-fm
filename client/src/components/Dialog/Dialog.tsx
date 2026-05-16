@@ -25,6 +25,7 @@ interface DialogProps {
   message: string;
   close: () => void;
   onConfirm?: () => void;
+  confirmLabel?: string;
 }
 
 const Dialog: Component<DialogProps> = (props) => {
@@ -53,8 +54,8 @@ const Dialog: Component<DialogProps> = (props) => {
           <p class={styles.message}>{props.message}</p>
         </div>
         <div class={styles.buttons}>
-          <Button onClick={handleOk}>OK</Button>
           {props.variant === 'confirm' && <Button onClick={() => props.close()}>Cancel</Button>}
+          <Button onClick={handleOk}>{props.confirmLabel ?? 'OK'}</Button>
         </div>
       </div>
     </AppWindow>

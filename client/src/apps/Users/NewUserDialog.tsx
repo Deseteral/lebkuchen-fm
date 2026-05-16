@@ -8,6 +8,7 @@ import { postUser } from '../../services/users-service';
 import styles from './Users.module.css';
 
 interface NewUserDialogProps {
+  startPosition?: { x: number; y: number };
   close: () => void;
   onUserCreated: () => void;
 }
@@ -34,7 +35,7 @@ const NewUserDialog: Component<NewUserDialogProps> = (props) => {
       <AppWindow
         title="New User"
         close={props.close}
-        centered
+        startPosition={props.startPosition}
         startSize={{ width: '300px', height: '240px' }}
         iconIndex={USER_MANAGER_ICON_INDEX}
       >

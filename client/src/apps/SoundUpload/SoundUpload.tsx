@@ -70,6 +70,7 @@ function SoundUpload() {
       />
       {showWindow() && (
         <AppWindow
+          appId="sound-upload"
           title="Sound upload"
           close={() => setShowWindow(false)}
           startSize={{ width: '420px', height: '360px' }}

@@ -26,6 +26,7 @@ export function Terminal() {
       />
       {showWindow() && (
         <AppWindow
+          appId="terminal"
           title="Terminal"
           close={closeWindow}
           startSize={{ width: '624px', height: '400px' }}

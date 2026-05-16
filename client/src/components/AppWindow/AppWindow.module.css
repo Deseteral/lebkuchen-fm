@@ -19,7 +19,7 @@
   align-items: center;
   gap: 0.5rem;
   cursor: grab;
-  background-color: mediumpurple;
+  background-color: silver;
   padding: 4px;
   padding-left: 8px;
   font-weight: bold;
@@ -28,6 +28,10 @@
 
 .titleText {
   flex: 1;
+}
+
+.titleActive {
+  background-color: mediumpurple;
 }
 
 .content {

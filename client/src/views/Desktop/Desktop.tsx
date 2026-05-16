@@ -10,6 +10,7 @@ import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handle
 import { SoundUpload } from '../../apps/SoundUpload/SoundUpload';
 import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
+import { clearAllActive } from '../../services/window-manager';
 
 function Desktop() {
   onMount(() => {
@@ -26,7 +27,12 @@ function Desktop() {
   return (
     <>
       <MenuBar isUserLoggedIn={true} />
-      <main class={styles.desktop}>
+      <main
+        class={styles.desktop}
+        onMouseDown={(e) => {
+          if (e.target === e.currentTarget) clearAllActive();
+        }}
+      >
         <Player />
         <Soundboard />
         <Terminal />

@@ -71,6 +71,7 @@ function Player() {
       />
       {showWindow() && (
         <AppWindow
+          appId="player"
           title="Player"
           close={closeWindow}
           iconIndex={PLAYER_ICON_INDEX}

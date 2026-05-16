@@ -68,6 +68,7 @@ function Soundboard() {
       />
       {showWindow() && (
         <AppWindow
+          appId="soundboard"
           title="Soundboard"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '600px' }}

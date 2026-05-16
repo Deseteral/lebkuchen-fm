@@ -11,6 +11,7 @@ import styles from './Users.module.css';
 const AVAILABLE_ROLES = ['OWNER', 'DJ', 'HONKER', 'LISTENER'];
 
 interface UserPropertiesDialogProps {
+  startPosition?: { x: number; y: number };
   user: User;
   close: () => void;
   onSaved: () => void;
@@ -41,7 +42,7 @@ const UserPropertiesDialog: Component<UserPropertiesDialogProps> = (props) => {
       <AppWindow
         title={`${props.user.username} — Properties`}
         close={props.close}
-        centered
+        startPosition={props.startPosition}
         startSize={{ width: '320px', height: '420px' }}
         iconIndex={USER_MANAGER_ICON_INDEX}
       >

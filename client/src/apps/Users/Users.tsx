@@ -15,6 +15,7 @@ function Users() {
   const [showPropertiesDialog, setShowPropertiesDialog] = createSignal(false);
   const [users, setUsers] = createSignal<User[]>([]);
   const [selectedUsername, setSelectedUsername] = createSignal<string | null>(null);
+  const [windowPos, setWindowPos] = createSignal({ x: 100, y: 100 });
 
   let buttonRef!: HTMLButtonElement;
 
@@ -47,10 +48,12 @@ function Users() {
       />
       {showWindow() && (
         <AppWindow
+          appId="users"
           title="Users"
           close={() => setShowWindow(false)}
           startSize={{ width: '600px', height: '400px' }}
           iconIndex={USER_MANAGER_ICON_INDEX}
+          onPositionChange={(x, y) => setWindowPos({ x, y })}
         >
           <div class={styles.container}>
             <div class={styles.tableWrapper}>
@@ -95,11 +98,16 @@ function Users() {
       )}
 
       <Show when={showNewUserDialog()}>
-        <NewUserDialog close={() => setShowNewUserDialog(false)} onUserCreated={refreshUserList} />
+        <NewUserDialog
+          startPosition={{ x: windowPos().x + 40, y: windowPos().y + 40 }}
+          close={() => setShowNewUserDialog(false)}
+          onUserCreated={refreshUserList}
+        />
       </Show>
 
       <Show when={showPropertiesDialog() && selectedUser()}>
         <UserPropertiesDialog
+          startPosition={{ x: windowPos().x + 40, y: windowPos().y + 40 }}
           user={selectedUser()!}
           close={() => setShowPropertiesDialog(false)}
           onSaved={refreshUserList}
