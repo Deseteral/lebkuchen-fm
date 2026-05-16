@@ -1,7 +1,7 @@
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
-import { ErrorDialog } from '@components/ErrorDialog/ErrorDialog';
+import { Dialog } from '@components/Dialog/Dialog';
 import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { Component, createSignal, For, Show } from 'solid-js';
 import { User } from '../../types/user';
@@ -42,37 +42,39 @@ const UserPropertiesDialog: Component<UserPropertiesDialogProps> = (props) => {
         title={`${props.user.username} — Properties`}
         close={props.close}
         centered
-        startSize={{ width: '320px', height: '400px' }}
+        startSize={{ width: '320px', height: '420px' }}
         iconIndex={USER_MANAGER_ICON_INDEX}
       >
         <div class={styles.dialogContent}>
-          <label class={styles.fieldLabel}>
-            Username
-            <Input type="text" value={props.user.username} disabled />
-          </label>
+          <div class={styles.dialogScrollArea}>
+            <label class={styles.fieldLabel}>
+              Username
+              <Input type="text" value={props.user.username} disabled />
+            </label>
 
-          <label class={styles.fieldLabel}>
-            Discord ID
-            <Input type="text" value={props.user.discordId ?? ''} disabled />
-          </label>
+            <label class={styles.fieldLabel}>
+              Discord ID
+              <Input type="text" value={props.user.discordId ?? ''} disabled />
+            </label>
 
-          <fieldset class={styles.rolesFieldset}>
-            <legend>Roles</legend>
-            <For each={AVAILABLE_ROLES}>
-              {(role) => (
-                <label class={styles.checkboxLabel}>
-                  <input
-                    type="checkbox"
-                    checked={selectedRoles().includes(role)}
-                    onChange={() => toggleRole(role)}
-                  />
-                  {role}
-                </label>
-              )}
-            </For>
-          </fieldset>
+            <fieldset class={styles.rolesFieldset}>
+              <legend>Roles</legend>
+              <For each={AVAILABLE_ROLES}>
+                {(role) => (
+                  <label class={styles.checkboxLabel}>
+                    <input
+                      type="checkbox"
+                      checked={selectedRoles().includes(role)}
+                      onChange={() => toggleRole(role)}
+                    />
+                    {role}
+                  </label>
+                )}
+              </For>
+            </fieldset>
 
-          <Button disabled>Delete password</Button>
+            <Button disabled>Delete password</Button>
+          </div>
 
           <div class={styles.dialogButtons}>
             <Button onClick={onSave}>Save</Button>
@@ -84,7 +86,7 @@ const UserPropertiesDialog: Component<UserPropertiesDialogProps> = (props) => {
       </AppWindow>
 
       <Show when={error()}>
-        <ErrorDialog message={error()!} close={() => setError(null)} />
+        <Dialog variant="error" message={error()!} close={() => setError(null)} />
       </Show>
     </>
   );

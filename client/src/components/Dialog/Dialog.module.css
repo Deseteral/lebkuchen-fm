@@ -13,10 +13,25 @@
 }
 
 .icon {
-  color: crimson;
   font-size: 32px;
   line-height: 1;
   flex-shrink: 0;
+}
+
+.iconError {
+  color: crimson;
+}
+
+.iconSuccess {
+  color: green;
+}
+
+.iconInfo {
+  color: dodgerblue;
+}
+
+.iconConfirm {
+  color: inherit;
 }
 
 .message {
@@ -29,4 +44,9 @@
 .buttons {
   display: flex;
   justify-content: center;
+  gap: 8px;
+}
+
+.buttons > button {
+  min-width: 80px;
 }
