@@ -1,5 +1,5 @@
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
-import { createEffect, createSignal, For } from 'solid-js';
+import { createSignal, For, onMount } from 'solid-js';
 import styles from './Soundboard.module.css';
 import { XSound } from '../../types/x-sound';
 import { SoundboardService } from './services/soundboard-service';
@@ -20,7 +20,7 @@ function Soundboard() {
     }
   }
 
-  createEffect(() => {
+  onMount(() => {
     SoundboardService.getXSounds().then((sounds) => {
       setXsounds(sounds);
       setFilteredXSounds(sounds);

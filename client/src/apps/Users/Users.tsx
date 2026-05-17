@@ -1,5 +1,5 @@
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
-import { createSignal, createEffect, For, Show } from 'solid-js';
+import { createSignal, createEffect, For, Show, onMount } from 'solid-js';
 import styles from './Users.module.css';
 import { Button } from '@components/Button/Button';
 import { getUsers } from '../../services/users-service';
@@ -32,7 +32,7 @@ function Users() {
     setOpenEditorUsernames([]);
   };
 
-  createEffect(() => {
+  onMount(() => {
     refreshUserList();
   });
 
