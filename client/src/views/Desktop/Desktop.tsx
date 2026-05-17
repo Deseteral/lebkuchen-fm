@@ -7,7 +7,7 @@ import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
-import { PlayerDaemon } from '../../services/player-daemon';
+import { PlayerStateService } from '../../apps/Player/services/player-state-service';
 import { SoundUpload } from '../../apps/SoundUpload/SoundUpload';
 import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
@@ -19,14 +19,14 @@ function Desktop() {
     UserAccountService.checkLoginStateAndRedirect();
     SocketConnectionClient.connect();
     PlayXSoundEventHandler.initialize();
-    PlayerDaemon.initialize();
+    PlayerStateService.initialize();
     initWindowManager();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
     PlayXSoundEventHandler.cleanup();
-    PlayerDaemon.cleanup();
+    PlayerStateService.cleanup();
     cleanupWindowManager();
   });
 

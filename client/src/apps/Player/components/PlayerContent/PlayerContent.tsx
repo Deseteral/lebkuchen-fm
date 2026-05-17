@@ -4,7 +4,7 @@ import styles from '../../Player.module.css';
 import { YouTubePlayer } from '../YouTubePlayer/YouTubePlayer';
 import { PlayerControls } from '../PlayerControls/PlayerControls';
 import { MarqueeText } from '../MarqueeText/MarqueeText';
-import { PlayerDaemon } from '../../../../services/player-daemon';
+import { PlayerStateService } from '../../services/player-state-service';
 
 interface PlayerContentProps {
   onToggleQueue: () => void;
@@ -17,21 +17,21 @@ function PlayerContent(props: PlayerContentProps) {
         <YouTubePlayer />
       </section>
       <section class={styles.controls}>
-        <p class={clsx(styles.nextSong, !PlayerDaemon.playingNextSong() && styles.hidden)}>
-          Next: {PlayerDaemon.playingNextSong()}
+        <p class={clsx(styles.nextSong, !PlayerStateService.playingNextSong() && styles.hidden)}>
+          Next: {PlayerStateService.playingNextSong()}
         </p>
         <h1 class={styles.songTitle}>
           <Show
-            when={!!PlayerDaemon.currentlyPlayingSong()}
+            when={!!PlayerStateService.currentlyPlayingSong()}
             fallback="No songs are currently playing."
           >
-            <MarqueeText text={PlayerDaemon.currentlyPlayingSong()!} />
+            <MarqueeText text={PlayerStateService.currentlyPlayingSong()!} />
           </Show>
         </h1>
         <hr class={styles.divider} />
         <PlayerControls
           queueButtonAction={props.onToggleQueue}
-          isPlaying={PlayerDaemon.isPlaying()}
+          isPlaying={PlayerStateService.isPlaying()}
         />
       </section>
     </div>

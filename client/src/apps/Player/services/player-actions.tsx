@@ -1,6 +1,15 @@
+import { createSignal } from 'solid-js';
 import { apiFetch } from '../../../services/api-fetch';
 
+const [commandError, setCommandError] = createSignal<string | null>(null);
+
 class PlayerActions {
+  static readonly commandError = commandError;
+
+  static clearCommandError(): void {
+    setCommandError(null);
+  }
+
   static searchAndPlaySong(phrase: string) {
     if (phrase.startsWith('/q')) {
       PlayerActions.playSongByYoutubeId(phrase.replace('/q', '').trim());
@@ -39,11 +48,20 @@ class PlayerActions {
     PlayerActions.runCommand(`song-search ${phrase}`);
   }
 
-  private static runCommand(command: string) {
-    apiFetch('/api/commands/execute', {
-      method: 'POST',
-      body: command,
-    });
+  private static async runCommand(command: string) {
+    try {
+      const response = await apiFetch('/api/commands/execute', {
+        method: 'POST',
+        body: command,
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        setCommandError(data.textResponse ?? 'Command failed.');
+      }
+    } catch {
+      setCommandError('An unexpected error occurred.');
+    }
   }
 }
 
