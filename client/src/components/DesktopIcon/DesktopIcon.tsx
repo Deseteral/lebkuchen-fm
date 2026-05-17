@@ -8,6 +8,11 @@ interface DesktopIconProps {
   selected: boolean;
   onClick: () => void;
   onDoubleClick: () => void;
+  draggable?: boolean;
+  onDragStart?: (e: DragEvent) => void;
+  onDragOver?: (e: DragEvent) => void;
+  onDrop?: (e: DragEvent) => void;
+  onDragEnd?: (e: DragEvent) => void;
 }
 
 function DesktopIcon(props: DesktopIconProps) {
@@ -18,6 +23,11 @@ function DesktopIcon(props: DesktopIconProps) {
       onClick={() => props.onClick()}
       onDblClick={() => props.onDoubleClick()}
       onKeyDown={(e) => e.key === 'Enter' && props.onDoubleClick()}
+      draggable={props.draggable}
+      onDragStart={props.onDragStart}
+      onDragOver={props.onDragOver}
+      onDrop={props.onDrop}
+      onDragEnd={props.onDragEnd}
     >
       <AppIcon size={64} iconIndex={props.iconIndex} />
       <span class={styles.label}>{props.label}</span>

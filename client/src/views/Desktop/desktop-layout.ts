@@ -1,4 +1,4 @@
-import { ApplicationId } from '../../apps/application-definitions';
+import type { ApplicationId } from '../../apps/application-definitions';
 
 const DESKTOP_APP_IDS: ApplicationId[] = [
   'player',
