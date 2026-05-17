@@ -23,6 +23,7 @@ export interface PlayerStateDonationEvent {
 export interface AddSongsToQueueEvent {
   id: 'AddSongsToQueueEvent';
   songs: Song[];
+  actorName?: string;
 }
 export interface ReplaceQueueEvent {
   id: 'ReplaceQueueEvent';
@@ -32,6 +33,8 @@ export interface ReplaceQueueEvent {
 export interface PlayXSoundEvent {
   id: 'PlayXSoundEvent';
   soundUrl: string;
+  soundName?: string;
+  actorName?: string;
 }
 
 export interface SayEvent {
@@ -41,16 +44,19 @@ export interface SayEvent {
 
 export interface PlayerResumeEvent {
   id: 'ResumeEvent';
+  actorName?: string;
 }
 
 export interface PlayerPauseEvent {
   id: 'PauseEvent';
+  actorName?: string;
 }
 
 export interface SkipEvent {
   id: 'SkipEvent';
   skipAll: boolean;
   amount: number;
+  actorName?: string;
 }
 
 export type SpeedControl = -1 | 0 | 1;

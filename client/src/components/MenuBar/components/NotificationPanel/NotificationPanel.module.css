@@ -1,0 +1,141 @@
+.container {
+  position: relative;
+  height: 100%;
+}
+
+.trigger {
+  background: none;
+  border: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.trigger:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.triggerActive {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+.panel {
+  position: fixed;
+  top: var(--menu-bar-height);
+  right: 0;
+  width: 300px;
+  height: calc(100vh - var(--menu-bar-height));
+  background-color: var(--secondary-color);
+  border-left: 1px solid var(--border-color-one);
+  border-bottom: 1px solid var(--border-color-one);
+  box-shadow: -2px 0 0 var(--border-color-two), -6px 0 0 rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(0);
+  animation: panel-in 180ms ease-out;
+}
+
+.panelClosing {
+  animation: panel-out 180ms ease-in forwards;
+}
+
+.header {
+  padding: 6px 10px;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border-color-one);
+  background: var(--third-color);
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px dashed var(--border-color-two);
+}
+
+.item:last-of-type {
+  border-bottom: none;
+}
+
+.time {
+  font-size: 11px;
+  color: #333;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.message {
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.empty {
+  padding: 12px;
+  font-size: 12px;
+}
+
+.footer {
+  padding: 8px 10px;
+  border-top: 1px solid var(--border-color-one);
+  display: flex;
+  justify-content: flex-end;
+  background: var(--third-color);
+}
+
+.clear {
+  background: var(--secondary-color);
+  border: 1px solid var(--border-color-one);
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: inset -1px -1px 0 var(--border-color-two);
+}
+
+.clear:hover {
+  background: var(--third-color);
+}
+
+@media (max-width: 600px) {
+  .panel {
+    width: 240px;
+  }
+}
+
+@keyframes panel-in {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes panel-out {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}

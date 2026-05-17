@@ -13,6 +13,8 @@ import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
 import { DesktopManager } from '../../services/desktop-manager';
 import { initWindowManager, cleanupWindowManager } from '../../services/window-manager';
+import { NotificationDaemon } from '../../services/notification-daemon';
+import { ToastContainer } from '../../components/ToastContainer/ToastContainer';
 
 function Desktop() {
   onMount(() => {
@@ -20,6 +22,7 @@ function Desktop() {
     SocketConnectionClient.connect();
     PlayXSoundEventHandler.initialize();
     PlayerStateService.initialize();
+    NotificationDaemon.initialize();
     initWindowManager();
   });
 
@@ -27,12 +30,14 @@ function Desktop() {
     SocketConnectionClient.disconnect();
     PlayXSoundEventHandler.cleanup();
     PlayerStateService.cleanup();
+    NotificationDaemon.cleanup();
     cleanupWindowManager();
   });
 
   return (
     <>
       <MenuBar isUserLoggedIn={true} />
+      <ToastContainer />
       <main
         class={styles.desktop}
         onMouseDown={(e) => {

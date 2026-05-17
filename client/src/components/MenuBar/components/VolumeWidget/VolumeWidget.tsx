@@ -25,7 +25,7 @@ function VolumeWidget() {
 
   return (
     <button class={styles.buttonIcon}>
-      <PhIcon type={PhIconType.Fill} icon={icon()} />
+      <PhIcon type={PhIconType.Fill} icon={icon()} size={18} />
     </button>
   );
 }

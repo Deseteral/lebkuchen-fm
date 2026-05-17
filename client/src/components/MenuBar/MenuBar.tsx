@@ -7,6 +7,7 @@ import { MenuBarDropdown } from './components/MenuBarDropdown/MenuBarDropdown';
 import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
 import { Dialog } from '@components/Dialog/Dialog';
 import { UserAccountService } from '../../services/user-account-service';
+import { NotificationPanel } from './components/NotificationPanel/NotificationPanel';
 import {
   activeAppId,
   activeAppTitle,
@@ -91,6 +92,7 @@ function MenuBar(props: MenuBarProps) {
         <section class={styles.rightSection}>
           {props.isUserLoggedIn && (
             <>
+              <NotificationPanel />
               <VolumeWidget />
               <hr class={styles.verticalDivider} />
             </>
@@ -99,7 +101,7 @@ function MenuBar(props: MenuBarProps) {
             <DateWidget />
             <hr class={styles.verticalDivider} />
           </span>
-          <TimeWidget />
+          <NotificationPanel trigger={<TimeWidget />} />
         </section>
       </header>
 
