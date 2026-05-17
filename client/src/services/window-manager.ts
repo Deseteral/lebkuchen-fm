@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js';
-import { clearWindowRect } from './window-storage';
+import { clearWindowRect, saveWindowRect } from './window-storage';
 
 interface WindowMetadata {
   appId: string | null;
@@ -106,11 +106,15 @@ function getBiggestZIndex(container: ParentNode): number {
 }
 
 function setActiveWindow(el: HTMLDivElement) {
+  if (!el.parentNode) return;
+
+  const currentZ = +el.style.zIndex;
+  const maxZ = getBiggestZIndex(el.parentNode);
+
   // Bring all group members to front together
   const members = getGroupMembers(el);
-  if (members.length > 1 && el.parentNode) {
-    const baseZ = getBiggestZIndex(el.parentNode) + 1;
-    // Parent windows get baseZ, children get baseZ+1, clicked window gets highest
+  if (members.length > 1) {
+    const baseZ = maxZ + 1;
     let z = baseZ;
     for (const member of members) {
       if (member !== el) {
@@ -119,6 +123,8 @@ function setActiveWindow(el: HTMLDivElement) {
       }
     }
     el.style.zIndex = `${z}`;
+  } else if (maxZ > currentZ) {
+    el.style.zIndex = `${maxZ + 1}`;
   }
 
   setActiveWindowEl(el);
@@ -216,6 +222,76 @@ function deactivateAllWindows() {
   updateActiveMetadata(null);
 }
 
+// --- Viewport clamping ---
+
+const CLAMP_VISIBLE_PX = 40;
+const CLAMP_ANIMATION_MS = 150;
+let cachedMenuBarHeight = 0;
+let resizeTimer: ReturnType<typeof setTimeout> | undefined;
+
+function getMenuBarHeight(): number {
+  return cachedMenuBarHeight;
+}
+
+function clampWindowToViewport(el: HTMLDivElement) {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+
+  const left = el.offsetLeft;
+  const top = el.offsetTop;
+  const width = el.offsetWidth;
+
+  const minLeft = -(width - CLAMP_VISIBLE_PX);
+  const maxLeft = vw - CLAMP_VISIBLE_PX;
+  const minTop = cachedMenuBarHeight;
+  const maxTop = vh - CLAMP_VISIBLE_PX;
+
+  const clampedLeft = Math.max(minLeft, Math.min(left, maxLeft));
+  const clampedTop = Math.max(minTop, Math.min(top, maxTop));
+
+  if (clampedLeft === left && clampedTop === top) return;
+
+  el.style.transition = `top ${CLAMP_ANIMATION_MS}ms ease-out, left ${CLAMP_ANIMATION_MS}ms ease-out`;
+  el.style.left = `${clampedLeft}px`;
+  el.style.top = `${clampedTop}px`;
+
+  const meta = windowRegistry.get(el);
+  if (meta?.appId) {
+    saveWindowRect(meta.appId, {
+      x: clampedLeft,
+      y: clampedTop,
+      width: el.offsetWidth,
+      height: el.offsetHeight,
+    });
+  }
+
+  setTimeout(() => {
+    el.style.transition = '';
+  }, CLAMP_ANIMATION_MS);
+}
+
+function clampAllWindowsToViewport() {
+  for (const [el] of windowRegistry) {
+    clampWindowToViewport(el);
+  }
+}
+
+function handleResize() {
+  if (resizeTimer) clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(clampAllWindowsToViewport, 100);
+}
+
+function initWindowManager() {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--menu-bar-height');
+  cachedMenuBarHeight = parseInt(raw, 10) || 0;
+  window.addEventListener('resize', handleResize);
+}
+
+function cleanupWindowManager() {
+  window.removeEventListener('resize', handleResize);
+  if (resizeTimer) clearTimeout(resizeTimer);
+}
+
 export {
   activeWindowEl,
   activeAppId,
@@ -225,9 +301,14 @@ export {
   activateWindow,
   deactivateAllWindows,
   getActiveWindowPosition,
+  getBiggestZIndex,
+  getMenuBarHeight,
   registerWindow,
   unregisterWindow,
   resetActiveWindowPosition,
   closeActiveWindow,
   isInActiveGroup,
+  clampWindowToViewport,
+  initWindowManager,
+  cleanupWindowManager,
 };

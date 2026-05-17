@@ -12,6 +12,7 @@ import { SoundUpload } from '../../apps/SoundUpload/SoundUpload';
 import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
 import { DesktopManager } from '../../services/desktop-manager';
+import { initWindowManager, cleanupWindowManager } from '../../services/window-manager';
 
 function Desktop() {
   onMount(() => {
@@ -19,12 +20,14 @@ function Desktop() {
     SocketConnectionClient.connect();
     PlayXSoundEventHandler.initialize();
     PlayerDaemon.initialize();
+    initWindowManager();
   });
 
   onCleanup(() => {
     SocketConnectionClient.disconnect();
     PlayXSoundEventHandler.cleanup();
     PlayerDaemon.cleanup();
+    cleanupWindowManager();
   });
 
   return (

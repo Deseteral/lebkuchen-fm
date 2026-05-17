@@ -9,6 +9,9 @@ import {
   setActiveWindow,
   clearActiveWindow,
   getActiveWindowPosition,
+  getBiggestZIndex,
+  getMenuBarHeight,
+  clampWindowToViewport,
   registerWindow,
   unregisterWindow,
   isInActiveGroup,
@@ -79,27 +82,8 @@ function AppWindow(props: AppWindowProps) {
 
   const isActive = () => activeWindowEl() === windowRef;
 
-  const getBiggestZIndex = () => {
-    let biggestZIndex = 0;
-    if (windowRef) {
-      const parent = windowRef.parentNode;
-      const allWindows = parent?.childNodes as NodeListOf<HTMLElement>;
-      Array.from(allWindows).forEach((window) => {
-        if (+window.style.zIndex > biggestZIndex) {
-          biggestZIndex = +window.style.zIndex;
-        }
-      });
-    }
-
-    return biggestZIndex;
-  };
   const moveWindowToFront = () => {
     if (windowRef) {
-      const currentZIndex = windowRef.style.zIndex;
-      const biggestZIndex = getBiggestZIndex();
-      if (biggestZIndex > +currentZIndex) {
-        windowRef.style.zIndex = `${biggestZIndex + 1}`;
-      }
       setActiveWindow(windowRef);
     }
   };
@@ -118,6 +102,7 @@ function AppWindow(props: AppWindowProps) {
     document.onmouseup = null;
     document.onmousemove = null;
     if (windowRef) {
+      clampWindowToViewport(windowRef);
       saveRect();
     }
   };
@@ -129,7 +114,8 @@ function AppWindow(props: AppWindowProps) {
     x = e.clientX;
     y = e.clientY;
     if (windowRef) {
-      windowRef.style.top = `${windowRef.offsetTop - nextY}px`;
+      const newTop = Math.max(getMenuBarHeight(), windowRef.offsetTop - nextY);
+      windowRef.style.top = `${newTop}px`;
       windowRef.style.left = `${windowRef.offsetLeft - nextX}px`;
     }
   };
@@ -230,7 +216,7 @@ function AppWindow(props: AppWindowProps) {
           el.style.left = `${x}px`;
         }
 
-        el.style.zIndex = `${getBiggestZIndex() + 1}`;
+        el.style.zIndex = `${getBiggestZIndex(el.parentNode!) + 1}`;
 
         // Only set default size if we didn't restore from saved rect
         if (!savedRect || props.startPosition || props.centered) {
