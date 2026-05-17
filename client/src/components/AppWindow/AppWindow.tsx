@@ -39,6 +39,7 @@ interface AppWindowProps {
   onRectChange?: (x: number, y: number, width: number, height: number) => void;
   parentAppId?: string;
   closeWithParent?: boolean;
+  resizable?: boolean;
 }
 
 const SPAWN_OFFSET = 40;
@@ -161,7 +162,10 @@ function AppWindow(props: AppWindowProps) {
       mount={document.getElementById('windows')!}
       ref={(el) => {
         windowRef = el;
-        el.classList.add(styles.window, styles.resizeable);
+        el.classList.add(styles.window);
+        if (props.resizable !== false) {
+          el.classList.add(styles.resizeable);
+        }
 
         const width = defaultWidth();
         const height = defaultHeight();
@@ -224,12 +228,8 @@ function AppWindow(props: AppWindowProps) {
           el.style.width = width;
         }
 
-        if (props.startSize?.minHeight) {
-          el.style.minHeight = props.startSize.minHeight;
-        }
-        if (props.startSize?.minWidth) {
-          el.style.minWidth = props.startSize.minWidth;
-        }
+        el.style.minHeight = props.startSize?.minHeight ?? '100px';
+        el.style.minWidth = props.startSize?.minWidth ?? '200px';
 
         // Save initial placement (centered saves after rAF above)
         if (!props.centered) {
@@ -261,10 +261,10 @@ function AppWindow(props: AppWindowProps) {
       </div>
       <div class={styles.content}>
         {props.children}
-        {!isInActiveGroup(windowRef) && (
-          <div class={styles.clickGuard} onMouseDown={moveWindowToFront} />
-        )}
       </div>
+      {!isInActiveGroup(windowRef) && (
+        <div class={styles.clickGuard} onMouseDown={moveWindowToFront} />
+      )}
     </Portal>
   );
 }

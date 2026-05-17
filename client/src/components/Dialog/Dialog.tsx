@@ -43,6 +43,7 @@ const Dialog: Component<DialogProps> = (props) => {
       title={props.title ?? config().defaultTitle}
       close={props.close}
       centered
+      resizable={false}
       startSize={{ width: '300px', height: '180px' }}
       phIcon={{ type: PhIconType.Bold, icon: config().icon }}
     >
