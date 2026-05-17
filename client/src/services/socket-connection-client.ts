@@ -1,7 +1,9 @@
 import {
   type LocalEvent,
   LocalEventTypes,
+  type LocalWebSocketConnectionLostEvent,
   LocalWebSocketConnectionReadyEvent,
+  type LocalWebSocketConnectionRestoredEvent,
 } from '../types/local-events';
 import { EventStreamClient } from './event-stream-client';
 import { redirectTo } from './redirect-to';
@@ -11,25 +13,53 @@ const SESSION_INVALIDATED_CLOSE_CODE = 4401;
 class SocketConnectionClient {
   private static client: WebSocket | null = null;
   private static eventListenerAbortController: AbortController | null = null;
+  private static reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private static reconnectAttempt = 0;
+  private static manualDisconnect = false;
+  private static hadUnexpectedDisconnect = false;
 
-  private static readonly RECONNECT_INTERVAL_MS = 2000;
+  private static readonly RECONNECT_BASE_INTERVAL_MS = 2000;
+  private static readonly RECONNECT_MAX_INTERVAL_MS = 30000;
+  private static readonly RECONNECT_JITTER_MIN = 0.8;
+  private static readonly RECONNECT_JITTER_MAX = 1.2;
 
   static isReady(): boolean {
     return SocketConnectionClient.client?.readyState === WebSocket.OPEN;
   }
 
   static connect(): void {
-    if (!SocketConnectionClient.client) {
-      SocketConnectionClient.client = new WebSocket(SocketConnectionClient.getWebSocketUrl());
+    SocketConnectionClient.manualDisconnect = false;
+    SocketConnectionClient.clearReconnectTimer();
+
+    if (
+      SocketConnectionClient.client?.readyState === WebSocket.OPEN ||
+      SocketConnectionClient.client?.readyState === WebSocket.CONNECTING
+    ) {
+      return;
     }
 
-    if (!SocketConnectionClient.eventListenerAbortController) {
-      SocketConnectionClient.eventListenerAbortController = new AbortController();
-    }
+    SocketConnectionClient.client = new WebSocket(SocketConnectionClient.getWebSocketUrl());
+    SocketConnectionClient.eventListenerAbortController = new AbortController();
 
     SocketConnectionClient.client.addEventListener(
       'open',
       () => {
+        const wasReconnected = SocketConnectionClient.hadUnexpectedDisconnect;
+
+        SocketConnectionClient.clearReconnectTimer();
+        SocketConnectionClient.reconnectAttempt = 0;
+        SocketConnectionClient.hadUnexpectedDisconnect = false;
+
+        if (wasReconnected) {
+          const restoredEvent: LocalWebSocketConnectionRestoredEvent = {
+            id: LocalEventTypes.LocalWebSocketConnectionRestored,
+          };
+          EventStreamClient.broadcast<LocalWebSocketConnectionRestoredEvent>(
+            restoredEvent.id,
+            restoredEvent,
+          );
+        }
+
         console.log('[SocketConnectionClient] Connected to event stream WebSocket.');
         const id = LocalEventTypes.LocalWebSocketConnectionReady;
         const eventData: LocalWebSocketConnectionReadyEvent = { id };
@@ -56,15 +86,31 @@ class SocketConnectionClient {
     SocketConnectionClient.client.addEventListener(
       'close',
       (event: CloseEvent) => {
+        const wasManualDisconnect = SocketConnectionClient.manualDisconnect;
+        SocketConnectionClient.destroySocket(false);
+
         if (event.code === SESSION_INVALIDATED_CLOSE_CODE) {
           console.log('Session invalidated. Redirecting to login.');
-          SocketConnectionClient.disconnect();
+          SocketConnectionClient.manualDisconnect = true;
+          SocketConnectionClient.hadUnexpectedDisconnect = false;
+          SocketConnectionClient.clearReconnectTimer();
           redirectTo('/login');
           return;
         }
 
+        if (wasManualDisconnect) {
+          return;
+        }
+
+        if (!SocketConnectionClient.hadUnexpectedDisconnect) {
+          SocketConnectionClient.hadUnexpectedDisconnect = true;
+          const lostEvent: LocalWebSocketConnectionLostEvent = {
+            id: LocalEventTypes.LocalWebSocketConnectionLost,
+          };
+          EventStreamClient.broadcast<LocalWebSocketConnectionLostEvent>(lostEvent.id, lostEvent);
+        }
+
         console.log('[SocketConnectionClient] Disconnected by server from WebSocket event stream.');
-        SocketConnectionClient.disconnect();
         SocketConnectionClient.startReconnectingProcedure();
       },
       { signal: SocketConnectionClient.eventListenerAbortController.signal },
@@ -77,28 +123,71 @@ class SocketConnectionClient {
           '[SocketConnectionClient] Socket encountered error. Closing the socket.',
           err,
         );
-        SocketConnectionClient.disconnect();
-        SocketConnectionClient.startReconnectingProcedure();
+        SocketConnectionClient.client?.close();
       },
       { signal: SocketConnectionClient.eventListenerAbortController.signal },
     );
   }
 
   static disconnect(): void {
-    SocketConnectionClient.eventListenerAbortController?.abort();
-    SocketConnectionClient.eventListenerAbortController = null;
-
-    SocketConnectionClient.client?.close();
-    SocketConnectionClient.client = null;
+    SocketConnectionClient.manualDisconnect = true;
+    SocketConnectionClient.hadUnexpectedDisconnect = false;
+    SocketConnectionClient.clearReconnectTimer();
+    SocketConnectionClient.destroySocket(true);
+    SocketConnectionClient.reconnectAttempt = 0;
 
     console.log('[SocketConnectionClient] Disconnected from WebSocket event stream.');
   }
 
+  private static destroySocket(closeClient: boolean): void {
+    SocketConnectionClient.eventListenerAbortController?.abort();
+    SocketConnectionClient.eventListenerAbortController = null;
+
+    const client = SocketConnectionClient.client;
+    SocketConnectionClient.client = null;
+
+    if (
+      closeClient &&
+      client &&
+      (client.readyState === WebSocket.CONNECTING || client.readyState === WebSocket.OPEN)
+    ) {
+      client.close();
+    }
+  }
+
+  private static clearReconnectTimer(): void {
+    if (SocketConnectionClient.reconnectTimer) {
+      clearTimeout(SocketConnectionClient.reconnectTimer);
+      SocketConnectionClient.reconnectTimer = null;
+    }
+  }
+
   private static startReconnectingProcedure(): void {
-    setTimeout(() => {
+    if (SocketConnectionClient.manualDisconnect || SocketConnectionClient.reconnectTimer) {
+      return;
+    }
+
+    const exponentialDelay = Math.min(
+      SocketConnectionClient.RECONNECT_MAX_INTERVAL_MS,
+      SocketConnectionClient.RECONNECT_BASE_INTERVAL_MS *
+        2 ** Math.min(SocketConnectionClient.reconnectAttempt, 8),
+    );
+    const jitterRange =
+      SocketConnectionClient.RECONNECT_JITTER_MAX - SocketConnectionClient.RECONNECT_JITTER_MIN;
+    const jitter = SocketConnectionClient.RECONNECT_JITTER_MIN + Math.random() * jitterRange;
+    const delay = Math.round(exponentialDelay * jitter);
+
+    SocketConnectionClient.reconnectTimer = setTimeout(() => {
+      SocketConnectionClient.reconnectTimer = null;
+
+      if (SocketConnectionClient.manualDisconnect) {
+        return;
+      }
+
       console.log('[SocketConnectionClient] Reconnecting to event stream WebSocket...');
+      SocketConnectionClient.reconnectAttempt += 1;
       SocketConnectionClient.connect();
-    }, SocketConnectionClient.RECONNECT_INTERVAL_MS);
+    }, delay);
   }
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
