@@ -5,6 +5,8 @@
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color-one);
+  width: 100%;
+  white-space: nowrap;
 }
 
 .rightSection,
@@ -15,9 +17,25 @@
   padding: 0;
 }
 
+.leftSection {
+  flex-shrink: 0;
+}
+
 .rightSection {
   gap: 8px;
   padding: 0 8px;
+  flex-shrink: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.collapsible {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow: hidden;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .appLabel {
@@ -30,4 +48,10 @@
   border-width: 1px;
   border-left: 0;
   height: 100%;
+}
+
+@media (max-width: 800px) {
+  .collapsible {
+    display: none;
+  }
 }

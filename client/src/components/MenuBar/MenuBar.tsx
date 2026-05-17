@@ -95,8 +95,10 @@ function MenuBar(props: MenuBarProps) {
               <hr class={styles.verticalDivider} />
             </>
           )}
-          <DateWidget />
-          <hr class={styles.verticalDivider} />
+          <span class={styles.collapsible}>
+            <DateWidget />
+            <hr class={styles.verticalDivider} />
+          </span>
           <TimeWidget />
         </section>
       </header>
