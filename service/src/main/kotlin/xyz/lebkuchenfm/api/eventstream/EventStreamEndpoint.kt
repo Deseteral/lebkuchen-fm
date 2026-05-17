@@ -34,7 +34,7 @@ fun Route.eventStreamRouting(
     webSocket("/event-stream") {
         val userSession = call.getUserSession()
         val sessionId = call.request.cookies[USER_SESSION_COOKIE_NAME]
-        val connection = WebSocketConnection(session = this)
+        val connection = WebSocketConnection(session = this, scopes = userSession.scopes)
         val converter = checkNotNull(converter)
 
         eventStream.subscribe(connection)

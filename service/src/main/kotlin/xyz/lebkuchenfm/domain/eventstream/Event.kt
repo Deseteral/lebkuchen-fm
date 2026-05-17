@@ -1,14 +1,19 @@
 package xyz.lebkuchenfm.domain.eventstream
 
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.songs.Song
 import java.util.UUID
 
 sealed interface Event {
+    val requiredScope: Scope? get() = null
+
     data class PlayXSound(
         val soundUrl: String,
         val soundName: String? = null,
         val actorName: String? = null,
-    ) : Event
+    ) : Event {
+        override val requiredScope: Scope = Scope.XSOUNDS_LISTEN
+    }
 
     data class QueueSongs(
         val songs: List<Song>,

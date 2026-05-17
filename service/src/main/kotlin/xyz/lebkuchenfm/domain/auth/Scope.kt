@@ -22,6 +22,9 @@ enum class Scope {
     @SerialName("xsounds:play")
     XSOUNDS_PLAY,
 
+    @SerialName("xsounds:listen")
+    XSOUNDS_LISTEN,
+
     @SerialName("xsounds:upload")
     XSOUNDS_UPLOAD,
 
