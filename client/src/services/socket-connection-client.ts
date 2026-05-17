@@ -191,13 +191,20 @@ class SocketConnectionClient {
   }
 
   static sendSocketMessage<T extends LocalEvent>(messageData: T): void {
-    if (!SocketConnectionClient.client) {
-      // prettier-ignore
-      console.log('[SocketConnectionClient] Could not send WebSocket message because it is not initialized.');
+    const client = SocketConnectionClient.client;
+
+    if (!client || !SocketConnectionClient.isReady()) {
+      console.log(
+        '[SocketConnectionClient] Could not send WebSocket message because connection is not open.',
+        {
+          readyState: client?.readyState ?? null,
+          messageId: messageData.id,
+        },
+      );
       return;
     }
 
-    SocketConnectionClient.client.send(JSON.stringify(messageData));
+    client.send(JSON.stringify(messageData));
     console.log('[SocketConnectionClient] Sent message to event stream.', messageData);
   }
 
