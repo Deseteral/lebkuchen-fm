@@ -12,6 +12,8 @@ export function Terminal() {
 }
 
 const WELCOME_MESSAGE = 'Welcome to LebkuchenFM!';
+const MAX_BUFFER_LINES = 1000;
+const MAX_PROMPT_HISTORY = 200;
 
 function Buffer() {
   let bufferElement!: HTMLDivElement;
@@ -47,11 +49,13 @@ function Buffer() {
   };
 
   const appendBufferLines = (newLines: string[]): void => {
-    setBufferLines([...bufferLines(), ...newLines]);
+    setBufferLines((current) => [...current, ...newLines].slice(-MAX_BUFFER_LINES));
     scrollToBottom();
   };
 
-  const appendPromptHistory = (prompt: string) => setPromptHistory([prompt, ...promptHistory()]);
+  const appendPromptHistory = (prompt: string) => {
+    setPromptHistory((current) => [prompt, ...current].slice(0, MAX_PROMPT_HISTORY));
+  };
 
   const evalPrompt = async (prompt: string): Promise<void> => {
     appendBufferLines([`> ${prompt}`]);
