@@ -6,14 +6,18 @@ import java.util.UUID
 sealed interface Event {
     data class PlayXSound(
         val soundUrl: String,
+        val soundName: String? = null,
+        val actorName: String? = null,
     ) : Event
 
     data class QueueSongs(
         val songs: List<Song>,
+        val actorName: String? = null,
     ) : Event
 
     data class Skip(
         val amount: Amount,
+        val actorName: String? = null,
     ) : Event {
         sealed class Amount {
             data object All : Amount()
@@ -31,9 +35,13 @@ sealed interface Event {
         }
     }
 
-    data object Resume : Event
+    data class Resume(
+        val actorName: String? = null,
+    ) : Event
 
-    data object Pause : Event
+    data class Pause(
+        val actorName: String? = null,
+    ) : Event
 
     data class PlayerStateUpdate<T>(
         val state: T,

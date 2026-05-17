@@ -22,7 +22,7 @@ class PlaybackPauseCommandProcessor(private val eventStream: EventStream<*>) :
     ) {
 
     override suspend fun execute(command: Command, context: ExecutionContext): CommandProcessingResult {
-        eventStream.sendToEveryone(Event.Pause)
+        eventStream.sendToEveryone(Event.Pause(actorName = context.username))
         return CommandProcessingResult.Success("⏸")
     }
 }

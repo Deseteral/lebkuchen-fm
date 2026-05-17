@@ -30,7 +30,7 @@ class XCommandProcessor(private val soundboardService: SoundboardService) :
         val soundName = command.rawArgs
             ?: return error("You have to provide sound name.", logger)
 
-        return soundboardService.playXSound(soundName).mapBoth(
+        return soundboardService.playXSound(soundName, actorName = context.username).mapBoth(
             { CommandProcessingResult.Success("Played $soundName sound.") },
             { error ->
                 val message = when (error) {
