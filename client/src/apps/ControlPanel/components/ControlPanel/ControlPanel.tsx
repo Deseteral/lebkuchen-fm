@@ -3,6 +3,7 @@ import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
 import { Dialog } from '@components/Dialog/Dialog';
 import { getIntegrations } from '../../../../services/integrations-service';
 import { ApplicationServer } from '../../../../services/application-server';
+import { ApiHttpError } from '../../../../services/api-fetch';
 import styles from './ControlPanel.module.css';
 
 interface ControlPanelProps {
@@ -25,7 +26,7 @@ function ControlPanel(props: ControlPanelProps) {
         payload: data,
       });
     } catch (error) {
-      if (error instanceof Response && error.status === 403) {
+      if (error instanceof ApiHttpError && error.status === 403) {
         setErrorMessage("You don't have permission to access Integrations");
       } else {
         setErrorMessage('Failed to load integrations configuration');
