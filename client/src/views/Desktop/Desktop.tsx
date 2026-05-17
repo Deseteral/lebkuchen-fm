@@ -31,8 +31,10 @@ function Desktop() {
     initWindowManager();
     DesktopLayoutService.initialize();
 
-    const cleanupGlobalHandlers = dnd.registerGlobalHandlers();
-    onCleanup(cleanupGlobalHandlers);
+    const globalHandlersDispose = dnd.registerGlobalHandlers();
+    const desktopManagerDispose = DesktopManager.initializeDesktopManager();
+    onCleanup(globalHandlersDispose);
+    onCleanup(desktopManagerDispose);
   });
 
   onCleanup(() => {

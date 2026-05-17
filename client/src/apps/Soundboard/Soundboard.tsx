@@ -1,5 +1,5 @@
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
-import { createEffect, createMemo, createSignal, For, onMount } from 'solid-js';
+import { createEffect, createMemo, createSignal, For, on, onCleanup, onMount } from 'solid-js';
 import styles from './Soundboard.module.css';
 import { XSound } from '../../types/x-sound';
 import { SoundboardService } from './services/soundboard-service';
@@ -21,11 +21,12 @@ function Soundboard() {
     return phraseQuery().trim();
   });
 
-  createEffect(() => {
-    const query = activeQuery();
-    const timer = setTimeout(() => setDebouncedQuery(query), SEARCH_DEBOUNCE_MS);
-    return () => clearTimeout(timer);
-  });
+  createEffect(
+    on(activeQuery, (query) => {
+      const timer = setTimeout(() => setDebouncedQuery(query), SEARCH_DEBOUNCE_MS);
+      onCleanup(() => clearTimeout(timer));
+    }),
+  );
 
   const filteredXSounds = createMemo(() => {
     const query = debouncedQuery();

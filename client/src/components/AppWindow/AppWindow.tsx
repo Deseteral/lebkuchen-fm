@@ -102,9 +102,13 @@ function AppWindow(props: AppWindowProps) {
     }
   };
 
+  const detachDragListeners = () => {
+    document.removeEventListener('mouseup', closeDragElement);
+    document.removeEventListener('mousemove', elementDrag);
+  };
+
   const closeDragElement = () => {
-    document.onmouseup = null;
-    document.onmousemove = null;
+    detachDragListeners();
     if (windowRef) {
       clampWindowToViewport(windowRef);
       saveRect();
@@ -129,8 +133,8 @@ function AppWindow(props: AppWindowProps) {
     moveWindowToFront();
     x = e.clientX;
     y = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
+    document.addEventListener('mouseup', closeDragElement);
+    document.addEventListener('mousemove', elementDrag);
   };
 
   const closeWindow = (e: MouseEvent) => {
@@ -142,6 +146,7 @@ function AppWindow(props: AppWindowProps) {
   };
 
   onCleanup(() => {
+    detachDragListeners();
     if (resizeObserver) resizeObserver.disconnect();
     if (resizeTimer) clearTimeout(resizeTimer);
     if (windowRef) {
