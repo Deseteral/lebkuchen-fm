@@ -17,8 +17,8 @@ const APPLICATION_IDS = [
   'users',
   'app-launcher',
   'control-panel',
-  'sound-panel',
-  'integrations-panel',
+  'sound-settings',
+  'integration-settings',
 ] as const;
 
 type ApplicationId = (typeof APPLICATION_IDS)[number];
@@ -74,14 +74,14 @@ const APPLICATION_DEFINITIONS: ApplicationDefinition[] = [
     persistWindowRect: true,
   },
   {
-    id: 'sound-panel',
-    title: 'Sound',
+    id: 'sound-settings',
+    title: 'Sound Settings',
     iconIndex: SOUND_MANAGER_ICON_INDEX,
     persistWindowRect: false,
   },
   {
-    id: 'integrations-panel',
-    title: 'Integrations',
+    id: 'integration-settings',
+    title: 'Integration Settings',
     iconIndex: CONTROL_PANEL_ICON_INDEX,
     persistWindowRect: false,
   },

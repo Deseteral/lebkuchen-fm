@@ -11,8 +11,8 @@ interface ApplicationPayloadMap {
   users: undefined;
   'app-launcher': undefined;
   'control-panel': undefined;
-  'sound-panel': undefined;
-  'integrations-panel': IntegrationsResponse;
+  'sound-settings': undefined;
+  'integration-settings': IntegrationsResponse;
 }
 
 type WindowId = ApplicationId | 'users-new-user-dialog' | `users-properties-dialog:${string}`;

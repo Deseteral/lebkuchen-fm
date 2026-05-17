@@ -5,8 +5,8 @@ import { SoundUpload } from './SoundUpload/SoundUpload';
 import { Users } from './Users/Users';
 import { AppLauncher } from './AppLauncher/AppLauncher';
 import { ControlPanelApp } from './ControlPanel/ControlPanelApp';
-import { SoundPanelApp } from './ControlPanel/SoundPanelApp';
-import { IntegrationsPanelApp } from './ControlPanel/IntegrationsPanelApp';
+import { SoundSettingsApp } from './ControlPanel/SoundSettingsApp';
+import { IntegrationSettingsApp } from './ControlPanel/IntegrationSettingsApp';
 import { ApplicationServer } from '../services/application-server';
 
 function ApplicationHost() {
@@ -19,8 +19,10 @@ function ApplicationHost() {
       <Users />
       <AppLauncher />
       <ControlPanelApp />
-      <SoundPanelApp />
-      <IntegrationsPanelApp data={ApplicationServer.getInstance('integrations-panel')?.payload} />
+      <SoundSettingsApp />
+      <IntegrationSettingsApp
+        data={ApplicationServer.getInstance('integration-settings')?.payload}
+      />
     </>
   );
 }

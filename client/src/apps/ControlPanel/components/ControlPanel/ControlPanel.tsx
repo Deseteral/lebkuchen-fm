@@ -13,14 +13,14 @@ function ControlPanel(props: ControlPanelProps) {
   const [errorMessage, setErrorMessage] = createSignal<string | null>(null);
 
   const openIntegrations = async () => {
-    if (ApplicationServer.isOpen('integrations-panel')) {
-      ApplicationServer.openOrFocus('integrations-panel');
+    if (ApplicationServer.isOpen('integration-settings')) {
+      ApplicationServer.openOrFocus('integration-settings');
       return;
     }
 
     try {
       const data = await getIntegrations();
-      ApplicationServer.openOrFocus('integrations-panel', {
+      ApplicationServer.openOrFocus('integration-settings', {
         startPosition: spawnOffsetPosition(),
         payload: data,
       });
@@ -34,7 +34,7 @@ function ControlPanel(props: ControlPanelProps) {
   };
 
   const openSound = () => {
-    ApplicationServer.openOrFocus('sound-panel', { startPosition: spawnOffsetPosition() });
+    ApplicationServer.openOrFocus('sound-settings', { startPosition: spawnOffsetPosition() });
   };
 
   const openIntegrationsPanel = async () => {
@@ -55,7 +55,7 @@ function ControlPanel(props: ControlPanelProps) {
           onKeyDown={(e) => e.key === 'Enter' && openSound()}
         >
           <PhIcon type={PhIconType.Bold} icon="faders" size={48} />
-          <span>Sound</span>
+          <span>Sound Settings</span>
         </button>
         <button
           class={styles.item}
@@ -63,7 +63,7 @@ function ControlPanel(props: ControlPanelProps) {
           onKeyDown={(e) => e.key === 'Enter' && void openIntegrationsPanel()}
         >
           <PhIcon type={PhIconType.Bold} icon="plug" size={48} />
-          <span>Integrations</span>
+          <span>Integration Settings</span>
         </button>
       </div>
 

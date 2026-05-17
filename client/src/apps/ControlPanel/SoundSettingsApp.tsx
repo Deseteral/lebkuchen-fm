@@ -1,12 +1,12 @@
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { SoundSettings } from './components/SoundSettings/SoundSettings';
 
-function SoundPanelApp() {
+function SoundSettingsApp() {
   return (
-    <ApplicationWindow id="sound-panel" startSize={{ width: '400px', height: '240px' }}>
+    <ApplicationWindow id="sound-settings" startSize={{ width: '400px', height: '240px' }}>
       <SoundSettings />
     </ApplicationWindow>
   );
 }
 
-export { SoundPanelApp };
+export { SoundSettingsApp };

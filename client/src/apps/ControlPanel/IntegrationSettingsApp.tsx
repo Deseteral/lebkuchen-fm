@@ -4,18 +4,18 @@ import { IntegrationsSettings } from './components/IntegrationsSettings/Integrat
 import { IntegrationsResponse } from '../../services/integrations-service';
 import { ApplicationServer } from '../../services/application-server';
 
-interface IntegrationsPanelAppProps {
+interface IntegrationSettingsAppProps {
   data?: IntegrationsResponse;
 }
 
-function IntegrationsPanelApp(props: IntegrationsPanelAppProps) {
-  const close = () => ApplicationServer.close('integrations-panel');
+function IntegrationSettingsApp(props: IntegrationSettingsAppProps) {
+  const close = () => ApplicationServer.close('integration-settings');
 
   return (
     <Show when={props.data}>
       {(data) => (
         <ApplicationWindow
-          id="integrations-panel"
+          id="integration-settings"
           startSize={{ width: '520px', height: '380px', minWidth: '400px', minHeight: '300px' }}
         >
           <IntegrationsSettings data={data()} close={close} />
@@ -25,4 +25,4 @@ function IntegrationsPanelApp(props: IntegrationsPanelAppProps) {
   );
 }
 
-export { IntegrationsPanelApp };
+export { IntegrationSettingsApp };
