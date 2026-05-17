@@ -14,27 +14,18 @@ function resolveRegistryDesktopDefaults(): ApplicationId[] {
   );
 }
 
-function mergeSavedOrder(defaultIds: ApplicationId[], saved: unknown): ApplicationId[] {
-  if (!Array.isArray(saved)) return defaultIds;
+function parseSavedOrder(saved: unknown): ApplicationId[] | null {
+  if (!Array.isArray(saved)) return null;
 
   const seen = new Set<ApplicationId>();
-  const validSavedOrder = saved.filter((id): id is ApplicationId => {
+  return saved.filter((id): id is ApplicationId => {
     if (!APPLICATION_IDS.includes(id as ApplicationId)) return false;
     const typedId = id as ApplicationId;
-    if (!defaultIds.includes(typedId)) return false;
+    if (!getApplicationDefinition(typedId)) return false;
     if (seen.has(typedId)) return false;
     seen.add(typedId);
     return true;
   });
-
-  const merged = [...validSavedOrder, ...defaultIds.filter((id) => !seen.has(id))];
-  for (const appId of NON_REMOVABLE_APP_IDS) {
-    if (!merged.includes(appId) && defaultIds.includes(appId)) {
-      merged.push(appId);
-    }
-  }
-
-  return merged;
 }
 
 function save(order: ApplicationId[]) {
@@ -51,7 +42,9 @@ function load(): ApplicationId[] {
   try {
     const raw = localStorage.getItem(ICON_ORDER_STORAGE_KEY);
     if (!raw) return defaults;
-    return mergeSavedOrder(defaults, JSON.parse(raw));
+
+    const parsed = parseSavedOrder(JSON.parse(raw));
+    return parsed ?? defaults;
   } catch {
     return defaults;
   }
