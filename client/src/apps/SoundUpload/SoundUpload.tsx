@@ -5,7 +5,7 @@ import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
 import { Dialog } from '@components/Dialog/Dialog';
 import type { DialogVariant } from '@components/Dialog/Dialog';
-import { apiFetch } from '../../services/api-fetch';
+import { ApiHttpError, apiFetchOrThrow } from '../../services/api-fetch';
 
 interface DialogState {
   variant: DialogVariant;
@@ -24,26 +24,26 @@ function SoundUpload() {
     setIsUploading(true);
 
     try {
-      const response = await apiFetch('/api/x-sounds', { method: 'POST', body: formData });
+      await apiFetchOrThrow('/api/x-sounds', { method: 'POST', body: formData });
 
-      if (response.ok) {
-        formRef.reset();
-        setDialogState({
-          variant: 'success',
-          message: `Sound '${soundName}' uploaded successfully.`,
-        });
-      } else {
-        const data = await response.json();
+      formRef.reset();
+      setDialogState({
+        variant: 'success',
+        message: `Sound '${soundName}' uploaded successfully.`,
+      });
+    } catch (error) {
+      if (error instanceof ApiHttpError && error.body && typeof error.body === 'object') {
+        const body = error.body as { detail?: string; message?: string };
         setDialogState({
           variant: 'error',
-          message: data.detail ?? data.message ?? 'Could not upload sound.',
+          message: body.detail ?? body.message ?? 'Could not upload sound.',
+        });
+      } else {
+        setDialogState({
+          variant: 'error',
+          message: 'An unexpected error occurred.',
         });
       }
-    } catch {
-      setDialogState({
-        variant: 'error',
-        message: 'An unexpected error occurred.',
-      });
     } finally {
       setIsUploading(false);
     }

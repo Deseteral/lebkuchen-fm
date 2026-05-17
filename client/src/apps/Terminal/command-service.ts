@@ -1,15 +1,15 @@
 import { TextCommandResponse } from '../../types/commands';
+import { apiFetchJson } from '../../services/api-fetch';
 
 export async function executeCommand(prompt: string): Promise<string> {
-  const response = await fetch('/api/commands/execute', {
+  const data = await apiFetchJson<TextCommandResponse>('/api/commands/execute', {
     method: 'POST',
     body: prompt,
     headers: { 'Command-Prompt': 'fm' },
   });
 
-  const data = await response.json();
   if (data.textResponse) {
-    return (data as TextCommandResponse).textResponse;
+    return data.textResponse;
   } else {
     throw new Error('Request to LebkuchenFM service failed.');
   }

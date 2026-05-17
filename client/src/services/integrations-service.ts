@@ -1,4 +1,4 @@
-import { apiFetch } from './api-fetch';
+import { apiFetchJson } from './api-fetch';
 
 export interface SecretState {
   set: boolean;
@@ -53,19 +53,13 @@ export interface IntegrationsPatchRequest {
 }
 
 export async function getIntegrations(): Promise<IntegrationsResponse> {
-  const response = await apiFetch('/api/integrations');
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  return await response.json();
+  return await apiFetchJson<IntegrationsResponse>('/api/integrations');
 }
 
 export async function patchIntegrations(
   patch: IntegrationsPatchRequest,
 ): Promise<IntegrationsResponse> {
-  const response = await apiFetch('/api/integrations', {
+  return await apiFetchJson<IntegrationsResponse>('/api/integrations', {
     method: 'PATCH',
     body: JSON.stringify(patch),
     headers: {
@@ -73,10 +67,4 @@ export async function patchIntegrations(
       'Content-Type': 'application/json',
     },
   });
-
-  if (!response.ok) {
-    throw response;
-  }
-
-  return await response.json();
 }

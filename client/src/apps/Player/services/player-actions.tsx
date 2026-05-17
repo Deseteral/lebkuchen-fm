@@ -1,5 +1,9 @@
 import { createSignal } from 'solid-js';
-import { apiFetch } from '../../../services/api-fetch';
+import { ApiHttpError, apiFetchJson } from '../../../services/api-fetch';
+
+interface CommandResponse {
+  textResponse?: string;
+}
 
 const [commandError, setCommandError] = createSignal<string | null>(null);
 
@@ -50,17 +54,18 @@ class PlayerActions {
 
   private static async runCommand(command: string) {
     try {
-      const response = await apiFetch('/api/commands/execute', {
+      await apiFetchJson<CommandResponse>('/api/commands/execute', {
         method: 'POST',
         body: command,
       });
-
-      if (!response.ok) {
-        const data = await response.json();
+      setCommandError(null);
+    } catch (error) {
+      if (error instanceof ApiHttpError && error.body && typeof error.body === 'object') {
+        const data = error.body as CommandResponse;
         setCommandError(data.textResponse ?? 'Command failed.');
+      } else {
+        setCommandError('An unexpected error occurred.');
       }
-    } catch {
-      setCommandError('An unexpected error occurred.');
     }
   }
 }

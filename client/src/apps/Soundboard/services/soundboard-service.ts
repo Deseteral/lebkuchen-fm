@@ -1,24 +1,30 @@
 import { XSound } from '../../../types/x-sound';
-import { apiFetch } from '../../../services/api-fetch';
+import { apiFetchJson, apiFetchOrThrow } from '../../../services/api-fetch';
+
+interface XSoundsResponse {
+  sounds: XSound[];
+}
+
+interface XSoundTagsResponse {
+  tags: string[];
+}
 
 export abstract class SoundboardService {
   static async playXSound(soundName: string) {
     const url = `/api/soundboard/play?soundName=${encodeURIComponent(soundName)}`;
-    return apiFetch(url, { method: 'POST' }).catch((err) =>
+    return apiFetchOrThrow(url, { method: 'POST' }).catch((err) =>
       console.error('[SoundboardService] Failed to play x-sound.', err),
     );
   }
 
   static async getXSounds() {
-    return apiFetch('/api/x-sounds')
-      .then((res) => res.json())
-      .then((res) => res.sounds);
+    const data = await apiFetchJson<XSoundsResponse>('/api/x-sounds');
+    return data.sounds;
   }
 
   static async getXSoundsTags() {
-    return apiFetch('/api/x-sounds/tags')
-      .then((res) => res.json())
-      .then((res) => res.tags);
+    const data = await apiFetchJson<XSoundTagsResponse>('/api/x-sounds/tags');
+    return data.tags;
   }
 
   static soundMatchesPhrase(sound: XSound, phrase: string) {

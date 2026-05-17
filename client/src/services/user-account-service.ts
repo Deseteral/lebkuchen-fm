@@ -1,9 +1,14 @@
 import { redirectTo } from './redirect-to';
-import { apiFetch } from './api-fetch';
+import { ApiHttpError, apiFetchOrThrow } from './api-fetch';
+import { ProblemResponse } from '../types/problem-response';
 
 class UserAccountService {
-  static checkLoginStateAndRedirect() {
-    apiFetch('/api/auth');
+  static async checkLoginStateAndRedirect() {
+    try {
+      await apiFetchOrThrow('/api/auth');
+    } catch {
+      // redirect is handled by apiFetch on 401
+    }
   }
 
   static async userLogin(username: string, password: string) {
@@ -16,16 +21,23 @@ class UserAccountService {
       body,
     };
 
-    const response = await fetch('/api/auth', options);
-    if (response.status === 200) {
+    try {
+      await apiFetchOrThrow('/api/auth', {
+        ...options,
+        redirectOnUnauthorized: false,
+      });
       redirectTo('/');
-    } else {
-      throw await response.json();
+    } catch (error) {
+      if (error instanceof ApiHttpError && error.body && typeof error.body === 'object') {
+        throw error.body as ProblemResponse;
+      }
+      throw error;
     }
   }
 
-  static userLogout() {
-    apiFetch('/api/auth/logout', { method: 'POST' }).then(() => redirectTo('/login'));
+  static async userLogout() {
+    await apiFetchOrThrow('/api/auth/logout', { method: 'POST' });
+    redirectTo('/login');
   }
 }
 

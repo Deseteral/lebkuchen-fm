@@ -7,9 +7,9 @@ import { playAudioFromUrl } from '../../services/audio-service';
 import { UserPreferencesService } from '../../services/user-preferences-service';
 
 function Soundboard() {
-  const [filteredXSounds, setFilteredXSounds] = createSignal([]);
-  const [xsounds, setXsounds] = createSignal([]);
-  const [tags, setTags] = createSignal([]);
+  const [filteredXSounds, setFilteredXSounds] = createSignal<XSound[]>([]);
+  const [xsounds, setXsounds] = createSignal<XSound[]>([]);
+  const [tags, setTags] = createSignal<string[]>([]);
 
   function playXSound(sound: XSound, event: MouseEvent) {
     if (event.metaKey || event.altKey) {

@@ -1,10 +1,13 @@
 import { User } from '../types/user';
-import { apiFetch } from '../services/api-fetch';
+import { apiFetchJson } from '../services/api-fetch';
+
+interface UsersResponse {
+  users: User[];
+}
 
 export async function getUsers(): Promise<User[]> {
-  return apiFetch('/api/users')
-    .then((res) => res.json())
-    .then((res) => res.users);
+  const data = await apiFetchJson<UsersResponse>('/api/users');
+  return data.users;
 }
 
 export async function postUser(formData: FormData): Promise<User> {
@@ -19,17 +22,11 @@ export async function postUser(formData: FormData): Promise<User> {
     },
   };
 
-  const response = await apiFetch('/api/users', options);
-
-  if (!response.ok) {
-    throw new Error(await response.text());
-  }
-
-  return await response.json();
+  return await apiFetchJson<User>('/api/users', options);
 }
 
 export async function putUserRoles(username: string, roles: string[]): Promise<User> {
-  const response = await apiFetch(`/api/users/${encodeURIComponent(username)}/roles`, {
+  return await apiFetchJson<User>(`/api/users/${encodeURIComponent(username)}/roles`, {
     method: 'PUT',
     body: JSON.stringify({ roles }),
     headers: {
@@ -37,10 +34,4 @@ export async function putUserRoles(username: string, roles: string[]): Promise<U
       'Content-Type': 'application/json',
     },
   });
-
-  if (!response.ok) {
-    throw new Error(await response.text());
-  }
-
-  return await response.json();
 }
