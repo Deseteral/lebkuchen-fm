@@ -1,0 +1,65 @@
+.container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6261a1;
+  background-image: url('../../../public/bg.png');
+  padding: 16px;
+}
+
+.panel {
+  width: 420px;
+  max-width: 100%;
+  border: 1px solid var(--border-color-one);
+  box-shadow:
+    inset -1px -1px 0 var(--border-color-two),
+    8px 8px 20px rgba(0, 0, 0, 0.35);
+  background-color: var(--secondary-color);
+}
+
+.header {
+  height: var(--app-window-title-bar-height);
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-weight: bold;
+  background-color: mediumpurple;
+  color: #fff;
+}
+
+.content {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.title {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.message {
+  line-height: 1.4;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.button {
+  min-width: 110px;
+  border: 1px solid var(--border-color-one);
+  background-color: var(--secondary-color);
+  box-shadow: inset -1px -1px 0 var(--border-color-two);
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: var(--third-color);
+}
