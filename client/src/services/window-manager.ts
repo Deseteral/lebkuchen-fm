@@ -1,5 +1,5 @@
 import { createSignal } from 'solid-js';
-import { clearWindowRect, saveWindowRect } from './window-storage';
+import { clearWindowRect } from './window-storage';
 
 interface WindowMetadata {
   appId: string | null;
@@ -246,10 +246,25 @@ function getMenuBarHeight(): number {
 function clampWindowToViewport(el: HTMLDivElement) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+  const availableHeight = Math.max(CLAMP_VISIBLE_PX, vh - cachedMenuBarHeight);
 
   const left = el.offsetLeft;
   const top = el.offsetTop;
-  const width = el.offsetWidth;
+  let width = el.offsetWidth;
+  let height = el.offsetHeight;
+
+  const clampedWidth = Math.min(width, vw);
+  const clampedHeight = Math.min(height, availableHeight);
+
+  if (clampedWidth !== width) {
+    el.style.width = `${clampedWidth}px`;
+    width = clampedWidth;
+  }
+
+  if (clampedHeight !== height) {
+    el.style.height = `${clampedHeight}px`;
+    height = clampedHeight;
+  }
 
   const minLeft = -(width - CLAMP_VISIBLE_PX);
   const maxLeft = vw - CLAMP_VISIBLE_PX;
@@ -264,16 +279,6 @@ function clampWindowToViewport(el: HTMLDivElement) {
   el.style.transition = `top ${CLAMP_ANIMATION_MS}ms ease-out, left ${CLAMP_ANIMATION_MS}ms ease-out`;
   el.style.left = `${clampedLeft}px`;
   el.style.top = `${clampedTop}px`;
-
-  const meta = windowRegistry.get(el);
-  if (meta?.appId && meta.persistWindowRect !== false) {
-    saveWindowRect(meta.appId, {
-      x: clampedLeft,
-      y: clampedTop,
-      width: el.offsetWidth,
-      height: el.offsetHeight,
-    });
-  }
 
   setTimeout(() => {
     el.style.transition = '';

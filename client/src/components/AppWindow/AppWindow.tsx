@@ -57,13 +57,15 @@ function getCurrentRect(el: HTMLDivElement) {
 function clampToViewport(rect: { x: number; y: number; width: number; height: number }) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
+  const menuBarHeight = getMenuBarHeight();
+  const availableHeight = Math.max(100, vh - menuBarHeight);
   const minVisible = 100;
 
   return {
     x: Math.max(0, Math.min(rect.x, vw - minVisible)),
-    y: Math.max(0, Math.min(rect.y, vh - minVisible)),
+    y: Math.max(menuBarHeight, Math.min(rect.y, vh - minVisible)),
     width: Math.min(rect.width, vw),
-    height: Math.min(rect.height, vh),
+    height: Math.min(rect.height, availableHeight),
   };
 }
 
@@ -210,7 +212,6 @@ function AppWindow(props: AppWindowProps) {
           el.style.height = `${clamped.height}px`;
           x = clamped.x;
           y = clamped.y;
-          saveRect();
         } else {
           if (!props.startPosition) {
             const activePos = untrack(() => getActiveWindowPosition());
