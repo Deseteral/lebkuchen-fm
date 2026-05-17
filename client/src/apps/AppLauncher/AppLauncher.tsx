@@ -1,4 +1,4 @@
-import { For } from 'solid-js';
+import { For, createMemo } from 'solid-js';
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { APPLICATION_DEFINITIONS } from '../application-definitions';
 import { AppIcon } from '@components/AppIcon/AppIcon';
@@ -8,6 +8,10 @@ import type { ApplicationId } from '../application-definitions';
 import styles from './AppLauncher.module.css';
 
 function AppLauncher() {
+  const sortedApps = createMemo(() =>
+    [...APPLICATION_DEFINITIONS].sort((a, b) => a.title.localeCompare(b.title)),
+  );
+
   const onAppDragStart = (appId: ApplicationId, e: DragEvent) => {
     DesktopDragService.writeDataTransfer(
       e.dataTransfer,
@@ -24,7 +28,7 @@ function AppLauncher() {
         startSize={{ width: '360px', height: '420px', minWidth: '280px', minHeight: '240px' }}
       >
       <div class={styles.container}>
-        <For each={APPLICATION_DEFINITIONS}>
+        <For each={sortedApps()}>
           {(app) => (
             <button
               type="button"
