@@ -7,16 +7,11 @@ interface ToastProps {
   isClosing?: boolean;
 }
 
-function formatRelativeTime(timestamp: number): string {
-  const diffSeconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  if (diffSeconds < 10) return 'just now';
-  if (diffSeconds < 60) return `${diffSeconds}s ago`;
-  const minutes = Math.floor(diffSeconds / 60);
-  if (minutes < 60) return `${minutes}m ago`;
-  const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `${hours}h ago`;
-  const days = Math.floor(hours / 24);
-  return `${days}d ago`;
+function formatClockTime(timestamp: number): string {
+  const date = new Date(timestamp);
+  const hours = `${date.getHours()}`.padStart(2, '0');
+  const minutes = `${date.getMinutes()}`.padStart(2, '0');
+  return `${hours}:${minutes}`;
 }
 
 function Toast(props: ToastProps) {
@@ -25,7 +20,9 @@ function Toast(props: ToastProps) {
       <div class={styles.header}>
         <div>
           <p class={styles.title}>{props.notification.title}</p>
-          <p class={styles.time}>{formatRelativeTime(props.notification.timestamp)}</p>
+          {props.notification.sticky && (
+            <p class={styles.time}>{formatClockTime(props.notification.timestamp)}</p>
+          )}
         </div>
         <button
           class={styles.close}
