@@ -39,6 +39,8 @@ const NewUserDialog: Component<NewUserDialogProps> = (props) => {
         startPosition={props.startPosition}
         startSize={{ width: '300px', height: '240px' }}
         iconIndex={USER_MANAGER_ICON_INDEX}
+        parentAppId="users"
+        closeWithParent={true}
       >
         <form class={styles.dialogContent} onSubmit={onSubmit}>
           <div class={styles.dialogScrollArea}>

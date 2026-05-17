@@ -1,4 +1,3 @@
-import { TERMINAL_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { For, createSignal, onMount } from 'solid-js';
 import styles from './Terminal.module.css';
@@ -8,8 +7,6 @@ export function Terminal() {
   return (
     <ApplicationWindow
       id="terminal"
-      title="Terminal"
-      iconIndex={TERMINAL_ICON_INDEX}
       startSize={{ width: '624px', height: '400px' }}
     >
       <Buffer />

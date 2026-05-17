@@ -1,14 +1,13 @@
-import { JSX, createSignal, onMount } from 'solid-js';
-import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
+import { JSX, Show } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
-import { DesktopManager } from '../../services/desktop-manager';
-import { activateWindow } from '../../services/window-manager';
+import { getApplicationDefinition } from '../../apps/application-definitions';
+import { ApplicationServer } from '../../services/application-server';
 
 interface ApplicationWindowProps {
   id: string;
-  title: string;
-  iconIndex: IconSpriteIndex;
+  title?: string;
+  iconIndex?: IconSpriteIndex;
   startSize: {
     width: string;
     height: string;
@@ -18,58 +17,38 @@ interface ApplicationWindowProps {
   children: JSX.Element;
   onRectChange?: (x: number, y: number, width: number, height: number) => void;
   onClose?: () => void;
-  showIcon?: boolean;
   persistWindowRect?: boolean;
-  startPosition?: { x: number; y: number };
-  autoOpen?: boolean;
 }
 
 function ApplicationWindow(props: ApplicationWindowProps) {
-  const [isOpen, setIsOpen] = createSignal(false);
-
-  onMount(() => {
-    if (props.autoOpen) {
-      setIsOpen(true);
-    }
-  });
+  const definition = () => getApplicationDefinition(props.id);
+  const resolvedTitle = () => props.title ?? definition()?.title ?? props.id;
+  const resolvedIconIndex = () => props.iconIndex ?? definition()?.iconIndex;
+  const instance = () => ApplicationServer.getInstance(props.id);
+  const isOpen = () => ApplicationServer.isOpen(props.id);
+  const resolvedPersistWindowRect = () =>
+    props.persistWindowRect ?? definition()?.persistWindowRect ?? true;
 
   const closeWindow = () => {
-    setIsOpen(false);
     props.onClose?.();
-  };
-
-  const handleActivate = () => {
-    if (!activateWindow(props.id)) {
-      setIsOpen(true);
-    }
+    ApplicationServer.close(props.id);
   };
 
   return (
-    <>
-      {props.showIcon !== false && (
-        <DesktopIcon
-          label={props.title}
-          iconIndex={props.iconIndex}
-          selected={DesktopManager.selectedIconId() === props.id}
-          onClick={() => DesktopManager.selectIcon(props.id)}
-          onDoubleClick={handleActivate}
-        />
-      )}
-      {isOpen() && (
-        <AppWindow
-          appId={props.id}
-          title={props.title}
-          close={closeWindow}
-          startSize={props.startSize}
-          startPosition={props.startPosition}
-          iconIndex={props.iconIndex}
-          onRectChange={props.onRectChange}
-          persistWindowRect={props.persistWindowRect}
-        >
-          {props.children}
-        </AppWindow>
-      )}
-    </>
+    <Show when={isOpen()}>
+      <AppWindow
+        appId={props.id}
+        title={resolvedTitle()}
+        close={closeWindow}
+        startSize={props.startSize}
+        startPosition={instance()?.startPosition}
+        iconIndex={resolvedIconIndex()}
+        onRectChange={props.onRectChange}
+        persistWindowRect={resolvedPersistWindowRect()}
+      >
+        {props.children}
+      </AppWindow>
+    </Show>
   );
 }
 

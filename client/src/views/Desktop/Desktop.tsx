@@ -1,4 +1,4 @@
-import { onCleanup, onMount } from 'solid-js';
+import { For, onCleanup, onMount } from 'solid-js';
 import styles from './Desktop.module.css';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
@@ -10,6 +10,10 @@ import { initWindowManager, cleanupWindowManager } from '../../services/window-m
 import { NotificationDaemon } from '../../services/notification-daemon';
 import { ToastContainer } from '../../components/ToastContainer/ToastContainer';
 import { ApplicationHost } from '../../apps/ApplicationHost';
+import { getApplicationDefinition } from '../../apps/application-definitions';
+import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
+import { ApplicationServer } from '../../services/application-server';
+import { DESKTOP_APP_IDS } from './desktop-layout';
 
 function Desktop() {
   onMount(() => {
@@ -39,6 +43,22 @@ function Desktop() {
           if (e.target === e.currentTarget) DesktopManager.clearAll();
         }}
       >
+        <For each={DESKTOP_APP_IDS}>
+          {(appId) => {
+            const definition = getApplicationDefinition(appId);
+            if (!definition) return null;
+
+            return (
+              <DesktopIcon
+                label={definition.title}
+                iconIndex={definition.iconIndex}
+                selected={DesktopManager.selectedIconId() === appId}
+                onClick={() => DesktopManager.selectIcon(appId)}
+                onDoubleClick={() => ApplicationServer.open(appId)}
+              />
+            );
+          }}
+        </For>
         <ApplicationHost />
       </main>
     </>

@@ -1,6 +1,5 @@
 import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { Show, createSignal } from 'solid-js';
-import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { Dialog } from '@components/Dialog/Dialog';
 import { PlayerContent } from './components/PlayerContent/PlayerContent';
 import { SongsQueue } from './components/SongsQueue/SongsQueue';
@@ -15,8 +14,6 @@ function Player() {
     <>
       <ApplicationWindow
         id="player"
-        title="Player"
-        iconIndex={PLAYER_ICON_INDEX}
         startSize={{ width: '600px', height: '500px', minWidth: '400px', minHeight: '157px' }}
         onRectChange={(x, y, w, h) => setWindowRect({ x, y, w, h })}
         onClose={() => setShowQueue(false)}

@@ -5,7 +5,6 @@ import { Input } from '@components/Input/Input';
 import { Button } from '@components/Button/Button';
 import { Dialog } from '@components/Dialog/Dialog';
 import type { DialogVariant } from '@components/Dialog/Dialog';
-import { SOUND_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { apiFetch } from '../../services/api-fetch';
 
 interface DialogState {
@@ -54,8 +53,6 @@ function SoundUpload() {
     <>
       <ApplicationWindow
         id="sound-upload"
-        title="Sound Manager"
-        iconIndex={SOUND_MANAGER_ICON_INDEX}
         startSize={{ width: '420px', height: '360px' }}
       >
         <form class={styles.form} ref={(el) => (formRef = el)} onSubmit={onSubmit}>

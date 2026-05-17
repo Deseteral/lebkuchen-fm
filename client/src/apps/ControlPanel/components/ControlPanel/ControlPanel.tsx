@@ -14,13 +14,13 @@ function ControlPanel(props: ControlPanelProps) {
 
   const openIntegrations = async () => {
     if (ApplicationServer.isOpen('integrations-panel')) {
-      ApplicationServer.open('integrations-panel');
+      ApplicationServer.openOrFocus('integrations-panel');
       return;
     }
 
     try {
       const data = await getIntegrations();
-      ApplicationServer.open('integrations-panel', {
+      ApplicationServer.openOrFocus('integrations-panel', {
         startPosition: spawnOffsetPosition(),
         payload: data,
       });
@@ -34,7 +34,7 @@ function ControlPanel(props: ControlPanelProps) {
   };
 
   const openSound = () => {
-    ApplicationServer.open('sound-panel', { startPosition: spawnOffsetPosition() });
+    ApplicationServer.openOrFocus('sound-panel', { startPosition: spawnOffsetPosition() });
   };
 
   const openIntegrationsPanel = async () => {
