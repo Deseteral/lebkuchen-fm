@@ -27,7 +27,12 @@ function Toast(props: ToastProps) {
           <p class={styles.title}>{props.notification.title}</p>
           <p class={styles.time}>{formatRelativeTime(props.notification.timestamp)}</p>
         </div>
-        <button class={styles.close} type="button" onClick={props.onDismiss} aria-label="Dismiss">
+        <button
+          class={styles.close}
+          type="button"
+          onClick={() => props.onDismiss()}
+          aria-label="Dismiss"
+        >
           x
         </button>
       </div>

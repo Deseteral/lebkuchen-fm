@@ -25,10 +25,10 @@ function DesktopIcon(props: DesktopIconProps) {
       onDblClick={() => props.onDoubleClick()}
       onKeyDown={(e) => e.key === 'Enter' && props.onDoubleClick()}
       draggable={props.draggable}
-      onDragStart={props.onDragStart}
-      onDragOver={props.onDragOver}
-      onDrop={props.onDrop}
-      onDragEnd={props.onDragEnd}
+      onDragStart={(e) => props.onDragStart?.(e)}
+      onDragOver={(e) => props.onDragOver?.(e)}
+      onDrop={(e) => props.onDrop?.(e)}
+      onDragEnd={(e) => props.onDragEnd?.(e)}
     >
       <AppIcon size={64} iconIndex={props.iconIndex} />
       <span class={styles.label}>{props.label}</span>

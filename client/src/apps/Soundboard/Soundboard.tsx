@@ -49,10 +49,7 @@ function Soundboard() {
   };
 
   return (
-    <ApplicationWindow
-      id="soundboard"
-      startSize={{ width: '600px', height: '600px' }}
-    >
+    <ApplicationWindow id="soundboard" startSize={{ width: '600px', height: '600px' }}>
       <h4 class={styles.title}>Search</h4>
       <input
         class={styles.search}

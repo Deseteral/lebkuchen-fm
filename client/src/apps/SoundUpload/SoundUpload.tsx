@@ -51,10 +51,7 @@ function SoundUpload() {
 
   return (
     <>
-      <ApplicationWindow
-        id="sound-upload"
-        startSize={{ width: '420px', height: '360px' }}
-      >
+      <ApplicationWindow id="sound-upload" startSize={{ width: '420px', height: '360px' }}>
         <form class={styles.form} ref={(el) => (formRef = el)} onSubmit={onSubmit}>
           <h1 class={styles.heading}>Add new sound</h1>
           <Input type="file" required name="soundFile" disabled={isUploading()} />

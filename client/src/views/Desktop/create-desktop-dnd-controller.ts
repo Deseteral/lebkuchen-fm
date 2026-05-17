@@ -19,7 +19,9 @@ interface DesktopDndController {
   onTrashDrop: (e: DragEvent) => void;
 }
 
-function createDesktopDndController(getDesktopElement: () => HTMLElement | undefined): DesktopDndController {
+function createDesktopDndController(
+  getDesktopElement: () => HTMLElement | undefined,
+): DesktopDndController {
   const [isTrashActive, setIsTrashActive] = createSignal(false);
 
   const isPointInsideDesktop = (x: number, y: number) => {

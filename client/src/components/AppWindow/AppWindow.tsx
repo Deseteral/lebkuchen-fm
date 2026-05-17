@@ -262,9 +262,7 @@ function AppWindow(props: AppWindowProps) {
           </button>
         )}
       </div>
-      <div class={styles.content}>
-        {props.children}
-      </div>
+      <div class={styles.content}>{props.children}</div>
       {!isInActiveGroup(windowRef) && (
         <div class={styles.clickGuard} onMouseDown={moveWindowToFront} />
       )}

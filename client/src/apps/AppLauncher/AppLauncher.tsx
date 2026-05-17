@@ -23,10 +23,10 @@ function AppLauncher() {
   };
 
   return (
-      <ApplicationWindow
-        id="app-launcher"
-        startSize={{ width: '360px', height: '420px', minWidth: '280px', minHeight: '240px' }}
-      >
+    <ApplicationWindow
+      id="app-launcher"
+      startSize={{ width: '360px', height: '420px', minWidth: '280px', minHeight: '240px' }}
+    >
       <div class={styles.container}>
         <For each={sortedApps()}>
           {(app) => (

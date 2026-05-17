@@ -5,10 +5,7 @@ import { programs, TerminalProgram } from './programs';
 
 export function Terminal() {
   return (
-    <ApplicationWindow
-      id="terminal"
-      startSize={{ width: '624px', height: '400px' }}
-    >
+    <ApplicationWindow id="terminal" startSize={{ width: '624px', height: '400px' }}>
       <Buffer />
     </ApplicationWindow>
   );
