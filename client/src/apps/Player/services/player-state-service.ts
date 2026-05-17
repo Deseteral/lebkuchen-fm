@@ -163,10 +163,6 @@ class PlayerStateService {
   // --- Iframe callbacks ---
 
   private static onIframePlaying = (): void => {
-    if (PlayerStateService.playerState) {
-      PlayerStateService.change({ isPlaying: true });
-    }
-
     if (PlayerStateService.timeStateUpdateQueue !== null) {
       YoutubePlayerController.seek(PlayerStateService.timeStateUpdateQueue);
       PlayerStateService.timeStateUpdateQueue = null;
@@ -174,15 +170,7 @@ class PlayerStateService {
   };
 
   private static onIframePaused = (): void => {
-    if (!PlayerStateService.playerState) return;
-
-    const duration = YoutubePlayerController.getDuration();
-    const currentTime = YoutubePlayerController.getCurrentTime();
-
-    // Ignore pause events triggered by video ending (not a real user pause)
-    if (duration > 0 && duration - currentTime < 1) return;
-
-    PlayerStateService.change({ isPlaying: false });
+    // Intentionally empty. Only server events (PauseEvent/ResumeEvent) control isPlaying state.
   };
 
   private static onIframeTimeUpdate = (seconds: number): void => {
@@ -198,9 +186,7 @@ class PlayerStateService {
 
   // --- Player methods ---
 
-  private static playSong(song: Song | null, time: number = 0): void {
-    const isCurrentlyPlaying = PlayerStateService.playerState?.isPlaying ?? false;
-
+  private static playSong(song: Song | null, time: number = 0, autoplay: boolean = false): void {
     if (song) {
       PlayerStateService.change({ currentlyPlaying: { song, time } });
 
@@ -210,7 +196,7 @@ class PlayerStateService {
 
       YoutubePlayerController.load(song.youtubeId);
 
-      if (!isCurrentlyPlaying) {
+      if (!autoplay && !PlayerStateService.playerState?.isPlaying) {
         YoutubePlayerController.stop();
       }
     } else {
@@ -222,7 +208,7 @@ class PlayerStateService {
     const state = PlayerStateService.get();
     const nextSong = state.queue.shift() ?? null;
     PlayerStateService.change({ queue: state.queue });
-    PlayerStateService.playSong(nextSong);
+    PlayerStateService.playSong(nextSong, 0, true);
   };
 
   private static rewindTo(time: number): void {
@@ -283,7 +269,10 @@ class PlayerStateService {
 
     PlayerStateService.change({ queue: [...state.queue, ...songs] });
 
-    if (prevLength === 0 && songs.length > 0 && !state.currentlyPlaying) {
+    const isPlayerIdle =
+      !state.currentlyPlaying || YoutubePlayerController.getState() !== 'playing';
+
+    if (prevLength === 0 && songs.length > 0 && isPlayerIdle) {
       PlayerStateService.playNextSong();
     }
   };
