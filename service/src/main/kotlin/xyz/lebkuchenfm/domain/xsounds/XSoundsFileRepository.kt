@@ -7,5 +7,6 @@ interface XSoundsFileRepository {
 }
 
 sealed class UploadXSoundFileError {
+    data object FileAlreadyExists : UploadXSoundFileError()
     data object FileCouldNotBeSaved : UploadXSoundFileError()
 }
