@@ -1,4 +1,4 @@
-import { DesktopApp } from '@components/DesktopApp/DesktopApp';
+import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { createSignal, Show } from 'solid-js';
 import styles from './SoundUpload.module.css';
 import { Input } from '@components/Input/Input';
@@ -52,7 +52,7 @@ function SoundUpload() {
 
   return (
     <>
-      <DesktopApp
+      <ApplicationWindow
         id="sound-upload"
         title="Sound Manager"
         iconIndex={SOUND_MANAGER_ICON_INDEX}
@@ -78,7 +78,7 @@ function SoundUpload() {
             {isUploading() ? <span class={styles.spinnerText}>Uploading</span> : 'Upload'}
           </Button>
         </form>
-      </DesktopApp>
+      </ApplicationWindow>
 
       <Show when={dialogState()}>
         {(state) => (

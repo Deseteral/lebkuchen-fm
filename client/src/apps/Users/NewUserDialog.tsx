@@ -33,6 +33,7 @@ const NewUserDialog: Component<NewUserDialogProps> = (props) => {
   return (
     <>
       <AppWindow
+        appId="users-new-user-dialog"
         title="New User"
         close={props.close}
         startPosition={props.startPosition}

@@ -1,0 +1,30 @@
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 20px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-radius: var(--border-radius);
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--border-color-one);
+  width: 100px;
+}
+
+.item:hover {
+  background-color: var(--third-color);
+}
+
+.item:focus {
+  outline: 2px dotted var(--primary-color);
+}

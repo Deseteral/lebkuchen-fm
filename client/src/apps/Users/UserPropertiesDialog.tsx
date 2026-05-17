@@ -40,6 +40,7 @@ const UserPropertiesDialog: Component<UserPropertiesDialogProps> = (props) => {
   return (
     <>
       <AppWindow
+        appId="users-properties-dialog"
         title={`${props.user.username} — Properties`}
         close={props.close}
         startPosition={props.startPosition}

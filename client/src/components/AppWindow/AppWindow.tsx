@@ -40,6 +40,7 @@ interface AppWindowProps {
   parentAppId?: string;
   closeWithParent?: boolean;
   resizable?: boolean;
+  persistWindowRect?: boolean;
 }
 
 const SPAWN_OFFSET = 40;
@@ -92,7 +93,7 @@ function AppWindow(props: AppWindowProps) {
   const saveRect = () => {
     if (windowRef) {
       const rect = getCurrentRect(windowRef);
-      if (props.appId) {
+      if (props.persistWindowRect !== false && props.appId) {
         saveWindowRect(props.appId, rect);
       }
       props.onRectChange?.(rect.x, rect.y, rect.width, rect.height);
@@ -180,10 +181,12 @@ function AppWindow(props: AppWindowProps) {
           moveWindowToFront,
           props.parentAppId,
           props.closeWithParent,
+          props.persistWindowRect,
         );
 
         // Try to restore saved position/size
-        const savedRect = props.appId ? loadWindowRect(props.appId) : null;
+        const savedRect =
+          props.persistWindowRect === false || !props.appId ? null : loadWindowRect(props.appId);
 
         if (props.centered) {
           el.style.top = '50%';
@@ -237,7 +240,7 @@ function AppWindow(props: AppWindowProps) {
         }
 
         // ResizeObserver for persisting size changes
-        if (props.appId) {
+        if (props.appId && props.persistWindowRect !== false) {
           resizeObserver = new ResizeObserver(() => {
             if (resizeTimer) clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => saveRect(), 300);

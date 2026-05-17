@@ -1,5 +1,5 @@
 import { createSignal, createEffect } from 'solid-js';
-import { activeWindowEl, activateWindow, deactivateAllWindows } from './window-manager';
+import { activeWindowEl, deactivateAllWindows } from './window-manager';
 
 const [selectedIconId, setSelectedIconId] = createSignal<string | null>(null);
 
@@ -15,10 +15,6 @@ function selectIcon(appId: string) {
   setSelectedIconId(appId);
 }
 
-function activateApp(appId: string): boolean {
-  return activateWindow(appId);
-}
-
 function clearAll() {
   deactivateAllWindows();
   setSelectedIconId(null);
@@ -27,6 +23,5 @@ function clearAll() {
 export const DesktopManager = {
   selectedIconId,
   selectIcon,
-  activateApp,
   clearAll,
 };

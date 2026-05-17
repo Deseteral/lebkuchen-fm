@@ -1,4 +1,4 @@
-import { DesktopApp } from '@components/DesktopApp/DesktopApp';
+import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { createEffect, createSignal, For } from 'solid-js';
 import styles from './Soundboard.module.css';
 import { XSound } from '../../types/x-sound';
@@ -50,7 +50,7 @@ function Soundboard() {
   };
 
   return (
-    <DesktopApp
+    <ApplicationWindow
       id="soundboard"
       title="Soundboard"
       iconIndex={SOUNDBOARD_ICON_INDEX}
@@ -85,7 +85,7 @@ function Soundboard() {
             </button>
           ))}
       </div>
-    </DesktopApp>
+    </ApplicationWindow>
   );
 }
 

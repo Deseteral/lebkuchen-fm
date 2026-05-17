@@ -1,10 +1,11 @@
-import { JSX, createSignal } from 'solid-js';
+import { JSX, createSignal, onMount } from 'solid-js';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 import { DesktopManager } from '../../services/desktop-manager';
+import { activateWindow } from '../../services/window-manager';
 
-interface DesktopAppProps {
+interface ApplicationWindowProps {
   id: string;
   title: string;
   iconIndex: IconSpriteIndex;
@@ -17,10 +18,20 @@ interface DesktopAppProps {
   children: JSX.Element;
   onRectChange?: (x: number, y: number, width: number, height: number) => void;
   onClose?: () => void;
+  showIcon?: boolean;
+  persistWindowRect?: boolean;
+  startPosition?: { x: number; y: number };
+  autoOpen?: boolean;
 }
 
-function DesktopApp(props: DesktopAppProps) {
+function ApplicationWindow(props: ApplicationWindowProps) {
   const [isOpen, setIsOpen] = createSignal(false);
+
+  onMount(() => {
+    if (props.autoOpen) {
+      setIsOpen(true);
+    }
+  });
 
   const closeWindow = () => {
     setIsOpen(false);
@@ -28,28 +39,32 @@ function DesktopApp(props: DesktopAppProps) {
   };
 
   const handleActivate = () => {
-    if (!DesktopManager.activateApp(props.id)) {
+    if (!activateWindow(props.id)) {
       setIsOpen(true);
     }
   };
 
   return (
     <>
-      <DesktopIcon
-        label={props.title}
-        iconIndex={props.iconIndex}
-        selected={DesktopManager.selectedIconId() === props.id}
-        onClick={() => DesktopManager.selectIcon(props.id)}
-        onDoubleClick={handleActivate}
-      />
+      {props.showIcon !== false && (
+        <DesktopIcon
+          label={props.title}
+          iconIndex={props.iconIndex}
+          selected={DesktopManager.selectedIconId() === props.id}
+          onClick={() => DesktopManager.selectIcon(props.id)}
+          onDoubleClick={handleActivate}
+        />
+      )}
       {isOpen() && (
         <AppWindow
           appId={props.id}
           title={props.title}
           close={closeWindow}
           startSize={props.startSize}
+          startPosition={props.startPosition}
           iconIndex={props.iconIndex}
           onRectChange={props.onRectChange}
+          persistWindowRect={props.persistWindowRect}
         >
           {props.children}
         </AppWindow>
@@ -58,5 +73,5 @@ function DesktopApp(props: DesktopAppProps) {
   );
 }
 
-export { DesktopApp };
-export type { DesktopAppProps };
+export { ApplicationWindow };
+export type { ApplicationWindowProps };

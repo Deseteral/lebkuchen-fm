@@ -1,4 +1,4 @@
-import { DesktopApp } from '@components/DesktopApp/DesktopApp';
+import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { createSignal, createEffect, For, Show } from 'solid-js';
 import { USER_MANAGER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import styles from './Users.module.css';
@@ -7,6 +7,7 @@ import { getUsers } from '../../services/users-service';
 import { User } from '../../types/user';
 import { NewUserDialog } from './NewUserDialog';
 import { UserPropertiesDialog } from './UserPropertiesDialog';
+import { activateWindow } from '../../services/window-manager';
 
 function Users() {
   const [showNewUserDialog, setShowNewUserDialog] = createSignal(false);
@@ -27,9 +28,27 @@ function Users() {
     refreshUserList();
   });
 
+  const openNewDialog = () => {
+    if (showNewUserDialog()) {
+      activateWindow('users-new-user-dialog');
+      return;
+    }
+
+    setShowNewUserDialog(true);
+  };
+
+  const openPropertiesDialog = () => {
+    if (showPropertiesDialog()) {
+      activateWindow('users-properties-dialog');
+      return;
+    }
+
+    setShowPropertiesDialog(true);
+  };
+
   return (
     <>
-      <DesktopApp
+      <ApplicationWindow
         id="users"
         title="Users"
         iconIndex={USER_MANAGER_ICON_INDEX}
@@ -67,13 +86,13 @@ function Users() {
             </table>
           </div>
           <div class={styles.toolbar}>
-            <Button onClick={() => setShowNewUserDialog(true)}>New</Button>
-            <Button disabled={!selectedUser()} onClick={() => setShowPropertiesDialog(true)}>
+            <Button onClick={openNewDialog}>New</Button>
+            <Button disabled={!selectedUser()} onClick={openPropertiesDialog}>
               Edit
             </Button>
           </div>
         </div>
-      </DesktopApp>
+      </ApplicationWindow>
 
       <Show when={showNewUserDialog()}>
         <NewUserDialog

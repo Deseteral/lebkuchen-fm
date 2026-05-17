@@ -8,6 +8,7 @@ interface WindowMetadata {
   title: string;
   defaultRect: { width: string; height: string };
   close?: () => void;
+  persistWindowRect?: boolean;
 }
 
 const windowRegistry = new Map<HTMLDivElement, WindowMetadata>();
@@ -80,8 +81,17 @@ function registerWindow(
   focus?: () => void,
   parentAppId?: string,
   closeWithParent?: boolean,
+  persistWindowRect?: boolean,
 ) {
-  windowRegistry.set(el, { appId, parentAppId, closeWithParent, title, defaultRect, close });
+  windowRegistry.set(el, {
+    appId,
+    parentAppId,
+    closeWithParent,
+    title,
+    defaultRect,
+    close,
+    persistWindowRect,
+  });
   if (appId && focus) {
     focusCallbacks.set(appId, focus);
   }
@@ -174,7 +184,7 @@ function resetActiveWindowPosition() {
   const meta = windowRegistry.get(el);
   if (!meta) return;
 
-  if (meta.appId) {
+  if (meta.appId && meta.persistWindowRect !== false) {
     clearWindowRect(meta.appId);
   }
 
@@ -256,7 +266,7 @@ function clampWindowToViewport(el: HTMLDivElement) {
   el.style.top = `${clampedTop}px`;
 
   const meta = windowRegistry.get(el);
-  if (meta?.appId) {
+  if (meta?.appId && meta.persistWindowRect !== false) {
     saveWindowRect(meta.appId, {
       x: clampedLeft,
       y: clampedTop,

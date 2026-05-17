@@ -1,4 +1,4 @@
-import { DesktopApp } from '@components/DesktopApp/DesktopApp';
+import { ApplicationWindow } from '@components/ApplicationWindow/ApplicationWindow';
 import { Show, createSignal } from 'solid-js';
 import { PLAYER_ICON_INDEX } from '@components/AppIcon/IconSpritesheet';
 import { Dialog } from '@components/Dialog/Dialog';
@@ -13,7 +13,7 @@ function Player() {
 
   return (
     <>
-      <DesktopApp
+      <ApplicationWindow
         id="player"
         title="Player"
         iconIndex={PLAYER_ICON_INDEX}
@@ -22,7 +22,7 @@ function Player() {
         onClose={() => setShowQueue(false)}
       >
         <PlayerContent onToggleQueue={() => setShowQueue((prev) => !prev)} />
-      </DesktopApp>
+      </ApplicationWindow>
       <Show when={showQueue()}>
         <SongsQueue
           queue={PlayerStateService.songQueue()}
