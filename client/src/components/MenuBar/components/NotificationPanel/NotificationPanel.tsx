@@ -1,4 +1,4 @@
-import { createSignal, For, Show, onCleanup, JSX, createEffect } from 'solid-js';
+import { createSignal, For, Show, JSX, createEffect, onCleanup } from 'solid-js';
 import { Portal } from 'solid-js/web';
 import { NotificationService } from '../../../../services/notification-service';
 import styles from './NotificationPanel.module.css';
@@ -17,47 +17,65 @@ interface NotificationPanelProps {
 function NotificationPanel(props: NotificationPanelProps) {
   const [isOpen, setIsOpen] = createSignal(false);
   const [isClosing, setIsClosing] = createSignal(false);
-  let panelRef!: HTMLDivElement;
+  let containerRef!: HTMLDivElement;
+  let panelRef: HTMLElement | undefined;
 
-  createEffect(() => {
-    if (isOpen()) {
-      setIsClosing(false);
-    }
-  });
+  const isVisible = () => isOpen() || isClosing();
 
-  const open = () => setIsOpen(true);
-  const close = () => {
-    if (!isOpen()) return;
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setIsClosing(false);
-    }, 180);
+  const open = () => {
+    setIsClosing(false);
+    setIsOpen(true);
   };
+
+  const close = () => {
+    if (!isOpen() || isClosing()) return;
+    setIsClosing(true);
+  };
+
   const toggle = () => (isOpen() ? close() : open());
 
   const onClickOutside = (e: MouseEvent) => {
-    if (isOpen() && panelRef && !panelRef.contains(e.target as Node)) {
-      close();
-    }
+    if (!isVisible()) return;
+
+    const target = e.target as Node;
+    if (containerRef.contains(target) || panelRef?.contains(target)) return;
+
+    close();
   };
 
   const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Escape' && isOpen()) {
+    if (e.key === 'Escape' && isVisible()) {
       close();
     }
   };
 
-  document.addEventListener('click', onClickOutside, true);
-  document.addEventListener('keydown', onKeyDown);
+  createEffect(() => {
+    if (!isVisible()) return;
+
+    document.addEventListener('click', onClickOutside, true);
+    document.addEventListener('keydown', onKeyDown);
+
+    onCleanup(() => {
+      document.removeEventListener('click', onClickOutside, true);
+      document.removeEventListener('keydown', onKeyDown);
+    });
+  });
 
   onCleanup(() => {
     document.removeEventListener('click', onClickOutside, true);
     document.removeEventListener('keydown', onKeyDown);
   });
 
+  const onPanelAnimationEnd = (event: AnimationEvent) => {
+    if (event.currentTarget !== event.target) return;
+    if (!isClosing()) return;
+
+    setIsOpen(false);
+    setIsClosing(false);
+  };
+
   return (
-    <div class={styles.container} ref={(el) => (panelRef = el)}>
+    <div class={styles.container} ref={(el) => (containerRef = el)}>
       <button
         type="button"
         class={styles.trigger}
@@ -67,9 +85,14 @@ function NotificationPanel(props: NotificationPanelProps) {
       >
         {props.trigger}
       </button>
-      <Show when={isOpen() || isClosing()}>
+      <Show when={isVisible()}>
         <Portal mount={document.getElementById('toasts')!}>
-          <section class={styles.panel} classList={{ [styles.panelClosing]: isClosing() }}>
+          <section
+            ref={(el) => (panelRef = el)}
+            class={styles.panel}
+            classList={{ [styles.panelClosing]: isClosing() }}
+            onAnimationEnd={onPanelAnimationEnd}
+          >
             <div class={styles.header}>Notifications</div>
             <div class={styles.list}>
               <Show
