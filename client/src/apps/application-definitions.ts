@@ -1,5 +1,6 @@
 import {
   CONTROL_PANEL_ICON_INDEX,
+  HISTORY_ICON_INDEX,
   PLAYER_ICON_INDEX,
   SOUNDBOARD_ICON_INDEX,
   SOUND_MANAGER_ICON_INDEX,
@@ -14,6 +15,7 @@ const APPLICATION_IDS = [
   'terminal',
   'sound-upload',
   'users',
+  'app-launcher',
   'control-panel',
   'sound-panel',
   'integrations-panel',
@@ -57,6 +59,12 @@ const APPLICATION_DEFINITIONS: ApplicationDefinition[] = [
     id: 'users',
     title: 'Users',
     iconIndex: USER_MANAGER_ICON_INDEX,
+    persistWindowRect: true,
+  },
+  {
+    id: 'app-launcher',
+    title: 'Applications',
+    iconIndex: HISTORY_ICON_INDEX,
     persistWindowRect: true,
   },
   {

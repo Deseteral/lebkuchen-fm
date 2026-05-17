@@ -9,3 +9,28 @@
   gap: 4px;
   overflow: hidden;
 }
+
+.trashDropZone {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 2px dashed var(--border-color-two);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.35);
+  color: white;
+  z-index: 9999;
+  pointer-events: auto;
+  transition: transform 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.trashDropZoneActive {
+  border-color: var(--border-color-one);
+  background-color: rgba(180, 40, 40, 0.65);
+  transform: translateX(-50%) scale(1.08);
+}

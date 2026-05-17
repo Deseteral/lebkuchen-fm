@@ -1,4 +1,4 @@
-import { For, createSignal, onCleanup, onMount } from 'solid-js';
+import { For, onCleanup, onMount } from 'solid-js';
 import styles from './Desktop.module.css';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
@@ -10,52 +10,17 @@ import { initWindowManager, cleanupWindowManager } from '../../services/window-m
 import { NotificationDaemon } from '../../services/notification-daemon';
 import { ToastContainer } from '../../components/ToastContainer/ToastContainer';
 import { ApplicationHost } from '../../apps/ApplicationHost';
-import { APPLICATION_IDS, getApplicationDefinition } from '../../apps/application-definitions';
+import { getApplicationDefinition } from '../../apps/application-definitions';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { ApplicationServer } from '../../services/application-server';
-import { DESKTOP_APP_IDS } from './desktop-layout';
-import type { ApplicationId } from '../../apps/application-definitions';
-
-const ICON_ORDER_STORAGE_KEY = 'desktop-icon-order';
-
-function loadDesktopIconOrder(): ApplicationId[] {
-  const defaultIds = DESKTOP_APP_IDS.filter((id) => APPLICATION_IDS.includes(id));
-  const registryIds = defaultIds.filter((id) => !!getApplicationDefinition(id));
-
-  try {
-    const raw = localStorage.getItem(ICON_ORDER_STORAGE_KEY);
-    if (!raw) return registryIds;
-
-    const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return registryIds;
-
-    const seen = new Set<ApplicationId>();
-    const validSavedOrder = parsed.filter((id): id is ApplicationId => {
-      if (!APPLICATION_IDS.includes(id as ApplicationId)) return false;
-      const typedId = id as ApplicationId;
-      if (!registryIds.includes(typedId)) return false;
-      if (seen.has(typedId)) return false;
-      seen.add(typedId);
-      return true;
-    });
-
-    return [...validSavedOrder, ...registryIds.filter((id) => !seen.has(id))];
-  } catch {
-    return registryIds;
-  }
-}
-
-function saveDesktopIconOrder(order: ApplicationId[]) {
-  try {
-    localStorage.setItem(ICON_ORDER_STORAGE_KEY, JSON.stringify(order));
-  } catch {
-    // localStorage unavailable/full — ignore
-  }
-}
+import { DesktopLayoutService } from '../../services/desktop-layout-service';
+import { DesktopDragService } from '../../services/desktop-drag-service';
+import { PhIcon, PhIconType } from '@components/PhIcon/PhIcon';
+import { createDesktopDndController } from './create-desktop-dnd-controller';
 
 function Desktop() {
-  const [desktopIconOrder, setDesktopIconOrder] = createSignal<ApplicationId[]>([]);
-  const [draggedIconId, setDraggedIconId] = createSignal<ApplicationId | null>(null);
+  let desktopRef!: HTMLElement;
+  const dnd = createDesktopDndController(() => desktopRef);
 
   onMount(() => {
     UserAccountService.checkLoginStateAndRedirect();
@@ -64,7 +29,10 @@ function Desktop() {
     PlayerStateService.initialize();
     NotificationDaemon.initialize();
     initWindowManager();
-    setDesktopIconOrder(loadDesktopIconOrder());
+    DesktopLayoutService.initialize();
+
+    const cleanupGlobalHandlers = dnd.registerGlobalHandlers();
+    onCleanup(cleanupGlobalHandlers);
   });
 
   onCleanup(() => {
@@ -75,33 +43,24 @@ function Desktop() {
     cleanupWindowManager();
   });
 
-  const moveIcon = (targetId: ApplicationId) => {
-    const sourceId = draggedIconId();
-    if (!sourceId || sourceId === targetId) return;
-
-    const currentOrder = desktopIconOrder();
-    const from = currentOrder.indexOf(sourceId);
-    const to = currentOrder.indexOf(targetId);
-    if (from < 0 || to < 0) return;
-
-    const nextOrder = [...currentOrder];
-    nextOrder.splice(from, 1);
-    nextOrder.splice(to, 0, sourceId);
-    setDesktopIconOrder(nextOrder);
-    saveDesktopIconOrder(nextOrder);
-  };
-
   return (
     <>
       <MenuBar isUserLoggedIn={true} />
       <ToastContainer />
       <main
+        ref={(el) => (desktopRef = el)}
+        data-desktop-drop-root="true"
         class={styles.desktop}
+        onDragOver={dnd.onDesktopDragOver}
+        onDrop={(e) => {
+          e.preventDefault();
+          dnd.onDesktopDrop(e);
+        }}
         onMouseDown={(e) => {
           if (e.target === e.currentTarget) DesktopManager.clearAll();
         }}
       >
-        <For each={desktopIconOrder()}>
+        <For each={DesktopLayoutService.iconOrder()}>
           {(appId) => {
             const definition = getApplicationDefinition(appId);
             if (!definition) return null;
@@ -111,17 +70,31 @@ function Desktop() {
                 label={definition.title}
                 iconIndex={definition.iconIndex}
                 selected={DesktopManager.selectedIconId() === appId}
+                removeMode={dnd.isTrashActive() && dnd.draggedDesktopAppId() === appId}
                 onClick={() => DesktopManager.selectIcon(appId)}
                 onDoubleClick={() => ApplicationServer.open(appId)}
                 draggable
-                onDragStart={() => setDraggedIconId(appId)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => moveIcon(appId)}
-                onDragEnd={() => setDraggedIconId(null)}
+                onDragStart={(e) => dnd.onIconDragStart(appId, e)}
+                onDragOver={dnd.onIconDragOver}
+                onDrop={(e) => dnd.onIconDrop(appId, e)}
+                onDragEnd={dnd.onIconDragEnd}
               />
             );
           }}
         </For>
+        {DesktopDragService.dragPayload()?.source === 'desktop' && (
+          <div
+            class={`${styles.trashDropZone} ${dnd.isTrashActive() ? styles.trashDropZoneActive : ''}`}
+            onDragOver={dnd.onTrashDragOver}
+            onDragLeave={dnd.onTrashDragLeave}
+            onDrop={(e) => {
+              e.preventDefault();
+              dnd.onTrashDrop(e);
+            }}
+          >
+            <PhIcon type={PhIconType.Bold} icon="trash" size={52} />
+          </div>
+        )}
         <ApplicationHost />
       </main>
     </>

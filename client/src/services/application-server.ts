@@ -9,6 +9,7 @@ interface ApplicationPayloadMap {
   terminal: undefined;
   'sound-upload': undefined;
   users: undefined;
+  'app-launcher': undefined;
   'control-panel': undefined;
   'sound-panel': undefined;
   'integrations-panel': IntegrationsResponse;

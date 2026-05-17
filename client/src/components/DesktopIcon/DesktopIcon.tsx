@@ -6,6 +6,7 @@ interface DesktopIconProps {
   label: string;
   iconIndex: IconSpriteIndex;
   selected: boolean;
+  removeMode?: boolean;
   onClick: () => void;
   onDoubleClick: () => void;
   draggable?: boolean;
@@ -19,7 +20,7 @@ function DesktopIcon(props: DesktopIconProps) {
   return (
     <button
       type="button"
-      class={`${styles.app} ${props.selected ? styles.selected : ''}`}
+      class={`${styles.app} ${props.selected ? styles.selected : ''} ${props.removeMode ? styles.removeMode : ''}`}
       onClick={() => props.onClick()}
       onDblClick={() => props.onDoubleClick()}
       onKeyDown={(e) => e.key === 'Enter' && props.onDoubleClick()}
@@ -31,6 +32,7 @@ function DesktopIcon(props: DesktopIconProps) {
     >
       <AppIcon size={64} iconIndex={props.iconIndex} />
       <span class={styles.label}>{props.label}</span>
+      {props.removeMode && <span class={styles.removeBadge}>-</span>}
     </button>
   );
 }

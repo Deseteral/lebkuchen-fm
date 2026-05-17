@@ -1,4 +1,5 @@
 .app {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -30,4 +31,25 @@
 
 .selected .label {
   background-color: rgba(147, 112, 219, 0.6);
+}
+
+.removeMode {
+  border-color: rgba(196, 63, 63, 0.7);
+  background-color: rgba(160, 30, 30, 0.18);
+}
+
+.removeBadge {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  background-color: #b63030;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1;
 }

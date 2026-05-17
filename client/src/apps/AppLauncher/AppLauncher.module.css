@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+}
+
+.appRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color-two);
+  background-color: var(--secondary-color);
+  border-radius: var(--border-radius);
+  cursor: grab;
+  text-align: left;
+  user-select: none;
+  -webkit-user-drag: element;
+}
+
+.appRow:hover {
+  border-color: var(--border-color-one);
+}
+
+.appRow:active {
+  cursor: grabbing;
+}

@@ -6,6 +6,7 @@ const DESKTOP_APP_IDS: ApplicationId[] = [
   'terminal',
   'sound-upload',
   'users',
+  'app-launcher',
   'control-panel',
 ];
 
