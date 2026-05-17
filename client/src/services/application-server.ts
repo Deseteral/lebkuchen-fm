@@ -23,19 +23,23 @@ interface ApplicationLaunchOptions<AppId extends ApplicationId = ApplicationId> 
 }
 
 interface ApplicationInstance<AppId extends ApplicationId = ApplicationId> {
-  appId: AppId;
   isOpen: boolean;
   startPosition?: { x: number; y: number };
   payload?: ApplicationPayloadMap[AppId];
 }
 
-const [instances, setInstances] = createStore<Partial<Record<ApplicationId, ApplicationInstance>>>({});
+const [instances, setInstances] = createStore<Partial<Record<ApplicationId, ApplicationInstance>>>(
+  {},
+);
 
 function focus(windowId: WindowId): boolean {
   return activateWindow(windowId);
 }
 
-function open<AppId extends ApplicationId>(appId: AppId, options: ApplicationLaunchOptions<AppId> = {}) {
+function open<AppId extends ApplicationId>(
+  appId: AppId,
+  options: ApplicationLaunchOptions<AppId> = {},
+) {
   const isAlreadyOpen = instances[appId]?.isOpen === true;
 
   if (isAlreadyOpen) {
@@ -43,12 +47,12 @@ function open<AppId extends ApplicationId>(appId: AppId, options: ApplicationLau
     return;
   }
 
-  setInstances(appId, {
-    appId,
+  setInstances(appId, (prev) => ({
+    ...prev,
     isOpen: true,
     startPosition: options.startPosition,
     payload: options.payload,
-  });
+  }));
 }
 
 function openOrFocus<AppId extends ApplicationId>(
@@ -70,7 +74,9 @@ function isOpen(appId: ApplicationId): boolean {
   return instances[appId]?.isOpen === true;
 }
 
-function getInstance<AppId extends ApplicationId>(appId: AppId): ApplicationInstance<AppId> | undefined {
+function getInstance<AppId extends ApplicationId>(
+  appId: AppId,
+): ApplicationInstance<AppId> | undefined {
   return instances[appId] as ApplicationInstance<AppId> | undefined;
 }
 

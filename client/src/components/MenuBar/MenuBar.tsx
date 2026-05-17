@@ -92,7 +92,6 @@ function MenuBar(props: MenuBarProps) {
         <section class={styles.rightSection}>
           {props.isUserLoggedIn && (
             <>
-              <NotificationPanel />
               <VolumeWidget />
               <hr class={styles.verticalDivider} />
             </>

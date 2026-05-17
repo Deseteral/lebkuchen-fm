@@ -7,6 +7,7 @@ import { User } from '../../types/user';
 import { NewUserDialog } from './NewUserDialog';
 import { UserPropertiesDialog } from './UserPropertiesDialog';
 import { ApplicationServer } from '../../services/application-server';
+import type { WindowId } from '../../services/application-server';
 
 const EDIT_DIALOG_APP_ID_PREFIX = 'users-properties-dialog:';
 
@@ -54,7 +55,7 @@ function Users() {
     if (!user) return;
 
     const username = user.username;
-    const appId = `${EDIT_DIALOG_APP_ID_PREFIX}${username}`;
+    const appId: WindowId = `${EDIT_DIALOG_APP_ID_PREFIX}${username}`;
 
     if (openEditorUsernames().includes(username)) {
       ApplicationServer.focus(appId);

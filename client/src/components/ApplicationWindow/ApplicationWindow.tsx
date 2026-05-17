@@ -2,10 +2,11 @@ import { JSX, Show } from 'solid-js';
 import { AppWindow } from '@components/AppWindow/AppWindow';
 import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 import { getApplicationDefinition } from '../../apps/application-definitions';
+import type { ApplicationId } from '../../apps/application-definitions';
 import { ApplicationServer } from '../../services/application-server';
 
 interface ApplicationWindowProps {
-  id: string;
+  id: ApplicationId;
   title?: string;
   iconIndex?: IconSpriteIndex;
   startSize: {

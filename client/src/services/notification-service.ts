@@ -75,7 +75,7 @@ function clearAll() {
   toastTimers.clear();
   setNotifications([]);
   setActiveToasts([]);
-  setClosingToastIds(new Set());
+  setClosingToastIds(new Set<string>());
 }
 
 const NotificationService = {
