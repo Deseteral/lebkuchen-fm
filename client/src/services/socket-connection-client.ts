@@ -5,8 +5,10 @@ import {
   LocalWebSocketConnectionReadyEvent,
   type LocalWebSocketConnectionRestoredEvent,
 } from '../types/local-events';
+import type { EventData } from '../types/event-data';
 import { EventStreamClient } from './event-stream-client';
 import { redirectTo } from './redirect-to';
+import { isKnownEventId, isRecord, isString, isValidEventData } from './event-validation';
 
 const SESSION_INVALIDATED_CLOSE_CODE = 4401;
 
@@ -213,7 +215,33 @@ class SocketConnectionClient {
     return `${protocol}//${window.location.host}/api/event-stream`;
   }
 
-  private static parseEventMessage(data: string): LocalEvent | null {
+  private static parseEventMessage(data: string): EventData | null {
+    const parsed = SocketConnectionClient.tryParseJson(data);
+    if (!parsed) return null;
+
+    if (!isRecord(parsed) || !isString(parsed.id)) {
+      console.warn('[SocketConnectionClient] Dropped WebSocket event: invalid envelope.');
+      return null;
+    }
+
+    if (!isKnownEventId(parsed.id)) {
+      console.warn('[SocketConnectionClient] Dropped WebSocket event: unknown event id.', {
+        id: parsed.id,
+      });
+      return null;
+    }
+
+    if (!isValidEventData(parsed)) {
+      console.warn('[SocketConnectionClient] Dropped WebSocket event: invalid payload shape.', {
+        id: parsed.id,
+      });
+      return null;
+    }
+
+    return parsed;
+  }
+
+  private static tryParseJson(data: string): unknown | null {
     try {
       return JSON.parse(data);
     } catch (err) {

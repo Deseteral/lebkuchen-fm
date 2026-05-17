@@ -213,17 +213,21 @@ describe('SocketConnectionClient', () => {
 
   it('broadcasts valid message events and skips invalid json', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
     const { SocketConnectionClient } = await import('./socket-connection-client');
 
     SocketConnectionClient.connect();
     const socket = latestSocket();
     socket.dispatchOpen();
 
-    socket.dispatchMessage(JSON.stringify({ id: 'PlayerStateUpdateEvent', foo: 'bar' }));
-    expect(mockBroadcast).toHaveBeenCalledWith('PlayerStateUpdateEvent', {
-      id: 'PlayerStateUpdateEvent',
-      foo: 'bar',
-    });
+    socket.dispatchMessage(JSON.stringify({ id: 'PlayerStateUpdateEvent', state: {} }));
+    expect(mockBroadcast.mock.calls).toContainEqual([
+      'PlayerStateUpdateEvent',
+      {
+        id: 'PlayerStateUpdateEvent',
+        state: {},
+      },
+    ]);
 
     const callsBeforeInvalid = mockBroadcast.mock.calls.length;
     socket.dispatchMessage('not-json');
@@ -231,6 +235,20 @@ describe('SocketConnectionClient', () => {
     expect(errorSpy).toHaveBeenCalledWith(
       '[SocketConnectionClient] Could not parse WebSocket event stream message.',
       expect.anything(),
+    );
+
+    socket.dispatchMessage(JSON.stringify({ id: 'UnknownEvent', foo: 'bar' }));
+    expect(mockBroadcast.mock.calls.length).toBe(callsBeforeInvalid);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[SocketConnectionClient] Dropped WebSocket event: unknown event id.',
+      { id: 'UnknownEvent' },
+    );
+
+    socket.dispatchMessage(JSON.stringify({ id: 'PlayXSoundEvent', actorName: 'x' }));
+    expect(mockBroadcast.mock.calls.length).toBe(callsBeforeInvalid);
+    expect(warnSpy).toHaveBeenCalledWith(
+      '[SocketConnectionClient] Dropped WebSocket event: invalid payload shape.',
+      { id: 'PlayXSoundEvent' },
     );
   });
 });
