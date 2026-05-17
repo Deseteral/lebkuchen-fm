@@ -4,6 +4,7 @@ import styles from './Toast.module.css';
 interface ToastProps {
   notification: AppNotification;
   onDismiss: () => void;
+  onDismissComplete: () => void;
   isClosing?: boolean;
 }
 
@@ -15,8 +16,19 @@ function formatClockTime(timestamp: number): string {
 }
 
 function Toast(props: ToastProps) {
+  const onAnimationEnd = (event: AnimationEvent) => {
+    if (event.currentTarget !== event.target) return;
+    if (!props.isClosing) return;
+
+    props.onDismissComplete();
+  };
+
   return (
-    <article class={styles.toast} classList={{ [styles.closing]: props.isClosing }}>
+    <article
+      class={styles.toast}
+      classList={{ [styles.closing]: props.isClosing }}
+      onAnimationEnd={onAnimationEnd}
+    >
       <div class={styles.header}>
         <div>
           <p class={styles.title}>{props.notification.title}</p>

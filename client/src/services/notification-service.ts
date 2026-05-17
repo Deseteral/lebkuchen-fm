@@ -3,7 +3,6 @@ import { AppNotification } from '../types/notification';
 
 const MAX_HISTORY = 100;
 const TOAST_DISMISS_MS = 5000;
-const TOAST_CLOSE_ANIMATION_MS = 180;
 
 interface NotificationOptions {
   key?: string;
@@ -44,7 +43,10 @@ function dismissToast(id: string) {
     next.add(id);
     return next;
   });
-  setTimeout(() => finalizeDismiss(id), TOAST_CLOSE_ANIMATION_MS);
+}
+
+function finalizeToastDismiss(id: string) {
+  finalizeDismiss(id);
 }
 
 function scheduleDismiss(id: string) {
@@ -133,6 +135,7 @@ const NotificationService = {
   closingToastIds,
   addNotification,
   dismissToast,
+  finalizeToastDismiss,
   dismissToastByKey,
   upsertToastByKey,
   clearAll,

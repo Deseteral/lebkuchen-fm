@@ -16,6 +16,7 @@ function ToastContainer() {
               notification={notification}
               isClosing={isClosing(notification.id)}
               onDismiss={() => NotificationService.dismissToast(notification.id)}
+              onDismissComplete={() => NotificationService.finalizeToastDismiss(notification.id)}
             />
           )}
         </For>
