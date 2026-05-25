@@ -163,6 +163,10 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@deseteral/biurko@https://github.com/Deseteral/biurko.git":
+  version "0.1.0"
+  resolved "https://github.com/Deseteral/biurko.git#35c028e8250a5697e8da9353d045756cae2d7110"
+
 "@esbuild/aix-ppc64@0.19.12":
   version "0.19.12"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.19.12.tgz#d1bc06aedb6936b3b6d313bf809a5a40387d2b7f"

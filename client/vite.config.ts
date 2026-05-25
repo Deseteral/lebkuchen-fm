@@ -16,6 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@components': path.resolve(__dirname, 'src/components'),
+      '@deseteral/biurko': path.resolve(__dirname, 'node_modules/@deseteral/biurko/src/index.ts'),
     },
   },
   server: {
