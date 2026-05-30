@@ -33,9 +33,9 @@ interface TitleBarProps {
 }
 
 function TitleBar(props: TitleBarProps) {
-  const wm = useWindowManager();
-  const title = () => wm.getWindowTitle(props.handle) ?? '';
-  const close = () => wm.closeWindow(props.handle);
+  const windowManager = useWindowManager();
+  const title = () => windowManager.getWindowTitle(props.handle) ?? '';
+  const close = () => windowManager.closeWindow(props.handle);
 
   return (
     <div class={styles.titleBar} data-biurko-drag-region>
