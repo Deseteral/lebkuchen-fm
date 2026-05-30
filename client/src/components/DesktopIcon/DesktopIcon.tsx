@@ -4,8 +4,9 @@ import { IconSpriteIndex } from '@components/AppIcon/IconSpritesheet';
 
 interface DesktopIconProps {
   label: string;
-  buttonRef: (el: HTMLButtonElement) => HTMLButtonElement;
-  toggleWindow: () => void;
+  // TODO: Remove this props when migration to new system is completed.
+  buttonRef?: (el: HTMLButtonElement) => HTMLButtonElement;
+  onActivate: () => void;
   iconIndex: IconSpriteIndex;
 }
 
@@ -13,10 +14,9 @@ function DesktopIcon(props: DesktopIconProps) {
   return (
     <button
       type="button"
-      ref={props.buttonRef}
       class={styles.app}
-      onDblClick={() => props.toggleWindow()}
-      onKeyDown={(e) => e.key === 'Enter' && props.toggleWindow()}
+      onDblClick={() => props.onActivate()}
+      onKeyDown={(e) => e.key === 'Enter' && props.onActivate()}
     >
       <AppIcon size={64} iconIndex={props.iconIndex} />
       {props.label}

@@ -19,7 +19,7 @@ function Settings() {
       <DesktopIcon
         label="Settings"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
+        onActivate={toggleWindow}
         iconIndex={SETTINGS_ICON_INDEX}
       />
       {showWindow() && <SettingsWindow close={closeWindow} />}

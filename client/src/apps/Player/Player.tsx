@@ -66,7 +66,7 @@ function Player() {
       <DesktopIcon
         label="Player"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
+        onActivate={toggleWindow}
         iconIndex={PLAYER_ICON_INDEX}
       />
       {showWindow() && (

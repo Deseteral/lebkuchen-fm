@@ -63,7 +63,7 @@ function Soundboard() {
       <DesktopIcon
         label="Soundboard"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
+        onActivate={toggleWindow}
         iconIndex={SOUNDBOARD_ICON_INDEX}
       />
       {showWindow() && (
