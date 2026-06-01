@@ -1,4 +1,4 @@
-import { Buffer } from './Buffer';
+import { Terminal } from './Terminal';
 import { DesktopApplication } from '../desktop-application';
 import { WindowManager } from '@deseteral/biurko';
 import { JSX } from 'solid-js';
@@ -9,7 +9,7 @@ export const TerminalApplication: DesktopApplication = {
   entryPoint: (windowManager: WindowManager<() => JSX.Element>) => {
     windowManager.createWindow(
       { title: 'Terminal', width: 624, height: 400 },
-      () => <Buffer />,
+      () => <Terminal />,
     );
   },
   iconIndex: TERMINAL_ICON_INDEX,

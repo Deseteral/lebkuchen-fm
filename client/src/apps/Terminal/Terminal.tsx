@@ -1,10 +1,10 @@
 import { For, createSignal, onMount } from 'solid-js';
-import styles from './Buffer.module.css';
+import styles from './Terminal.module.css';
 import { programs, TerminalProgram } from './programs';
 
 const WELCOME_MESSAGE = 'Welcome to LebkuchenFM!';
 
-export function Buffer() {
+export function Terminal() {
   let bufferElement!: HTMLDivElement;
   let promptElement!: HTMLInputElement;
 
