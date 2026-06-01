@@ -26,6 +26,7 @@ body {
   user-select: none;
   font-family: Menlo, Chicago, Geneva, sans-serif;
   overscroll-behavior: none;
+  overflow: hidden;
 }
 
 #root {
