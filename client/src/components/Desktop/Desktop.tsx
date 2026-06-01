@@ -4,7 +4,6 @@ import styles from './Desktop.module.css';
 import { type JSX } from 'solid-js';
 
 interface BiurkoDesktopProps {
-  class?: string;
   children: JSX.Element;
 }
 
@@ -13,7 +12,7 @@ function Desktop(props: BiurkoDesktopProps) {
     positionStrategy: { type: 'offset-from-focused', offsetX: 40, offsetY: 40 },
   };
   return (
-    <BiurkoDesktop class={props.class} renderWindow={renderWindow} options={options}>
+    <BiurkoDesktop class={styles.desktop} renderWindow={renderWindow} options={options}>
       {props.children}
     </BiurkoDesktop>
   );

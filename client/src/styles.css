@@ -23,8 +23,6 @@ html {
 }
 
 body {
-  background-image: url('../public/bg.png');
-  background-color: #6261a1;
   user-select: none;
   font-family: Menlo, Chicago, Geneva, sans-serif;
   overscroll-behavior: none;

@@ -1,5 +1,4 @@
 import { onCleanup, onMount } from 'solid-js';
-import styles from './Main.module.css';
 import { UserAccountService } from '../../services/user-account-service';
 import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
@@ -24,7 +23,7 @@ export function Main() {
   return (
     <>
       <MenuBar isUserLoggedIn={true} />
-      <Desktop class={styles.desktop}>
+      <Desktop>
         <DesktopApplicationList />
       </Desktop>
     </>

@@ -1,3 +1,15 @@
+.desktop {
+  background-image: url('../../../public/bg.png');
+  background-color: #6261a1;
+  height: calc(100vh - var(--menu-bar-height));
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 15px;
+  overflow: hidden;
+}
+
 .titleBar {
   height: var(--app-window-title-bar-height);
   position: relative;
