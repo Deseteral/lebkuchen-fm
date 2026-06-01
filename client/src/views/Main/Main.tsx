@@ -6,7 +6,7 @@ import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handle
 import { Desktop } from '@components/Desktop/Desktop';
 import { DesktopIcon } from '@components/DesktopIcon/DesktopIcon';
 import { useWindowManager } from '@deseteral/biurko/adapters/solid-js';
-import { ApplicationRegistry } from '../../apps/desktop-application';
+import { ApplicationRegistry, SystemEnvironment } from '../../apps/desktop-application';
 
 export function Main() {
   onMount(() => {
@@ -31,14 +31,16 @@ export function Main() {
 }
 
 function DesktopApplicationList() {
-  const windowManager = useWindowManager();
+  const environment: SystemEnvironment = {
+    windowManager: useWindowManager(),
+  }
 
   return (
     <>
       {ApplicationRegistry.map((app) => (
         <DesktopIcon
           label={app.name}
-          onActivate={() => app.entryPoint(windowManager)}
+          onActivate={() => app.entryPoint(environment)}
           iconIndex={app.iconIndex}
         />
       ))}
