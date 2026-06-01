@@ -73,6 +73,9 @@ class DropboxClient(config: ApplicationConfig) {
         }
 
         if (!fileUploadResponse.status.isSuccess()) {
+            if (fileUploadResponse.status.value == 409) {
+                return Err(DropboxClientError.FileAlreadyExists)
+            }
             val error = fileUploadResponse.errorString()
             logger.error { error }
             return Err(DropboxClientError.ErrorWhenUploadingFile)
@@ -166,6 +169,7 @@ class DropboxClient(config: ApplicationConfig) {
     sealed class DropboxClientError {
         data object ClientConfigMissing : DropboxClientError()
         data object AuthorizationError : DropboxClientError()
+        data object FileAlreadyExists : DropboxClientError()
         data object ErrorWhenUploadingFile : DropboxClientError()
         data object ErrorWhenCreatingFileUrl : DropboxClientError()
     }

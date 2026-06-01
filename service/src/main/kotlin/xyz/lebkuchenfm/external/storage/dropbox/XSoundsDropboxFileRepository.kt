@@ -19,7 +19,12 @@ class XSoundsDropboxFileRepository(
     ): Result<String, UploadXSoundFileError> {
         val path = Paths.get(storageFolderPath, "$soundName.mp3")
         val result = dropboxClient.uploadFile(path.toString(), byteArray)
-        return result.mapError { UploadXSoundFileError.FileCouldNotBeSaved }
+        return result.mapError { error ->
+            when (error) {
+                is DropboxClient.DropboxClientError.FileAlreadyExists -> UploadXSoundFileError.FileAlreadyExists
+                else -> UploadXSoundFileError.FileCouldNotBeSaved
+            }
+        }
     }
 
     private companion object {

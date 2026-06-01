@@ -16,6 +16,7 @@ import kotlinx.io.readByteArray
 import kotlinx.serialization.Serializable
 import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.plugins.withScopes
+import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.xsounds.XSound
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
@@ -65,8 +66,33 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
 
                 fileBytes?.let { bytes ->
                     xSoundsService.addNewXSound(soundName, tags, bytes, session)
-                        .onSuccess { call.respond(HttpStatusCode.Created, it.toResponse()) }
-                        .onFailure { call.respond(HttpStatusCode.InternalServerError, "Could not create new x-sound.") }
+                        .onSuccess {
+                            call.respond(HttpStatusCode.Created, it.toResponse())
+                        }
+                        .onFailure { error ->
+                            when (error) {
+                                is XSoundsService.NewSoundError.SoundAlreadyExists -> {
+                                    call.respondWithProblem(
+                                        title = "Sound already exists.",
+                                        detail = "A sound with name '$soundName' already exists.",
+                                        status = HttpStatusCode.Conflict,
+                                    )
+                                }
+                                else -> {
+                                    call.respondWithProblem(
+                                        title = "Could not create new x-sound.",
+                                        detail = "An unexpected error occurred while creating the sound.",
+                                        status = HttpStatusCode.InternalServerError,
+                                    )
+                                }
+                            }
+                        }
+                } ?: run {
+                    call.respondWithProblem(
+                        title = "Missing file.",
+                        detail = "No file was provided in the request.",
+                        status = HttpStatusCode.BadRequest,
+                    )
                 }
             }
         }

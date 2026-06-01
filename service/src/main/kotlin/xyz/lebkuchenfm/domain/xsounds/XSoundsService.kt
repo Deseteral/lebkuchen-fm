@@ -3,6 +3,7 @@ package xyz.lebkuchenfm.domain.xsounds
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.get
+import com.github.michaelbull.result.getOrElse
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
 import xyz.lebkuchenfm.domain.sessions.UserSession
@@ -19,6 +20,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
     }
 
     sealed class NewSoundError {
+        data object SoundAlreadyExists : NewSoundError()
         data object FileStorageError : NewSoundError()
         data object DatabaseError : NewSoundError()
     }
@@ -29,8 +31,15 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
         bytes: ByteArray,
         userSession: UserSession,
     ): Result<XSound, NewSoundError> {
-        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes).get()
-            ?: return Err(NewSoundError.FileStorageError)
+        val fileUrl = fileRepository.uploadXSoundFile(soundName, bytes).getOrElse { error ->
+            return Err(
+                when (error) {
+                    is UploadXSoundFileError.FileAlreadyExists -> NewSoundError.SoundAlreadyExists
+                    is UploadXSoundFileError.FileCouldNotBeSaved -> NewSoundError.FileStorageError
+                },
+            )
+        }
+
         val readySound = XSound(
             name = soundName,
             url = fileUrl,
