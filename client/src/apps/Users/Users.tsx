@@ -42,7 +42,7 @@ function Users() {
       <DesktopIcon
         label="Users"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
+        onActivate={toggleWindow}
         iconIndex={USER_MANAGER_ICON_INDEX}
       />
       {showWindow() && (

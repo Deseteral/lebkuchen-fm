@@ -2,10 +2,11 @@ import { render } from 'solid-js/web';
 import { Router, Route } from '@solidjs/router';
 import '@phosphor-icons/web/bold';
 import '@phosphor-icons/web/fill';
-import { Desktop } from './views/Desktop/Desktop';
+import { Main } from './views/Main/Main';
 import { Login } from './views/Login/Login';
 import './utils';
 import './styles.css';
+import './biurko.css';
 
 console.log(
   `%cLebkuchenFM v${__APP_VERSION__}`,
@@ -15,7 +16,7 @@ console.log(
 render(
   () => (
     <Router>
-      <Route path="/" component={Desktop} />
+      <Route path="/" component={Main} />
       <Route path="/login" component={Login} />
     </Router>
   ),

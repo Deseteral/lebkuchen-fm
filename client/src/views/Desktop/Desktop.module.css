@@ -1,9 +1,0 @@
-.desktop {
-  height: calc(100vh - var(--menu-bar-height));
-  width: max-content;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  padding: 10px;
-  gap: 15px;
-}

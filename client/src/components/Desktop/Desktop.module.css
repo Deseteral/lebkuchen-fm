@@ -1,0 +1,50 @@
+.desktop {
+  background-image: url('../../../public/bg.png');
+  background-color: #6261a1;
+  height: calc(100vh - var(--menu-bar-height));
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 15px;
+  overflow: hidden;
+}
+
+.titleBar {
+  height: var(--app-window-title-bar-height);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: grab;
+  background-color: mediumpurple;
+  padding: 4px;
+  padding-left: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.titleText {
+  flex: 1;
+}
+
+.content {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--secondary-color);
+  height: calc(100% - var(--app-window-title-bar-height));
+  width: 100%;
+}
+
+.closeButton {
+  color: white;
+  cursor: pointer;
+  border: none;
+  background-color: var(--primary-color);
+}
+
+.closeButtonIcon {
+  font-size: 15px;
+  display: block;
+  rotate: 45deg;
+}

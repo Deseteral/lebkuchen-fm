@@ -47,7 +47,7 @@ function DebugSoundUploadForm() {
       <DesktopIcon
         label="Sound Manager"
         buttonRef={(el: HTMLButtonElement) => (buttonRef = el)}
-        toggleWindow={toggleWindow}
+        onActivate={toggleWindow}
         iconIndex={SOUND_MANAGER_ICON_INDEX}
       />
       {showWindow() && (
