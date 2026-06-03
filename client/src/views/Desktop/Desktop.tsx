@@ -7,7 +7,7 @@ import { MenuBar } from '@components/MenuBar/MenuBar';
 import { SocketConnectionClient } from '../../services/socket-connection-client';
 import { Settings } from '../../apps/Settings/Settings';
 import { PlayXSoundEventHandler } from '../../services/play-x-sound-event-handler';
-import { DebugSoundUploadForm } from '../../apps/DebugSoundUploadForm/DebugSoundUploadForm';
+import { SoundUpload } from '../../apps/SoundUpload/SoundUpload';
 import { Users } from '../../apps/Users/Users';
 import { Terminal } from '../../apps/Terminal/Terminal';
 
@@ -30,7 +30,7 @@ function Desktop() {
         <Player />
         <Soundboard />
         <Terminal />
-        <DebugSoundUploadForm />
+        <SoundUpload />
         <Users />
         <Settings />
       </main>
