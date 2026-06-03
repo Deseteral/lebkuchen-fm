@@ -50,7 +50,7 @@ class XSoundUploadParser {
         }.get()
     }
 
-    fun build(): Result<XSoundUploadData, XSoundUploadError> {
+    fun parse(): Result<XSoundUploadData, XSoundUploadError> {
         if (soundName.isBlank()) {
             return Err(XSoundUploadError.InvalidSoundName("Sound name must not be empty."))
         }
