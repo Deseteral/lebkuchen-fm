@@ -35,9 +35,9 @@ fun Route.xSoundsRouting(xSoundsService: XSoundsService) {
                 val session = call.getUserSession()
                 val parser = XSoundUploadParser()
 
-                call.receiveMultipart().forEachPart { parser.handle(it) }
+                call.receiveMultipart().forEachPart { parser.addMultipart(it) }
 
-                val soundData = parser.build().getOrElse { error ->
+                val soundData = parser.parse().getOrElse { error ->
                     when (error) {
                         is XSoundUploadError.InvalidSoundName -> {
                             call.respondWithProblem(
