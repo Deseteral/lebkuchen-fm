@@ -25,7 +25,7 @@ class XSoundUploadParser {
     private var tags: List<String> = emptyList()
     private var fileBytes: ByteArray? = null
 
-    suspend fun handle(part: PartData) {
+    suspend fun addMultipart(part: PartData) {
         try {
             when (part) {
                 is PartData.FormItem -> handleFormItem(part)
