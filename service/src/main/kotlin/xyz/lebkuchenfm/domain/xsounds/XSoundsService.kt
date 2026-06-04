@@ -2,6 +2,7 @@ package xyz.lebkuchenfm.domain.xsounds
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
+import com.github.michaelbull.result.get
 import com.github.michaelbull.result.getOrElse
 import com.github.michaelbull.result.mapError
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -38,6 +39,7 @@ class XSoundsService(private val repository: XSoundsRepository, private val file
                 },
             )
         }
+
         val readySound = XSound(
             name = soundName,
             url = fileUrl,

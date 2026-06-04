@@ -11,7 +11,7 @@ class SoundboardService(
     private val xSoundsService: XSoundsService,
     private val eventStream: EventStream<*>,
 ) {
-    suspend fun playXSound(soundName: String, actorName: String?): Result<Unit, PlayXSoundError> {
+    suspend fun playXSound(soundName: String, actorName: String? = null): Result<Unit, PlayXSoundError> {
         val xSound = xSoundsService.getByName(soundName)
             ?: return Err(PlayXSoundError.SoundNotFound)
 

@@ -1,3 +1,6 @@
+.container {
+  padding: 64px 30px;
+}
 .form {
   display: flex;
   flex-direction: column;

@@ -42,7 +42,7 @@ class PlaybackSkipCommandProcessor(private val eventStream: EventStream<*>) :
         error("Commands accepts only natural numbers or \"all\" string as an argument.", logger)
     }
 
-    private suspend fun sendEvent(amount: Amount, actorName: String) {
+    private suspend fun sendEvent(amount: Amount, actorName: String?) {
         eventStream.sendToEveryone(Event.Skip(amount, actorName = actorName))
     }
 }
