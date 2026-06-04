@@ -8,7 +8,7 @@ abstract class EventStream<ConsumerT : EventStream.Consumer> {
 
     abstract suspend fun sendToOne(id: EventStreamConsumerId, event: Event)
 
-    protected open fun shouldSend(consumer: ConsumerT, event: Event): Boolean = true
+    abstract fun shouldSend(consumer: ConsumerT, event: Event): Boolean
 
     suspend fun sendToEveryone(event: Event, exclude: EventStreamConsumerId? = null): Int {
         var sentCount = 0
