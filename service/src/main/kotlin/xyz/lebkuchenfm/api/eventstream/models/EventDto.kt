@@ -14,17 +14,21 @@ fun Event.mapToDto(): EventDto = when (this) {
     is Event.PlayerStateUpdate<*> -> PlayerStateUpdateEventDto(this)
     is Event.PlayerStateRequestDonation -> PlayerStateRequestDonationEventDto(this)
     is Event.Skip -> SkipEventDto(this)
-    is Event.Resume -> PlayerResumeEventDto
-    is Event.Pause -> PlayerPauseEventDto
+    is Event.Resume -> PlayerResumeEventDto(this)
+    is Event.Pause -> PlayerPauseEventDto(this)
 }
 
 @Serializable
 @SerialName("PlayXSoundEvent")
 data class PlayXSoundEventDto(
     val soundUrl: String,
+    val soundName: String? = null,
+    val actorName: String? = null,
 ) : EventDto {
     constructor(event: Event.PlayXSound) : this(
         soundUrl = event.soundUrl,
+        soundName = event.soundName,
+        actorName = event.actorName,
     )
 }
 
@@ -32,9 +36,11 @@ data class PlayXSoundEventDto(
 @SerialName("AddSongsToQueueEvent")
 data class AddSongsToQueueEventDto(
     val songs: List<SongDto>,
+    val actorName: String? = null,
 ) : EventDto {
     constructor(event: Event.QueueSongs) : this(
         songs = event.songs.map { SongDto(it.name, it.youtubeId.value) },
+        actorName = event.actorName,
     )
 
     @Serializable
@@ -49,20 +55,30 @@ data class AddSongsToQueueEventDto(
 data class SkipEventDto(
     val skipAll: Boolean,
     val amount: Int,
+    val actorName: String? = null,
 ) : EventDto {
     constructor(event: Event.Skip) : this(
         skipAll = event.amount is Amount.All,
         amount = (event.amount as? Amount.Some)?.amount ?: 1,
+        actorName = event.actorName,
     )
 }
 
 @Serializable
 @SerialName("ResumeEvent")
-data object PlayerResumeEventDto : EventDto
+data class PlayerResumeEventDto(
+    val actorName: String? = null,
+) : EventDto {
+    constructor(event: Event.Resume) : this(actorName = event.actorName)
+}
 
 @Serializable
 @SerialName("PauseEvent")
-data object PlayerPauseEventDto : EventDto
+data class PlayerPauseEventDto(
+    val actorName: String? = null,
+) : EventDto {
+    constructor(event: Event.Pause) : this(actorName = event.actorName)
+}
 
 @Serializable
 @SerialName("SongChanged")

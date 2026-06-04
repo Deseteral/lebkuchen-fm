@@ -7,6 +7,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
+import xyz.lebkuchenfm.api.getUserSession
 import xyz.lebkuchenfm.api.plugins.withScopes
 import xyz.lebkuchenfm.api.respondWithProblem
 import xyz.lebkuchenfm.domain.auth.Scope
@@ -25,7 +26,7 @@ fun Route.soundboardEndpoint(soundboardService: SoundboardService) {
                     return@post
                 }
 
-                soundboardService.playXSound(soundName)
+                soundboardService.playXSound(soundName, actorName = call.getUserSession().name)
                     .onSuccess {
                         call.respond(HttpStatusCode.Accepted)
                     }

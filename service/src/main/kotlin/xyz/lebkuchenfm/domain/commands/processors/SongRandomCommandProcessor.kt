@@ -43,7 +43,7 @@ class SongRandomCommandProcessor(private val songsService: SongsService, private
 
         // TODO: filter only embeddable
 
-        eventStream.sendToEveryone(Event.QueueSongs(songs))
+        eventStream.sendToEveryone(Event.QueueSongs(songs, actorName = context.username))
 
         songs.forEach { songsService.incrementPlayCount(it, context.username) }
 
