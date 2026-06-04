@@ -1,19 +1,28 @@
 package xyz.lebkuchenfm.domain.eventstream
 
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.songs.Song
 import java.util.UUID
 
 sealed interface Event {
+    val requiredScope: Scope? get() = null
+
     data class PlayXSound(
         val soundUrl: String,
-    ) : Event
+        val soundName: String? = null,
+        val actorName: String? = null,
+    ) : Event {
+        override val requiredScope: Scope = Scope.XSOUNDS_LISTEN
+    }
 
     data class QueueSongs(
         val songs: List<Song>,
+        val actorName: String? = null,
     ) : Event
 
     data class Skip(
         val amount: Amount,
+        val actorName: String? = null,
     ) : Event {
         sealed class Amount {
             data object All : Amount()
@@ -31,9 +40,13 @@ sealed interface Event {
         }
     }
 
-    data object Resume : Event
+    data class Resume(
+        val actorName: String? = null,
+    ) : Event
 
-    data object Pause : Event
+    data class Pause(
+        val actorName: String? = null,
+    ) : Event
 
     data class PlayerStateUpdate<T>(
         val state: T,

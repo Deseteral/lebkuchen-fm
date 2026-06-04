@@ -6,6 +6,7 @@ import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.server.websocket.converter
 import xyz.lebkuchenfm.api.eventstream.models.mapToDto
 import xyz.lebkuchenfm.api.getUserSession
+import xyz.lebkuchenfm.domain.auth.Scope
 import xyz.lebkuchenfm.domain.eventstream.Event
 import xyz.lebkuchenfm.domain.eventstream.EventStream
 import xyz.lebkuchenfm.domain.eventstream.EventStreamConsumerId
@@ -14,6 +15,11 @@ import java.util.UUID
 private val logger = KotlinLogging.logger {}
 
 class WebSocketEventStream : EventStream<WebSocketConnection>() {
+    override fun shouldSend(consumer: WebSocketConnection, event: Event): Boolean {
+        val requiredScope = event.requiredScope ?: return true
+        return requiredScope in consumer.scopes
+    }
+
     override suspend fun sendToOne(id: EventStreamConsumerId, event: Event) {
         val connection = subscriptions[id] ?: return
 
@@ -38,4 +44,5 @@ class WebSocketEventStream : EventStream<WebSocketConnection>() {
 class WebSocketConnection(
     override val id: EventStreamConsumerId = UUID.randomUUID(),
     val session: WebSocketServerSession,
+    val scopes: Set<Scope>,
 ) : EventStream.Consumer
