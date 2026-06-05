@@ -16,7 +16,6 @@ import io.ktor.server.routing.routing
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
 import io.ktor.server.websocket.WebSockets
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.serialization.json.Json
@@ -26,6 +25,7 @@ import xyz.lebkuchenfm.api.commands.commandsRouting
 import xyz.lebkuchenfm.api.eventstream.WebSocketEventStream
 import xyz.lebkuchenfm.api.eventstream.eventStreamRouting
 import xyz.lebkuchenfm.api.eventstream.models.DefaultPlayerStateDtoProvider
+import xyz.lebkuchenfm.api.integrations.integrationsRouting
 import xyz.lebkuchenfm.api.songs.songsRouting
 import xyz.lebkuchenfm.api.soundboard.soundboardEndpoint
 import xyz.lebkuchenfm.api.users.usersRouting
@@ -47,6 +47,8 @@ import xyz.lebkuchenfm.domain.commands.processors.TagRemoveCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.TagShowCommandProcessor
 import xyz.lebkuchenfm.domain.commands.processors.XCommandProcessor
 import xyz.lebkuchenfm.domain.eventstream.PlayerStateSynchronizer
+import xyz.lebkuchenfm.domain.integrations.IntegrationsService
+import xyz.lebkuchenfm.domain.integrations.LegacyEnvVarSeeder
 import xyz.lebkuchenfm.domain.sessions.SessionsService
 import xyz.lebkuchenfm.domain.sessions.UserSession
 import xyz.lebkuchenfm.domain.songs.SongsService
@@ -54,6 +56,7 @@ import xyz.lebkuchenfm.domain.soundboard.SoundboardService
 import xyz.lebkuchenfm.domain.users.UsersService
 import xyz.lebkuchenfm.domain.xsounds.XSoundsService
 import xyz.lebkuchenfm.external.discord.DiscordClient
+import xyz.lebkuchenfm.external.security.AesGcmEncryptor
 import xyz.lebkuchenfm.external.security.Pbkdf2PasswordEncoder
 import xyz.lebkuchenfm.external.security.RandomSecureGenerator
 import xyz.lebkuchenfm.external.security.SessionStorageInRepository
@@ -61,6 +64,7 @@ import xyz.lebkuchenfm.external.storage.dropbox.DropboxClient
 import xyz.lebkuchenfm.external.storage.dropbox.XSoundsDropboxFileRepository
 import xyz.lebkuchenfm.external.storage.mongo.MongoDatabaseClient
 import xyz.lebkuchenfm.external.storage.mongo.repositories.HistoryMongoRepository
+import xyz.lebkuchenfm.external.storage.mongo.repositories.IntegrationsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SessionsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.SongsMongoRepository
 import xyz.lebkuchenfm.external.storage.mongo.repositories.UsersMongoRepository
@@ -74,8 +78,18 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 fun Application.module() {
     val clock = Clock.System
     val database = MongoDatabaseClient.getDatabase(environment.config)
-    val dropboxClient = DropboxClient(environment.config)
-    val youtubeClient = YoutubeClient(environment.config)
+
+    val encryptionKey = environment.config.property(AesGcmEncryptor.CONFIG_PROPERTY_PATH).getString()
+    val encryptor = AesGcmEncryptor(encryptionKey)
+
+    val integrationsRepository = IntegrationsMongoRepository(database, encryptor)
+    val integrationsService = IntegrationsService(integrationsRepository)
+    val integrations = runBlocking {
+        LegacyEnvVarSeeder(integrationsRepository, System::getenv).seedIfEmpty()
+        integrationsService.getIntegrations()
+    }
+    val dropboxClient = DropboxClient(integrations.dropbox)
+    val youtubeClient = YoutubeClient(integrations.youtube)
 
     val usersRepository = UsersMongoRepository(database)
         .also { runBlocking { it.createUniqueIndex() } }
@@ -92,7 +106,7 @@ fun Application.module() {
         .also { runBlocking { it.createTextIndex() } }
     val historyRepository = HistoryMongoRepository(database)
 
-    val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, environment.config)
+    val xSoundsFileRepository = XSoundsDropboxFileRepository(dropboxClient, integrations.dropbox?.xSoundsPath)
     val youtubeRepository = YouTubeDataRepository(youtubeClient)
 
     val passwordEncoder = Pbkdf2PasswordEncoder()
@@ -131,8 +145,8 @@ fun Application.module() {
 
     val commandExecutorService = CommandExecutorService(textCommandParser, commandProcessorRegistry)
 
-    val discordClient = DiscordClient(environment.config, commandExecutorService, usersService)
-    launch { discordClient.start() }
+    val discordClient = DiscordClient(integrations.discord, commandExecutorService, usersService)
+    discordClient.start(scope = this)
 
     val validateAuthHandler = ValidateAuthHandler(authService)
     val sessionStorage = SessionStorageInRepository(sessionsRepository, clock)
@@ -189,6 +203,13 @@ fun Application.module() {
                     eventStreamRouting(eventStream, playerStateSynchronizer, sessionStorage)
                     soundboardEndpoint(soundboardService)
                     usersRouting(usersService, sessionsService, sessionStorage)
+                    integrationsRouting(
+                        integrationsService,
+                        dropboxClient,
+                        xSoundsFileRepository,
+                        youtubeClient,
+                        discordClient,
+                    )
                 }
             }
         }

@@ -33,6 +33,9 @@ enum class Scope {
 
     @SerialName("xsounds:listen")
     XSOUNDS_LISTEN,
+
+    @SerialName("integrations:manage")
+    INTEGRATIONS_MANAGE,
     ;
 
     override fun toString(): String = serializer().descriptor.getElementName(ordinal)
