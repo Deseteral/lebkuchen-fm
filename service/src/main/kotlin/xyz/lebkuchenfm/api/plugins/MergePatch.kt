@@ -53,8 +53,8 @@ val MERGE_PATCH_CONTENT_TYPE = ContentType("application", "merge-patch+json")
  * @param T Domain model type (e.g. [xyz.lebkuchenfm.domain.integrations.Integrations]).
  * @param json [Json] instance used for encoding/decoding [T].
  * @param stateReader Suspending function that returns the current state.
- * @param onMerged Callback receiving (oldState, newState) after the merge. Both are domain
- *   objects so callers can diff them or persist the result. The receiver is [ApplicationCall].
+ * @param onMerged Callback receiving (oldState, newState) after the merge (both of type [T]).
+ *   The receiver is [ApplicationCall].
  */
 inline fun <reified T : Any> Route.mergePatchRoute(
     json: Json,
