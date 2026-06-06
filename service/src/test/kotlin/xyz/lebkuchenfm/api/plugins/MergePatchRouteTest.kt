@@ -6,6 +6,8 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
@@ -37,6 +39,7 @@ class MergePatchRouteTest {
     @Test
     fun `returns 415 when Content-Type is not merge-patch-json`() = testApplication {
         // given
+        install(ContentNegotiation) { json() }
         routing {
             mergePatchRoute<Pet>(
                 json = json,
@@ -219,6 +222,7 @@ class MergePatchRouteTest {
     @Test
     fun `malformed JSON returns 400`() = testApplication {
         // given
+        install(ContentNegotiation) { json() }
         routing {
             mergePatchRoute<Pet>(
                 json = json,
@@ -240,6 +244,7 @@ class MergePatchRouteTest {
     @Test
     fun `non-object JSON returns 400`() = testApplication {
         // given
+        install(ContentNegotiation) { json() }
         routing {
             mergePatchRoute<Pet>(
                 json = json,

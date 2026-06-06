@@ -5,7 +5,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.contentType
 import io.ktor.server.request.receive
-import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.patch
 import kotlinx.serialization.KSerializer
@@ -15,6 +14,7 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.serializer
+import xyz.lebkuchenfm.api.respondWithProblem
 
 /**
  * RFC 7396 JSON Merge Patch: Recursively merges [patch] into [target].
@@ -65,9 +65,10 @@ inline fun <reified T : Any> Route.mergePatchRoute(
 
     patch {
         if (!call.request.contentType().match(MERGE_PATCH_CONTENT_TYPE)) {
-            call.respond(
-                HttpStatusCode.UnsupportedMediaType,
-                "Expected Content-Type: application/merge-patch+json",
+            call.respondWithProblem(
+                title = "Unsupported Media Type",
+                detail = "Expected Content-Type: application/merge-patch+json",
+                status = HttpStatusCode.UnsupportedMediaType,
             )
             return@patch
         }
@@ -76,7 +77,11 @@ inline fun <reified T : Any> Route.mergePatchRoute(
         val patch = try {
             json.parseToJsonElement(body).jsonObject
         } catch (e: Exception) {
-            call.respond(HttpStatusCode.BadRequest, "Invalid JSON body: ${e.message}")
+            call.respondWithProblem(
+                title = "Invalid Request Body",
+                detail = "Invalid JSON body: ${e.message}",
+                status = HttpStatusCode.BadRequest,
+            )
             return@patch
         }
         val oldState = stateReader()
