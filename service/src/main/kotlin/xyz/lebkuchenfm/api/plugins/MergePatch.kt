@@ -72,7 +72,13 @@ inline fun <reified T : Any> Route.mergePatchRoute(
             return@patch
         }
 
-        val patch = call.receive<JsonObject>()
+        val body = call.receive<ByteArray>().decodeToString()
+        val patch = try {
+            json.parseToJsonElement(body).jsonObject
+        } catch (e: Exception) {
+            call.respond(HttpStatusCode.BadRequest, "Invalid JSON body: ${e.message}")
+            return@patch
+        }
         val oldState = stateReader()
         val currentJson = json.encodeToJsonElement(serializer, oldState).jsonObject
         val mergedJson = mergePatch(currentJson, patch)
