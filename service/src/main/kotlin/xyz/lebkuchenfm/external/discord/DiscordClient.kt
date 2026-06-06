@@ -8,94 +8,127 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.Intents
 import dev.kord.gateway.PrivilegedIntent
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.server.config.ApplicationConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import xyz.lebkuchenfm.domain.commands.CommandExecutorService
 import xyz.lebkuchenfm.domain.commands.ExecutionContext
+import xyz.lebkuchenfm.domain.integrations.DiscordIntegration
 import xyz.lebkuchenfm.domain.users.UsersService
 
 private val logger = KotlinLogging.logger {}
 
 class DiscordClient(
-    config: ApplicationConfig,
+    integration: DiscordIntegration?,
     private val commandExecutorService: CommandExecutorService,
     private val userService: UsersService,
 ) {
-    private lateinit var kord: Kord
+    private var token: String? = integration?.token
+    private var commandPrompt: String? = integration?.effectiveCommandPrompt
+    private var channelId: String? = integration?.channelId
 
-    private val token: String? = config.propertyOrNull("discord.token")?.getString()
-    private val commandPrompt: String? = config.propertyOrNull("discord.commandPrompt")?.getString()
-    private val channelId: String? = config.propertyOrNull("discord.channelId")?.getString()
+    private var scope: CoroutineScope? = null
+    private var kord: Kord? = null
+    private var activeJob: Job? = null
+    private val mutex = Mutex()
 
-    suspend fun start() {
-        if (token == null) {
-            logger.warn { "Discord Bot token not provided." }
-            return
+    fun start(scope: CoroutineScope) {
+        this.scope = scope
+        activeJob = scope.launch { connect() }
+    }
+
+    suspend fun reconfigure(integration: DiscordIntegration?) {
+        mutex.withLock {
+            activeJob?.cancel()
+            activeJob = null
+            kord?.shutdown()
+            kord = null
+
+            token = integration?.token
+            commandPrompt = integration?.effectiveCommandPrompt
+            channelId = integration?.channelId
+
+            scope?.let { start(it) }
         }
+    }
 
-        if (commandPrompt == null) {
-            logger.warn { "CommandPrompt prompt not provided." }
-            return
-        }
+    private suspend fun connect() {
+        mutex.withLock {
+            val currentToken = token
+            if (currentToken == null) {
+                logger.warn { "Discord Bot token not provided." }
+                return@withLock
+            }
 
-        if (channelId == null) {
-            logger.warn { "Channel id not provided." }
-            return
-        }
+            val currentCommandPrompt = commandPrompt
+            if (currentCommandPrompt == null) {
+                logger.warn { "CommandPrompt prompt not provided." }
+                return@withLock
+            }
 
-        if (this::kord.isInitialized) {
-            return
-        }
+            val currentChannelId = channelId
+            if (currentChannelId == null) {
+                logger.warn { "Channel id not provided." }
+                return@withLock
+            }
 
-        kord = Kord(token)
+            val newKord = Kord(currentToken)
+            kord = newKord
 
-        kord.events
-            .filterIsInstance<MessageCreateEvent>()
-            .map { it.message }
-            .filter { it.channelId.value.toString() == channelId }
-            .filter { it.content.split(' ').firstOrNull() == commandPrompt }
-            .filter { it.author != null }
-            .filter { it.author?.isBot == false }
-            .onEach {
-                val author = requireNotNull(it.author)
-                val user = userService.getByDiscordId(author.id.toString())
+            newKord.events
+                .filterIsInstance<MessageCreateEvent>()
+                .map { it.message }
+                .filter { it.channelId.value.toString() == currentChannelId }
+                .filter { it.content.split(' ').firstOrNull() == currentCommandPrompt }
+                .filter { it.author != null }
+                .filter { it.author?.isBot == false }
+                .onEach {
+                    val author = requireNotNull(it.author)
+                    val user = userService.getByDiscordId(author.id.toString())
 
-                when {
-                    user == null -> {
-                        it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
-                    }
+                    when {
+                        user == null -> {
+                            it.reply { content = "You have to link your Discord account with LebkuchenFM user." }
+                        }
 
-                    user.secret == null -> {
-                        it.reply { content = "You must login to LebkuchenFM, before you can use Discord integration." }
-                    }
+                        user.secret == null -> {
+                            it.reply {
+                                content =
+                                    "You must login to LebkuchenFM, before you can use Discord integration."
+                            }
+                        }
 
-                    else -> {
-                        val context = ExecutionContext(
-                            username = user.data.name,
-                            grantedScopes = user.effectiveScopes,
-                            commandPrompt = commandPrompt,
-                        )
-                        val commandText = it.content.replace("$commandPrompt ", "")
-                        val result = commandExecutorService.executeFromText(commandText, context)
-                        it.reply { content = result.markdown }
+                        else -> {
+                            val context = ExecutionContext(
+                                username = user.data.name,
+                                grantedScopes = user.effectiveScopes,
+                                commandPrompt = currentCommandPrompt,
+                            )
+                            val commandText = it.content.replace("$currentCommandPrompt ", "")
+                            val result = commandExecutorService.executeFromText(commandText, context)
+                            it.reply { content = result.markdown }
+                        }
                     }
                 }
-            }
-            .launchIn(kord)
+                .launchIn(newKord)
 
-        kord.login {
-            @OptIn(PrivilegedIntent::class)
-            intents = Intents(
-                Intent.Guilds,
-                Intent.MessageContent,
-                Intent.GuildMessages,
-            )
-            presence {
-                status = PresenceStatus.Online
+            newKord.login {
+                @OptIn(PrivilegedIntent::class)
+                intents = Intents(
+                    Intent.Guilds,
+                    Intent.MessageContent,
+                    Intent.GuildMessages,
+                )
+                presence {
+                    status = PresenceStatus.Online
+                }
             }
         }
     }

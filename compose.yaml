@@ -1,7 +1,3 @@
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Docker compose reference guide at
-# https://docs.docker.com/compose/compose-file/
-
 services:
   lebkuchen-fm:
     build:
@@ -9,6 +5,10 @@ services:
     environment:
       NODE_ENV: production
       MONGODB_URI: mongodb://mongo:27017
+      # Required — 256-bit base64 key for encrypting secrets at rest.
+      # Generate with: openssl rand -base64 32
+      # See docs/configuration.md for details.
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY}
     ports:
       - 8080:8080
     networks:
