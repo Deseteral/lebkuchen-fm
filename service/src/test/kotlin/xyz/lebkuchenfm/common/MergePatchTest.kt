@@ -174,7 +174,7 @@ class MergePatchTest {
     }
 
     @Test
-    fun `unknown field throws by default`() {
+    fun `unknown field returns error by default`() {
         // given
         val target = Container()
         val patch = Json.parseToJsonElement(
@@ -190,7 +190,7 @@ class MergePatchTest {
     }
 
     @Test
-    fun `unknown field inside object throws by default`() {
+    fun `unknown field inside object returns error by default`() {
         // given
         val target = Container()
         val patch = Json.parseToJsonElement(
@@ -223,7 +223,7 @@ class MergePatchTest {
     }
 
     @Test
-    fun `object patch onto primitive field throws`() {
+    fun `object patch onto primitive field returns error`() {
         // given
         val target = Container()
         val patch = Json.parseToJsonElement(
@@ -239,7 +239,7 @@ class MergePatchTest {
     }
 
     @Test
-    fun `primitive patch onto object field throws`() {
+    fun `primitive patch onto object field returns error`() {
         // given
         val target = Container()
         val patch = Json.parseToJsonElement(
@@ -355,7 +355,7 @@ class MergePatchTest {
     }
 
     @Test
-    fun `deep nesting beyond the schema throws`() {
+    fun `deep nesting beyond the schema returns error`() {
         // given
         val target = Container()
         val patch = Json.parseToJsonElement(
