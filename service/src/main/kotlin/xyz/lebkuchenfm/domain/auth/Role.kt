@@ -10,6 +10,7 @@ enum class Role(val scopes: Set<Scope>) {
             Scope.XSOUNDS_PLAY,
             Scope.XSOUNDS_LISTEN,
             Scope.XSOUNDS_MANAGE,
+            Scope.XSOUNDS_UPLOAD,
         ),
     ),
     HONKER(setOf(Scope.PLAYER_PLAYBACK_CONTROL, Scope.XSOUNDS_PLAY, Scope.XSOUNDS_LISTEN)),
